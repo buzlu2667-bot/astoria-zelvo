@@ -49,7 +49,7 @@ export default function Favorites() {
             .map((img) =>
               img.startsWith("http")
                 ? img
-                : `/src/assets/products/${img}`
+                : `/products/${img}`
             );
 
           return (
