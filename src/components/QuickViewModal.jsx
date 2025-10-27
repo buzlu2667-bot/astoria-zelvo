@@ -11,13 +11,13 @@ export default function QuickViewModal({ product, closeModal }) {
 
   const extraImages = [1, 2, 3]
     .map((i) => {
-      const img = product.image_url.replace(".png", `.${i}.png`);
+      const img = product.image_url?.replace(/\.(png|jpg|jpeg)$/i, `.${i}.$1`);
       return img;
     })
     .filter(Boolean);
 
   const productImages = [product.image_url, ...extraImages];
-  const base = "/src/assets/products/";
+  const base = "/products/";
   const navigate = useNavigate();
 
 const go = (to, protect = false) => {
