@@ -1,3 +1,5 @@
+import Zoom from "react-medium-image-zoom";
+import "react-medium-image-zoom/dist/styles.css";
 import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
@@ -69,14 +71,19 @@ const go = (to, protect = false) => {
           className="rounded-xl"
         >
           {productImages.map((img, i) => (
-            <SwiperSlide key={i}>
-              <img
-               src={img}
-                alt={product.name}
-                className="w-full max-h-[420px] object-cover rounded-xl bg-black/40 p-2"
-              />
-            </SwiperSlide>
-          ))}
+  <SwiperSlide key={i}>
+    <div className="bg-black rounded-xl overflow-hidden flex justify-center items-center">
+      <Zoom>
+        <img
+          src={img}
+          alt={product.name}
+          className="max-w-full max-h-[460px] object-contain rounded-xl select-none"
+        />
+      </Zoom>
+    </div>
+  </SwiperSlide>
+))}
+
         </Swiper>
 
         <h2 className="mt-6 text-2xl font-bold">{product.name}</h2>
