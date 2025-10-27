@@ -13,10 +13,10 @@ export default function Home() {
   const [loading, setLoading] = useState(true);
   const [quickViewProduct, setQuickViewProduct] = useState(null);
   const heroImages = [
-  "/src/assets/hero/slider1.jpg",
-  "/src/assets/hero/slider2.jpg",
-  "/src/assets/hero/slider3.jpg",
-  "/src/assets/hero/slider4.jpg",
+  "/hero/slide1.jpg",
+  "/hero/slide2.jpg",
+  "/hero/slide3.jpg",
+  "/hero/slide4.jpg"
 ];
 
   const { name: category } = useParams();
@@ -57,42 +57,42 @@ export default function Home() {
     {[
       {
         type: "video",
-        src: "/src/assets/hero/slide1-video.mp4",
+        src: "/hero/slide1-video.mp4",
         title: "E-Pin Dünyası Burada!",
         text: "Hızlı Teslim — Güvenilir Alışveriş",
         color: "text-yellow-400",
       },
       {
         type: "image",
-        src: "/src/assets/hero/slide2.jpg",
+        src: "/hero/slide2.jpg",
         title: "Premium Çanta Koleksiyonu",
         text: "Lüks — Şık — Elitemart",
         color: "text-yellow-400",
       },
       {
         type: "image",
-        src: "/src/assets/hero/slide3.jpg",
+        src: "/hero/slide3.jpg",
         title: "Premium Çanta Koleksiyonu",
         text: "Lüks — Şık — ",
         color: "text-yellow-400",
       },
       {
         type: "video",
-        src: "/src/assets/hero/slide3-video.mp4",
+        src: "/hero/slide3-video.mp4",
         title: "Oyun Kodlarında Dev İndirim!",
         text: "",
         color: "text-rose-400",
       },
       {
         type: "image",
-        src: "/src/assets/hero/slide4.jpg",
+        src: "/hero/slide4.jpg",
         title: "Tarzını Göster!",
         text: "",
         color: "text-yellow-300",
       },
       {
         type: "video",
-        src: "/src/assets/hero/slide5-video.mp4",
+        src: "/hero/slide5-video.mp4",
         title: "Alışverişe Hoş Geldin",
         text: "",
         color: "text-yellow-400 drop-shadow-[0_0_30px_rgba(255,200,0,0.6)]",
