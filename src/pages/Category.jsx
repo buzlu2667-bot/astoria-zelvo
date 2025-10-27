@@ -57,13 +57,15 @@ export default function Category() {
                 )}
 
                 <img
-                  src={
+                    src={
                     p.image_url?.startsWith("http")
-                      ? p.image_url
-                      : `/src/assets/products/${p.image_url}`
-                  }
-                  className="w-full h-40 object-cover mb-3 rounded-lg"
-                />
+                     ? p.image_url
+                      : `/products/${p.image_url}`
+                    }
+                  alt={p.name}
+                    className="w-full h-40 object-cover mb-3 rounded-lg"
+                     />
+
 
                 <p className="font-semibold truncate">{p.name}</p>
                 {/* ✅ Stok Etiketi */}
