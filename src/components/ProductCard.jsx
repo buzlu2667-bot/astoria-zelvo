@@ -7,7 +7,7 @@ export default function ProductCard({ product, openModal }) {
   const { addFav, removeFav, isFav } = useFavorites();
   const [favorite, setFavorite] = useState(false);
 
-  const imageSrc = `/src/assets/products/${product.image_url}`;
+  const imageSrc = `/products/${product.image_url}`;
 
   const price = Number(product.price ?? 0);
   const oldPrice = Number(product.old_price ?? 0);

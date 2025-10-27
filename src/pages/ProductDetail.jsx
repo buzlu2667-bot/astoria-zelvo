@@ -66,7 +66,7 @@ export default function ProductDetail() {
     return [
       p.image_url,
       ...(p.images || []),
-    ].filter(Boolean).map((f) => `/src/assets/products/${f}`);
+    ].filter(Boolean).map((f) => `/products/${f}`);
   }, [p]);
 
   const stockBadge = useMemo(() => {
@@ -163,14 +163,14 @@ export default function ProductDetail() {
                   new CustomEvent("toast", {
                     detail: {
                       type: "success",
-                      text: " Sepete eklendi!",
+                      text: "🛒 Sepete eklendi!",
                     },
                   })
                 );
               }}
               className="flex-1 bg-rose-600 hover:bg-rose-700 text-white font-bold py-3 rounded-xl"
             >
-               Sepete Ekle
+              🛒 Sepete Ekle
             </button>
 
             <Link
