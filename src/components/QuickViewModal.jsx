@@ -63,7 +63,7 @@ const go = (to, protect = false) => {
           {productImages.map((img, i) => (
             <SwiperSlide key={i}>
               <img
-               src={`/products/${img}`}
+               src={img}
                 alt={product.name}
                 className="w-full max-h-[420px] object-cover rounded-xl bg-black/40 p-2"
               />
