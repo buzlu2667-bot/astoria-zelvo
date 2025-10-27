@@ -9,7 +9,7 @@ import "swiper/css/pagination";
 export default function QuickViewModal({ product, closeModal }) {
   if (!product) return null;
 
- const productImages = [product.image_url]; // ✅ Direkt Supabase URL
+ const productImages = [`/products/${product.image_url}`]; // ✅ Direkt Supabase URL
 
   const navigate = useNavigate();
 
@@ -63,7 +63,7 @@ const go = (to, protect = false) => {
           {productImages.map((img, i) => (
             <SwiperSlide key={i}>
               <img
-                src={img}
+               src={`/products/${img}`}
                 alt={product.name}
                 className="w-full max-h-[420px] object-cover rounded-xl bg-black/40 p-2"
               />

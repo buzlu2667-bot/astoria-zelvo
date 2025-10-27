@@ -66,7 +66,7 @@ export default function ProductDetail() {
     return [
       p.image_url,
       ...(p.images || []),
-    ].filter(Boolean).map((f) => `/products/${f}`);
+    ].filter(Boolean).map((f) => f);
   }, [p]);
 
   const stockBadge = useMemo(() => {
