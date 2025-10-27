@@ -9,7 +9,15 @@ import "swiper/css/pagination";
 export default function QuickViewModal({ product, closeModal }) {
   if (!product) return null;
 
- const productImages = [`/products/${product.image_url}`]; // ✅ Direkt Supabase URL
+ // ✅ Ürün görsellerini otomatik oluştur
+const baseImg = product.image_url?.replace(/\.(png|jpg|jpeg)$/i, "");
+const productImages = [
+  `/products/${baseImg}.png`,
+  `/products/${baseImg}.1.png`,
+  `/products/${baseImg}.2.png`,
+  `/products/${baseImg}.3.png`,
+].filter((src) => !src.includes("/products/.png")); // Boş olanları çıkar
+
 
   const navigate = useNavigate();
 
