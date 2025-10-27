@@ -64,7 +64,7 @@ export default function ProductCard({ product, openModal }) {
       )}
 
       <div
-        className="w-full h-32 sm:h-40 md:h-52 bg-black overflow-hidden cursor-pointer"
+        className="w-full h-28 sm:h-36 md:h-48 bg-black overflow-hidden cursor-pointer"
         onClick={() => openModal(product)}
         aria-label="Hızlı İncele"
       >
@@ -82,8 +82,8 @@ export default function ProductCard({ product, openModal }) {
         </button>
       </div>
 
-      <div className="p-4">
-        <h3 className="font-semibold text-xs text-center truncate">
+      <div className="p-3">
+        <h3 className="font-semibold text-base text-center truncate">
           {product.name}
         </h3>
 
@@ -96,7 +96,7 @@ export default function ProductCard({ product, openModal }) {
           )}
         </div>
 
-        <p className="text-gray-400 text-[10px] text-center line-clamp-2 min-h-[26px]">
+        <p className="text-gray-400 text-sm text-center line-clamp-2 min-h-[36px]">
           {product.description || "Açıklama Yok"}
         </p>
 
@@ -107,7 +107,6 @@ export default function ProductCard({ product, openModal }) {
             </span>
           )}
           <span className="text-yellow-400 font-bold text-lg drop-shadow-sm">
-
             ₺{price.toLocaleString("tr-TR")}
           </span>
         </div>
