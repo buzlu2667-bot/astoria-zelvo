@@ -7,7 +7,9 @@ export default function ProductCard({ product, openModal }) {
   const { addFav, removeFav, isFav } = useFavorites();
   const [favorite, setFavorite] = useState(false);
 
- const imageSrc = `/products/${product.image_url}`;
+ const imageSrc = product.image_url?.startsWith("http")
+  ? product.image_url
+  : `/products/${product.image_url}`;
 
   const price = Number(product.price ?? 0);
   const oldPrice = Number(product.old_price ?? 0);
@@ -62,7 +64,7 @@ export default function ProductCard({ product, openModal }) {
       )}
 
       <div
-        className="relative w-full h-72 bg-black flex items-center justify-center overflow-hidden cursor-pointer border-b border-neutral-800"
+        className="aspect-[1/1.2] w-full bg-black overflow-hidden cursor-pointer"
         onClick={() => openModal(product)}
         aria-label="Hızlı İncele"
       >
@@ -81,7 +83,7 @@ export default function ProductCard({ product, openModal }) {
       </div>
 
       <div className="p-4">
-        <h3 className="font-semibold text-base text-center truncate">
+        <h3 className="font-semibold text-sm text-center truncate">
           {product.name}
         </h3>
 
