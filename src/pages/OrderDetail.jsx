@@ -77,7 +77,7 @@ export default function OrderDetail() {
             const src = img?.startsWith("http")
               ? img
               : img
-              ? `/src/assets/products/${img}`
+              ? `/products/${image}`
               : "/assets/placeholder-product.png";
 
             return (

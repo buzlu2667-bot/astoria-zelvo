@@ -145,7 +145,7 @@ export default function Orders() {
                               image?.startsWith?.("http")
                                 ? image
                                 : image
-                                ? `/src/assets/products/${image}`
+                                ? `/products/${image}`
                                 : "/assets/placeholder-product.png"
                             }
                             className="w-full h-full object-cover"

@@ -84,7 +84,7 @@ if (!cart || cart.length === 0)
                     item.image_url?.startsWith("http")
                       ? item.image_url
                       : item.image_url
-                      ? `/src/assets/products/${item.image_url}`
+                      ? `/products/${item.image_url}`
                       : "/assets/placeholder-product.png"
                   }
                   alt={item.name}
