@@ -77,7 +77,7 @@ const go = (to, protect = false) => {
         <img
           src={img}
           alt={product.name}
-          className="max-w-full max-h-[460px] object-contain rounded-xl select-none"
+          className="w-full h-[75vh] object-contain rounded-xl select-none"
         />
       </Zoom>
     </div>
