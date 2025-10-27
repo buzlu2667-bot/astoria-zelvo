@@ -1,0 +1,130 @@
+import { useNavigate } from "react-router-dom";
+import { useEffect } from "react";
+import { Swiper, SwiperSlide } from "swiper/react";
+import { Navigation, Pagination, Keyboard } from "swiper/modules";
+import "swiper/css";
+import "swiper/css/navigation";
+import "swiper/css/pagination";
+
+export default function QuickViewModal({ product, closeModal }) {
+  if (!product) return null;
+
+  const extraImages = [1, 2, 3]
+    .map((i) => {
+      const img = product.image_url.replace(".png", `.${i}.png`);
+      return img;
+    })
+    .filter(Boolean);
+
+  const productImages = [product.image_url, ...extraImages];
+  const base = "/src/assets/products/";
+  const navigate = useNavigate();
+
+const go = (to, protect = false) => {
+  const session = JSON.parse(localStorage.getItem("sb-session"));
+
+  if (protect && !session) {
+    localStorage.setItem("redirect_after_login", to);
+    window.dispatchEvent(new Event("force-login")); // ✅ Header login'i açsın
+  } else {
+    navigate(to);
+  }
+};
+
+
+  // ✅ ESC ile kapat
+  useEffect(() => {
+    const escClose = (e) => e.key === "Escape" && closeModal();
+    window.addEventListener("keydown", escClose);
+    return () => window.removeEventListener("keydown", escClose);
+  }, [closeModal]);
+
+  return (
+    <div
+  className="fixed inset-0 bg-black/70 backdrop-blur-md z-[99999] flex items-center justify-center p-6"
+  onClick={closeModal}
+>
+
+      <div
+  className="relative w-full max-w-4xl bg-neutral-950/90 backdrop-blur-xl border border-yellow-500/30 
+             rounded-3xl p-8 shadow-[0_0_45px_rgba(255,215,0,0.25)] animate-fade-up"
+  onClick={(e) => e.stopPropagation()}
+>
+
+        {/* ✅ X çalışır */}
+        <button
+          onClick={closeModal}
+          className="absolute top-3 right-3 text-3xl w-10 h-10 rounded-full flex items-center justify-center
+                     bg-black/60 hover:bg-red-600 backdrop-blur-sm transition-all z-[9999]"
+        >
+          ✕
+        </button>
+
+        <Swiper
+          modules={[Navigation, Pagination, Keyboard]}
+          navigation
+          pagination={{ clickable: true }}
+          keyboard={{ enabled: true }}
+          className="rounded-xl"
+        >
+          {productImages.map((img, i) => (
+            <SwiperSlide key={i}>
+              <img
+                src={base + img}
+                alt={product.name}
+                className="w-full max-h-[420px] object-cover rounded-xl bg-black/40 p-2"
+              />
+            </SwiperSlide>
+          ))}
+        </Swiper>
+
+        <h2 className="mt-6 text-2xl font-bold">{product.name}</h2>
+        <p className="text-gray-400 text-sm mb-3">{product.description}</p>
+
+        <div className="flex items-end gap-3 mb-6">
+  {/* Eski fiyat - çizili */}
+  {product.old_price > product.price && (
+    <p className="text-gray-500 line-through text-lg">
+      ₺{Number(product.old_price).toLocaleString("tr-TR")}
+    </p>
+  )}
+
+  {/* Yeni fiyat */}
+  <p className="text-yellow-400 font-extrabold text-3xl drop-shadow-sm">
+    ₺{Number(product.price).toLocaleString("tr-TR")}
+  </p>
+</div>
+
+
+       <button
+  onClick={() => {
+    window.dispatchEvent(
+      new CustomEvent("cart-add", { detail: product })
+    );
+
+    window.dispatchEvent(
+      new CustomEvent("toast", {
+        detail: { type: "success", text: " Sepete eklendi!" },
+      })
+    );
+
+    closeModal();
+  }}
+  className="w-full bg-gradient-to-r from-red-700 to-yellow-600 hover:opacity-90 
+             py-3 rounded-lg font-bold text-lg transition-all"
+>
+  <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18"
+  fill="none" stroke="currentColor" strokeWidth="2"
+  strokeLinecap="round" strokeLinejoin="round"
+  className="inline-block mr-2">
+  <circle cx="9" cy="21" r="1"></circle>
+  <circle cx="20" cy="21" r="1"></circle>
+  <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+</svg>
+  Sepete Ekle
+</button>
+
+      </div>
+    </div>
+  );
+}

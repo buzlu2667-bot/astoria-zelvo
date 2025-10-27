@@ -1,0 +1,143 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* 🌑 Global Tema */
+body {
+  @apply bg-black text-white font-sans antialiased transition-colors duration-300;
+}
+
+h1, h2, h3, h4 {
+  @apply font-bold tracking-tight;
+}
+
+button, a {
+  @apply transition-all duration-300;
+}
+
+/* ✨ Premium Scrollbar */
+::-webkit-scrollbar {
+  width: 10px;
+}
+::-webkit-scrollbar-track {
+  background: #0f0f0f;
+}
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, #8b0000, #ffd700);
+  border-radius: 10px;
+  border: 2px solid #0f0f0f;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, #b00000, #ffea73);
+}
+
+/* 🔥 Badge Tarzları — Sipariş + Ürün Detay */
+.badge {
+  @apply text-xs px-3 py-1 rounded-full font-semibold border inline-flex items-center;
+}
+.badge-green  { @apply bg-[#0f5132] text-[#c3f0d0] border-[#198754]; }
+.badge-yellow { @apply bg-[#664d03] text-[#ffe8a1] border-[#b68b00]; }
+.badge-blue   { @apply bg-[#0b3d60] text-[#c8e6ff] border-[#2277b3]; }
+.badge-purple { @apply bg-[#3d0b60] text-[#ead0ff] border-[#7a22b3]; }
+.badge-red    { @apply bg-[#57181a] text-[#ffc2c6] border-[#842029]; }
+
+/* 🗂️ Tablar */
+.tab {
+  @apply text-sm px-4 py-2 rounded-xl bg-neutral-900 border border-neutral-800 text-gray-400;
+}
+.tab-active {
+  @apply bg-gray-700 border-gray-500 text-white;
+}
+
+/* 🫧 Açılma animasyonu */
+@keyframes slide-in {
+  from { opacity: 0; transform: translateY(10px) scale(.98); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+.animate-slide-in {
+  animation: slide-in .28s ease-out both;
+}
+
+/* 🖱️ Link Hover */
+a:hover {
+  @apply text-red-500;
+}
+/* ---- Soft glow + animasyon yardımcıları ---- */
+@keyframes pingOnce {
+  0%   { transform: scale(1);   opacity: 1;   }
+  60%  { transform: scale(1.4); opacity: 0.5; }
+  100% { transform: scale(1);   opacity: 1;   }
+}
+@keyframes heartBeat {
+  0%, 100% { transform: scale(1); }
+  25%      { transform: scale(1.15); }
+  50%      { transform: scale(0.98); }
+  75%      { transform: scale(1.08); }
+}
+
+.animate-pingOnce { animation: pingOnce 0.9s ease-out 1; }
+.animate-heartBeat { animation: heartBeat 1.6s ease-in-out infinite; }
+@keyframes spin-slow {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+.animate-spin-slow {
+  animation: spin-slow 2.2s linear infinite;
+}
+
+@keyframes truck-move {
+  0% { transform: translateX(0); }
+  50% { transform: translateX(8px); }
+  100% { transform: translateX(0); }
+}
+.animate-truck {
+  animation: truck-move 1.2s ease-in-out infinite;
+}
+@keyframes fade {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.animate-fade {
+  animation: fade .5s ease-out;
+}
+.animate-floating {
+  animation: floating 2s ease-in-out infinite;
+}
+@keyframes floating {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-6px); }
+  
+}
+.drop-shadow-premium {
+  filter: drop-shadow(0 0 25px rgba(255,200,0,0.65))
+          drop-shadow(0 0 45px rgba(255,150,0,0.35));
+}
+@keyframes fade-up {
+  0% {
+    opacity: 0;
+    transform: translateY(20px) scale(0.96);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.animate-fade-up {
+  animation: fade-up 0.35s ease-out;
+}
+.az-logo {
+  box-shadow:
+    0 0 14px rgba(255, 194, 0, 0.45),
+    0 0 24px rgba(255, 230, 100, 0.30);
+  transition: .25s ease-in-out;
+}
+
+.az-logo:hover {
+  box-shadow:
+    0 0 20px rgba(255, 210, 0, 0.70),
+    0 0 34px rgba(255, 220, 50, 0.40);
+  transform: scale(1.08);
+}
+
+

@@ -1,0 +1,112 @@
+import { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
+import { supabase } from "../lib/supabaseClient";
+import QuickViewModal from "../components/QuickViewModal";
+
+export default function Category() {
+  const { id } = useParams();
+  const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [selectedProduct, setSelectedProduct] = useState(null);
+  const [modalOpen, setModalOpen] = useState(false);
+
+  const categoryName = id?.toLowerCase();
+
+  useEffect(() => {
+    if (!categoryName) return;
+
+    (async () => {
+      setLoading(true);
+      const { data } = await supabase
+        .from("products")
+        .select("*")
+        .ilike("category", categoryName);
+
+      setProducts(data || []);
+      setLoading(false);
+    })();
+  }, [categoryName]);
+
+  if (loading)
+    return <div className="text-white text-center mt-20">Yükleniyor...</div>;
+
+  return (
+    <div className="max-w-6xl mx-auto px-4 py-10 text-white">
+      <h1 className="text-3xl font-bold mb-6 text-yellow-400">Ürünler</h1>
+
+      {products.length > 0 ? (
+        <div className="grid grid-cols-2 md:grid-cols-3 gap-5">
+          {products.map((p) => {
+            const price = Number(p.price);
+            const old = Number(p.old_price);
+            const discount = old && old > price ? Math.round(((old - price) / old) * 100) : 0;
+
+            return (
+              <div
+                key={p.id}
+                onClick={() => {
+                  setSelectedProduct(p);
+                  setModalOpen(true);
+                }}
+                className="cursor-pointer bg-neutral-900 rounded-xl p-3 border border-neutral-800 hover:border-yellow-500 hover:scale-[1.03] transition relative"
+              >
+                {discount > 0 && (
+                  <span className="absolute top-2 left-2 bg-red-600 text-white text-xs px-2 py-1 rounded">
+                    %{discount} İndirim
+                  </span>
+                )}
+
+                <img
+                  src={
+                    p.image_url?.startsWith("http")
+                      ? p.image_url
+                      : `/src/assets/products/${p.image_url}`
+                  }
+                  className="w-full h-40 object-cover mb-3 rounded-lg"
+                />
+
+                <p className="font-semibold truncate">{p.name}</p>
+                {/* ✅ Stok Etiketi */}
+{p.stock <= 0 ? (
+  <p className="text-red-500 text-sm font-bold">Tükendi ❌</p>
+) : p.stock < 10 ? (
+  <p className="text-amber-400 text-sm font-bold">Az Kaldı ⚠️</p>
+) : (
+  <p className="text-green-500 text-sm font-bold">Stokta ✅</p>
+)}
+
+
+                {discount > 0 ? (
+                  <p className="text-yellow-400 font-bold">
+                    <span className="text-gray-400 line-through text-sm mr-2">
+                      ₺{old.toLocaleString("tr-TR")}
+                    </span>
+                    ₺{price.toLocaleString("tr-TR")}
+                  </p>
+                ) : (
+                  <p className="text-yellow-400 font-bold">
+                    ₺{price.toLocaleString("tr-TR")}
+                  </p>
+                )}
+              </div>
+            );
+          })}
+        </div>
+      ) : (
+        <div className="text-center mt-16">
+          <h2 className="text-2xl font-bold text-yellow-400 drop-shadow-xl">
+            Yakında Geliyoruz! ✨
+          </h2>
+          <p className="text-gray-400">Henüz ürün yok.</p>
+        </div>
+      )}
+
+      {modalOpen && (
+        <QuickViewModal
+          product={selectedProduct}
+          closeModal={() => setModalOpen(false)}
+        />
+      )}
+    </div>
+  );
+}
