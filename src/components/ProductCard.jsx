@@ -64,7 +64,7 @@ export default function ProductCard({ product, openModal }) {
       )}
 
       <div
-        className="aspect-[1/1.2] w-full bg-black overflow-hidden cursor-pointer"
+        className="w-full h-48 sm:h-56 md:h-64 bg-black overflow-hidden cursor-pointer"
         onClick={() => openModal(product)}
         aria-label="Hızlı İncele"
       >
