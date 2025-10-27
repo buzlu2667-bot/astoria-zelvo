@@ -2,17 +2,17 @@
 import { FaInstagram, FaFacebookF, FaTiktok, FaTelegramPlane, FaWhatsapp } from "react-icons/fa";
 
 const shippingIcons = [
-  { name: "Yurtiçi", src: "/src/assets/footer/shipping-yurtici.png" },
-  { name: "Aras", src: "/src/assets/footer/shipping-aras.png" },
-  { name: "MNG", src: "/src/assets/footer/shipping-mng.png" },
-  { name: "Sürat", src: "/src/assets/footer/shipping-surat.png" },
-  { name: "Ups", src: "/src/assets/footer/shipping-ups.png" },
+  { name: "Yurtiçi", src: "/footer/shipping-yurtici.png" },
+  { name: "Aras", src: "/footer/shipping-aras.png" },
+  { name: "MNG", src: "/footer/shipping-mng.png" },
+  { name: "Sürat", src: "/footer/shipping-surat.png" },
+  { name: "Ups", src: "/footer/shipping-ups.png" },
 ];
 
 const paymentIcons = [
-  { name: "Visa", src: "/src/assets/footer/pay-visa.png" },
-  { name: "Mastercard", src: "/src/assets/footer/pay-mastercard.png" },
-  { name: "Troy", src: "/src/assets/footer/pay-troy.png" },
+  { name: "Visa", src: "/footer/pay-visa.png" },
+  { name: "Mastercard", src: "/footer/pay-mastercard.png" },
+  { name: "Troy", src: "/footer/pay-troy.png" },
 ];
 
 export default function Footer() {
