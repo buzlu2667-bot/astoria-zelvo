@@ -42,48 +42,69 @@ const go = (to, protect = false) => {
     window.addEventListener("keydown", escClose);
     return () => window.removeEventListener("keydown", escClose);
   }, [closeModal]);
+  useEffect(() => {
+  document.body.style.overflow = isZoomed ? "hidden" : "auto";
+}, [isZoomed]);
+
 
   return (
-    <div
-  className="fixed inset-0 bg-black/70 backdrop-blur-md z-[99999] flex items-center justify-center p-6"
+   <div
+  className="fixed inset-0 bg-black/70 backdrop-blur-md z-[99999] flex items-center justify-center p-6
+             overscroll-contain touch-pan-y"     // ✅ iOS bounce fix
   onClick={closeModal}
 >
 
-      <div
-  className="relative w-full max-w-4xl bg-neutral-950/90 backdrop-blur-xl border border-yellow-500/30 
-             rounded-3xl p-8 shadow-[0_0_45px_rgba(255,215,0,0.25)] animate-fade-up"
+
+     <div
+  className={`relative w-full max-w-4xl bg-neutral-950/90 rounded-3xl p-8 animate-fade-up
+              ${isZoomed
+                ? "backdrop-blur-0 shadow-none border-transparent"
+                : "backdrop-blur-xl shadow-[0_0_45px_rgba(255,215,0,0.25)] border border-yellow-500/30"
+              }`}
   onClick={(e) => e.stopPropagation()}
 >
+
 
         {/* ✅ X çalışır */}
         <button
           onClick={closeModal}
-          className="absolute top-3 right-3 text-3xl w-10 h-10 rounded-full flex items-center justify-center
-                     bg-black/60 hover:bg-red-600 backdrop-blur-sm transition-all z-[9999]"
+          className={`absolute top-3 right-3 text-3xl w-10 h-10 rounded-full flex items-center justify-center
+            ${isZoomed ? "transition-none" : "transition-all"} 
+            bg-black/60 hover:bg-red-600 backdrop-blur-sm z-[9999]`}
+
         >
           ✕
         </button>
 
        <Swiper
- className={`rounded-xl ${isZoomed ? "pointer-events-none" : ""}`}
- style={{ touchAction: isZoomed ? "none" : "auto" }}
+  className="rounded-xl"
+  allowTouchMove={!isZoomed}           // ✅ Zoom açıkken swipe kilit
+  simulateTouch={!isZoomed}            // ✅ Ek garanti
+  resistanceRatio={0}                  // ✅ iOS lastik etkisini azalt
   modules={[Navigation, Pagination, Keyboard]}
   navigation
   pagination={{ clickable: true }}
   keyboard={{ enabled: true }}
 >
+
         {productImages.map((img, i) => (
   <SwiperSlide key={i}>
-  <Zoom
-    onZoomChange={(zoom) => setIsZoomed(zoom)}
-    zoomMargin={20}
-    overlayBgColorEnd="rgba(0,0,0,0.9)"
-  >
+ <Zoom
+  onZoomChange={(zoom) => setIsZoomed(zoom)}
+  zoomMargin={16}                          // ✅ iOS için nefes aralığı
+  overlayBgColorStart="rgba(0,0,0,0.35)"   // ✅ yumuşak giriş
+  overlayBgColorEnd="rgba(0,0,0,0.90)"
+  transitionDuration={250}                 // ✅ kısa ve pürüzsüz anim
+>
+
     <img
-      src={img}
-      alt={product.name}
-      className="w-full max-h-[420px] object-cover rounded-xl bg-black/40 p-2 select-none"
-    />
+  src={img}
+  alt={product.name}
+  draggable={false}                                 // ✅ iOS drag ghost yok
+  className="w-full h-[420px] object-contain rounded-xl bg-black/40 select-none"
+  style={{ willChange: isZoomed ? "transform" : "auto", transform: isZoomed ? "translateZ(0)" : "none" }}  // ✅ GPU hint
+/>
+
   </Zoom>
 </SwiperSlide>
 
