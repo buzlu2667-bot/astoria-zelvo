@@ -92,7 +92,7 @@ export default function Checkout() {
             <h3 className="font-semibold mb-3 text-yellow-400">Ödeme Yöntemi</h3>
             <div className="grid sm:grid-cols-3 gap-3">
               <PayBtn disabled label="💳 Kredi Kartı (yakında)" />
-              <PayBtn active={pay === "iban"} onClick={() => setPay("iban")} label="🏦 IBAN" />
+              <PayBtn active={pay === "iban"} onClick={() => setPay("iban")} label="🏦 Havale / EFT"/>
               <PayBtn active={pay === "cod"} onClick={() => setPay("cod")} label="🚚 Kapıda Ödeme" />
             </div>
           </div>
@@ -134,57 +134,74 @@ export default function Checkout() {
 
       {/* ✅ IBAN MODAL */}
       {ibanModal && (
-        <div className="fixed inset-0 bg-black/70 flex justify-center items-center p-4 z-[99999] backdrop-blur-sm">
-          <div className="bg-neutral-900 rounded-2xl p-6 max-w-md w-full border border-yellow-600/20 shadow-xl animate-slide-in relative">
+  <div
+    className="fixed inset-0 bg-black/70 backdrop-blur-md flex justify-center items-center p-4 z-[99999] animate-fadeIn"
+    onClick={() => setIbanModal(false)} // ✅ dışa tıklayınca KAPANIR
+  >
+    <div
+      className="relative bg-neutral-950/90 border border-yellow-500/50 shadow-[0_0_30px_rgba(250,204,21,0.4)] rounded-2xl p-7 w-full max-w-md animate-scaleIn"
+      onClick={(e) => e.stopPropagation()} // ✅ İçeri tıklama kapanmaz
+    >
 
-            <button
-              onClick={() => setIbanModal(false)}
-              className="absolute top-3 right-3 text-xl hover:text-red-500"
-            >
-              ✕
-            </button>
+      {/* ✅ X TUŞU */}
+      <button
+  onClick={(e) => {
+    e.stopPropagation(); // ✅ overlay’e gitmesini engeller
+    setIbanModal(false);
+  }}
+  className="absolute top-3 right-3 text-2xl hover:text-red-500 transition z-50"
+  aria-label="Kapat"
+>
+  ✕
+</button>
 
-            <h2 className="text-lg font-bold text-yellow-400 mb-4">
-              Ödeme Bilgileri
-            </h2>
+      {/* ✅ Başlık */}
+      <h2 className="text-2xl font-extrabold text-center text-yellow-400 drop-shadow-md animate-pulseSlow mb-4">
+        🏦 Havale / EFT
+      </h2>
 
-            <p className="mb-1">
-              <b>IBAN:</b> TR12 3456 7890 1234 5678 9012 34
-            </p>
-            <p>
-              <b>Hesap Sahibi:</b> ELITEMART TİC LTD
-            </p>
+      {/* ✅ IBAN Kutusu */}
+      <div className="bg-neutral-800/60 rounded-lg p-4 border border-yellow-600/30">
+        <p className="text-gray-300">
+          <b>Hesap Sahibi:</b> ELITEMART TİC LTD
+        </p>
+        <p className="mt-1 text-gray-300 flex flex-col gap-1">
+          <b>IBAN:</b>
+          <span
+            className="bg-neutral-900 text-yellow-300 px-3 py-2 text-center rounded-lg tracking-wide font-mono cursor-pointer border border-yellow-600/20 hover:bg-yellow-600/10 transition"
+            onClick={() => {
+              navigator.clipboard.writeText("TR123456789012345678901234");
+              window.dispatchEvent(
+                new CustomEvent("toast", {
+                  detail: { type: "success", text: "📋 IBAN kopyalandı!" },
+                })
+              );
+            }}
+          >
+            TR12 3456 7890 1234 5678 9012 34
+          </span>
+        </p>
+      </div>
 
-            <button
-              className="mt-4 px-3 py-2 rounded bg-yellow-500 text-black font-bold w-full"
-              onClick={() => {
-                navigator.clipboard.writeText("TR123456789012345678901234");
-                window.dispatchEvent(
-                  new CustomEvent("toast", {
-                    detail: { type: "success", text: "📋 IBAN kopyalandı!" },
-                  })
-                );
-              }}
-            >
-              📋 IBAN Kopyala
-            </button>
+      <p className="text-xs text-gray-400 text-center mt-3">
+        Açıklama kısmına sipariş numaranızı yazmayı unutmayın ✅
+      </p>
 
-            <button
-              onClick={() => {
-                setIbanModal(false);
-                finishOrder();
-              }}
-              className="mt-3 w-full bg-green-600 hover:bg-green-700 py-3 rounded-xl font-bold shadow-lg"
-            >
-              ✅ Ödemeyi Yaptım
-            </button>
+      {/* ✅ Ödemeyi Yaptım */}
+      <button
+        onClick={() => {
+          setIbanModal(false);
+          finishOrder();
+        }}
+        className="w-full mt-5 py-3 rounded-xl font-bold text-black bg-gradient-to-r from-yellow-300 via-yellow-500 to-yellow-300 shadow-md hover:shadow-yellow-500/50 transition-transform hover:scale-[1.03]"
+      >
+        ✅ Ödemeyi Tamamladım
+      </button>
+    </div>
+  </div>
+)}
 
-            <p className="text-xs text-gray-500 text-center mt-3">
-              Havale/EFT açıklamasına sipariş numaranızı yazınız.
-            </p>
-          </div>
-        </div>
-      )}
+
 
       <p className="text-center text-gray-600 text-xs mt-10 opacity-60">
         © {new Date().getFullYear()} ELITEMART — Güvenli Alışveriş
