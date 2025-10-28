@@ -205,7 +205,8 @@ function renderStatus(status) {
     <>
       {/* TOPBAR */}
       <header className="bg-[#050505] text-white border-b border-yellow-500/20 shadow-[0_0_20px_rgba(255,215,0,0.08)] z-[60] overflow-hidden">
-  <div className="max-w-7xl mx-auto flex items-center justify-between px-6 py-3">
+  <div className="max-w-7xl mx-auto flex items-center justify-between px-3 sm:px-6 py-3">
+
           {/* Menu */}
           <button
             onClick={() => setMenuOpen(true)}
@@ -245,7 +246,7 @@ function renderStatus(status) {
 </Link>
 
      {/* Right Nav */}
-          <div className="flex items-center gap-3 sm:gap-6">
+          <div className="flex items-center gap-2 sm:gap-6 flex-wrap justify-end min-w-0 overflow-x-visible">
             <button
   onClick={() => setOrderCheckOpen(true)}
   aria-label="Sipariş Sorgula"
