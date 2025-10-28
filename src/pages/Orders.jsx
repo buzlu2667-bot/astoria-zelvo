@@ -106,29 +106,30 @@ export default function Orders() {
             const b = STATUS_BADGE[o.status] || STATUS_BADGE.pending;
             const created = new Date(o.created_at).toLocaleString("tr-TR");
 
-            return (
-              <div
-                key={o.id}
-                className="bg-neutral-900 border border-neutral-800 rounded-xl p-5 hover:shadow-[0_0_20px_rgba(168,85,247,0.4)] hover:border-purple-500/50 transition-all"
+           return (
+  <div
+    key={o.id}
+    className="bg-neutral-900 border border-neutral-800 rounded-xl p-5 hover:shadow-[0_0_20px_rgba(168,85,247,0.4)] hover:border-purple-500/50 transition-all"
+  >
+    <header className="flex flex-wrap items-center justify-between gap-3 mb-3">
+      <div>
+        <p className="font-semibold">Sipariş #{o.id}</p>
+        <p className="text-gray-400 text-sm">{created}</p>
+      </div>
 
-              >
-                <header className="flex flex-wrap items-center justify-between gap-3 mb-3">
-                  <div>
-                    <p className="font-semibold">Sipariş #{o.id}</p>
-                    <p className="text-gray-400 text-sm">{created}</p>
-                  </div>
+      <div className="flex items-center gap-3">
 
-                  <div className="flex items-center gap-3">
-                    <span className={`flex items-center gap-1 text-sm ${b.cls}`}>
-                     {b.text}
-                       <span className="inline-block">{b.icon}</span>
-                       </span>
+        <span className={`flex items-center gap-1 text-sm ${b.cls}`}>
+  {b.text} {b.icon}
+</span>
 
-                    <span className="text-lg font-bold text-yellow-400">
-                      {TRY(totals[o.id])}
-                    </span>
-                  </div>
-                </header>
+        <span className="text-lg font-bold text-yellow-400">
+          {TRY(totals[o.id])}
+        </span>
+      </div>
+
+    </header>
+
 
                 {/* Ürünler */}
                 <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-3">

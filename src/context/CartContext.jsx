@@ -98,57 +98,64 @@ export function CartProvider({ children }) {
 
 
   // ✅ 🔥 FORM + PAYMENT backend’e işleniyor!
-  const placeOrder = async (form, paymentMethod) => {
-    try {
-      if (cart.length === 0) return { error: "Sepet boş." };
+ const placeOrder = async (data) => {
+  try {
+    if (cart.length === 0) return { error: "Sepet boş." };
 
-      const {
-        data: { user },
-        error: userError,
-      } = await supabase.auth.getUser();
+    const {
+      data: { user },
+      error: userError,
+    } = await supabase.auth.getUser();
 
-      if (userError) throw userError;
-      if (!user) return { error: "Giriş yapmanız gerekiyor." };
+    if (userError) throw userError;
+    if (!user) return { error: "Giriş yapmanız gerekiyor." };
 
-      const { data: orderData, error: orderError } = await supabase
-        .from("orders")
-        .insert([
-          {
-            user_id: user.id,
-            total_amount: total,
-            status: "pending",
-            full_name: form.full_name,
-            phone: form.phone,
-            address: form.address,
-            note: form.note,
-            payment: paymentMethod, // ✅ iban | cod
-          },
-        ])
-        .select("id")
-        .single();
+    const form = data;
+    const paymentMethod = data.payment_method;
 
-      if (orderError) throw orderError;
+    const { data: orderData, error: orderError } = await supabase
+      .from("orders")
+      .insert([
+        {
+          user_id: user.id,
+          total_amount: total,
+          status:
+            (paymentMethod?.toLowerCase() === "iban")
+              ? "awaiting_payment"
+              : "pending",
+          full_name: form.full_name,
+          phone: form.phone,
+          address: form.address,
+          note: form.note,
+          payment: paymentMethod,
+        },
+      ])
+      .select("id")
+      .single();
 
-      const orderId = orderData.id;
+    if (orderError) throw orderError;
 
-      const orderItems = cart.map((p) => ({
-        order_id: orderId,
-        product_id: p.id,
-        product_name: p.name,
-        unit_price: p.price,
-        quantity: p.quantity || 1,
-      }));
+    const orderId = orderData.id;
 
-      await supabase.from("order_items").insert(orderItems);
+    const orderItems = cart.map((p) => ({
+      order_id: orderId,
+      product_id: p.id,
+      product_name: p.name,
+      unit_price: p.price,
+      quantity: p.quantity || 1,
+    }));
 
-      clearCart();
-      return { success: true, orderId };
+    await supabase.from("order_items").insert(orderItems);
 
-    } catch (err) {
-      console.error("Sipariş oluşturma hatası:", err);
-      return { error: err.message };
-    }
-  };
+    clearCart();
+    return { success: true, orderId };
+
+  } catch (err) {
+    console.error("Sipariş oluşturma hatası:", err);
+    return { error: err.message };
+  }
+};
+
 
   return (
     <CartContext.Provider
