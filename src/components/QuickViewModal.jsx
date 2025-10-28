@@ -74,7 +74,10 @@ export default function QuickViewModal({ product, closeModal }) {
       <div
         ref={modalRef}
         tabIndex={0}
-        className="relative w-full max-w-5xl bg-neutral-900 rounded-3xl border border-yellow-500/30 shadow-xl outline-none"
+        className="relative w-[90vw] max-w-3xl max-h-[94vh] overflow-y-auto
+            bg-neutral-900 rounded-2xl p-4 md:p-6 shadow-xl
+            border border-yellow-500/40 outline-none"
+
         onClick={(e) => e.stopPropagation()}
       >
         {/* X Kapat */}
@@ -106,7 +109,8 @@ export default function QuickViewModal({ product, closeModal }) {
                       src={src}
                       alt={product.name}
                       draggable="false"
-                      className="max-h-[60vh] object-contain"
+                      className="max-h-[70vh] md:max-h-[60vh] object-contain"
+
                     />
                   </div>
                 </SwiperSlide>
