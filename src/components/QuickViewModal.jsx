@@ -70,19 +70,18 @@ const go = (to, protect = false) => {
           keyboard={{ enabled: true }}
           className="rounded-xl"
         >
-          {productImages.map((img, i) => (
+        {productImages.map((img, i) => (
   <SwiperSlide key={i}>
-    <div className="bg-black rounded-xl overflow-hidden flex justify-center items-center">
-      <Zoom>
-        <img
-          src={img}
-          alt={product.name}
-          className="w-full h-[75vh] object-contain rounded-xl select-none"
-        />
-      </Zoom>
-    </div>
+    <Zoom>
+      <img
+        src={img}
+        alt={product.name}
+        className="w-full max-h-[420px] object-cover rounded-xl bg-black/40 p-2 select-none"
+      />
+    </Zoom>
   </SwiperSlide>
 ))}
+
 
         </Swiper>
 
