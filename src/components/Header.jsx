@@ -204,8 +204,8 @@ function renderStatus(status) {
   return (
     <>
       {/* TOPBAR */}
-      <header className="bg-[#050505] text-white border-b border-yellow-500/20 shadow-[0_0_20px_rgba(255,215,0,0.08)] z-[60]">
-        <div className="max-w-7xl mx-auto flex items-center justify-between px-6 py-3">
+      <header className="bg-[#050505] text-white border-b border-yellow-500/20 shadow-[0_0_20px_rgba(255,215,0,0.08)] z-[60] overflow-x-hidden">
+       <div className="max-w-7xl mx-auto flex items-center justify-between px-6 py-3 overflow-x-hidden">
           {/* Menu */}
           <button
             onClick={() => setMenuOpen(true)}
