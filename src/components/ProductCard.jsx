@@ -46,11 +46,20 @@ export default function ProductCard({ product, openModal }) {
   const outOfStock = Number(product.stock ?? 0) <= 0;
 
   return (
-    <div className="relative group bg-neutral-950 text-gray-200 rounded-xl shadow-lg border border-neutral-800 overflow-hidden transition-all duration-300 hover:-translate-y-1 hover:border-yellow-600 hover:shadow-yellow-600/20">
+   <div
+  className="relative group bg-neutral-950 text-gray-200 rounded-xl shadow-lg border border-neutral-800 overflow-hidden transition-all duration-300 hover:-translate-y-1 hover:border-yellow-600 hover:shadow-yellow-600/20 cursor-pointer"
+  onClick={() => openModal(product)}
+>
+
 
       {/* ❤️ FAVORİ BUTONU — Artık Global! */}
       <button
-        onClick={handleFavorite}
+  onClick={(e) => {
+    e.stopPropagation(); // ✅ Kart tıklamasını engeller
+    handleFavorite();
+  }}
+
+        
         className="absolute top-3 right-3 z-20 cursor-pointer bg-black/70 backdrop-blur-md w-9 h-9 rounded-full flex items-center justify-center hover:scale-125 transition"
         aria-label="Favorilere Ekle"
       >
@@ -109,8 +118,9 @@ export default function ProductCard({ product, openModal }) {
 
      <button
   disabled={outOfStock}
-  onClick={() => {
-    addToCart(product); // ✅ Direkt fonksiyon çağır
+ onClick={(e) => {
+  e.stopPropagation(); // ✅ Modal açılmasın
+  addToCart(product);
     window.dispatchEvent(new CustomEvent("toast", {
       detail: { type: "success", text: "✅ Sepete eklendi!" },
     }));
