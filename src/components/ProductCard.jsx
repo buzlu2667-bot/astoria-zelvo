@@ -49,6 +49,7 @@ export default function ProductCard({ product, openModal }) {
    <div
   className="relative group bg-neutral-950 text-gray-200 rounded-xl shadow-lg border border-neutral-800 overflow-hidden transition-all duration-300 hover:-translate-y-1 hover:border-yellow-600 hover:shadow-yellow-600/20 cursor-pointer"
   onClick={() => openModal(product)}
+onTouchEnd={() => openModal(product)}
 >
 
 
