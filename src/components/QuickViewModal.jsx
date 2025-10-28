@@ -1,5 +1,4 @@
-import Zoom from "react-medium-image-zoom";
-import "react-medium-image-zoom/dist/styles.css";
+import { PinchZoomPan } from "react-pinch-zoom-pan";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
@@ -76,42 +75,33 @@ const go = (to, protect = false) => {
           ✕
         </button>
 
-       <Swiper
-  className="rounded-xl"
-  allowTouchMove={!isZoomed}           // ✅ Zoom açıkken swipe kilit
-  simulateTouch={!isZoomed}            // ✅ Ek garanti
-  resistanceRatio={0}                  // ✅ iOS lastik etkisini azalt
-  modules={[Navigation, Pagination, Keyboard]}
-  navigation
+      <Swiper
+  allowTouchMove={false}
   pagination={{ clickable: true }}
-  keyboard={{ enabled: true }}
+  modules={[Pagination]}
+  className="rounded-xl"
 >
+  {productImages.map((img, i) => (
+    <SwiperSlide key={i}>
+      <div className="w-full h-[75vh] flex items-center justify-center bg-black rounded-xl select-none">
+        <PinchZoomPan
+          initialScale={1.6}   // ✅ Açılış zoom seviyesi
+          minScale={1}
+          maxScale={3.5}       // ✅ Daha premium zoom
+          captureWheel={false} // ✅ PC’de scroll bug yok
+        >
+          <img
+            src={img}
+            alt={product.name}
+            draggable={false}
+            className="max-h-full object-contain"
+          />
+        </PinchZoomPan>
+      </div>
+    </SwiperSlide>
+  ))}
+</Swiper>
 
-        {productImages.map((img, i) => (
-  <SwiperSlide key={i}>
- <Zoom
-  onZoomChange={(zoom) => setIsZoomed(zoom)}
-  zoomMargin={16}                          // ✅ iOS için nefes aralığı
-  overlayBgColorStart="rgba(0,0,0,0.35)"   // ✅ yumuşak giriş
-  overlayBgColorEnd="rgba(0,0,0,0.90)"
-  transitionDuration={250}                 // ✅ kısa ve pürüzsüz anim
->
-
-    <img
-  src={img}
-  alt={product.name}
-  draggable={false}                                 // ✅ iOS drag ghost yok
-  className="w-full h-[420px] object-contain rounded-xl bg-black/40 select-none"
-  style={{ willChange: isZoomed ? "transform" : "auto", transform: isZoomed ? "translateZ(0)" : "none" }}  // ✅ GPU hint
-/>
-
-  </Zoom>
-</SwiperSlide>
-
-))}
-
-
-        </Swiper>
 
         <h2 className="mt-6 text-2xl font-bold">{product.name}</h2>
         <p className="text-gray-400 text-sm mb-3">{product.description}</p>
