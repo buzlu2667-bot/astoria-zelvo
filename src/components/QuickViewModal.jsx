@@ -74,7 +74,7 @@ export default function QuickViewModal({ product, closeModal }) {
       <div
         ref={modalRef}
         tabIndex={0}
-        className="relative w-[95vw] md:w-[90vw] max-w-3xl 
+       className="relative w-[98vw] md:w-[95vw] max-w-5xl
             max-h-[90vh] md:max-h-[80vh]
             bg-neutral-900 rounded-2xl shadow-xl
             border border-yellow-500/40 outline-none
@@ -91,94 +91,91 @@ export default function QuickViewModal({ product, closeModal }) {
           ✕
         </button>
 
-        <div className="flex-1 grid grid-cols-1 md:grid-cols-2 gap-6 p-4 md:p-7 overflow-y-auto">
-          {/* SOL: Swiper + Zoom */}
-          <div className="rounded-xl overflow-hidden bg-black/30">
-            <Swiper
-              zoom={true}
-              spaceBetween={10}
-              slidesPerView={1}
-              navigation
-              pagination={{ clickable: true }}
-              keyboard={{ enabled: true }}
-              modules={[Zoom, Navigation, Pagination, Keyboard]}
-              className="rounded-xl select-none"
-            >
-              {productImages.map((src, i) => (
-                <SwiperSlide key={i}>
-                  <div className="swiper-zoom-container flex items-center justify-center">
-                    <img
-                      src={src}
-                      alt={product.name}
-                      draggable="false"
-                     className="max-h-[40vh] md:max-h-[60vh] object-contain"
+        <div className="flex-1 flex flex-col items-center gap-6 p-4 md:p-7 overflow-y-auto">
 
-                    />
-                  </div>
-                </SwiperSlide>
-              ))}
-            </Swiper>
+  {/* ✅ Büyük Resim */}
+  <div className="w-full max-w-[900px] mx-auto">
+    <Swiper
+      zoom={{ maxRatio: 3 }}
+      slidesPerView={1}
+      pagination={{ clickable: true }}
+      navigation
+      keyboard={{ enabled: true }}
+      modules={[Zoom, Navigation, Pagination, Keyboard]}
+      className="rounded-xl select-none"
+    >
+      {productImages.map((src, i) => (
+        <SwiperSlide key={i}>
+          <div className="swiper-zoom-container flex items-center justify-center">
+            <img
+              src={src}
+              alt={product.name}
+              draggable="false"
+              className="w-full max-h-[70vh] object-contain"
+            />
           </div>
+        </SwiperSlide>
+      ))}
+    </Swiper>
+  </div>
 
-          {/* SAĞ: Bilgiler */}
-          <div className="flex flex-col">
-            <div className="flex-1">
-              <h1 className="text-white text-3xl font-bold mb-1">
-                {product.name}
-              </h1>
+  {/* ✅ Ürün Bilgileri Alta */}
+  <div className="w-full max-w-[900px] text-center">
 
-              {product.description ? (
-                <p className="text-gray-400 text-sm mb-4">
-                  {product.description}
-                </p>
-              ) : (
-                <p className="text-gray-500 text-sm mb-4">Açıklama eklenecek</p>
-              )}
+    <h1 className="text-white text-3xl font-bold mb-1">
+      {product.name}
+    </h1>
 
-              {/* Fiyat Bloğu */}
-              <div className="flex items-end gap-3">
-                {product.old_price > product.price && (
-                  <p className="text-gray-500 line-through text-lg">
-                    ₺{Number(product.old_price).toLocaleString("tr-TR")}
-                  </p>
-                )}
-                <p className="text-yellow-400 font-extrabold text-4xl drop-shadow-sm">
-                  ₺{Number(product.price).toLocaleString("tr-TR")}
-                </p>
-              </div>
+    <p className="text-gray-400 text-sm mb-3">
+      {product.description || "Açıklama eklenecek"}
+    </p>
 
-              {/* Stok etiketi – kart ile aynı */}
-              <StockBadge />
-            </div>
+    <div className="flex justify-center items-end gap-3 mb-2">
+      {product.old_price > product.price && (
+        <p className="text-gray-500 line-through text-lg">
+          ₺{Number(product.old_price).toLocaleString("tr-TR")}
+        </p>
+      )}
+      <p className="text-yellow-400 font-extrabold text-4xl drop-shadow-sm">
+        ₺{Number(product.price).toLocaleString("tr-TR")}
+      </p>
+    </div>
 
-            {/* Sepete Ekle */}
-            <button
-              onClick={onAddToCart}
-              className="mt-6 w-full py-3 rounded-lg font-bold text-lg
-                         bg-gradient-to-r from-red-700 to-yellow-600 hover:opacity-90
-                         transition flex items-center justify-center gap-2"
-            >
-              {/* Inline cart icon (pakete ihtiyaç yok) */}
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="22"
-                height="22"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                className="inline-block"
-              >
-                <circle cx="9" cy="21" r="1"></circle>
-                <circle cx="20" cy="21" r="1"></circle>
-                <path d="M1 1h4l2.68 13.39A2 2 0 0 0 9.64 16h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
-              </svg>
-              Sepete Ekle
-            </button>
-          </div>
-        </div>
+    <div className="mb-4">
+      <StockBadge />
+    </div>
+
+    <button
+  onClick={onAddToCart}
+  className="mt-3 w-full py-3 rounded-lg font-bold text-lg
+             bg-gradient-to-r from-red-700 to-yellow-600 hover:opacity-90
+             transition flex items-center justify-center gap-3"
+>
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="24"
+    height="24"
+    className="translate-y-[1px]"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+  >
+    <circle cx="9" cy="21" r="1"></circle>
+    <circle cx="20" cy="21" r="1"></circle>
+    <path d="M1 1h4l2.68 13.39A2 2 0 0 0 9.64 16h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+  </svg>
+
+  Sepete Ekle
+</button>
+
+
+
+  </div>
+
+</div>
+
       </div>
     </div>
   );
