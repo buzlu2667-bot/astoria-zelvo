@@ -139,5 +139,8 @@ a:hover {
     0 0 34px rgba(255, 220, 50, 0.40);
   transform: scale(1.08);
 }
-
+html, body {
+  overflow-x: hidden !important;
+  max-width: 100%;
+}
 
