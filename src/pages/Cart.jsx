@@ -54,18 +54,29 @@ if (!cart || cart.length === 0)
 
   /* ✅ Satın al → Checkout yönlendirme */
   const handleOrder = async () => {
-    if (!session) return nav("/dashboard");
-    nav("/checkout");
-  };
-
-  const handleRemove = (id) => {
-    removeFromCart(id);
+  if (!session) {
+    // ✅ Kullanıcıya uyarı göster
     window.dispatchEvent(
       new CustomEvent("toast", {
-        detail: { type: "success", text: "🗑️ Ürün kaldırıldı" },
+        detail: {
+          type: "info",
+          text: "🛒 Devam etmek için giriş yapmalısın!"
+        }
       })
     );
-  };
+
+    // ✅ Login sonrası checkout'a yönlendir
+    localStorage.setItem("redirect_after_login", "/checkout");
+
+    // ✅ Login aç
+    window.dispatchEvent(new Event("force-login"));
+    return;
+  }
+
+  // ✅ Zaten giriş varsa direkt checkout
+  nav("/checkout");
+};
+
 
   return (
     <div className="min-h-screen pt-8 max-w-4xl mx-auto p-4 bg-[#050505] text-white">
