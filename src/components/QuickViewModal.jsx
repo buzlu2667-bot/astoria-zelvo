@@ -74,9 +74,11 @@ export default function QuickViewModal({ product, closeModal }) {
       <div
         ref={modalRef}
         tabIndex={0}
-        className="relative w-[90vw] max-w-3xl max-h-[94vh] overflow-y-auto
-            bg-neutral-900 rounded-2xl p-4 md:p-6 shadow-xl
-            border border-yellow-500/40 outline-none"
+        className="relative w-[95vw] md:w-[90vw] max-w-3xl 
+            max-h-[90vh] md:max-h-[80vh]
+            bg-neutral-900 rounded-2xl shadow-xl
+            border border-yellow-500/40 outline-none
+            flex flex-col"
 
         onClick={(e) => e.stopPropagation()}
       >
@@ -89,7 +91,7 @@ export default function QuickViewModal({ product, closeModal }) {
           ✕
         </button>
 
-        <div className="grid md:grid-cols-2 gap-6 p-5 md:p-7">
+        <div className="flex-1 grid grid-cols-1 md:grid-cols-2 gap-6 p-4 md:p-7 overflow-y-auto">
           {/* SOL: Swiper + Zoom */}
           <div className="rounded-xl overflow-hidden bg-black/30">
             <Swiper
@@ -109,7 +111,7 @@ export default function QuickViewModal({ product, closeModal }) {
                       src={src}
                       alt={product.name}
                       draggable="false"
-                      className="max-h-[70vh] md:max-h-[60vh] object-contain"
+                     className="max-h-[40vh] md:max-h-[60vh] object-contain"
 
                     />
                   </div>

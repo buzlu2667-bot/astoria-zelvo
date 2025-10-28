@@ -74,11 +74,28 @@ export function CartProvider({ children }) {
     );
   };
 
-  const removeFromCart = (productId) => {
-    setCart((prev) => prev.filter((p) => p.id !== productId));
-  };
+ const removeFromCart = (productId) => {
+  setCart((prev) =>
+    prev.filter((p) => (p.id ?? p._id) !== productId)
+  );
+};
 
-  const clearCart = () => setCart([]);
+
+ const clearCart = () => {
+  setCart([]);
+  localStorage.removeItem("elitemart_cart");
+
+  window.dispatchEvent(
+    new CustomEvent("toast", {
+      detail: {
+        type: "success",
+        text: "🧹 Tertemiz! Sepetin sıfırlandı ✨"
+      }
+    })
+  );
+};
+
+
 
   // ✅ 🔥 FORM + PAYMENT backend’e işleniyor!
   const placeOrder = async (form, paymentMethod) => {

@@ -82,7 +82,7 @@ export default function ProductCard({ product, openModal }) {
         </button>
       </div>
 
-      <div className="p-3">
+      <div className="p-3 flex flex-col justify-between min-h-[170px]">
         <h3 className="font-semibold text-base text-center truncate">
           {product.name}
         </h3>
@@ -96,10 +96,6 @@ export default function ProductCard({ product, openModal }) {
           )}
         </div>
 
-        <p className="text-gray-400 text-sm text-center line-clamp-2 min-h-[36px]">
-          {product.description || "Açıklama Yok"}
-        </p>
-
         <div className="mt-2 flex items-end justify-center gap-2">
           {hasDiscount && (
             <span className="text-sm text-gray-500 line-through">
@@ -111,30 +107,44 @@ export default function ProductCard({ product, openModal }) {
           </span>
         </div>
 
-       <button
+     <button
   disabled={outOfStock}
   onClick={() => {
-    window.dispatchEvent(new CustomEvent("cart-add", { detail: product }));
+    addToCart(product); // ✅ Direkt fonksiyon çağır
     window.dispatchEvent(new CustomEvent("toast", {
-      detail: { type: "success", text: " Sepete eklendi!" },
+      detail: { type: "success", text: "✅ Sepete eklendi!" },
     }));
   }}
-  className={`w-full mt-4 py-2 rounded-md text-sm font-semibold transition ${
+  className={`w-full mt-4 py-2 rounded-md text-sm font-semibold flex items-center justify-center gap-2 transition ${
     outOfStock
       ? "bg-gray-700 cursor-not-allowed"
       : "bg-gradient-to-r from-red-700 to-yellow-600 hover:opacity-90"
   }`}
 >
-  <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18"
-  fill="none" stroke="currentColor" strokeWidth="2"
-  strokeLinecap="round" strokeLinejoin="round"
-  className="inline-block mr-2">
-  <circle cx="9" cy="21" r="1"></circle>
-  <circle cx="20" cy="21" r="1"></circle>
-  <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
-</svg>
-  {outOfStock ? "Tükendi" : " Sepete Ekle"}
+  {/* ✅ Inline SVG Cart Icon */}
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="18"
+    height="18"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    className="inline-block transition-transform group-hover:scale-110"
+
+  >
+    <circle cx="9" cy="21" r="1"></circle>
+    <circle cx="20" cy="21" r="1"></circle>
+    <path d="M1 1h4l2.68 13.39A2 2 0 0 0 9.64 16h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+  </svg>
+
+  {/* ✅ Text */}
+  {outOfStock ? "Tükendi" : "Sepete Ekle"}
 </button>
+
+
 
 
       </div>

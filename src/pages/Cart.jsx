@@ -132,13 +132,25 @@ if (!cart || cart.length === 0)
                 <Plus size={16} />
               </button>
 
-              <button
-                onClick={() => handleRemove(item.id)}
-                className="text-red-500 hover:text-red-400 ml-3"
-                aria-label="Sil"
-              >
-                <Trash2 size={20} />
-              </button>
+             <button
+  onClick={() => {
+    removeFromCart(item.id); // ✅ Ürünü sil
+
+    window.dispatchEvent(
+      new CustomEvent("toast", {
+        detail: {
+          type: "danger",
+          text: " Ürün sepetten silindi!"
+        }
+      })
+    );
+  }}
+  className="text-red-500 hover:text-red-400 ml-3"
+  aria-label="Sil"
+>
+  <Trash2 size={20} />
+</button>
+
             </div>
           </li>
         ))}
