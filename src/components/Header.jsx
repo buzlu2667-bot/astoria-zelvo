@@ -2,6 +2,7 @@
 // - Admin e-posta: buzlu2667@gmail.com + admin@admin.com
 // - Cart sayfasında “Giriş” butonu asla görünmez
 // - Premium glass drawer, gold glow, sade ikon set
+import { useNavigate } from "react-router-dom";
 import { STATUS_BADGE } from "../utils/statusBadge";
 import { useMemo, useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
@@ -357,9 +358,9 @@ function renderStatus(status) {
           </button>
         </div>
         <nav className="p-5 flex flex-col gap-3">
-          <CategoryLink to="/category/canta" text="Çanta" />
-          <CategoryLink to="/category/cuzdan" text="Cüzdan" soon />
-          <CategoryLink to="/category/epin" text="E-Pin" soon />
+        <CategoryLink to="/category/canta" text="Çanta" setMenuOpen={setMenuOpen} />
+          <CategoryLink text="Cüzdan" soon setMenuOpen={setMenuOpen} />
+          <CategoryLink text="E-Pin" soon setMenuOpen={setMenuOpen} />
         </nav>
       </aside>
 {/* ✅ Premium Login Drawer */}
@@ -596,14 +597,48 @@ function Bubble({ value, tone = "emerald" }) {
   );
 }
 
-function CategoryLink({ to, text, soon }) {
+function CategoryLink({ to, text, soon, setMenuOpen }) {
+  const navigate = useNavigate();
+
+  const handleClick = (e) => {
+    e.preventDefault();
+
+    if (soon) {
+      window.dispatchEvent(
+        new CustomEvent("toast", {
+          detail: { type: "danger", text: "⛔ Yakında!" },
+        })
+      );
+      return;
+    }
+
+    // ✅ Önce drawer yumuşak kapanır
+    setMenuOpen(false);
+
+    // ✅ Drawer kapanma animasyonu bitince yönlendir
+    setTimeout(() => {
+      navigate(to);
+    }, 250);
+  };
+
   return (
-    <Link to={soon ? "#" : to} className="flex items-center justify-between bg-white/5 hover:bg-white/10 px-4 py-2 rounded-lg border border-white/10 transition">
+    <a
+      href={soon ? "#" : to}
+      onClick={handleClick}
+      className="flex items-center justify-between bg-white/5 hover:bg-white/10 px-4 py-2 rounded-lg border border-white/10 transition"
+    >
       <span>{text}</span>
-      {soon && <span className="text-[10px] px-2 py-[2px] rounded-full border border-yellow-400/50 text-yellow-300 bg-yellow-400/10">Yakında</span>}
-    </Link>
+
+      {soon && (
+        <span className="text-[10px] px-2 py-[2px] rounded-full border border-yellow-400/50 text-yellow-300 bg-yellow-400/10">
+          Yakında
+        </span>
+      )}
+    </a>
   );
 }
+
+
 
 function Drawer({ open, onClose, title, children }) {
   return (

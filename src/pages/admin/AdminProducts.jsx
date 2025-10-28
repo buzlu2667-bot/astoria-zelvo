@@ -438,14 +438,19 @@ export default function AdminProducts() {
                 >
                   <td className="p-3">
                     <div className="w-14 h-14 rounded-lg overflow-hidden border border-neutral-700 bg-neutral-800">
-                      <img
-                        src={resolveImage(p.image_url)}
-                        alt={p.name}
-                        className="w-full h-full object-cover object-center"
-                        loading="lazy"
-                        decoding="async"
-                        referrerPolicy="no-referrer"
-                      />
+                     <img
+                      src={
+                        p.image_url?.startsWith("http")
+                         ? p.image_url
+                          : `/products/${p.image_url?.replace(/^\/+/, "")}`
+                           }
+                             alt={p.name}
+                           className="w-full h-full object-cover object-center"
+                          loading="lazy"
+                          decoding="async"
+                          />
+
+
                     </div>
                   </td>
 
