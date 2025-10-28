@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Eye, EyeOff, X, ArrowLeft } from "lucide-react";
+import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
 import { supabase } from "../lib/supabaseClient";
 
 export default function LoginDrawer({ open, setOpen, onForgot, onSignup }) {
@@ -94,13 +94,23 @@ export default function LoginDrawer({ open, setOpen, onForgot, onSignup }) {
                 onChange={(e) => setPassword(e.target.value)}
                 required
               />
-              <button
-                type="button"
-                onClick={() => setShowPass(!showPass)}
-                className="absolute right-3 top-3 text-gray-400 hover:text-yellow-300"
-              >
-                {showPass ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
-              </button>
+            <button
+  type="button"
+  onMouseDown={(e) => e.preventDefault()}
+  onClick={() => setShowPass(!showPass)}
+  className="absolute right-3 top-3 text-gray-400 hover:text-yellow-300 transition"
+>
+  {showPass ? (
+    <EyeSlashIcon className="w-6 h-6" />
+  ) : (
+    <EyeIcon className="w-6 h-6" />
+  )}
+</button>
+
+
+
+
+
             </div>
           </div>
 

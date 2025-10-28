@@ -394,26 +394,60 @@ function renderStatus(status) {
       />
     </div>
 
-    {/* Password */}
-    <div>
-      <label className="text-sm text-gray-400">Şifre</label>
-      <div className="relative">
-        <input
-          type={login.show ? "text" : "password"}
-          value={login.password}
-          onChange={(v) => setLogin({ ...login, password: v.target.value })}
-          required
-          className="w-full p-3 rounded-lg bg-[#1b1b1b] border border-yellow-500/20 focus:border-yellow-400 focus:ring-2 focus:ring-yellow-400 outline-none"
-        />
-        <button
-          type="button"
-          className="absolute right-3 top-3 text-yellow-400 hover:scale-110 transition"
-          onClick={() => setLogin((s) => ({ ...s, show: !s.show }))}
-        >
-          {login.show ? "🙈" : "👁️"}
-        </button>
-      </div>
-    </div>
+    {/* Parola */}
+<label className="text-sm text-gray-400">Şifre</label>
+<div className="relative">
+  <input
+    type={login.show ? "text" : "password"}
+    value={login.password}
+    onChange={(v) => setLogin({ ...login, password: v.target.value })}
+    required
+    className="w-full p-3 rounded-lg bg-[#1b1b1b] border border-yellow-500/20 focus:border-yellow-400 focus:ring-0"
+  />
+
+  <button
+  type="button"
+  onClick={() => setLogin(s => ({ ...s, show: !s.show }))}
+  className="absolute right-3 top-3 text-gray-300 hover:text-yellow-300 transition"
+  aria-label={login.show ? "Şifreyi gizle" : "Şifreyi göster"}
+>
+  {/* ✅ TERSİNİ KOYDUK */}
+  {login.show ? (
+    /* Şifre görünüyorken => Eye (göz açık) */
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 24 24"
+      className="w-5 h-5"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7-10-7-10-7z" />
+      <circle cx="12" cy="12" r="3" />
+    </svg>
+  ) : (
+    /* Şifre gizliyken => Çizgili göz */
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 24 24"
+      className="w-5 h-5"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <path d="M3 3l18 18" />
+      <path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7-10-7-10-7z" />
+      <path d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0z" />
+    </svg>
+  )}
+</button>
+
+</div>
+
 
     {/* Login Button */}
     <button
@@ -462,11 +496,39 @@ function renderStatus(status) {
       shadow-[0_0_45px_rgba(255,215,0,0.25)] transform transition-transform duration-300 z-[9999]`}
       onClick={(e) => e.stopPropagation()}
     >
-      <div className="flex justify-between items-center px-6 py-5 border-b border-white/10">
-        <h2 className="text-lg font-bold text-yellow-400">Kayıt Ol</h2>
-        <button onClick={() => setSignupOpen(false)} className="text-gray-300 hover:text-yellow-300">✕</button>
-      </div>
+     <div className="flex items-center justify-between px-6 py-5 border-b border-white/10 relative">
 
+  {/* ✅ Geri Butonu */}
+  <button
+    onClick={() => {
+      setSignupOpen(false);
+      setLoginOpen(true);
+    }}
+    className="absolute left-6 text-gray-300 hover:text-yellow-300 transition"
+    aria-label="Geri"
+  >
+    <svg viewBox="0 0 24 24" className="w-6 h-6" fill="none" stroke="currentColor" strokeWidth="2">
+      <path d="M15 18l-6-6 6-6" strokeLinecap="round" strokeLinejoin="round"/>
+    </svg>
+  </button>
+
+  <h2 className="text-lg font-bold text-yellow-400 mx-auto">Kayıt Ol</h2>
+
+  {/* ✅ Premium X Butonu */}
+  <button
+    onClick={() => setSignupOpen(false)}
+    className="text-gray-300 hover:text-red-400 transition"
+    aria-label="Kapat"
+  >
+    <svg viewBox="0 0 24 24" className="w-6 h-6" fill="none" stroke="currentColor" strokeWidth="2">
+      <path d="M18 6L6 18" strokeLinecap="round" strokeLinejoin="round"/>
+      <path d="M6 6l12 12" strokeLinecap="round" strokeLinejoin="round"/>
+    </svg>
+  </button>
+
+</div>
+
+        
       <form onSubmit={handleSignup} className="px-6 py-4 space-y-5">
         <input type="email" placeholder="E-posta" required
           value={signup.email}
@@ -474,11 +536,41 @@ function renderStatus(status) {
           className="w-full p-3 rounded-lg bg-[#1b1b1b] border border-yellow-500/20 focus:ring-yellow-400"
         />
 
-        <input type={signup.show ? "text" : "password"} placeholder="Şifre" required
-          value={signup.password}
-          onChange={(v) => setSignup({ ...signup, password: v.target.value })}
-          className="w-full p-3 rounded-lg bg-[#1b1b1b] border border-yellow-500/20 focus:ring-yellow-400"
-        />
+       <label className="text-sm text-gray-400">Şifre</label>
+<div className="relative">
+  <input
+    type={signup.show ? "text" : "password"}
+    placeholder="Şifre"
+    required
+    value={signup.password}
+    onChange={(v) => setSignup({ ...signup, password: v.target.value })}
+    className="w-full p-3 rounded-lg bg-[#1b1b1b] border border-yellow-500/20 focus:ring-0"
+  />
+
+  {/* ✅ Premium Göz */}
+  <button
+    type="button"
+    onClick={() => setSignup(s => ({ ...s, show: !s.show }))}
+    className="absolute right-3 top-3 text-gray-300 hover:text-yellow-300 transition"
+    aria-label={signup.show ? "Şifreyi gizle" : "Şifreyi göster"}
+  >
+    {signup.show ? (
+      // ✅ Şifre görünüyorsa => Açık göz
+      <svg viewBox="0 0 24 24" className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="2">
+        <path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7-10-7-10-7z" />
+        <circle cx="12" cy="12" r="3" />
+      </svg>
+    ) : (
+      // ✅ Şifre gizliyse => Çizgili göz
+      <svg viewBox="0 0 24 24" className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="2">
+        <path d="M3 3l18 18" />
+        <path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7-10-7-10-7z" />
+        <circle cx="12" cy="12" r="3" />
+      </svg>
+    )}
+  </button>
+</div>
+
 
         {error && <p className="text-red-400 text-sm">{error}</p>}
         {message && <p className="text-emerald-400 text-sm">{message}</p>}
