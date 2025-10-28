@@ -1,154 +1,178 @@
-import { PinchZoomPan } from "react-pinch-zoom-pan";
-import { useNavigate } from "react-router-dom";
-import { useEffect, useState } from "react";
+// src/components/QuickViewModal.jsx
+import { useEffect, useRef } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
-import { Navigation, Pagination, Keyboard } from "swiper/modules";
+import { Zoom, Navigation, Pagination, Keyboard } from "swiper/modules";
+
 import "swiper/css";
+import "swiper/css/zoom";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
 
 export default function QuickViewModal({ product, closeModal }) {
   if (!product) return null;
-  const [isZoomed, setIsZoomed] = useState(false);
 
- // ✅ Ürün görsellerini otomatik oluştur
-const baseImg = product.image_url?.replace(/\.(png|jpg|jpeg)$/i, "");
-const productImages = [
-  `/products/${baseImg}.png`,
-  `/products/${baseImg}.1.png`,
-  `/products/${baseImg}.2.png`,
-  `/products/${baseImg}.3.png`,
-].filter((src) => !src.includes("/products/.png")); // Boş olanları çıkar
+  // ---------- helpers ----------
+  const modalRef = useRef(null);
 
+  // Görsel listesi (var olanları sırayla dener)
+  const baseImg = product.image_url?.replace(/\.(png|jpg|jpeg)$/i, "");
+  const productImages = [
+    `/products/${baseImg}.png`,
+    `/products/${baseImg}.1.png`,
+    `/products/${baseImg}.2.png`,
+    `/products/${baseImg}.3.png`,
+  ].filter((src) => !src.includes("/products/.png"));
 
-  const navigate = useNavigate();
+  // Karttakiyle BİREBİR stok etiketi (tek doğruluk kaynağı)
+  const StockBadge = () =>
+    product.stock > 5 ? (
+      <p className="mt-2 text-green-400 font-semibold flex items-center gap-1">
+        Stokta ✅
+      </p>
+    ) : (
+      <p className="mt-2 text-orange-400 font-semibold flex items-center gap-1 animate-pulse">
+        Az Kaldı ⚠️
+      </p>
+    );
 
-const go = (to, protect = false) => {
-  const session = JSON.parse(localStorage.getItem("sb-session"));
-
-  if (protect && !session) {
-    localStorage.setItem("redirect_after_login", to);
-    window.dispatchEvent(new Event("force-login")); // ✅ Header login'i açsın
-  } else {
-    navigate(to);
-  }
-};
-
-
-  // ✅ ESC ile kapat
+  // ---------- effects ----------
   useEffect(() => {
-    const escClose = (e) => e.key === "Escape" && closeModal();
-    window.addEventListener("keydown", escClose);
-    return () => window.removeEventListener("keydown", escClose);
+    // ESC ile kapat
+    const onKey = (e) => e.key === "Escape" && closeModal();
+    window.addEventListener("keydown", onKey);
+
+    // Body scroll kilidi
+    const prevOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+
+    // Modal içi klavye focus (Swiper keyboard için)
+    modalRef.current?.focus();
+
+    return () => {
+      window.removeEventListener("keydown", onKey);
+      document.body.style.overflow = prevOverflow;
+    };
   }, [closeModal]);
-  useEffect(() => {
-  document.body.style.overflow = isZoomed ? "hidden" : "auto";
-}, [isZoomed]);
 
+  // ---------- handlers ----------
+  const onAddToCart = () => {
+    window.dispatchEvent(new CustomEvent("cart-add", { detail: product }));
+    window.dispatchEvent(
+      new CustomEvent("toast", {
+        detail: { type: "success", text: "Sepete eklendi!" },
+      })
+    );
+    closeModal();
+  };
 
+  // ---------- render ----------
   return (
-   <div
-  className="fixed inset-0 bg-black/70 backdrop-blur-md z-[99999] flex items-center justify-center p-6
-             overscroll-contain touch-pan-y"     // ✅ iOS bounce fix
-  onClick={closeModal}
->
-
-
-     <div
-  className={`relative w-full max-w-4xl bg-neutral-950/90 rounded-3xl p-8 animate-fade-up
-              ${isZoomed
-                ? "backdrop-blur-0 shadow-none border-transparent"
-                : "backdrop-blur-xl shadow-[0_0_45px_rgba(255,215,0,0.25)] border border-yellow-500/30"
-              }`}
-  onClick={(e) => e.stopPropagation()}
->
-
-
-        {/* ✅ X çalışır */}
+    <div
+      className="fixed inset-0 z-[99999] bg-black/80 backdrop-blur-md p-4 md:p-6 flex items-center justify-center"
+      onClick={closeModal}
+    >
+      <div
+        ref={modalRef}
+        tabIndex={0}
+        className="relative w-full max-w-5xl bg-neutral-900 rounded-3xl border border-yellow-500/30 shadow-xl outline-none"
+        onClick={(e) => e.stopPropagation()}
+      >
+        {/* X Kapat */}
         <button
           onClick={closeModal}
-          className={`absolute top-3 right-3 text-3xl w-10 h-10 rounded-full flex items-center justify-center
-            ${isZoomed ? "transition-none" : "transition-all"} 
-            bg-black/60 hover:bg-red-600 backdrop-blur-sm z-[9999]`}
-
+          className="absolute top-3 right-3 w-10 h-10 rounded-full bg-black/60 hover:bg-red-600 transition flex items-center justify-center text-2xl z-10"
+          aria-label="Kapat"
         >
           ✕
         </button>
 
-      <Swiper
-  allowTouchMove={false}
-  pagination={{ clickable: true }}
-  modules={[Pagination]}
-  className="rounded-xl"
->
-  {productImages.map((img, i) => (
-    <SwiperSlide key={i}>
-      <div className="w-full h-[75vh] flex items-center justify-center bg-black rounded-xl select-none">
-        <PinchZoomPan
-          initialScale={1.6}   // ✅ Açılış zoom seviyesi
-          minScale={1}
-          maxScale={3.5}       // ✅ Daha premium zoom
-          captureWheel={false} // ✅ PC’de scroll bug yok
-        >
-          <img
-            src={img}
-            alt={product.name}
-            draggable={false}
-            className="max-h-full object-contain"
-          />
-        </PinchZoomPan>
-      </div>
-    </SwiperSlide>
-  ))}
-</Swiper>
+        <div className="grid md:grid-cols-2 gap-6 p-5 md:p-7">
+          {/* SOL: Swiper + Zoom */}
+          <div className="rounded-xl overflow-hidden bg-black/30">
+            <Swiper
+              zoom={true}
+              spaceBetween={10}
+              slidesPerView={1}
+              navigation
+              pagination={{ clickable: true }}
+              keyboard={{ enabled: true }}
+              modules={[Zoom, Navigation, Pagination, Keyboard]}
+              className="rounded-xl select-none"
+            >
+              {productImages.map((src, i) => (
+                <SwiperSlide key={i}>
+                  <div className="swiper-zoom-container flex items-center justify-center">
+                    <img
+                      src={src}
+                      alt={product.name}
+                      draggable="false"
+                      className="max-h-[60vh] object-contain"
+                    />
+                  </div>
+                </SwiperSlide>
+              ))}
+            </Swiper>
+          </div>
 
+          {/* SAĞ: Bilgiler */}
+          <div className="flex flex-col">
+            <div className="flex-1">
+              <h1 className="text-white text-3xl font-bold mb-1">
+                {product.name}
+              </h1>
 
-        <h2 className="mt-6 text-2xl font-bold">{product.name}</h2>
-        <p className="text-gray-400 text-sm mb-3">{product.description}</p>
+              {product.description ? (
+                <p className="text-gray-400 text-sm mb-4">
+                  {product.description}
+                </p>
+              ) : (
+                <p className="text-gray-500 text-sm mb-4">Açıklama eklenecek</p>
+              )}
 
-        <div className="flex items-end gap-3 mb-6">
-  {/* Eski fiyat - çizili */}
-  {product.old_price > product.price && (
-    <p className="text-gray-500 line-through text-lg">
-      ₺{Number(product.old_price).toLocaleString("tr-TR")}
-    </p>
-  )}
+              {/* Fiyat Bloğu */}
+              <div className="flex items-end gap-3">
+                {product.old_price > product.price && (
+                  <p className="text-gray-500 line-through text-lg">
+                    ₺{Number(product.old_price).toLocaleString("tr-TR")}
+                  </p>
+                )}
+                <p className="text-yellow-400 font-extrabold text-4xl drop-shadow-sm">
+                  ₺{Number(product.price).toLocaleString("tr-TR")}
+                </p>
+              </div>
 
-  {/* Yeni fiyat */}
-  <p className="text-yellow-400 font-extrabold text-3xl drop-shadow-sm">
-    ₺{Number(product.price).toLocaleString("tr-TR")}
-  </p>
-</div>
+              {/* Stok etiketi – kart ile aynı */}
+              <StockBadge />
+            </div>
 
-
-       <button
-  onClick={() => {
-    window.dispatchEvent(
-      new CustomEvent("cart-add", { detail: product })
-    );
-
-    window.dispatchEvent(
-      new CustomEvent("toast", {
-        detail: { type: "success", text: " Sepete eklendi!" },
-      })
-    );
-
-    closeModal();
-  }}
-  className="w-full bg-gradient-to-r from-red-700 to-yellow-600 hover:opacity-90 
-             py-3 rounded-lg font-bold text-lg transition-all"
->
-  <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18"
-  fill="none" stroke="currentColor" strokeWidth="2"
-  strokeLinecap="round" strokeLinejoin="round"
-  className="inline-block mr-2">
-  <circle cx="9" cy="21" r="1"></circle>
-  <circle cx="20" cy="21" r="1"></circle>
-  <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
-</svg>
-  Sepete Ekle
-</button>
-
+            {/* Sepete Ekle */}
+            <button
+              onClick={onAddToCart}
+              className="mt-6 w-full py-3 rounded-lg font-bold text-lg
+                         bg-gradient-to-r from-red-700 to-yellow-600 hover:opacity-90
+                         transition flex items-center justify-center gap-2"
+            >
+              {/* Inline cart icon (pakete ihtiyaç yok) */}
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="22"
+                height="22"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                className="inline-block"
+              >
+                <circle cx="9" cy="21" r="1"></circle>
+                <circle cx="20" cy="21" r="1"></circle>
+                <path d="M1 1h4l2.68 13.39A2 2 0 0 0 9.64 16h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+              </svg>
+              Sepete Ekle
+            </button>
+          </div>
+        </div>
       </div>
     </div>
   );
