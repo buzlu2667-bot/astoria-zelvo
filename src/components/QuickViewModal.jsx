@@ -1,7 +1,7 @@
 import Zoom from "react-medium-image-zoom";
 import "react-medium-image-zoom/dist/styles.css";
 import { useNavigate } from "react-router-dom";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation, Pagination, Keyboard } from "swiper/modules";
 import "swiper/css";
@@ -10,6 +10,7 @@ import "swiper/css/pagination";
 
 export default function QuickViewModal({ product, closeModal }) {
   if (!product) return null;
+  const [isZoomed, setIsZoomed] = useState(false);
 
  // ✅ Ürün görsellerini otomatik oluştur
 const baseImg = product.image_url?.replace(/\.(png|jpg|jpeg)$/i, "");
@@ -63,23 +64,29 @@ const go = (to, protect = false) => {
           ✕
         </button>
 
-        <Swiper
-          modules={[Navigation, Pagination, Keyboard]}
-          navigation
-          pagination={{ clickable: true }}
-          keyboard={{ enabled: true }}
-          className="rounded-xl"
-        >
+       <Swiper
+ className={`rounded-xl ${isZoomed ? "pointer-events-none" : ""}`}
+ style={{ touchAction: isZoomed ? "none" : "auto" }}
+  modules={[Navigation, Pagination, Keyboard]}
+  navigation
+  pagination={{ clickable: true }}
+  keyboard={{ enabled: true }}
+>
         {productImages.map((img, i) => (
   <SwiperSlide key={i}>
-    <Zoom>
-      <img
-        src={img}
-        alt={product.name}
-        className="w-full max-h-[420px] object-cover rounded-xl bg-black/40 p-2 select-none"
-      />
-    </Zoom>
-  </SwiperSlide>
+  <Zoom
+    onZoomChange={(zoom) => setIsZoomed(zoom)}
+    zoomMargin={20}
+    overlayBgColorEnd="rgba(0,0,0,0.9)"
+  >
+    <img
+      src={img}
+      alt={product.name}
+      className="w-full max-h-[420px] object-cover rounded-xl bg-black/40 p-2 select-none"
+    />
+  </Zoom>
+</SwiperSlide>
+
 ))}
 
 

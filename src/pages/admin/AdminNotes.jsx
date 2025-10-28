@@ -6,79 +6,69 @@ const TABLE = "admin_notes";
 export default function AdminNotes() {
   const [notes, setNotes] = useState([]);
   const [msg, setMsg] = useState("");
-  const [status, setStatus] = useState("loading");
 
-  useEffect(() => {
-    (async () => {
-      await fetchNotes();
-      subscribeRealtime();
-    })();
+useEffect(() => {
+  console.log("✅ useEffect Çalıştı");
+  fetchNotes();
 
-    return () => {
-      try {
-        supabase.removeAllChannels?.();
-      } catch {}
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  const subscription = supabase
+    .channel("realtime-notes")
+    .on("postgres_changes",
+      { event: "INSERT", schema: "public", table: TABLE },
+      (payload) => {
+        console.log("🔥 Realtime Yeni Veri:", payload.new);
+        setNotes((prev) => [payload.new, ...prev]);
+      }
+    )
+    .subscribe();
 
-  async function fetchNotes() {
-    setStatus("loading");
-    const { data, error } = await supabase
-      .from(TABLE)
-      .select("id, message, author, created_at")
-      .order("created_at", { ascending: false });
+  return () => {
+    supabase.removeChannel(subscription);
+  };
+}, []);
 
-    if (error) {
-      console.error("❌ fetchNotes error:", error);
-      setStatus("error");
-      return;
-    }
-    console.log("✅ fetchNotes len:", data?.length ?? 0);
-    setNotes(data || []);
-    setStatus("ok");
-  }
+async function fetchNotes() {
+  console.log("📌 fetchNotes çağırıldı");
 
-  function subscribeRealtime() {
-    const ch = supabase
-      .channel("realtime-notes")
-      .on(
-        "postgres_changes",
-        { event: "INSERT", schema: "public", table: TABLE },
-        (payload) => {
-          console.log("🔥 Realtime INSERT:", payload.new);
-          setNotes((prev) => [payload.new, ...prev]);
-        }
-      )
-      .subscribe((s) => {
-        console.log("📡 Realtime status:", s);
-      });
+  const { data, error } = await supabase
+    .from(TABLE)
+    .select("*")
+    .order("id", { ascending: false })
+    .limit(50);
 
-    // güvene almak için:
-    setTimeout(() => {
-      if (notes.length === 0) fetchNotes();
-    }, 1500);
+  console.log("📌 Supabase data:", data);
+  console.log("📌 Supabase error:", error);
 
-    return ch;
-  }
+  setNotes(data || []);
+}
+
+
+
+ async function fetchNotes() {
+  const { data } = await supabase
+    .from(TABLE)
+    .select("*")
+    .order("id", { ascending: false });
+
+  setNotes(data || []);
+}
+
 
   async function addNote(e) {
     e.preventDefault();
-    const text = msg.trim();
-    if (!text) return;
+    if (!msg.trim()) return;
 
-    const { data: authData } = await supabase.auth.getUser();
-    const email = authData?.user?.email || "anon@guest";
+    const { data: session } = await supabase.auth.getUser();
+    const email = session?.user?.email || "Admin";
 
-    const { error } = await supabase
-      .from(TABLE)
-      .insert([{ message: text, author: email }]);
+    await supabase.from(TABLE).insert([
+      {
+        message: msg,
+        author: email,
+        created_at: new Date().toISOString(), // ✅ güvenli tarih fix
+      },
+    ]);
 
-    if (error) {
-      console.error("❌ insert error:", error);
-      alert("Not eklenemedi: " + (error.message || "bilinmeyen hata"));
-      return;
-    }
     setMsg("");
   }
 
@@ -93,27 +83,22 @@ export default function AdminNotes() {
           className="flex-1 bg-gray-800 px-3 py-2 rounded-lg outline-none"
           placeholder="Yeni not yaz..."
         />
-        <button className="bg-blue-600 hover:bg-blue-700 px-4 rounded-lg">
+        <button className="bg-yellow-500 hover:bg-yellow-400 text-black px-4 rounded-lg font-semibold">
           Ekle
         </button>
       </form>
 
-      {status === "loading" && <p className="text-gray-400">Yükleniyor…</p>}
-      {status === "error" && (
-        <p className="text-red-400">Notlar alınamadı. Konsolu kontrol et.</p>
-      )}
-
-      <div className="space-y-3 max-h-[500px] overflow-y-auto pr-2">
-        {notes.length === 0 && status === "ok" && (
+      <div className="space-y-3 max-h-[500px] overflow-y-auto pr-2 min-h-[200px]">
+        {notes.length === 0 && (
           <p className="text-gray-400">Henüz not yok.</p>
         )}
 
-        {notes.map((n) => (
-          <div key={n.id} className="bg-gray-800 rounded-lg p-3">
-            <div className="text-xs text-gray-400 mb-1">
-              {new Date(n.created_at).toLocaleString("tr-TR")} — {n.author}
+        {notes.map((note) => (
+          <div key={note.id} className="bg-neutral-800 rounded-lg p-3 border border-neutral-700">
+            <div className="text-xs text-yellow-400 mb-1">
+              {note.created_at ? new Date(note.created_at).toLocaleString("tr-TR") : "Tarih Yok"} — {note.author}
             </div>
-            <p>{n.message}</p>
+            <p className="font-medium text-white">{note.message}</p>
           </div>
         ))}
       </div>
