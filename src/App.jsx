@@ -15,6 +15,7 @@ import Cart from "./pages/Cart";
 import Checkout from "./pages/Checkout";
 import Dashboard from "./pages/Dashboard";
 import Orders from "./pages/Orders";
+import AdminCoupons from "./pages/admin/AdminCoupons";
 import OrderDetail from "./pages/OrderDetail";
 import ResetPassword from "./pages/ResetPassword";
 
@@ -121,6 +122,7 @@ export default function App() {
               <Route path="orders" element={<AdminOrders />} />
               <Route path="products" element={<AdminProducts />} />
               <Route path="notes" element={<AdminNotes />} />
+              <Route path="coupons" element={<AdminCoupons />} />
             </Route>
           </Routes>
 

@@ -1,27 +1,29 @@
-export const STATUS_BADGE = {
+export const STATUS = {
   awaiting_payment: {
-    text: "Bekleyen Ödeme",
+    txt: "Bekleyen Ödeme",
     icon: "⚠️",
-    cls: "text-amber-300 font-bold animate-pulseSlow drop-shadow-[0_0_10px_rgba(255,193,7,0.9)] tracking-wide"
+    cls: "text-yellow-400 bg-yellow-500/20 border-yellow-400",
   },
-  pending: {
-    text: "Hazırlanıyor",
-    icon: "🟣",
-    cls: "bg-gradient-to-r from-violet-300 to-pink-300 bg-clip-text text-transparent font-bold animate-pulseSlow drop-shadow-[0_0_12px_rgba(168,85,247,0.8)] tracking-wide"
+  processing: {
+    txt: "Hazırlanıyor",
+    icon: "⚙️",
+    cls: "text-purple-300 bg-purple-500/20 border-purple-400",
   },
   shipped: {
-    text: "Kargoda",
+    txt: "Kargoda",
     icon: "🚚",
-    cls: "bg-gradient-to-r from-purple-300 to-rose-300 bg-clip-text text-transparent font-bold animate-truckMove drop-shadow-[0_0_12px_rgba(244,114,182,0.8)] tracking-wide"
+    cls: "text-blue-300 bg-blue-500/20 border-blue-400",
   },
   delivered: {
-    text: "Teslim Edildi",
+    txt: "Teslim Edildi",
     icon: "✅",
-    cls: "text-emerald-300 font-bold animate-bounceCheck drop-shadow-[0_0_14px_rgba(16,185,129,0.85)] tracking-wide"
+    cls: "text-green-300 bg-green-500/20 border-green-400",
   },
   cancelled: {
-    text: "İptal",
+    txt: "İptal Edildi",
     icon: "❌",
-    cls: "text-red-400 font-bold drop-shadow-[0_0_8px_rgba(248,113,113,0.8)] tracking-wide opacity-80"
+    cls: "text-red-400 bg-red-500/20 border-red-400",
   },
 };
+
+export const STATUS_BADGE = STATUS;

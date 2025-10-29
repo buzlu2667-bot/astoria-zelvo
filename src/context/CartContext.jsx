@@ -98,9 +98,9 @@ export function CartProvider({ children }) {
 
 
   // ✅ 🔥 FORM + PAYMENT backend’e işleniyor!
- const placeOrder = async (data) => {
+const placeOrder = async (payload) => {
   try {
-    if (cart.length === 0) return { error: "Sepet boş." };
+    if (cart.length === 0) return { error: "Sepet boş!" };
 
     const {
       data: { user },
@@ -108,34 +108,34 @@ export function CartProvider({ children }) {
     } = await supabase.auth.getUser();
 
     if (userError) throw userError;
-    if (!user) return { error: "Giriş yapmanız gerekiyor." };
 
-    const form = data;
-    const paymentMethod = data.payment_method;
-
-    const { data: orderData, error: orderError } = await supabase
+    const res = await supabase
       .from("orders")
       .insert([
         {
           user_id: user.id,
-          total_amount: total,
-          status:
-            (paymentMethod?.toLowerCase() === "iban")
-              ? "awaiting_payment"
-              : "pending",
-          full_name: form.full_name,
-          phone: form.phone,
-          address: form.address,
-          note: form.note,
-          payment: paymentMethod,
+          full_name: payload.full_name,
+          phone: payload.phone,
+          email: payload.email,
+          address: payload.address,
+          note: payload.note,
+          payment_method: payload.payment_method,
+
+          // ✅ Kupon bilgileri artık Supabase'e kaydediliyor!
+          coupon: payload.coupon,
+          discount_amount: payload.discount_amount,
+          final_amount: payload.final_amount,
+
+          // ✅ Güvenli fallback (indirim yoksa bile)
+          total_amount: total
         },
       ])
       .select("id")
       .single();
 
-    if (orderError) throw orderError;
+    if (res.error) throw res.error;
 
-    const orderId = orderData.id;
+    const orderId = res.data.id;
 
     const orderItems = cart.map((p) => ({
       order_id: orderId,
@@ -148,13 +148,14 @@ export function CartProvider({ children }) {
     await supabase.from("order_items").insert(orderItems);
 
     clearCart();
-    return { success: true, orderId };
 
+    return { success: true, orderId };
   } catch (err) {
-    console.error("Sipariş oluşturma hatası:", err);
+    console.error(err);
     return { error: err.message };
   }
 };
+
 
 
   return (

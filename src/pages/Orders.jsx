@@ -1,17 +1,13 @@
-import { STATUS_BADGE } from "../utils/statusBadge";
 import { useEffect, useMemo, useState } from "react";
 import { supabase } from "../lib/supabaseClient";
 import { Link, useNavigate } from "react-router-dom";
+import { STATUS } from "../utils/statusBadge";
 
 const TRY = (n) =>
   Number(n || 0).toLocaleString("tr-TR", {
     style: "currency",
     currency: "TRY",
   });
-
-
-
-
 
 export default function Orders() {
   const navigate = useNavigate();
@@ -103,7 +99,7 @@ export default function Orders() {
       ) : (
         <div className="space-y-4">
           {orders.map((o) => {
-            const b = STATUS_BADGE[o.status] || STATUS_BADGE.pending;
+            const b = STATUS[o.status] ?? STATUS.pending ?? { cls: "", txt: "" };
             const created = new Date(o.created_at).toLocaleString("tr-TR");
 
            return (
@@ -119,13 +115,50 @@ export default function Orders() {
 
       <div className="flex items-center gap-3">
 
-        <span className={`flex items-center gap-1 text-sm ${b.cls}`}>
-  {b.text} {b.icon}
+      <span
+  className={`px-3 py-1 rounded-full text-xs font-bold border ${
+    b?.cls || ""
+  } shadow-[0_0_12px_rgba(168,85,247,0.7)] border-purple-400/50 status-blink`}
+>
+  {/* 🟣 Durum ismi */}
+  {b?.txt}
+
+ {/* ⚠️ Bekleyen ödeme */}
+{["pending", "awaiting_payment"].includes(o.status) && (
+  <span className="ml-2 text-yellow-400">⚠️</span>
+)}
+
+{/* ⚙️ Hazırlanıyor */}
+{o.status === "processing" && (
+  <span className="ml-2 text-purple-400">⚙️</span>
+)}
+
+{/* 🚚 Kargoda */}
+{o.status === "shipped" && <span className="truck-anim ml-2">🚚</span>}
+
+{/* ✅ Teslim edildi */}
+{o.status === "delivered" && <span className="ml-2">✅</span>}
+
+{/* ❌ İptal edildi */}
+{o.status === "cancelled" && <span className="ml-2">❌</span>}
+
 </span>
 
-        <span className="text-lg font-bold text-yellow-400">
-          {TRY(totals[o.id])}
-        </span>
+
+
+
+
+        {/* ✅ Final Tutar eğer varsa göster */}
+<span className="text-lg font-bold text-green-400">
+  {TRY(o.final_amount ?? o.total_amount)}
+</span>
+{/* ✅ Kupon bilgisi */}
+{o.discount_amount > 0 && (
+  <p className="text-xs text-blue-400 font-semibold">
+    Kupon: {o.coupon} — İndirim: -{TRY(o.discount_amount)}
+  </p>
+)}
+
       </div>
 
     </header>
@@ -169,7 +202,7 @@ export default function Orders() {
 
                 {/* Sil & Detay */}
                 <footer className="mt-4 flex justify-end gap-3">
-                  {["pending", "awaiting_payment"].includes(o.status) && (
+                  {["pending", "awaiting_payment", "processing"].includes(o.status) && (
                     <button
                       onClick={() => handleDelete(o.id)}
                       className="px-4 py-2 rounded-lg bg-red-600 text-white font-semibold hover:bg-red-500"
@@ -193,3 +226,5 @@ export default function Orders() {
     </div>
   );
 }
+
+

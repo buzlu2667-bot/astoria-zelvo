@@ -1,3 +1,4 @@
+import { supabase } from "../lib/supabaseClient";
 import { useState } from "react";
 import { useCart } from "../context/CartContext";
 import { useNavigate } from "react-router-dom";
@@ -21,20 +22,31 @@ export default function Checkout() {
   });
 
   const [pay, setPay] = useState("iban");
+  // ✅ Kupon Sistemi
+const [coupon, setCoupon] = useState("");
+const [discount, setDiscount] = useState(0);
   const [ibanModal, setIbanModal] = useState(false);
   const [msg, setMsg] = useState("");
 
   const change = (k, v) => setForm((f) => ({ ...f, [k]: v }));
 
   const finishOrder = async () => {
-    const res = await placeOrder({
-      full_name: form.name,
-      phone: form.phone,
-      email: form.email,
-      address: form.address,
-      note: form.note,
-      payment_method: pay,
-    });
+  const res = await placeOrder({
+  full_name: form.name,
+  phone: form.phone,
+  email: form.email,
+  address: form.address,
+  note: form.note,
+  payment_method: pay,
+
+  // ✅ Kupon alanlarını veritabanına kaydet
+  coupon: discount > 0 ? coupon : null,
+  discount_amount: discount,
+  final_amount: total - discount,
+});
+
+
+
 
     if (res?.error) {
       setMsg("Hata: " + res.error);
@@ -46,9 +58,56 @@ export default function Checkout() {
         detail: { type: "success", text: "✅ Sipariş oluşturuldu!" },
       })
     );
+    // ✅ Ödeme tamam ise kupon kullanımını arttır
+if (discount > 0 && coupon) {
+  await supabase.rpc("increment_coupon", {
+    code_input: coupon,
+  });
+}
 
     nav("/orders");
   };
+// ✅ Kupon Uygula (Sabit + Yüzdelik)
+const applyCoupon = async () => {
+  const code = coupon.trim().toUpperCase();
+  if (!code) return;
+
+  const { data: c, error } = await supabase
+    .from("coupons")
+    .select("*")
+    .eq("code", code)
+    .maybeSingle();
+
+  if (error || !c) {
+    setDiscount(0);
+    return toast("❌ Geçersiz kupon!");
+  }
+
+  if (!c.is_active) return toast("⛔ Kupon pasif!");
+  if (c.used_count >= c.usage_limit) return toast("🚫 Limit dolmuş!");
+  if (c.expires_at && new Date(c.expires_at) < new Date())
+    return toast("⏳ Süresi dolmuş!");
+
+  if (total < c.min_amount)
+    return toast(`🔽 Minimum sepet: ${TRY(c.min_amount)}`);
+
+  const d =
+    c.type === "%"
+      ? (total * c.value) / 100
+      : c.value;
+
+  const fd = Math.min(d, total);
+  setDiscount(fd);
+
+  toast(`✅ Kupon uygulandı: -${TRY(fd)}`);
+};
+
+const toast = (text) =>
+  window.dispatchEvent(
+    new CustomEvent("toast", {
+      detail: { type: "danger", text },
+    })
+  );
 
   const validateBeforePayment = () => {
     if (!form.name || !form.phone || !form.email || !form.address) {
@@ -129,8 +188,40 @@ export default function Checkout() {
             <span>Toplam</span>
             <span>{TRY(total)}</span>
           </div>
+         {/* ✅ Kupon Alanı */}
+<div className="mt-3 flex gap-2">
+  <input
+    placeholder="Kupon Kodu"
+    value={coupon}
+    onChange={(e) => setCoupon(e.target.value)}
+    className="flex-1 px-3 py-2 rounded-lg bg-neutral-800 border border-neutral-700 focus:border-yellow-500 outline-none text-sm"
+  />
+  <button
+    onClick={applyCoupon}
+    className="px-3 py-2 rounded-lg bg-yellow-500 text-black font-bold hover:bg-yellow-400 transition text-sm"
+  >
+    Uygula
+  </button>
+</div>
+
+{/* ✅ İndirim (varsa göster) */}
+{discount > 0 && (
+  <div className="flex justify-between text-sm text-emerald-400 mt-2">
+    <span>İndirim</span>
+    <span>-{TRY(discount)}</span>
+  </div>
+)}
+
+{/* ✅ GENEL TOPLAM */}
+<div className="mt-2 border-t pt-3 flex justify-between font-bold text-green-400 text-lg">
+  <span>GENEL TOPLAM</span>
+  <span>{TRY(total - discount)}</span>
+</div>
+
+
         </div>
       </div>
+
 
       {/* ✅ IBAN MODAL */}
       {ibanModal && (

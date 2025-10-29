@@ -656,15 +656,34 @@ function renderStatus(status) {
         <div className="mt-6 bg-black/60 p-4 rounded-lg border border-purple-500/20">
           <p className="text-lg font-bold">Sipariş #{foundOrder.id}</p>
           <p className="text-sm text-gray-300">{foundOrder.created_at}</p>
-{/* ✅ Premium Status Badge */}
-    <div className="flex items-center gap-2 text-lg mt-3">
-      <span className={STATUS_BADGE[foundOrder.status]?.cls}>
-        {STATUS_BADGE[foundOrder.status]?.text}
-      </span>
-      <span>
-        {STATUS_BADGE[foundOrder.status]?.icon}
-      </span>
-    </div>
+{/* ✅ Premium Animated Status Badge */}
+<div className="flex items-center gap-2 text-lg mt-3">
+  <span
+    className={`px-3 py-1 rounded-full text-xs font-bold border ${
+      STATUS_BADGE[foundOrder.status]?.cls || ""
+    } shadow-[0_0_12px_rgba(168,85,247,0.7)] border-purple-400/50 status-blink`}
+  >
+    {STATUS_BADGE[foundOrder.status]?.text || STATUS_BADGE[foundOrder.status]?.txt || "Durum Yok"}
+
+
+    {foundOrder.status === "awaiting_payment" && (
+      <span className="ml-2 text-yellow-400">⚠️</span>
+    )}
+    {foundOrder.status === "processing" && (
+      <span className="ml-2 text-purple-400 gear-spin">⚙️</span>
+    )}
+    {foundOrder.status === "shipped" && (
+      <span className="truck-anim ml-2">🚚</span>
+    )}
+    {foundOrder.status === "delivered" && (
+      <span className="ml-2">✅</span>
+    )}
+    {foundOrder.status === "cancelled" && (
+      <span className="ml-2">❌</span>
+    )}
+  </span>
+</div>
+
 
           {foundOrder.items.map((item, i) => (
             <p key={i} className="text-sm text-gray-200">
@@ -771,4 +790,5 @@ function PasswordInput({ value, onChange, show, setShow, ...props }) {
       </button>
     </div>
   );
+  
 }

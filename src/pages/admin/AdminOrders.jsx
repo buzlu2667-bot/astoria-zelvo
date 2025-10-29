@@ -98,9 +98,15 @@ export default function AdminOrders() {
         <p className="text-gray-500">Henüz sipariş yok.</p>
       ) : (
         orders.map(o => {
-          const total = (items[o.id] || []).reduce(
-            (s, it) => s + it.unit_price * it.quantity, 0
-          );
+         const originalTotal = (items[o.id] || []).reduce(
+  (s, it) => s + it.unit_price * it.quantity, 0
+  
+);
+
+const total = o.final_amount ?? o.total_amount ?? originalTotal;
+const discount = o.discount_amount ?? 0;
+
+
 
           return (
             <div
@@ -119,6 +125,13 @@ export default function AdminOrders() {
                   <p className="text-xs text-gray-300">
                     <b>Adres:</b> {o.address || "Belirtilmedi"}
                   </p>
+                  {discount > 0 && o.coupon && (
+  <p className="text-xs text-blue-400 font-semibold mt-1">
+    🎟 Kupon: {o.coupon} (İndirim: -{TRY.format(discount)})
+  </p>
+)}
+
+
                   {o.note && (
                     <p className="text-xs text-gray-400 mt-1 italic">
                       “{o.note}”
@@ -127,9 +140,25 @@ export default function AdminOrders() {
                 </div>
 
                 <div className="text-right">
-                  <p className="text-lg font-bold text-yellow-300">
-                    {TRY.format(total || o.total_amount || 0)}
-                  </p>
+                  {/* 🔥 İndirim varsa göster */}
+{discount > 0 && (
+  <p className="text-emerald-400 text-sm font-semibold">
+    İndirim: -{TRY.format(discount)}
+  </p>
+)}
+
+{/* ✅ Final Tutar */}
+<p className="text-lg font-bold text-yellow-300">
+  {TRY.format(total)}
+</p>
+
+{/* 🧾 Ürünlerin gerçek toplamını küçük göster */}
+{discount > 0 && (
+  <p className="text-xs text-gray-400 line-through">
+    {TRY.format(originalTotal)}
+  </p>
+)}
+
 
                   {o.status === "pending" || o.status === "awaiting_payment" ? (
                     <button

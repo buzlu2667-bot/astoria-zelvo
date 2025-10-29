@@ -14,6 +14,10 @@ export default function AdminLayout() {
         <NavItem to="/admin/orders">Siparişler</NavItem>
         <NavItem to="/admin/products">Ürünler</NavItem>
         <NavItem to="/admin/notes">Canlı Notlar</NavItem>
+
+        {/* ✅ Kupon Yönetimi Menü */}
+        <NavItem to="/admin/coupons">Kuponlar</NavItem>
+
       </aside>
 
       {/* Page content */}
