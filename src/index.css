@@ -161,4 +161,9 @@ html, body {
 .animate-fadeIn { animation: fadeIn .25s ease-out; }
 .animate-scaleIn { animation: scaleIn .35s ease-out; }
 .animate-pulseSlow { animation: pulseSlow 3s infinite; }
+/* Swiper z-index dokunuşu */
+.swiper-button-next,
+.swiper-button-prev {
+  z-index: 40;
+}
 

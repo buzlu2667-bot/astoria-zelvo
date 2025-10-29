@@ -1,5 +1,5 @@
 // src/components/QuickViewModal.jsx
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Zoom, Navigation, Pagination, Keyboard } from "swiper/modules";
 
@@ -11,7 +11,6 @@ import "swiper/css/pagination";
 export default function QuickViewModal({ product, closeModal }) {
   if (!product) return null;
 
-  // ---------- helpers ----------
   const modalRef = useRef(null);
 
   // Görsel listesi (var olanları sırayla dener)
@@ -23,7 +22,7 @@ export default function QuickViewModal({ product, closeModal }) {
     `/products/${baseImg}.3.png`,
   ].filter((src) => !src.includes("/products/.png"));
 
-  // Karttakiyle BİREBİR stok etiketi (tek doğruluk kaynağı)
+  // Karttakiyle birebir stok etiketi
   const StockBadge = () =>
     product.stock > 5 ? (
       <p className="mt-2 text-green-400 font-semibold flex items-center gap-1">
@@ -35,26 +34,24 @@ export default function QuickViewModal({ product, closeModal }) {
       </p>
     );
 
-  // ---------- effects ----------
+  // ESC + body scroll kilidi
   useEffect(() => {
-    // ESC ile kapat
-    const onKey = (e) => e.key === "Escape" && closeModal();
+    const onKey = (e) => e.key === "Escape" && closeModal?.();
     window.addEventListener("keydown", onKey);
 
-    // Body scroll kilidi
-    const prevOverflow = document.body.style.overflow;
+    const prev = document.body.style.overflow;
     document.body.style.overflow = "hidden";
 
-    // Modal içi klavye focus (Swiper keyboard için)
+    // İlk focus
     modalRef.current?.focus();
 
     return () => {
       window.removeEventListener("keydown", onKey);
-      document.body.style.overflow = prevOverflow;
+      document.body.style.overflow = prev;
     };
   }, [closeModal]);
 
-  // ---------- handlers ----------
+  // Sepete ekle
   const onAddToCart = () => {
     window.dispatchEvent(new CustomEvent("cart-add", { detail: product }));
     window.dispatchEvent(
@@ -62,122 +59,116 @@ export default function QuickViewModal({ product, closeModal }) {
         detail: { type: "success", text: "Sepete eklendi!" },
       })
     );
-    closeModal();
+    closeModal?.();
   };
 
-  {/* ---------- render ---------- */}
-return (
-  <div
-    className="fixed inset-0 z-[99999] bg-black/80 backdrop-blur-md p-3 flex items-center justify-center"
-    onClick={closeModal}
-  >
+  return (
     <div
-      ref={modalRef}
-      tabIndex={0}
-      onClick={(e) => e.stopPropagation()}
-      className="relative w-[98vw] md:w-[90vw] max-w-5xl 
-                max-h-[95vh] bg-neutral-900 rounded-2xl shadow-xl
-                border border-yellow-500/40 outline-none flex flex-col"
+      className="fixed inset-0 z-[99999] bg-black/80 backdrop-blur-md"
+      onClick={closeModal}
     >
-      {/* ✅ X KAPAT */}
-      <button
-        onClick={closeModal}
-        className="absolute top-3 right-3 w-10 h-10 rounded-full bg-black/60 
-                   hover:bg-red-600 transition flex items-center justify-center 
-                   text-2xl z-50"
-        aria-label="Kapat"
+      {/* İç kasa – tam ekran, içi scroll güvenli */}
+      <div
+        ref={modalRef}
+        tabIndex={0}
+        onClick={(e) => e.stopPropagation()}
+        className="relative h-screen w-screen flex flex-col"
       >
-        ✕
-      </button>
+        {/* Kapat */}
+        <button
+          onClick={closeModal}
+          aria-label="Kapat"
+          className="absolute top-3 right-3 w-10 h-10 rounded-full bg-black/60 hover:bg-red-600 transition flex items-center justify-center text-2xl z-50"
+        >
+          ✕
+        </button>
 
-      {/* ✅ TÜM İÇERİK SCROLL (EĞER GEREKİRSE) */}
-      <div className="flex-1 flex flex-col items-center gap-5 p-3 overflow-y-auto">
-
-        {/* ✅ RESİM BÖLÜMÜ */}
-        <div className="w-full h-[50vh] md:h-[60vh] flex items-center justify-center p-3">
-          <Swiper
-            zoom={{ maxRatio: 3 }}
-            slidesPerView={1}
-            pagination={{ clickable: true }}
-            navigation
-            keyboard={{ enabled: true }}
-            modules={[Zoom, Navigation, Pagination, Keyboard]}
-            className="w-full h-full rounded-xl select-none"
-          >
-            {productImages.map((src, i) => (
-             <SwiperSlide key={i}>
-  <div className="swiper-zoom-container flex items-center justify-center w-full h-full overflow-hidden">
-    <img
-      src={src}
-      alt={product.name}
-      draggable="false"
-      className="
-        w-full h-full mx-auto
-        object-contain md:object-cover
-        scale-[1.05] md:scale-[1.28]
-        transition-transform duration-300
-      "
-    />
-  </div>
-</SwiperSlide>
-
-            ))}
-          </Swiper>
-        </div>
-
-        {/* ✅ ÜRÜN BİLGİLERİ */}
-        <div className="w-full max-w-[900px] text-center">
-          <h1 className="text-white text-3xl font-bold mb-1">
-            {product.name}
-          </h1>
-
-          <p className="text-gray-400 text-sm mb-3">
-            {product.description || "Açıklama eklenecek"}
-          </p>
-
-          <div className="flex justify-center items-end gap-3 mb-2">
-            {product.old_price > product.price && (
-              <p className="text-gray-500 line-through text-lg">
-                ₺{Number(product.old_price).toLocaleString("tr-TR")}
-              </p>
-            )}
-            <p className="text-yellow-400 font-extrabold text-4xl drop-shadow-sm">
-              ₺{Number(product.price).toLocaleString("tr-TR")}
-            </p>
+        {/* İçerik (üstte görsel, altta info) */}
+        <div className="flex-1 flex flex-col overflow-y-auto">
+          {/* Görsel alanı */}
+          <div className="w-full h-[52vh] sm:h-[58vh] md:h-[62vh] lg:h-[66vh] p-3 sm:p-5">
+            <div className="w-full h-full rounded-xl overflow-hidden bg-black border border-yellow-500/30">
+              <Swiper
+                zoom={{ maxRatio: 3 }}
+                slidesPerView={1}
+                navigation
+                pagination={{ clickable: true }}
+                keyboard={{ enabled: true }}
+                modules={[Zoom, Navigation, Pagination, Keyboard]}
+                className="w-full h-full select-none"
+              >
+                {productImages.map((src, i) => (
+                  <SwiperSlide key={i}>
+                    {/* Zoom kabı – taşma/çizgi olmasın diye bg siyah */}
+                    <div className="swiper-zoom-container w-full h-full flex items-center justify-center bg-black">
+                      <img
+                        src={src}
+                        alt={product.name}
+                        draggable="false"
+                        className="w-full h-full object-contain will-change-transform"
+                      />
+                    </div>
+                  </SwiperSlide>
+                ))}
+              </Swiper>
+            </div>
           </div>
 
-          <div className="mb-4">
+          {/* Metin & fiyatlar */}
+          <div className="px-4 sm:px-6 pb-28 max-w-4xl w-full mx-auto text-center">
+            <h1 className="text-white text-3xl font-bold mb-1">
+              {product.name}
+            </h1>
+
+            <p className="text-gray-400 text-sm mb-3">
+              {product.description || "Açıklama eklenecek"}
+            </p>
+
+            <div className="flex justify-center items-end gap-3 mb-2">
+              {Number(product.old_price) > Number(product.price) && (
+                <p className="text-gray-500 line-through text-lg">
+                  ₺{Number(product.old_price).toLocaleString("tr-TR")}
+                </p>
+              )}
+              <p className="text-yellow-400 font-extrabold text-4xl drop-shadow-sm">
+                ₺{Number(product.price).toLocaleString("tr-TR")}
+              </p>
+            </div>
+
             <StockBadge />
           </div>
+        </div>
 
-          {/* ✅ GÜZEL SEPET BUTONU */}
-          <button
-            onClick={onAddToCart}
-            className="mt-3 w-full py-3 rounded-lg font-bold text-lg
-                       bg-gradient-to-r from-red-700 to-yellow-600 hover:opacity-90
-                       transition flex items-center justify-center gap-3"
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="26"
-              height="26"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              className="translate-y-[1px]"
+        {/* Sticky CTA */}
+        <div className="absolute bottom-0 left-0 right-0 p-3 sm:p-4 bg-gradient-to-t from-black/80 via-black/60 to-transparent">
+          <div className="max-w-4xl mx-auto">
+            <button
+              onClick={onAddToCart}
+              className="w-full py-3 rounded-lg font-bold text-lg
+                         bg-gradient-to-r from-red-700 to-yellow-600
+                         hover:opacity-90 transition flex items-center justify-center gap-3
+                         shadow-[0_0_30px_rgba(255,200,0,0.25)]"
             >
-              <circle cx="9" cy="21" r="1"></circle>
-              <circle cx="20" cy="21" r="1"></circle>
-              <path d="M1 1h4l2.68 13.39A2 2 0 0 0 9.64 16h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
-            </svg>
-            Sepete Ekle
-          </button>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="26"
+                height="26"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                className="translate-y-[1px]"
+              >
+                <circle cx="9" cy="21" r="1"></circle>
+                <circle cx="20" cy="21" r="1"></circle>
+                <path d="M1 1h4l2.68 13.39A2 2 0 0 0 9.64 16h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+              </svg>
+              Sepete Ekle
+            </button>
+          </div>
         </div>
       </div>
     </div>
-  </div>
-);
-
+  );
 }
