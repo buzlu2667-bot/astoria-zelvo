@@ -35,11 +35,11 @@ button, a {
 .badge {
   @apply text-xs px-3 py-1 rounded-full font-semibold border inline-flex items-center;
 }
-.badge-green  { @apply bg-[#0f5132] text-[#c3f0d0] border-[#198754]; }
-.badge-yellow { @apply bg-[#664d03] text-[#ffe8a1] border-[#b68b00]; }
-.badge-blue   { @apply bg-[#0b3d60] text-[#c8e6ff] border-[#2277b3]; }
-.badge-purple { @apply bg-[#3d0b60] text-[#ead0ff] border-[#7a22b3]; }
-.badge-red    { @apply bg-[#57181a] text-[#ffc2c6] border-[#842029]; }
+.badge-yellow { @apply bg-badgeYellowBg text-badgeYellowText border-badgeYellowBorder; }
+.badge-blue   { @apply bg-badgeBlueBg text-badgeBlueText border-badgeBlueBorder; }
+.badge-purple { @apply bg-badgePurpleBg text-badgePurpleText border-badgePurpleBorder; }
+.badge-red    { @apply bg-badgeRedBg text-badgeRedText border-badgeRedBorder; }
+
 
 /* 🗂️ Tablar */
 .tab {
@@ -161,24 +161,5 @@ html, body {
 .animate-fadeIn { animation: fadeIn .25s ease-out; }
 .animate-scaleIn { animation: scaleIn .35s ease-out; }
 .animate-pulseSlow { animation: pulseSlow 3s infinite; }
-/* Swiper z-index dokunuşu */
-.swiper-button-next,
-.swiper-button-prev {
-  z-index: 40;
-}
-.swiper-pagination-bullet {
-  background: rgba(255, 200, 0, 0.5) !important;
-  width: 10px;
-  height: 10px;
-  opacity: 1 !important;
-}
 
-.swiper-pagination-bullet-active {
-  background: #ffd700 !important;
-  width: 14px;
-  height: 14px;
-  box-shadow: 0 0 12px #ffd700;
-  transform: scale(1.2);
-  transition: 0.25s ease-out;
-}
 

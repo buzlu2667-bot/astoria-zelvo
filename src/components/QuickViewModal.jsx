@@ -4,12 +4,16 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import { Zoom, Navigation, Pagination, Keyboard } from "swiper/modules";
 
 import "swiper/css";
-import "swiper/css/bundle";
+import "swiper/css/zoom";
+import "swiper/css/navigation";
+import "swiper/css/pagination";
 
 export default function QuickViewModal({ product, closeModal }) {
   if (!product) return null;
 
   const modalRef = useRef(null);
+
+  const isBrowser = typeof window !== "undefined"; // ✅ SSR koruması
 
   // Görsel listesi (var olanları sırayla dener)
   const baseImg = product.image_url?.replace(/\.(png|jpg|jpeg)$/i, "");
@@ -81,57 +85,57 @@ export default function QuickViewModal({ product, closeModal }) {
           ✕
         </button>
 
-        {/* İçerik (üstte görsel, altta info) */}
+        {/* İçerik */}
         <div className="flex-1 flex flex-col overflow-y-auto">
           {/* Görsel alanı */}
-          <div className="w-full h-[52vh] sm:h-[58vh] md:h-[62vh] lg:h-[66vh] p-3 sm:p-5">
+          <div className="relative w-full h-[52vh] sm:h-[58vh] md:h-[62vh] lg:h-[66vh] p-3 sm:p-5">
             <div className="w-full h-full rounded-xl overflow-hidden bg-black border border-yellow-500/30">
-              <Swiper
-  loop={true}
-  grabCursor={true}
-  zoom={{ maxRatio: 3 }}
-  slidesPerView={1}
-  navigation={{
-    nextEl: ".modal-next",
-    prevEl: ".modal-prev",
-  }}
-  pagination={{
-    clickable: true,
-    dynamicBullets: true,
-  }}
-  autoplay={{
-    delay: 3500,
-    disableOnInteraction: false,
-  }}
-  effect="fade"
-  fadeEffect={{ crossFade: true }}
-  keyboard={{ enabled: true }}
-  modules={[Zoom, Navigation, Pagination, Keyboard]}
-  className="w-full h-full select-none"
->
-  {productImages.map((src, i) => (
-    <SwiperSlide key={i}>
-      <div className="swiper-zoom-container w-full h-full flex items-center justify-center bg-black">
-        <img
-          src={src}
-          alt={product.name}
-          draggable="false"
-          className="w-full h-full object-contain"
-        />
-      </div>
-    </SwiperSlide>
-  ))}
-</Swiper>
+              {isBrowser && (
+                <Swiper
+                  zoom={{ maxRatio: 3 }}
+                  loop={true}
+                  slidesPerView={1}
+                  navigation={{
+                    enabled: true,
+                    nextEl: ".arrow-next",
+                    prevEl: ".arrow-prev",
+                  }}
+                  pagination={{ clickable: true }}
+                  keyboard={{ enabled: true }}
+                  modules={[Zoom, Navigation, Pagination, Keyboard]}
+                  className="w-full h-full select-none"
+                  speed={600}
+                >
+                  {productImages.map((src, i) => (
+                    <SwiperSlide key={i}>
+                     <div className="swiper-zoom-container w-full h-full flex items-center justify-center bg-black cursor-grab active:cursor-grabbing">
 
-{/* ✅ Custom Navigation Buttons */}
-<button className="modal-prev absolute left-2 top-1/2 -translate-y-1/2 text-white text-4xl z-50 hover:scale-125 transition drop-shadow-lg">
-  ‹
-</button>
-<button className="modal-next absolute right-2 top-1/2 -translate-y-1/2 text-white text-4xl z-50 hover:scale-125 transition drop-shadow-lg">
-  ›
-</button>
-
+                        <img
+                          src={src}
+                          alt={product.name}
+                          draggable="false"
+                          className="w-full h-full object-contain will-change-transform"
+                        />
+                      </div>
+                    </SwiperSlide>
+                  ))}
+                </Swiper>
+              )}
             </div>
+
+            {/* ✅ SADE BEYAZ OK TUŞLARI — ARKA PLANSIZ */}
+            <button
+              className="arrow-prev absolute top-1/2 left-2 -translate-y-1/2 z-50
+              text-white text-4xl font-bold hover:scale-110 transition select-none"
+            >
+              ‹
+            </button>
+            <button
+              className="arrow-next absolute top-1/2 right-2 -translate-y-1/2 z-50
+              text-white text-4xl font-bold hover:scale-110 transition select-none"
+            >
+              ›
+            </button>
           </div>
 
           {/* Metin & fiyatlar */}

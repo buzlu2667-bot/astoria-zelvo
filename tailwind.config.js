@@ -6,6 +6,24 @@ export default {
   ],
   theme: {
     extend: {
+      colors: {
+        badgeYellowBg: "#664d03",
+        badgeYellowText: "#ffe8a1",
+        badgeYellowBorder: "#b68b00",
+
+        badgeBlueBg: "#0b3d60",
+        badgeBlueText: "#c8e6ff",
+        badgeBlueBorder: "#2277b3",
+
+        badgePurpleBg: "#3d0b60",
+        badgePurpleText: "#ead0ff",
+        badgePurpleBorder: "#7a22b3",
+
+        badgeRedBg: "#57181a",
+        badgeRedText: "#ffc2c6",
+        badgeRedBorder: "#842029",
+      },
+
       keyframes: {
         pulseSlow: {
           '0%, 100%': { opacity: 0.5 },
@@ -35,18 +53,3 @@ export default {
   },
   plugins: [],
 };
-.swiper-pagination-bullet {
-  background: rgba(255, 200, 0, 0.5) !important;
-  width: 10px;
-  height: 10px;
-  opacity: 1 !important;
-}
-
-.swiper-pagination-bullet-active {
-  background: #ffd700 !important;
-  width: 14px;
-  height: 14px;
-  box-shadow: 0 0 12px #ffd700;
-  transform: scale(1.2);
-  transition: 0.25s ease-out;
-}
