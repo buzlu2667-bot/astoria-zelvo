@@ -139,7 +139,20 @@ function StatCard({ label, value }) {
   return (
     <div className="bg-[#111] border border-gray-700 rounded-xl py-4 shadow">
       <div className="text-xs opacity-60">{label}</div>
-      <div className="text-xl font-bold">{value}</div>
+      <div
+  className="
+    font-bold mx-auto
+    w-16 h-16 rounded-full
+    flex items-center justify-center
+    bg-neutral-900 border border-yellow-500/30
+    text-sm sm:text-base md:text-lg
+    overflow-hidden text-ellipsis whitespace-nowrap
+  "
+  title={value}
+>
+  {value}
+</div>
+
     </div>
   );
 }
