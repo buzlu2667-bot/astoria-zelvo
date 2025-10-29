@@ -105,16 +105,22 @@ return (
             className="w-full h-full rounded-xl select-none"
           >
             {productImages.map((src, i) => (
-              <SwiperSlide key={i}>
-                <div className="swiper-zoom-container flex items-center justify-center w-full h-full">
-                  <img
-                    src={src}
-                    alt={product.name}
-                    draggable="false"
-                   className="w-full h-full object-cover mx-auto scale-[1.15]"
-                  />
-                </div>
-              </SwiperSlide>
+             <SwiperSlide key={i}>
+  <div className="swiper-zoom-container flex items-center justify-center w-full h-full overflow-hidden">
+    <img
+      src={src}
+      alt={product.name}
+      draggable="false"
+      className="
+        w-full h-full mx-auto
+        object-contain md:object-cover
+        scale-[1.05] md:scale-[1.28]
+        transition-transform duration-300
+      "
+    />
+  </div>
+</SwiperSlide>
+
             ))}
           </Swiper>
         </div>
