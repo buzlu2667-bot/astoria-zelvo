@@ -137,22 +137,26 @@ export default function Dashboard() {
 /* Küçük kart */
 function StatCard({ label, value }) {
   return (
-    <div className="bg-[#111] border border-gray-700 rounded-xl py-4 shadow">
+    <div className="bg-[#111] border border-gray-700 rounded-xl py-4 shadow flex flex-col items-center">
+      {/* label (TEK KEZ) */}
       <div className="text-xs opacity-60">{label}</div>
-      <div
-  className="
-    font-bold mx-auto
-    w-16 h-16 rounded-full
-    flex items-center justify-center
-    bg-neutral-900 border border-yellow-500/30
-    text-sm sm:text-base md:text-lg
-    overflow-hidden text-ellipsis whitespace-nowrap
-  "
-  title={value}
->
-  {value}
-</div>
 
+      {/* Değer: esneyen, taşmayan, ortalı pill */}
+      <div className="mt-2 max-w-full">
+        <span
+          className="
+            inline-flex items-center justify-center
+            px-3 py-1 rounded-lg bg-black border border-yellow-500/30
+            font-bold tabular-nums
+            text-base sm:text-lg md:text-xl
+            whitespace-nowrap
+          "
+          title={String(value)}
+        >
+          {value}
+        </span>
+      </div>
     </div>
   );
 }
+
