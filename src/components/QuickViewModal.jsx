@@ -89,28 +89,50 @@ export default function QuickViewModal({ product, closeModal }) {
           <div className="w-full h-[52vh] sm:h-[58vh] md:h-[62vh] lg:h-[66vh] p-3 sm:p-5">
             <div className="w-full h-full rounded-xl overflow-hidden bg-black border border-yellow-500/30">
               <Swiper
-                zoom={{ maxRatio: 3 }}
-                slidesPerView={1}
-                navigation
-                pagination={{ clickable: true }}
-                keyboard={{ enabled: true }}
-                modules={[Zoom, Navigation, Pagination, Keyboard]}
-                className="w-full h-full select-none"
-              >
-                {productImages.map((src, i) => (
-                  <SwiperSlide key={i}>
-                    {/* Zoom kabı – taşma/çizgi olmasın diye bg siyah */}
-                    <div className="swiper-zoom-container w-full h-full flex items-center justify-center bg-black">
-                      <img
-                        src={src}
-                        alt={product.name}
-                        draggable="false"
-                        className="w-full h-full object-contain will-change-transform"
-                      />
-                    </div>
-                  </SwiperSlide>
-                ))}
-              </Swiper>
+  loop={true}
+  grabCursor={true}
+  zoom={{ maxRatio: 3 }}
+  slidesPerView={1}
+  navigation={{
+    nextEl: ".modal-next",
+    prevEl: ".modal-prev",
+  }}
+  pagination={{
+    clickable: true,
+    dynamicBullets: true,
+  }}
+  autoplay={{
+    delay: 3500,
+    disableOnInteraction: false,
+  }}
+  effect="fade"
+  fadeEffect={{ crossFade: true }}
+  keyboard={{ enabled: true }}
+  modules={[Zoom, Navigation, Pagination, Keyboard]}
+  className="w-full h-full select-none"
+>
+  {productImages.map((src, i) => (
+    <SwiperSlide key={i}>
+      <div className="swiper-zoom-container w-full h-full flex items-center justify-center bg-black">
+        <img
+          src={src}
+          alt={product.name}
+          draggable="false"
+          className="w-full h-full object-contain"
+        />
+      </div>
+    </SwiperSlide>
+  ))}
+</Swiper>
+
+{/* ✅ Custom Navigation Buttons */}
+<button className="modal-prev absolute left-2 top-1/2 -translate-y-1/2 text-white text-4xl z-50 hover:scale-125 transition drop-shadow-lg">
+  ‹
+</button>
+<button className="modal-next absolute right-2 top-1/2 -translate-y-1/2 text-white text-4xl z-50 hover:scale-125 transition drop-shadow-lg">
+  ›
+</button>
+
             </div>
           </div>
 
