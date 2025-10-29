@@ -4,9 +4,7 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import { Zoom, Navigation, Pagination, Keyboard } from "swiper/modules";
 
 import "swiper/css";
-import "swiper/css/zoom";
-import "swiper/css/navigation";
-import "swiper/css/pagination";
+import "swiper/css/bundle";
 
 export default function QuickViewModal({ product, closeModal }) {
   if (!product) return null;
