@@ -111,7 +111,7 @@ return (
                     src={src}
                     alt={product.name}
                     draggable="false"
-                    className="w-auto h-full object-contain mx-auto"
+                   className="w-full h-full object-cover object-center mx-auto scale-[1.28] transition-transform duration-300"
                   />
                 </div>
               </SwiperSlide>
