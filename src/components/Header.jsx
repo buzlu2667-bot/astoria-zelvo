@@ -246,7 +246,7 @@ function renderStatus(status) {
 </Link>
 
      {/* Right Nav */}
-          <div className="flex items-center gap-2 sm:gap-6 flex-wrap justify-end min-w-0 overflow-x-visible">
+         <div className="flex items-center gap-3 sm:gap-7 flex-wrap justify-end min-w-0 overflow-x-visible">
             <button
   onClick={() => setOrderCheckOpen(true)}
   aria-label="Sipariş Sorgula"
@@ -280,7 +280,8 @@ function renderStatus(status) {
 {!session && !isRecovering && !location.pathname.startsWith("/cart") && (
   <button
     onClick={() => setLoginOpen(true)}
-    className="text-xs px-3 py-1 rounded-md font-semibold bg-gradient-to-r from-yellow-400 to-rose-400 text-black hover:brightness-110 transition"
+   className="text-[10px] px-2 py-[3px] rounded-md font-semibold bg-gradient-to-r from-yellow-400 to-rose-400 text-black hover:brightness-110 transition"
+
   >
     Giriş
   </button>
@@ -320,7 +321,8 @@ function renderStatus(status) {
         window.location.href = redirectTo;
       }, 1400);
     }}
-    className="flex items-center gap-1 text-xs px-3 py-1 rounded-md bg-red-500 text-white hover:bg-red-400 transition"
+    className="flex items-center gap-1 text-[10px] px-2 py-[3px] rounded-md bg-red-500 text-white hover:bg-red-400 transition"
+
   >
     <LogOut className="w-4 h-4" />
     Çıkış
