@@ -115,33 +115,32 @@ export default function Orders() {
 
       <div className="flex items-center gap-3">
 
-      <span
+     <span
   className={`px-3 py-1 rounded-full text-xs font-bold border ${
-    b?.cls || ""
+    b?.cls || "text-yellow-400 border-yellow-400"
   } shadow-[0_0_12px_rgba(168,85,247,0.7)] border-purple-400/50 status-blink`}
 >
-  {/* 🟣 Durum ismi */}
-  {b?.txt}
+  {/* 🟣 Durum ismi (txt veya text fark etmez) */}
+  {b?.txt || b?.text || "Bekleyen Ödeme"}
 
- {/* ⚠️ Bekleyen ödeme */}
-{["pending", "awaiting_payment"].includes(o.status) && (
-  <span className="ml-2 text-yellow-400">⚠️</span>
-)}
+  {/* ⚠️ Bekleyen ödeme */}
+  {["pending", "awaiting_payment"].includes(o.status) && (
+    <span className="ml-2 text-yellow-400">⚠️</span>
+  )}
 
-{/* ⚙️ Hazırlanıyor */}
-{o.status === "processing" && (
-  <span className="ml-2 text-purple-400">⚙️</span>
-)}
+  {/* ⚙️ Hazırlanıyor */}
+  {o.status === "processing" && (
+    <span className="ml-2 text-purple-400">⚙️</span>
+  )}
 
-{/* 🚚 Kargoda */}
-{o.status === "shipped" && <span className="truck-anim ml-2">🚚</span>}
+  {/* 🚚 Kargoda */}
+  {o.status === "shipped" && <span className="truck-anim ml-2">🚚</span>}
 
-{/* ✅ Teslim edildi */}
-{o.status === "delivered" && <span className="ml-2">✅</span>}
+  {/* ✅ Teslim edildi */}
+  {o.status === "delivered" && <span className="ml-2">✅</span>}
 
-{/* ❌ İptal edildi */}
-{o.status === "cancelled" && <span className="ml-2">❌</span>}
-
+  {/* ❌ İptal edildi */}
+  {o.status === "cancelled" && <span className="ml-2">❌</span>}
 </span>
 
 

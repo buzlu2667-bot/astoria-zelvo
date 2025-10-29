@@ -26,6 +26,7 @@ import AdminProducts from "./pages/admin/AdminProducts.jsx";
 import AdminDashboard from "./pages/admin/AdminDashboard.jsx";
 import AdminNotes from "./pages/admin/AdminNotes.jsx";
 import { AdminGuard } from "./pages/admin/AdminGuard.jsx";
+import AdminUsers from "./pages/admin/AdminUsers.jsx";
 
 // Contexts ✅
 import { SessionProvider } from "./context/SessionContext";
@@ -123,6 +124,7 @@ export default function App() {
               <Route path="products" element={<AdminProducts />} />
               <Route path="notes" element={<AdminNotes />} />
               <Route path="coupons" element={<AdminCoupons />} />
+              <Route path="users" element={<AdminUsers />} />
             </Route>
           </Routes>
 

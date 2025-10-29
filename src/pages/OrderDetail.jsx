@@ -55,32 +55,35 @@ export default function OrderDetail() {
   <h1 className="text-2xl font-bold">Sipariş #{order.id}</h1>
 
   <span
-    className={`px-3 py-1 rounded-full text-sm font-bold border ${
-      (STATUS[order.status] || STATUS.pending).cls
-    } shadow-[0_0_12px_rgba(168,85,247,0.7)] border-purple-400/50 status-blink`}
-  >
-    {(STATUS[order.status] || STATUS.pending).txt}
+  className={`px-3 py-1 rounded-full text-sm font-bold border ${
+    (STATUS[order.status]?.cls || STATUS.pending?.cls || "text-yellow-400 border-yellow-400")
+  } shadow-[0_0_12px_rgba(168,85,247,0.7)] border-purple-400/50 status-blink`}
+>
+  {/* ✅ Durum yazısı: text veya txt fark etmez */}
+  {(STATUS[order.status]?.text || STATUS[order.status]?.txt || "Bekleyen Ödeme")}
 
-    {order.status === "awaiting_payment" && (
-      <span className="ml-2 text-yellow-400">⚠️</span>
-    )}
+  {/* ✅ İkonlar */}
+  {["pending", "awaiting_payment"].includes(order.status) && (
+    <span className="ml-2 text-yellow-400">⚠️</span>
+  )}
 
-    {order.status === "processing" && (
-      <span className="ml-2 text-purple-400 gear-spin">⚙️</span>
-    )}
+  {order.status === "processing" && (
+    <span className="ml-2 text-purple-400 gear-spin">⚙️</span>
+  )}
 
-    {order.status === "shipped" && (
-      <span className="truck-anim ml-2">🚚</span>
-    )}
+  {order.status === "shipped" && (
+    <span className="truck-anim ml-2">🚚</span>
+  )}
 
-    {order.status === "delivered" && (
-      <span className="ml-2">✅</span>
-    )}
+  {order.status === "delivered" && (
+    <span className="ml-2">✅</span>
+  )}
 
-    {order.status === "cancelled" && (
-      <span className="ml-2">❌</span>
-    )}
-  </span>
+  {order.status === "cancelled" && (
+    <span className="ml-2">❌</span>
+  )}
+</span>
+
 </div>
 
 

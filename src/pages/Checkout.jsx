@@ -30,7 +30,34 @@ const [discount, setDiscount] = useState(0);
 
   const change = (k, v) => setForm((f) => ({ ...f, [k]: v }));
 
+  
+
   const finishOrder = async () => {
+      // ✅ Kullanıcı profilini oluştur veya güncelle (supabase/profiles)
+  try {
+    const { data: ud } = await supabase.auth.getUser();
+    const user = ud?.user;
+
+    if (user) {
+      await supabase
+        .from("profiles")
+        .upsert(
+          {
+            id: user.id,
+            email: form.email,
+            full_name: form.name,
+            phone: form.phone,
+            address: form.address,
+            role: "user",
+          },
+          { onConflict: "id" }
+        );
+      console.log("✅ Profil oluşturuldu/güncellendi!");
+    }
+  } catch (err) {
+    console.error("❌ Profil güncelleme hatası:", err);
+  }
+
   const res = await placeOrder({
   full_name: form.name,
   phone: form.phone,
@@ -45,6 +72,23 @@ const [discount, setDiscount] = useState(0);
   final_amount: total - discount,
 });
 
+// ✅ Sipariş başarıyla oluşturulduysa kullanıcı puanını güncelle
+if (!res?.error) {
+  try {
+    const { data: ud } = await supabase.auth.getUser();
+    const user = ud?.user;
+
+    if (user) {
+      await supabase.rpc("update_user_points", {
+        user_id: user.id,
+        order_total: total - discount, // indirimli tutar
+      });
+      console.log("✅ Kullanıcı puanı güncellendi!");
+    }
+  } catch (err) {
+    console.error("❌ Puan güncelleme hatası:", err);
+  }
+}
 
 
 
