@@ -95,7 +95,7 @@ export default function Dashboard() {
       <div className="max-w-4xl mx-auto p-8 mt-10 bg-[#0d0d0d] rounded-2xl border border-yellow-400/20 shadow-xl">
 
         {/* Stats */}
-        <div className="grid grid-cols-4 gap-4 text-center mb-6">
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 text-center mb-6">
           <StatCard label="Harcama" value={TRY.format(totalSpent)} />
           <StatCard label="Puan" value={points.toLocaleString("tr-TR")} />
           <StatCard label="Sipariş" value={orders.length} />
@@ -142,20 +142,20 @@ function StatCard({ label, value }) {
       <div className="text-xs opacity-60">{label}</div>
 
       {/* Değer: esneyen, taşmayan, ortalı pill */}
-      <div className="mt-2 max-w-full">
-        <span
-          className="
-            inline-flex items-center justify-center
-            px-3 py-1 rounded-lg bg-black border border-yellow-500/30
-            font-bold tabular-nums
-            text-base sm:text-lg md:text-xl
-            whitespace-nowrap
-          "
-          title={String(value)}
-        >
-          {value}
-        </span>
-      </div>
+      <div className="mt-2 w-full flex justify-center">
+  <span
+    className="
+      inline-block px-3 py-1 bg-black border border-yellow-500/30 rounded-lg 
+      font-bold tabular-nums text-sm sm:text-base md:text-lg 
+      max-w-[100px] sm:max-w-none 
+      text-center truncate
+    "
+    title={String(value)}
+  >
+    {value}
+  </span>
+</div>
+
     </div>
   );
 }
