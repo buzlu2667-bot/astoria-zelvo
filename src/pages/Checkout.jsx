@@ -339,7 +339,7 @@ const toast = (text) =>
 
 
       <p className="text-center text-gray-600 text-xs mt-10 opacity-60">
-        © {new Date().getFullYear()} ELITEMART — Güvenli Alışveriş
+        © {new Date().getFullYear()} ASTORIA ZELVO — Güvenli Alışveriş
       </p>
     </div>
   );

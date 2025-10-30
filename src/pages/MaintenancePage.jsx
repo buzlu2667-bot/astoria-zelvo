@@ -76,11 +76,11 @@ export default function MaintenancePage() {
         to="/admin"
         className="relative mt-10 text-xs opacity-40 hover:opacity-100 hover:text-yellow-300 transition z-10"
       >
-        👑 Admin Girişi
+        👑
       </Link>
 
       <p className="relative mt-8 text-gray-500 text-xs z-10 tracking-widest">
-        © {new Date().getFullYear()} ELITEMART
+        © {new Date().getFullYear()} ASTORIA ZELVO
       </p>
     </div>
   );
