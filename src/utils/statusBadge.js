@@ -24,6 +24,18 @@ export const STATUS = {
     icon: "❌",
     cls: "text-red-400 bg-red-500/20 border-red-400",
   },
+
+  // ✅ Ekledik: eksik statüler
+  pending: {
+    text: "Bekleyen Ödeme",
+    icon: "⏳",
+    cls: "text-yellow-400 bg-yellow-500/20 border-yellow-400",
+  },
+  unknown: {
+    text: "Durum Yok",
+    icon: "❔",
+    cls: "text-gray-400 bg-neutral-700/40 border-neutral-600",
+  },
 };
 
 export const STATUS_BADGE = STATUS;
