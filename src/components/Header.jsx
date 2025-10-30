@@ -2,14 +2,14 @@
 // - Admin e-posta: buzlu2667@gmail.com + admin@admin.com
 // - Cart sayfasında “Giriş” butonu asla görünmez
 // - Premium glass drawer, gold glow, sade ikon set
+import { supabase } from "../lib/supabaseClient";
+import { useMemo, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { STATUS_BADGE } from "../utils/statusBadge";
-import { useMemo, useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { useSession } from "../context/SessionContext";
 import { useCart } from "../context/CartContext";
 import { useFavorites } from "../context/FavoritesContext";
-import { supabase } from "../lib/supabaseClient";
 import { Heart, ShoppingCart, User2, LogOut, PackageSearch, Menu, ShieldCheck, X } from "lucide-react";
 import { Truck } from "lucide-react";
 
@@ -31,18 +31,86 @@ export default function Header() {
   const location = useLocation();
 
   const [menuOpen, setMenuOpen] = useState(false);
+  const [notifications, setNotifications] = useState([]);
   const [loginOpen, setLoginOpen] = useState(false);
   const [signupOpen, setSignupOpen] = useState(false);
   const [resetOpen, setResetOpen] = useState(false);
-  useEffect(() => {
-  const handler = () => {
-    setLoginOpen(true);
-    setSignupOpen(false);
-    setResetOpen(false);
-  };
+ useEffect(() => {
+  async function fetchCategories() {
+    try {
+      const { data, error } = await supabase
+        .from("categories")
+        .select("id, name, slug")
+        .order("created_at", { ascending: true });
 
-  window.addEventListener("force-login", handler);
-  return () => window.removeEventListener("force-login", handler);
+      if (error) {
+        console.error("❌ Kategori çekme hatası:", error.message);
+      } else {
+        console.log("✅ Supabase'den gelen kategoriler:", data);
+        setCategories(data || []);
+      }
+    } catch (err) {
+      console.error("🚨 İstisna hatası:", err);
+    }
+  }
+
+  fetchCategories();
+}, []);
+
+// ✅ Aktif bildirimleri çek + Realtime dinleme
+useEffect(() => {
+  console.log("👂 Realtime dinleniyor...");
+
+  const channel = supabase
+    .channel("realtime:notifications")
+    .on(
+      "postgres_changes",
+      {
+        event: "*",
+        schema: "public",
+        table: "notifications",
+        filter: "is_active=eq.true", // sadece aktifleri dinle
+      },
+      (payload) => {
+        console.log("⚡ REALTIME GELDİ:", payload);
+
+        if (payload.eventType === "INSERT" && payload.new?.is_active) {
+          setNotifications((prev) => [payload.new, ...prev]);
+        } else if (payload.eventType === "UPDATE") {
+          setNotifications((prev) =>
+            prev.map((n) =>
+              n.id === payload.new.id ? { ...n, ...payload.new } : n
+            )
+          );
+        } else if (payload.eventType === "DELETE") {
+          setNotifications((prev) =>
+            prev.filter((n) => n.id !== payload.old.id)
+          );
+        }
+      }
+    )
+    .subscribe((status) => console.log("📡 Kanal durumu:", status));
+
+  return () => supabase.removeChannel(channel);
+}, []);
+
+
+
+
+
+// ✅ Dinamik kategoriler (Supabase'den çek)
+const [categories, setCategories] = useState([]);
+
+useEffect(() => {
+  (async () => {
+    const { data, error } = await supabase
+      .from("categories")
+      .select("*")
+      .order("created_at", { ascending: true });
+
+    if (error) console.error("❌ Kategoriler alınamadı:", error);
+    else setCategories(data || []);
+  })();
 }, []);
 
 
@@ -201,8 +269,71 @@ function renderStatus(status) {
   }
 }
 
+ 
+
   return (
     <>
+{/* ✅ Premium Animated Notification Banner */}
+{notifications.length > 0 && (
+  <div
+    className="fixed top-0 left-0 w-full z-[1000]
+    bg-gradient-to-r from-yellow-400 via-amber-400 to-orange-500
+    text-black text-center font-semibold
+    shadow-[0_0_25px_rgba(255,215,0,0.45)]
+    flex items-center justify-center gap-3 px-3 sm:px-6 py-2.5
+    animate-slideDown"
+  >
+
+    <div className="flex flex-col sm:flex-row items-center gap-1 sm:gap-3 text-sm sm:text-base leading-tight">
+    {/* ✅ Bildirim metni (tamamen tıklanmaz, hiçbir yere yönlendirmez) */}
+<div
+  className="cursor-default select-none pointer-events-none"
+  onClick={(e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    console.log("🚫 Bildirim tıklanamaz hale getirildi");
+  }}
+>
+  {notifications[0].title || "Yeni Bildirim"} — {notifications[0].message}
+</div>
+
+
+
+    </div>
+
+    {/* ❌ Close Button */}
+    <button
+      onClick={async () => {
+        try {
+          localStorage.setItem(
+            `closed_notification_${notifications[0].id}`,
+            "true"
+          );
+          await supabase
+            .from("notifications")
+            .update({ is_active: false })
+            .eq("id", notifications[0].id);
+          setNotifications((prev) => prev.slice(1));
+          window.dispatchEvent(
+            new CustomEvent("toast", {
+              detail: { type: "info", text: "🔕 Bildirim kapatıldı." },
+            })
+          );
+        } catch (err) {
+          console.error("❌ Bildirim kapatma hatası:", err.message);
+        }
+      }}
+      className="ml-3 px-2 text-black/60 hover:text-black transition text-lg"
+      aria-label="Kapat"
+    >
+      ✕
+    </button>
+  </div>
+)}
+
+
+
+
       {/* TOPBAR */}
       <header className="bg-[#050505] text-white border-b border-yellow-500/20 shadow-[0_0_20px_rgba(255,215,0,0.08)] z-[60] overflow-hidden">
   <div className="max-w-7xl mx-auto flex items-center justify-between px-3 sm:px-6 py-3">
@@ -244,6 +375,39 @@ function renderStatus(status) {
     </span>
   </div>
 </Link>
+ {/* ✅ Bildirim Butonu (Logonun yanına) */}
+<div className="relative group ml-2">
+  <button
+    disabled
+    aria-label="Bildirimler"
+    className="relative cursor-default text-yellow-400 opacity-90"
+  >
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      className="w-6 h-6"
+      fill="none"
+      viewBox="0 0 24 24"
+      stroke="currentColor"
+      strokeWidth="2"
+    >
+      <path d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14h-1v-2a7.002 7.002 0 00-13.001-1.999A6.978 6.978 0 004 12v2h-1a2 2 0 00-2 2h5m7 0v1a3 3 0 01-6 0v-1" />
+    </svg>
+
+    {notifications.length > 0 && (
+      <span className="absolute -top-1 -right-1 bg-red-500 text-white text-[10px] rounded-full w-[18px] h-[18px] flex items-center justify-center font-bold animate-pingOnce">
+        {notifications.length}
+      </span>
+    )}
+  </button>
+
+  {notifications.length === 0 && (
+    <div className="absolute left-8 top-1/2 -translate-y-1/2 animate-pulse text-xs text-yellow-300/80">
+      Henüz bildiriminiz yok 💭
+    </div>
+  )}
+</div>
+
+
 
      {/* Right Nav */}
          <div className="flex items-center gap-3 sm:gap-7 flex-wrap justify-end min-w-0 overflow-x-visible">
@@ -254,7 +418,7 @@ function renderStatus(status) {
 >
   <Truck className="w-6 h-6" />
 </button>
-
+    
             <button onClick={() => go("/favorites", true)} aria-label="Favoriler" className="relative hover:text-rose-400 transition">
               <Heart className="w-6 h-6" />
               {favCount > 0 && <Bubble value={favCount} tone="rose" />}
@@ -360,11 +524,22 @@ function renderStatus(status) {
             <X className="w-6 h-6" />
           </button>
         </div>
-        <nav className="p-5 flex flex-col gap-3">
-        <CategoryLink to="/category/canta" text="Çanta" setMenuOpen={setMenuOpen} />
-          <CategoryLink text="Cüzdan" soon setMenuOpen={setMenuOpen} />
-          <CategoryLink text="E-Pin" soon setMenuOpen={setMenuOpen} />
-        </nav>
+        {/* ✅ Dinamik kategoriler */}
+<nav className="p-5 flex flex-col gap-3">
+  {categories.length === 0 ? (
+    <p className="text-gray-400 text-sm">Kategori bulunamadı.</p>
+  ) : (
+    categories.map((cat) => (
+      <CategoryLink
+        key={cat.id}
+        to={`/category/${encodeURIComponent(cat.slug)}`}
+        text={cat.name}
+        setMenuOpen={setMenuOpen}
+      />
+    ))
+  )}
+</nav>
+
       </aside>
 {/* ✅ Premium Login Drawer */}
 <div

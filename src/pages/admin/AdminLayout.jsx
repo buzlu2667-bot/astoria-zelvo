@@ -21,6 +21,10 @@ export default function AdminLayout() {
         {/* ✅ Kullanıcı Yönetimi Menü */}
         <NavItem to="/admin/users">Kullanıcılar</NavItem>
 
+        <NavItem to="/admin/categories">Kategoriler</NavItem>
+        
+        <NavItem to="/admin/notifications">Bildirim Gönder</NavItem>
+
       </aside>
 
       {/* Page content */}

@@ -16,13 +16,35 @@ export default function QuickViewModal({ product, closeModal }) {
   const isBrowser = typeof window !== "undefined"; // ✅ SSR koruması
 
   // Görsel listesi (var olanları sırayla dener)
-  const baseImg = product.image_url?.replace(/\.(png|jpg|jpeg)$/i, "");
-  const productImages = [
-    `/products/${baseImg}.png`,
-    `/products/${baseImg}.1.png`,
-    `/products/${baseImg}.2.png`,
-    `/products/${baseImg}.3.png`,
-  ].filter((src) => !src.includes("/products/.png"));
+// Görsel listesi (var olanları sırayla dener)
+const baseImg = product.image_url?.replace(/\.(png|jpg|jpeg)$/i, "");
+const rawImages = [
+  `/products/${baseImg}.png`,
+  `/products/${baseImg}.1.png`,
+  `/products/${baseImg}.2.png`,
+  `/products/${baseImg}.3.png`,
+].filter((src) => !src.includes("/products/.png"));
+
+const [productImages, setProductImages] = useState([]);
+
+// ✅ Tarayıcıda gerçekten yüklenebilenleri filtrele
+useEffect(() => {
+  const validImages = [];
+
+  rawImages.forEach((url) => {
+    const img = new Image();
+    img.src = url;
+    img.onload = () => {
+      validImages.push(url);
+      setProductImages([...validImages]);
+    };
+    img.onerror = () => {
+      // resim yoksa pas geç
+    };
+  });
+}, [product.image_url]);
+
+
 
   // Karttakiyle birebir stok etiketi
   const StockBadge = () =>
@@ -90,37 +112,37 @@ export default function QuickViewModal({ product, closeModal }) {
           {/* Görsel alanı */}
           <div className="relative w-full h-[52vh] sm:h-[58vh] md:h-[62vh] lg:h-[66vh] p-3 sm:p-5">
             <div className="w-full h-full rounded-xl overflow-hidden bg-black border border-yellow-500/30">
-              {isBrowser && (
-                <Swiper
-                  zoom={{ maxRatio: 3 }}
-                  loop={true}
-                  slidesPerView={1}
-                  navigation={{
-                    enabled: true,
-                    nextEl: ".arrow-next",
-                    prevEl: ".arrow-prev",
-                  }}
-                  pagination={{ clickable: true }}
-                  keyboard={{ enabled: true }}
-                  modules={[Zoom, Navigation, Pagination, Keyboard]}
-                  className="w-full h-full select-none"
-                  speed={600}
-                >
-                  {productImages.map((src, i) => (
-                    <SwiperSlide key={i}>
-                     <div className="swiper-zoom-container w-full h-full flex items-center justify-center bg-black cursor-grab active:cursor-grabbing">
+             {isBrowser && productImages.length > 0 && (
+  <Swiper
+    zoom={{ maxRatio: 3 }}
+    loop={productImages.length > 1}
+    slidesPerView={1}
+    navigation={
+      productImages.length > 1
+        ? { enabled: true, nextEl: ".arrow-next", prevEl: ".arrow-prev" }
+        : false
+    }
+    pagination={productImages.length > 1 ? { clickable: true } : false}
+    keyboard={{ enabled: true }}
+    modules={[Zoom, Navigation, Pagination, Keyboard]}
+    className="w-full h-full select-none"
+    speed={600}
+  >
+    {productImages.map((src, i) => (
+      <SwiperSlide key={i}>
+        <div className="swiper-zoom-container w-full h-full flex items-center justify-center bg-black cursor-grab active:cursor-grabbing">
+          <img
+            src={src}
+            alt={product.name}
+            draggable="false"
+            className="w-full h-full object-contain will-change-transform"
+          />
+        </div>
+      </SwiperSlide>
+    ))}
+  </Swiper>
+)}
 
-                        <img
-                          src={src}
-                          alt={product.name}
-                          draggable="false"
-                          className="w-full h-full object-contain will-change-transform"
-                        />
-                      </div>
-                    </SwiperSlide>
-                  ))}
-                </Swiper>
-              )}
             </div>
 
             {/* ✅ SADE BEYAZ OK TUŞLARI — ARKA PLANSIZ */}

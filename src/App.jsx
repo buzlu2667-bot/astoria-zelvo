@@ -27,6 +27,9 @@ import AdminDashboard from "./pages/admin/AdminDashboard.jsx";
 import AdminNotes from "./pages/admin/AdminNotes.jsx";
 import { AdminGuard } from "./pages/admin/AdminGuard.jsx";
 import AdminUsers from "./pages/admin/AdminUsers.jsx";
+import AdminCategories from "./pages/admin/AdminCategories.jsx";
+import AdminNotificationForm from "./pages/admin/AdminNotificationForm.jsx";
+
 
 // Contexts ✅
 import { SessionProvider } from "./context/SessionContext";
@@ -125,6 +128,8 @@ export default function App() {
               <Route path="notes" element={<AdminNotes />} />
               <Route path="coupons" element={<AdminCoupons />} />
               <Route path="users" element={<AdminUsers />} />
+              <Route path="categories" element={<AdminCategories />} />
+              <Route path="notifications" element={<AdminNotificationForm />} />
             </Route>
           </Routes>
 
