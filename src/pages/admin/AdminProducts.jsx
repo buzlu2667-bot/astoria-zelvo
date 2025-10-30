@@ -138,16 +138,18 @@ export default function AdminProducts() {
       }
 
       // 3) Payload
-      const payload = {
-        name: form.name,
-        price: toNum(form.price, 0),
-        old_price: form.old_price ? toNum(form.old_price, null) : null,
-        stock: toNum(form.stock, 0),
-        category: form.category || "Diğer",
-        description: form.description || null,
-        image_url,
-        gallery: gallery.length ? gallery : null,
-      };
+     const payload = {
+  name: form.name,
+  price: toNum(form.price, 0),
+  old_price: form.old_price ? toNum(form.old_price, null) : null,
+  stock: toNum(form.stock, 0),
+  // ✅ Eğer kategori boşsa null kaydediyoruz (anasayfa ürünü demek)
+  category: form.category.trim() === "" ? null : form.category.trim(),
+  description: form.description || null,
+  image_url,
+  gallery: gallery.length ? gallery : null,
+};
+
 
       // 4) Insert / Update
       if (editing) {

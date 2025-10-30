@@ -24,10 +24,12 @@ export default function Home() {
   useEffect(() => {
     const fetchProducts = async () => {
       setLoading(true);
-      const { data } = await supabase
-        .from("products")
-        .select("*")
-        .order("id", { ascending: false });
+     const { data } = await supabase
+  .from("products")
+  .select("*")
+  .is("category", null) // ✅ sadece kategorisi boş ürünleri getir
+  .order("id", { ascending: false });
+
 
       setProducts(data || []);
       setLoading(false);
@@ -151,28 +153,15 @@ flex flex-col items-center justify-center text-center px-4">
           Bu kategoride ürün bulunamadı.
         </p>
       ) : (
-       <div className="grid 
-                grid-cols-2 
-                sm:grid-cols-3 
-                md:grid-cols-3 
-                lg:grid-cols-4 
-                gap-6 
-                place-items-center 
-                pt-8 
-                pb-10 
-                mx-auto">
-
-  {filteredProducts.map((product) => (
-    <div key={product.id} className="w-full max-w-[280px]">
-      <ProductCard
-        product={product}
-        openModal={setQuickViewProduct}
-      />
-    </div>
-  ))}
-
-</div>
-
+       <div className="grid grid-cols-2 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+          {filteredProducts.map((product) => (
+            <ProductCard
+              key={product.id}
+              product={product}
+              openModal={setQuickViewProduct}
+            />
+          ))}
+        </div>
       )}
     </main>
 
