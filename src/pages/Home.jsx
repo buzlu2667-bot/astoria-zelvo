@@ -48,7 +48,7 @@ export default function Home() {
   <div className="min-h-screen bg-black text-white">
 
    {/* ✅ FULLSCREEN PREMIUM HERO SLIDER — FINAL */}
-<section className="w-full h-screen relative overflow-hidden">
+<section className="w-full h-[70vh] md:h-[80vh] relative overflow-hidden">
   <Swiper
     modules={[Autoplay, Pagination]}
     autoplay={{ delay: 3500 }}
