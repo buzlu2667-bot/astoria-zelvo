@@ -128,7 +128,7 @@ const discount = hasDiscount ? Math.round(((old - price) / old) * 100) : 0;
       ) : (
         <div className="text-center mt-16">
           <h2 className="text-2xl font-bold text-yellow-400 drop-shadow-xl">
-            Yakında Geliyoruz! ✨
+            Yakında ...! ✨
           </h2>
           <p className="text-gray-400">Henüz ürün yok.</p>
         </div>
