@@ -54,7 +54,7 @@ export default function MaintenancePage() {
 
       {/* 🛠 svg karakter */}
       <div className="relative w-56 h-56 z-10 mb-6">
-        <img src="/assets/maintenance-bot.svg" className="w-full animate-bounce" />
+        <img src="/assets/maintenance-bot.png" className="w-full animate-bounce" />
       </div>
 
       {/* Mesaj */}
