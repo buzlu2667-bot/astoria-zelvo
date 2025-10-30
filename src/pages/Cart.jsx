@@ -27,9 +27,9 @@ if (!cart || cart.length === 0)
       <div className="w-48 h-48 mb-6 flex items-center justify-center">
         {/* ✅ PNG ÜSTTE */}
       <img
-  src="/assets/cart-icon-premium.png"
-  className="w-28 mb-5 drop-shadow-[0_0_35px_rgba(255,200,0,0.5)] animate-floating rounded-xl object-contain bg-transparent"
-  alt="Sepet"
+  src="/assets/cart-gold.png"
+  className="w-60 mx-auto drop-shadow-[0_0_30px_rgba(255,200,0,0.5)] animate-bounce"
+  alt="empty cart"
 />
 
       </div>
