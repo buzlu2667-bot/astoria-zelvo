@@ -261,6 +261,14 @@ html, body {
 .animate-slideUp {
   animation: slideUp 0.5s ease-in forwards;
 }
+iframe[src*="tawk.to"] {
+  filter: drop-shadow(0 0 12px gold) brightness(1.15);
+  border-radius: 18px !important;
+  transition: all 0.3s ease;
+}
+iframe[src*="tawk.to"]:hover {
+  transform: scale(1.05);
+}
 
 
 
