@@ -375,37 +375,31 @@ function renderStatus(status) {
     </span>
   </div>
 </Link>
- {/* ✅ Bildirim Butonu (Logonun yanına) */}
-<div className="relative group ml-2">
-  <button
-    disabled
-    aria-label="Bildirimler"
-    className="relative cursor-default text-yellow-400 opacity-90"
-  >
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      className="w-6 h-6"
-      fill="none"
-      viewBox="0 0 24 24"
-      stroke="currentColor"
-      strokeWidth="2"
+{/* ✅ Bildirim Butonu — sadece aktif bildirim varsa */}
+{notifications.length > 0 && (
+  <div className="relative group ml-2">
+    <button
+      disabled
+      aria-label="Bildirimler"
+      className="relative cursor-default text-yellow-400 opacity-90"
     >
-      <path d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14h-1v-2a7.002 7.002 0 00-13.001-1.999A6.978 6.978 0 004 12v2h-1a2 2 0 00-2 2h5m7 0v1a3 3 0 01-6 0v-1" />
-    </svg>
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        className="w-6 h-6"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke="currentColor"
+        strokeWidth="2"
+      >
+        <path d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14h-1v-2a7.002 7.002 0 00-13.001-1.999A6.978 6.978 0 004 12v2h-1a2 2 0 00-2 2h5m7 0v1a3 3 0 01-6 0v-1" />
+      </svg>
 
-    {notifications.length > 0 && (
       <span className="absolute -top-1 -right-1 bg-red-500 text-white text-[10px] rounded-full w-[18px] h-[18px] flex items-center justify-center font-bold animate-pingOnce">
         {notifications.length}
       </span>
-    )}
-  </button>
-
-  {notifications.length === 0 && (
-    <div className="absolute left-8 top-1/2 -translate-y-1/2 animate-pulse text-xs text-yellow-300/80">
-      Henüz bildiriminiz yok 💭
-    </div>
-  )}
-</div>
+    </button>
+  </div>
+)}
 
 
 
