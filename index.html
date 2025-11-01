@@ -39,7 +39,7 @@
       (function(){
       var s1=document.createElement("script"),s0=document.getElementsByTagName("script")[0];
       s1.async=true;
-      s1.src='https://embed.tawk.to/690525e940b306194f3d8982/1j8u1o615?lang=tr';
+      s1.src = "https://embed.tawk.to/690525e940b306194f3d8982/1j8u1o615?lang=tr&v=" + new Date().getTime();
       s1.charset='UTF-8';
       s1.setAttribute('crossorigin','*');
       s0.parentNode.insertBefore(s1,s0);
@@ -120,6 +120,15 @@
     setTimeout(() => label.classList.add("visible"), 100);
   });
 </script>
+
+<script>
+  // WhatsApp ikonunu otomatik kaldır
+  window.addEventListener("load", () => {
+    const whatsapp = document.querySelector('iframe[src*="whatsapp"], .whatsapp, [href*="wa.me"]');
+    if (whatsapp) whatsapp.remove();
+  });
+</script>
+
 
   </body>
 </html>
