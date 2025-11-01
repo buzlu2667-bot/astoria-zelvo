@@ -123,33 +123,6 @@
   });
 </script>
 
-<style>
-  /* Eye-Catcher’ı sabit tut */
-  .lc-eye-catcher {
-    opacity: 1 !important;
-    visibility: visible !important;
-    transform: none !important;
-    transition: none !important;
-  }
-
-  /* Kapatma tuşunu gizle */
-  .lc-eye-catcher__close {
-    display: none !important;
-  }
-</style>
-
-<script>
-  // Sürekli görünür kalmasını garantiye al
-  const fixEyeCatcher = () => {
-    const eye = document.querySelector('.lc-eye-catcher');
-    if (eye) {
-      eye.style.opacity = "1";
-      eye.style.visibility = "visible";
-      eye.style.transform = "none";
-    }
-  };
-  setInterval(fixEyeCatcher, 1000);
-</script>
 
 
 
