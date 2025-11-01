@@ -73,17 +73,7 @@ export default function Footer() {
         <p className="text-xs text-gray-500">© 2025 ASTORIA ZELVO — Tüm Hakları Saklıdır.</p>
       </div>
 
-      {/* ✅ WhatsApp Sabit Buton */}
-      <a
-        href="https://wa.me/905555555555"
-        target="_blank"
-        rel="noopener noreferrer"
-        className="fixed bottom-6 right-6 bg-green-500 w-14 h-14 rounded-full flex
-                   items-center justify-center shadow-lg shadow-green-500/40
-                   hover:scale-110 transition text-white text-3xl z-[999]"
-      >
-        <FaWhatsapp />
-      </a>
+     
     </footer>
   );
 }
