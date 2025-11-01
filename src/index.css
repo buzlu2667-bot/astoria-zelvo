@@ -269,6 +269,41 @@ iframe[src*="tawk.to"] {
 iframe[src*="tawk.to"]:hover {
   transform: scale(1.05);
 }
+/* LiveChat widget'ı modal altında kalsın */
+iframe[src*="livechat"] {
+  z-index: 1 !important;
+  position: relative !important;
+}
+
+/* Modal her şeyin üstünde olsun */
+.modal,
+.modal-overlay,
+.modal-container {
+  z-index: 999999 !important;
+  position: relative !important;
+}
+
+/* Ekstra güvenlik */
+#chat-widget-container,
+.lc_launcher {
+  z-index: 1 !important;
+}
+.canli-destek-btn {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: #ffd400;
+  color: #000;
+  font-weight: 600;
+  padding: 8px 14px;
+  border-radius: 9999px;
+  box-shadow: 0 0 12px rgba(255, 215, 0, 0.6);
+  z-index: 99999;
+  transition: opacity 0.3s ease;
+}
 
 
 
