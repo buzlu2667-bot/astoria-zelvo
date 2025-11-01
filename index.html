@@ -45,7 +45,31 @@
       s0.parentNode.insertBefore(s1,s0);
       })();
     </script>
-    <!-- 💬 CANLI DESTEK YAZISI (Sol tarafta) -->
+
+    <script>
+  const hideTawkByApi = () => {
+    const modal = document.querySelector('[class*="z-[99999]"][class*="fixed"]');
+    const modalOpen = modal && window.getComputedStyle(modal).display !== "none";
+
+    // hem yazı hem widget kontrolü
+    const label = document.querySelector(".canli-destek-label");
+
+    if (window.Tawk_API && typeof window.Tawk_API.hideWidget === "function") {
+      if (modalOpen) {
+        Tawk_API.hideWidget(); // 🔥 chat ikonunu gizle
+        if (label) label.style.display = "none"; // 💬 yazıyı da gizle
+      } else {
+        Tawk_API.showWidget(); // 💥 chat ikonunu geri getir
+        if (label) label.style.display = "block"; // 💬 yazıyı geri getir
+      }
+    }
+  };
+
+  // 500ms’de bir kontrol
+  setInterval(hideTawkByApi, 500);
+</script>
+
+   <!-- 💬 CANLI DESTEK YAZISI (Sol tarafta) -->
 <style>
 .canli-destek-label {
   position: fixed;
