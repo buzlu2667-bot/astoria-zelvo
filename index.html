@@ -34,17 +34,19 @@
   <body>
     <div id="root"></div>
     <script type="module" src="/src/main.jsx"></script>
-    <!-- Start of LiveChat (www.livechat.com) code -->
-<script>
-    window.__lc = window.__lc || {};
-    window.__lc.license = 19358602;
-    window.__lc.integration_name = "manual_channels";
-    window.__lc.product_name = "livechat";
-    ;(function(n,t,c){function i(n){return e._h?e._h.apply(null,n):e._q.push(n)}var e={_q:[],_h:null,_v:"2.0",on:function(){i(["on",c.call(arguments)])},once:function(){i(["once",c.call(arguments)])},off:function(){i(["off",c.call(arguments)])},get:function(){if(!e._h)throw new Error("[LiveChatWidget] You can't use getters before load.");return i(["get",c.call(arguments)])},call:function(){i(["call",c.call(arguments)])},init:function(){var n=t.createElement("script");n.async=!0,n.type="text/javascript",n.src="https://cdn.livechatinc.com/tracking.js",t.head.appendChild(n)}};!n.__lc.asyncInit&&e.init(),n.LiveChatWidget=n.LiveChatWidget||e}(window,document,[].slice))
+    <!--Start of Tawk.to Script-->
+<script type="text/javascript">
+var Tawk_API=Tawk_API||{}, Tawk_LoadStart=new Date();
+(function(){
+var s1=document.createElement("script"),s0=document.getElementsByTagName("script")[0];
+s1.async=true;
+s1.src='https://embed.tawk.to/690525e940b306194f3d8982/1j8u1o615';
+s1.charset='UTF-8';
+s1.setAttribute('crossorigin','*');
+s0.parentNode.insertBefore(s1,s0);
+})();
 </script>
-<noscript><a href="https://www.livechat.com/chat-with/19358602/" rel="nofollow">Chat with us</a>, powered by <a href="https://www.livechat.com/?welcome" rel="noopener nofollow" target="_blank">LiveChat</a></noscript>
-<!-- End of LiveChat code -->
-</script>
+<!--End of Tawk.to Script-->
 
 
 <script>
@@ -111,12 +113,39 @@
     // Fade-in animasyonu
     setTimeout(() => label.classList.add("visible"), 100);
 
-    // Modal açık mı kontrol et
-    const kontrolEt = () => {
-      const modal = document.querySelector('.fixed.inset-0.bg-black\\/80');
-      const modalAcik = modal && window.getComputedStyle(modal).display !== "none";
-      label.style.display = modalAcik ? "none" : "flex";
-    };
+  // Modal açık mı kontrol et (fade animasyonlu Tawk gizleme)
+const kontrolEt = () => {
+  const modal = document.querySelector('.fixed.inset-0.bg-black\\/80');
+  const modalAcik = modal && window.getComputedStyle(modal).display !== "none";
+
+  // 💬 Bizim etiket fade animasyonu
+  if (modalAcik) {
+    label.style.opacity = "0";
+    label.style.transform = "translateY(6px)";
+  } else {
+    label.style.display = "flex";
+    setTimeout(() => {
+      label.style.opacity = "1";
+      label.style.transform = "translateY(0)";
+    }, 100);
+  }
+
+  // 💬 Tawk widget (fade-out / fade-in)
+  const tawkWidget = document.querySelector("iframe[title='chat widget']") || document.querySelector("iframe[src*='tawk.to']");
+  if (tawkWidget) {
+    if (modalAcik) {
+      tawkWidget.style.transition = "opacity 0.4s ease";
+      tawkWidget.style.opacity = "0";
+      setTimeout(() => (tawkWidget.style.display = "none"), 400);
+    } else {
+      tawkWidget.style.display = "block";
+      tawkWidget.style.transition = "opacity 0.4s ease";
+      setTimeout(() => (tawkWidget.style.opacity = "1"), 50);
+    }
+  }
+};
+
+
 
     // Düzenli kontrol
     setInterval(kontrolEt, 200);
