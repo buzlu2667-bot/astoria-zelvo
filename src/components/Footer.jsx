@@ -67,7 +67,8 @@ export default function Footer() {
 
         </div>
 
-        {/* ✅ Alt Bilgi */}
+    
+         {/* ✅ Alt Bilgi */}
         <div className="mt-10 text-center border-t border-neutral-800 pt-6">
           <div className="flex justify-center gap-8 text-xs mb-3">
             <span className="hover:text-white cursor-pointer">KVKK</span>
