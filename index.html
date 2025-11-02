@@ -111,37 +111,45 @@
     // Fade-in animasyonu
     setTimeout(() => label.classList.add("visible"), 100);
 
-  // Modal açık mı kontrol et (fade animasyonlu Tawk gizleme)
-const kontrolEt = () => {
-  const modal = document.querySelector('.fixed.inset-0.bg-black\\/80');
-  const modalAcik = modal && window.getComputedStyle(modal).display !== "none";
+    // 💬 Modal açık mı kontrol et
+    const kontrolEt = () => {
+      // Tailwind modal'ını tespit et (örnek: fixed.inset-0.bg-black/80)
+      const modal = document.querySelector('.fixed.inset-0.bg-black\\/80');
+      const modalAcik = modal && window.getComputedStyle(modal).display !== "none";
 
-  // 💬 Bizim etiket fade animasyonu
-  if (modalAcik) {
-    label.style.opacity = "0";
-    label.style.transform = "translateY(6px)";
-  } else {
-    label.style.display = "flex";
-    setTimeout(() => {
-      label.style.opacity = "1";
-      label.style.transform = "translateY(0)";
-    }, 100);
-  }
+      // 💬 Bizim gold etiket fade animasyonu
+      if (modalAcik) {
+        label.style.opacity = "0";
+        label.style.transform = "translateY(6px)";
+      } else {
+        label.style.display = "flex";
+        setTimeout(() => {
+          label.style.opacity = "1";
+          label.style.transform = "translateY(0)";
+        }, 100);
+      }
 
-  // 💬 Tawk widget (fade-out / fade-in)
-  const tawkWidget = document.querySelector("iframe[title='chat widget']") || document.querySelector("iframe[src*='tawk.to']");
-  if (tawkWidget) {
-    if (modalAcik) {
-      tawkWidget.style.transition = "opacity 0.4s ease";
-      tawkWidget.style.opacity = "0";
-      setTimeout(() => (tawkWidget.style.display = "none"), 400);
-    } else {
-      tawkWidget.style.display = "block";
-      tawkWidget.style.transition = "opacity 0.4s ease";
-      setTimeout(() => (tawkWidget.style.opacity = "1"), 50);
-    }
-  }
-};
+      // 💬 LIVECHAT widget (gizle / göster)
+      const liveChat = document.querySelector("#chat-widget-container");
+      const compact = document.querySelector("#livechat-compact-container");
+      const eye = document.querySelector("#livechat-eye-catcher");
+
+      if (modalAcik) {
+        if (liveChat) liveChat.style.display = "none";
+        if (compact) compact.style.display = "none";
+        if (eye) eye.style.display = "none";
+      } else {
+        if (liveChat) liveChat.style.display = "block";
+        if (compact) compact.style.display = "block";
+        if (eye) eye.style.display = "block";
+      }
+    };
+
+    // 💫 Düzenli kontrol (her 250ms'de bir)
+    setInterval(kontrolEt, 250);
+  });
+</script>
+
 
 
 

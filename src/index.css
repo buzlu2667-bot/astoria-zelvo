@@ -304,6 +304,23 @@ iframe[src*="livechat"] {
   z-index: 99999;
   transition: opacity 0.3s ease;
 }
+/* 💬 LiveChat her şeyin ÜSTÜNDE olsun */
+#chat-widget-container,
+#livechat-compact-container,
+#livechat-eye-catcher {
+  position: fixed !important;
+  z-index: 9999999 !important;
+}
+
+/* 🛍️ Ürün kartları, etiketler, favoriler LiveChat'in ALTINDA olsun */
+.product-card,
+.discount-badge,
+.fav-btn,
+.favorite-icon,
+.badge-premium {
+  position: relative !important;
+  z-index: 1 !important;
+}
 
 
 
