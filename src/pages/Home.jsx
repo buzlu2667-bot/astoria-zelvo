@@ -80,6 +80,13 @@ export default function Home() {
       },
       {
         type: "image",
+        src: "/hero/slide1.jpg",
+        title: "",
+        text: " ",
+        color: "text-yellow-400",
+      },
+      {
+        type: "image",
         src: "/hero/slide3.jpg",
         title: "Premium Çanta Koleksiyonu",
         text: " ",

@@ -1,3 +1,4 @@
+
 // ✅ PREMIUM HEADER — v10 (full)
 // - Admin e-posta: buzlu2667@gmail.com + admin@admin.com
 // - Cart sayfasında “Giriş” butonu asla görünmez
@@ -30,6 +31,7 @@ export default function Header() {
   const favCount = useFavoriteCount();
   const location = useLocation();
 
+  
   const [menuOpen, setMenuOpen] = useState(false);
   const [notifications, setNotifications] = useState([]);
   const [loginOpen, setLoginOpen] = useState(false);
