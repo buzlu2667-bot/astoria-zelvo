@@ -48,7 +48,7 @@ export default function Home() {
   <div className="min-h-screen bg-black text-white">
 
    {/* ✅ FULLSCREEN PREMIUM HERO SLIDER — FINAL */}
-<section className="w-full h-[70vh] md:h-[80vh] relative overflow-hidden">
+<section className="w-full h-[65vh] sm:h-[70vh] md:h-[80vh] relative overflow-hidden">
   <Swiper
     modules={[Autoplay, Pagination]}
     autoplay={{ delay: 3500 }}
@@ -71,53 +71,37 @@ export default function Home() {
         text: "",
         color: "text-yellow-400 drop-shadow-[0_0_30px_rgba(255,200,0,0.6)]",
       },
-      //{
-       // type: "video",
-        //src: "/hero/slide1-video.mp4",
-        //title: "E-Pin Dünyası Burada!",
-       // text: "Hızlı Teslim — Güvenilir Alışveriş",
-        //color: "text-yellow-400",
-      //},
       {
         type: "image",
         src: "/hero/slide2.jpg",
         title: "Premium Çanta Koleksiyonu",
-        text: "Lüks ⚜  ",
+        text: "Lüks ⚜",
         color: "text-yellow-400",
       },
       {
         type: "image",
         src: "/hero/slide1.jpg",
         title: "",
-        text: " ",
+        text: "",
         color: "text-yellow-400",
       },
       {
         type: "image",
         src: "/hero/slide3.jpg",
         title: "Premium Çanta Koleksiyonu",
-        text: " ",
+        text: "",
         color: "text-yellow-400",
       },
-      //{
-        //type: "video",
-        // src: "/hero/slide3-video.mp4",
-        //title: "Oyun Kodlarında Dev İndirim!",
-       // text: "",
-        //color: "text-rose-400",
-      //},
       {
         type: "image",
         src: "/hero/slide4.jpg",
         title: "Tarzını Göster!",
         text: "",
         color: "text-yellow-300",
-      }
-      
+      },
     ].map((slide, i) => (
       <SwiperSlide key={i}>
         <div className="relative w-full h-full">
-          
           {/* ✅ Slide Media */}
           {slide.type === "video" ? (
             <video
@@ -130,24 +114,24 @@ export default function Home() {
             />
           ) : (
             <img
-             className="absolute inset-0 w-full h-full object-cover object-center"
               src={slide.src}
               alt=""
+              className="absolute inset-0 w-full h-full object-cover object-[center_30%] md:object-center transition-all duration-700 ease-in-out"
             />
           )}
 
-          {/* ✅ Dark Overlay + Content */}
-        <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-black/25 to-black/50
-shadow-[inset_0_0_60px_rgba(0,0,0,0.3)]
-flex flex-col items-center justify-center text-center px-4">
+          {/* ✅ Dark Overlay */}
+          <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-black/25 to-black/50 shadow-[inset_0_0_60px_rgba(0,0,0,0.3)]"></div>
 
+          {/* ✅ Animated Content */}
+          <div className="absolute inset-0 flex flex-col items-center justify-center text-center px-4 animate-fadeInUp">
             <h1
-              className={`text-4xl md:text-6xl font-extrabold drop-shadow-xl ${slide.color}`}
+              className={`text-3xl sm:text-4xl md:text-6xl font-extrabold drop-shadow-xl ${slide.color}`}
             >
               {slide.title}
             </h1>
             {slide.text && (
-              <p className="text-gray-200 mt-3 text-lg md:text-xl">
+              <p className="text-gray-200 mt-3 text-base sm:text-lg md:text-xl">
                 {slide.text}
               </p>
             )}
@@ -157,6 +141,7 @@ flex flex-col items-center justify-center text-center px-4">
     ))}
   </Swiper>
 </section>
+
 
 
 
