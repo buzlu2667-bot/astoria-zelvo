@@ -1,68 +1,139 @@
+// ✅ src/App.jsx — FULL FINAL (TEST OK)
+import GlobalBanner from "./components/GlobalBanner";
+import Favorites from "./pages/Favorites";
+import { Routes, Route, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { supabase } from "../lib/supabaseClient";
-import { X } from "lucide-react";
 
+import Header from "./components/Header";
+import Footer from "./components/Footer"; 
+import Toast from "./components/Toast";
+import Category from "./pages/Category";
 
-function GlobalBanner() {
-  const [banner, setBanner] = useState(null);
-  const [closed, setClosed] = useState(false);
+// Pages
+import Home from "./pages/Home";
+import Cart from "./pages/Cart";
+import Checkout from "./pages/Checkout";
+import Dashboard from "./pages/Dashboard";
+import Orders from "./pages/Orders";
+import AdminCoupons from "./pages/admin/AdminCoupons";
+import OrderDetail from "./pages/OrderDetail";
+import ResetPassword from "./pages/ResetPassword";
 
+// Admin pages
+import AdminLayout from "./pages/admin/AdminLayout.jsx";
+import AdminOrders from "./pages/admin/AdminOrders.jsx";
+import AdminProducts from "./pages/admin/AdminProducts.jsx";
+import AdminDashboard from "./pages/admin/AdminDashboard.jsx";
+import AdminNotes from "./pages/admin/AdminNotes.jsx";
+import { AdminGuard } from "./pages/admin/AdminGuard.jsx";
+import AdminUsers from "./pages/admin/AdminUsers.jsx";
+import AdminCategories from "./pages/admin/AdminCategories.jsx";
+import AdminNotificationForm from "./pages/admin/AdminNotificationForm.jsx";
+
+// Contexts
+import { SessionProvider } from "./context/SessionContext";
+import { CartProvider } from "./context/CartContext";
+import { FavoritesProvider } from "./context/FavoritesContext";
+
+import MaintenancePage from "./pages/MaintenancePage";
+import { supabase } from "./lib/supabaseClient";
+
+function HashRedirector() {
+  const navigate = useNavigate();
   useEffect(() => {
-    const dismissedId = localStorage.getItem("dismissedBannerId");
-    if (dismissedId) return; // ✅ Daha önce kapatıldıysa gösterme
-
-    const fetchBanner = async () => {
-      const { data, error } = await supabase
-        .from("notifications")
-        .select("*")
-        .eq("is_active", true)
-        .order("created_at", { ascending: false })
-        .limit(1)
-        .maybeSingle();
-
-      if (!error && data) setBanner(data);
-    };
-
-    fetchBanner();
-  }, []);
-
-  const handleClose = () => {
-    setClosed(true);
-    if (banner?.id) {
-      localStorage.setItem("dismissedBannerId", banner.id);
+    const hash = window.location.hash;
+    if (hash.includes("type=recovery")) {
+      const newUrl = "/reset-password" + hash.replace("#", "?");
+      navigate(newUrl, { replace: true });
     }
-   window.dispatchEvent(
-  new CustomEvent("toast", {
-    detail: { type: "info", text: "🔕 Duyuru kapatıldı " }
-  })
-);
-
-  };
-
-  if (!banner || closed) return null;
-
-  return (
-    <div
-      className="fixed top-0 left-0 w-full z-[9999] animate-fadeIn"
-      style={{ animation: "fadeIn 0.5s ease" }}
-    >
-      <div className="relative bg-gradient-to-r from-yellow-400 via-amber-500 to-yellow-400 text-black font-semibold text-center py-3 shadow-[0_0_15px_rgba(255,215,0,0.6)]">
-        <div className="flex items-center justify-center px-4">
-          <span className="text-sm sm:text-base break-words text-center leading-snug">
-            🔔 {banner.title} — {banner.message}
-          </span>
-        </div>
-
-        {/* ✅ X tuşu */}
-        <button
-          onClick={handleClose}
-          className="absolute right-3 top-1/2 -translate-y-1/2 text-black hover:text-red-600 transition"
-        >
-          <X size={18} />
-        </button>
-      </div>
-    </div>
-  );
+  }, [navigate]);
+  return null;
 }
 
-export default GlobalBanner;
+export default function App() {
+  const [maint, setMaint] = useState(null);
+  const [isAdmin, setIsAdmin] = useState(false);
+
+  async function checkMaintenance() {
+    const { data: settings } = await supabase
+      .from("settings")
+      .select("*")
+      .eq("key", "maintenance")
+      .maybeSingle();
+
+    if (settings?.value?.enabled) {
+      const now = new Date();
+      const until = new Date(settings.value.until);
+      if (now < until) {
+        setMaint(settings.value);
+      }
+    }
+  }
+
+  async function checkAdmin() {
+    const { data: ud } = await supabase.auth.getUser();
+    const user = ud?.user;
+    setIsAdmin(user?.email === "admin@admin.com");
+  }
+
+  useEffect(() => {
+    checkMaintenance();
+    checkAdmin();
+  }, []);
+
+  if (maint && !isAdmin) {
+    return (
+      <MaintenancePage until={maint.until} message={maint.message} />
+    );
+  }
+
+  return (
+    <SessionProvider>
+      <CartProvider>
+        <FavoritesProvider>
+          {/* ✅ Banner en üstte */}
+          <GlobalBanner />
+          <Header />
+          <Toast />
+          <HashRedirector />
+
+          {/* ✅ Test log (konsolda banner kontrolü için) */}
+          {console.log("✅ APP RENDER: GlobalBanner + Header aktif!")}
+
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/favorites" element={<Favorites />} />
+            <Route path="/cart" element={<Cart />} />
+            <Route path="/checkout" element={<Checkout />} />
+            <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/orders" element={<Orders />} />
+            <Route path="/orders/:id" element={<OrderDetail />} />
+            <Route path="/reset-password" element={<ResetPassword />} />
+            <Route path="/category/:id" element={<Category />} />
+
+            {/* ✅ Admin Panel */}
+            <Route
+              path="/admin"
+              element={
+                <AdminGuard>
+                  <AdminLayout />
+                </AdminGuard>
+              }
+            >
+              <Route index element={<AdminDashboard />} />
+              <Route path="orders" element={<AdminOrders />} />
+              <Route path="products" element={<AdminProducts />} />
+              <Route path="notes" element={<AdminNotes />} />
+              <Route path="coupons" element={<AdminCoupons />} />
+              <Route path="users" element={<AdminUsers />} />
+              <Route path="categories" element={<AdminCategories />} />
+              <Route path="notifications" element={<AdminNotificationForm />} />
+            </Route>
+          </Routes>
+
+          <Footer />
+        </FavoritesProvider>
+      </CartProvider>
+    </SessionProvider>
+  );
+}
