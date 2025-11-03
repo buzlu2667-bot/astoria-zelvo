@@ -58,47 +58,48 @@ export default function Home() {
   >
     {[
       {
-        type: "video",
-        src: "/hero/slide1-video.mp4",
-        title: "E-Pin Dünyası Burada!",
-        text: "Hızlı Teslim — Güvenilir Alışveriş",
-        color: "text-yellow-400",
+        type: "image",
+        src: "/hero/slide5.jpg",
+        title: "Alışverişe Hoş Geldin",
+        text: "",
+        color: "text-yellow-400 drop-shadow-[0_0_30px_rgba(255,200,0,0.6)]",
       },
+      //{
+       // type: "video",
+        //src: "/hero/slide1-video.mp4",
+        //title: "E-Pin Dünyası Burada!",
+       // text: "Hızlı Teslim — Güvenilir Alışveriş",
+        //color: "text-yellow-400",
+      //},
       {
         type: "image",
         src: "/hero/slide2.jpg",
         title: "Premium Çanta Koleksiyonu",
-        text: "Lüks — Şık — Elitemart",
+        text: "Lüks ⚜  ",
         color: "text-yellow-400",
       },
       {
         type: "image",
         src: "/hero/slide3.jpg",
         title: "Premium Çanta Koleksiyonu",
-        text: "Lüks — Şık — ",
+        text: " ",
         color: "text-yellow-400",
       },
-      {
-        type: "video",
-        src: "/hero/slide3-video.mp4",
-        title: "Oyun Kodlarında Dev İndirim!",
-        text: "",
-        color: "text-rose-400",
-      },
+      //{
+        //type: "video",
+        // src: "/hero/slide3-video.mp4",
+        //title: "Oyun Kodlarında Dev İndirim!",
+       // text: "",
+        //color: "text-rose-400",
+      //},
       {
         type: "image",
         src: "/hero/slide4.jpg",
         title: "Tarzını Göster!",
         text: "",
         color: "text-yellow-300",
-      },
-      {
-        type: "video",
-        src: "/hero/slide5-video.mp4",
-        title: "Alışverişe Hoş Geldin",
-        text: "",
-        color: "text-yellow-400 drop-shadow-[0_0_30px_rgba(255,200,0,0.6)]",
       }
+      
     ].map((slide, i) => (
       <SwiperSlide key={i}>
         <div className="relative w-full h-full">
