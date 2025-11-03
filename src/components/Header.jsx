@@ -63,6 +63,8 @@ export default function Header() {
 useEffect(() => {
   console.log("👂 Realtime dinleniyor...");
 
+  
+
   const channel = supabase
     .channel("realtime:notifications")
     .on(
@@ -294,34 +296,39 @@ function renderStatus(status) {
  
   return (
     <>
-{/* ✅ Premium Animated Notification Banner */}
-{/*
+{/* ✅ Premium Global Notification Banner — Active & Public */}
 {notifications.length > 0 && (
   <div
-    className="fixed top-0 left-0 w-full z-[1000]
+    className="fixed top-0 left-0 w-full z-[99999]
     bg-gradient-to-r from-yellow-400 via-amber-400 to-orange-500
     text-black text-center font-semibold
     shadow-[0_0_25px_rgba(255,215,0,0.45)]
-    flex items-center justify-center gap-3 px-3 sm:px-6 py-2.5
-    animate-slideDown"
+    flex flex-col sm:flex-row items-center justify-center gap-2 sm:gap-3
+    px-3 sm:px-6 py-2 sm:py-2.5 animate-slideDown
+    leading-snug text-sm sm:text-base"
   >
-    <div className="flex flex-col sm:flex-row items-center gap-1 sm:gap-3 text-sm sm:text-base leading-tight">
-      <div className="cursor-default select-none pointer-events-none">
-        {notifications[0].title || "Yeni Bildirim"} — {notifications[0].message}
-      </div>
+    {/* ✅ Bildirim Metni */}
+    <div className="px-4 flex-1 text-center break-words">
+      🔔 {notifications[0].title || "Yeni Duyuru"} — {notifications[0].message}
     </div>
+
+    {/* ✅ Kapatma Butonu */}
     <button
       onClick={async () => {
         try {
-          localStorage.setItem(
-            `closed_notification_${notifications[0].id}`,
-            "true"
-          );
+          // localStorage’da “kapatıldı” olarak işaretle
+          localStorage.setItem(`closed_notification_${notifications[0].id}`, "true");
+
+          // Supabase’de pasif yap (admin tarafı güncellenmiş olur)
           await supabase
             .from("notifications")
             .update({ is_active: false })
             .eq("id", notifications[0].id);
+
+          // State’ten kaldır
           setNotifications((prev) => prev.slice(1));
+
+          // Toast gönder
           window.dispatchEvent(
             new CustomEvent("toast", {
               detail: { type: "info", text: "🔕 Bildirim kapatıldı." },
@@ -331,14 +338,14 @@ function renderStatus(status) {
           console.error("❌ Bildirim kapatma hatası:", err.message);
         }
       }}
-      className="ml-3 px-2 text-black/60 hover:text-black transition text-lg"
+      className="ml-3 px-2 text-black/60 hover:text-black transition text-lg font-bold"
       aria-label="Kapat"
     >
       ✕
     </button>
   </div>
 )}
-*/}
+
 
       {/* TOPBAR */}
       <header className="bg-[#050505] text-white border-b border-yellow-500/20 shadow-[0_0_20px_rgba(255,215,0,0.08)] z-[60] overflow-hidden">
