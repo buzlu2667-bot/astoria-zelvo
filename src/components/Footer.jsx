@@ -85,7 +85,7 @@ export default function Footer() {
           </div>
 
           <p className="text-xs text-gray-500">
-            © 2025 ASTORIA ZELVO — Tüm Hakları Saklıdır.
+            © 2025 MAXIMORA — Tüm Hakları Saklıdır.
           </p>
         </div>
       </footer>

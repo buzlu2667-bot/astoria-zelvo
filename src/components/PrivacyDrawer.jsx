@@ -38,7 +38,7 @@ export default function PrivacyDrawer({ open, onClose }) {
 
 const privacyHtml = `
 <h3 style="color:#ffd54d;">1. Genel Bilgiler</h3>
-<p>Bu Gizlilik Politikası, <strong>ASTORIA ZELVO</strong> (“biz”, “şirket”, “site”) tarafından işletilen e-ticaret platformu üzerinden toplanan ve işlenen kişisel verilerin korunması ve gizliliğine dair ilkeleri açıklar. Tüm işlemler <strong>6698 sayılı KVKK</strong> ve ilgili mevzuata uygun şekilde yürütülür.</p>
+<p>Bu Gizlilik Politikası, <strong>MAXIMORA</strong> (“biz”, “şirket”, “site”) tarafından işletilen e-ticaret platformu üzerinden toplanan ve işlenen kişisel verilerin korunması ve gizliliğine dair ilkeleri açıklar. Tüm işlemler <strong>6698 sayılı KVKK</strong> ve ilgili mevzuata uygun şekilde yürütülür.</p>
 
 <h3 style="color:#ffd54d;">2. Toplanan Veriler</h3>
 <ul>
@@ -50,7 +50,7 @@ const privacyHtml = `
 </ul>
 
 <h3 style="color:#ffd54d;">3. Canlı Destek Servisleri (Tawk.to ve LiveChat)</h3>
-<p>ASTORIA ZELVO, ziyaretçilerine anlık destek sağlamak amacıyla üçüncü taraf canlı destek servislerinden yararlanabilir:</p>
+<p>MAXIMORA, ziyaretçilerine anlık destek sağlamak amacıyla üçüncü taraf canlı destek servislerinden yararlanabilir:</p>
 
 <ul>
 <li><strong>Tawk.to:</strong> ABD merkezli bir canlı destek sağlayıcısıdır. Sohbet sırasında paylaştığınız bilgiler (isim, e-posta, mesaj içeriği) Tawk.to sunucularında şifreli olarak saklanabilir. Tawk.to, <a href="https://www.tawk.to/privacy-policy" target="_blank" rel="noopener noreferrer" style="color:#ffd54d;">gizlilik politikası</a> kapsamında GDPR ve veri güvenliği standartlarına uygundur.</li>
@@ -79,5 +79,5 @@ const privacyHtml = `
 <p>Bu gizlilik politikası zaman zaman güncellenebilir. Güncellemeler, site üzerinden duyurulur ve en son sürüm her zaman bu sayfada yayınlanır.</p>
 
 <hr/>
-<p style="font-size:12px; color:#aaa;">© 2025 ASTORIA ZELVO — Tüm hakları saklıdır.</p>
+<p style="font-size:12px; color:#aaa;">© 2025 MAXIMORA — Tüm hakları saklıdır.</p>
 `;

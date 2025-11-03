@@ -348,33 +348,60 @@ function renderStatus(status) {
           </button>
 
          
-         {/* ✅ AZ CIRCLE LOGO */}
+      {/* ✅ Maximora Logo (Blue + Gold Premium Edition) */}
 <Link to="/" className="flex items-center gap-4 group">
-  <div
+ {/* ✅ Mavi + Altın Degrade Logo */}
+{/* ✅ Mavi + Altın Premium Logo (Net Harf Versiyonu) */}
+<div
+  className="
+    w-11 h-11 rounded-full 
+    bg-gradient-to-br from-blue-500 via-blue-400 to-yellow-400
+    flex items-center justify-center 
+    text-white font-extrabold text-lg
+    shadow-[0_0_25px_rgba(80,150,255,0.5)]
+    group-hover:shadow-[0_0_35px_rgba(255,215,0,0.7)]
+    group-hover:scale-110
+    transition-all duration-300
+  "
+>
+  <span
     className="
-      w-11 h-11 rounded-full 
-      bg-gradient-to-br from-yellow-300 to-amber-500
-      flex items-center justify-center 
-      text-black font-extrabold text-lg
-      shadow-[0_0_18px_rgba(255,215,100,0.55)]
-      group-hover:shadow-[0_0_30px_rgba(255,215,100,0.85)]
-      group-hover:scale-110
-      transition-all duration-300
+      text-white 
+      drop-shadow-[0_0_6px_rgba(255,255,255,0.6)]
+      group-hover:text-blue-100
+      group-hover:drop-shadow-[0_0_10px_rgba(80,150,255,0.9)]
+      transition-all duration-500
     "
   >
-    AZ
-  </div>
+    M
+  </span>
+</div>
 
+
+  {/* Yazılar */}
   <div className="leading-[1.1] flex flex-col">
-    <span className="text-xl font-extrabold tracking-wide">
-      ASTORIA <span className="text-gray-300">ZELVO</span>
+    {/* MAXIMORA */}
+    <span
+      className="
+        text-xl font-extrabold tracking-wide 
+        bg-gradient-to-r from-white to-white
+        bg-clip-text text-transparent 
+        transition-all duration-500
+        group-hover:bg-gradient-to-r group-hover:from-blue-500 group-hover:to-yellow-400
+      "
+    >
+      MAXIMORA
     </span>
 
-    <span className="text-[10px] tracking-[0.3em] text-gray-400 uppercase">
+    {/* Alt yazı */}
+    <span className="text-[10px] tracking-[0.3em] text-blue-400 uppercase group-hover:text-yellow-400 transition">
       Lifestyle & Tech Store
     </span>
   </div>
 </Link>
+
+
+
 {/* ✅ Bildirim Butonu — sadece aktif bildirim varsa */}
 {notifications.length > 0 && (
   <div className="relative group ml-2">
