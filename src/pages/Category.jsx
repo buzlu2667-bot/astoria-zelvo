@@ -90,6 +90,15 @@ const discount = hasDiscount ? Math.round(((old - price) / old) * 100) : 0;
       %{discount} İndirim
     </span>
   )}
+     {/* 🆕 Yeni Ürün Rozeti (Premium) */}
+{p.is_new && (
+  <span className="absolute top-10 left-2 z-10 inline-flex items-center gap-1.5 bg-amber-500/10 border border-amber-400/50 text-amber-300 text-[11px] font-semibold px-2.5 py-[2px] rounded-md shadow-[0_0_10px_rgba(255,200,0,0.3)] backdrop-blur-sm">
+    <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+      <path d="M12 2L13.09 8.26L19 9.27L14.5 13.14L15.82 19.02L12 16L8.18 19.02L9.5 13.14L5 9.27L10.91 8.26L12 2Z" />
+    </svg>
+    Yeni
+  </span>
+)}
 
   <img
     src={
