@@ -60,7 +60,7 @@ export default function Home() {
       {
         type: "image",
         src: "/hero/slide5.jpg",
-        title: "Alışverişe Hoş Geldin",
+        title: "",
         text: "",
         color: "text-yellow-400 drop-shadow-[0_0_30px_rgba(255,200,0,0.6)]",
       },
