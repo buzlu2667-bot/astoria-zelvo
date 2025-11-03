@@ -298,7 +298,7 @@ const toast = (text) =>
       {/* ✅ IBAN Kutusu */}
       <div className="bg-neutral-800/60 rounded-lg p-4 border border-yellow-600/30">
         <p className="text-gray-300">
-          <b>Hesap Sahibi:</b> ELITEMART TİC LTD
+          <b>Hesap Sahibi:</b> Burak AGARAK
         </p>
         <p className="mt-1 text-gray-300 flex flex-col gap-1">
           <b>IBAN:</b>
@@ -313,7 +313,7 @@ const toast = (text) =>
               );
             }}
           >
-            TR12 3456 7890 1234 5678 9012 34
+            TR66 0015 7000 0000 0095 7755 66
           </span>
         </p>
       </div>
@@ -339,7 +339,7 @@ const toast = (text) =>
 
 
       <p className="text-center text-gray-600 text-xs mt-10 opacity-60">
-        © {new Date().getFullYear()} ASTORIA ZELVO — Güvenli Alışveriş
+        © {new Date().getFullYear()} MAXIMORA — Güvenli Alışveriş
       </p>
     </div>
   );
