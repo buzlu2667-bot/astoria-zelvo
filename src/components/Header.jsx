@@ -292,10 +292,10 @@ function renderStatus(status) {
 }
 
  
-
   return (
     <>
 {/* ✅ Premium Animated Notification Banner */}
+{/*
 {notifications.length > 0 && (
   <div
     className="fixed top-0 left-0 w-full z-[1000]
@@ -305,25 +305,11 @@ function renderStatus(status) {
     flex items-center justify-center gap-3 px-3 sm:px-6 py-2.5
     animate-slideDown"
   >
-
     <div className="flex flex-col sm:flex-row items-center gap-1 sm:gap-3 text-sm sm:text-base leading-tight">
-    {/* ✅ Bildirim metni (tamamen tıklanmaz, hiçbir yere yönlendirmez) */}
-<div
-  className="cursor-default select-none pointer-events-none"
-  onClick={(e) => {
-    e.preventDefault();
-    e.stopPropagation();
-    console.log("🚫 Bildirim tıklanamaz hale getirildi");
-  }}
->
-  {notifications[0].title || "Yeni Bildirim"} — {notifications[0].message}
-</div>
-
-
-
+      <div className="cursor-default select-none pointer-events-none">
+        {notifications[0].title || "Yeni Bildirim"} — {notifications[0].message}
+      </div>
     </div>
-
-    {/* ❌ Close Button */}
     <button
       onClick={async () => {
         try {
@@ -352,9 +338,7 @@ function renderStatus(status) {
     </button>
   </div>
 )}
-
-
-
+*/}
 
       {/* TOPBAR */}
       <header className="bg-[#050505] text-white border-b border-yellow-500/20 shadow-[0_0_20px_rgba(255,215,0,0.08)] z-[60] overflow-hidden">
