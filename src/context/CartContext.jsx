@@ -38,47 +38,56 @@ export function CartProvider({ children }) {
   const isInCart = (productId) => cart.some((p) => p.id === productId);
 
   const addToCart = (product) => {
-    setCart((prev) => {
-      const existing = prev.find((p) => p.id === product.id);
-      if (existing) {
-        return prev.map((p) =>
+  setCart((prev) => {
+    const existing = prev.find((p) => p.id === product.id);
+    const updated = existing
+      ? prev.map((p) =>
           p.id === product.id
             ? { ...p, quantity: (p.quantity || 1) + 1 }
             : p
-        );
-      } else {
-        return [...prev, { ...product, quantity: 1 }];
-      }
-    });
-  };
+        )
+      : [...prev, { ...product, quantity: 1 }];
+    localStorage.setItem("elitemart_cart", JSON.stringify(updated)); // 🟡 burası eklenecek
+    return updated;
+  });
+};
 
-  const inc = (productId) => {
-    setCart((prev) =>
-      prev.map((p) =>
+
+ const inc = (productId) => {
+  setCart((prev) => {
+    const updated = prev.map((p) =>
+      p.id === productId
+        ? { ...p, quantity: (p.quantity || 1) + 1 }
+        : p
+    );
+    localStorage.setItem("elitemart_cart", JSON.stringify(updated)); // 🟡 burası eklenecek
+    return updated;
+  });
+};
+
+
+ const dec = (productId) => {
+  setCart((prev) => {
+    const updated = prev
+      .map((p) =>
         p.id === productId
-          ? { ...p, quantity: (p.quantity || 1) + 1 }
+          ? { ...p, quantity: Math.max((p.quantity || 1) - 1, 0) }
           : p
       )
-    );
-  };
-
-  const dec = (productId) => {
-    setCart((prev) =>
-      prev
-        .map((p) =>
-          p.id === productId
-            ? { ...p, quantity: Math.max((p.quantity || 1) - 1, 0) }
-            : p
-        )
-        .filter((p) => p.quantity > 0)
-    );
-  };
-
- const removeFromCart = (productId) => {
-  setCart((prev) =>
-    prev.filter((p) => (p.id ?? p._id) !== productId)
-  );
+      .filter((p) => p.quantity > 0);
+    localStorage.setItem("elitemart_cart", JSON.stringify(updated)); // 🟡 burası eklenecek
+    return updated;
+  });
 };
+
+const removeFromCart = (productId) => {
+  setCart((prev) => {
+    const updated = prev.filter((p) => (p.id ?? p._id) !== productId);
+    localStorage.setItem("elitemart_cart", JSON.stringify(updated)); // 🟡 burası eklenecek
+    return updated;
+  });
+};
+
 
 
  const clearCart = () => {
@@ -155,8 +164,6 @@ const placeOrder = async (payload) => {
     return { error: err.message };
   }
 };
-
-
 
   return (
     <CartContext.Provider

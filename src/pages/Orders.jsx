@@ -89,18 +89,35 @@ export default function Orders() {
     <div className="max-w-6xl mx-auto px-6 py-8 text-white">
       <h1 className="text-2xl font-bold mb-6">Siparişlerim</h1>
 
-      {orders.length === 0 ? (
-        <p className="text-gray-400">
-          Henüz sipariş yok.{" "}
-          <Link className="underline" to="/">
-            Alışverişe başla
-          </Link>
-        </p>
-      ) : (
-        <div className="space-y-4">
-          {orders.map((o) => {
-            const b = STATUS[o.status] ?? STATUS.pending ?? { cls: "", txt: "" };
-            const created = new Date(o.created_at).toLocaleString("tr-TR");
+     {orders.length === 0 ? (
+  <div className="flex flex-col items-center justify-center text-center py-16 animate-fadeIn">
+    {/* 👜 Premium Illustration */}
+    <img
+      src="/assets/empty-orders-elegant.png"
+      alt="Henüz sipariş yok"
+      className="w-52 sm:w-72 opacity-90 drop-shadow-[0_0_20px_rgba(255,215,0,0.25)] mb-6"
+    />
+
+    <h2 className="text-2xl font-bold text-yellow-400 mb-2">
+      Henüz siparişin yok 💛
+    </h2>
+    <p className="text-gray-400 mb-6">
+      Alışverişin ışıltısını keşfet, seni bekleyen premium ürünler var.
+    </p>
+
+    <Link
+      to="/"
+      className="px-6 py-3 bg-gradient-to-r from-yellow-400 to-pink-400 rounded-lg text-black font-semibold hover:brightness-110 transition-all shadow-[0_0_25px_rgba(255,215,0,0.35)]"
+    >
+      🛍️ Alışverişe Başla
+    </Link>
+  </div>
+) : (
+  // mevcut kodun (sipariş listesi)
+  <div className="space-y-4">
+    {orders.map((o) => {
+      const b = STATUS[o.status] ?? STATUS.pending ?? { cls: "", txt: "" };
+      const created = new Date(o.created_at).toLocaleString("tr-TR");
 
            return (
   <div
