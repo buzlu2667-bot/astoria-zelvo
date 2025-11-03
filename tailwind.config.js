@@ -42,6 +42,7 @@ export default {
           '0%, 100%': { transform: 'scale(1)' },
           '50%': { transform: 'scale(1.15)' },
         },
+        
       },
       animation: {
         pulseSlow: 'pulseSlow 1.8s infinite ease-in-out',

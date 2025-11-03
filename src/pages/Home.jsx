@@ -64,6 +64,13 @@ export default function Home() {
         text: "",
         color: "text-yellow-400 drop-shadow-[0_0_30px_rgba(255,200,0,0.6)]",
       },
+      {
+        type: "image",
+        src: "/hero/slide6.jpg",
+        title: "",
+        text: "",
+        color: "text-yellow-400 drop-shadow-[0_0_30px_rgba(255,200,0,0.6)]",
+      },
       //{
        // type: "video",
         //src: "/hero/slide1-video.mp4",
