@@ -91,6 +91,12 @@ export default function ProductCard({ product, openModal }) {
         %{discountRate} İndirim
       </span>
     )}
+     {/* ⭐ Yeni Ürün Rozeti */}
+{product.is_new && (
+  <span className="absolute top-10 left-2 z-10 bg-emerald-600 text-white text-[11px] px-2 py-[2px] rounded-md shadow-md animate-pulse">
+    ⭐ Yeni
+  </span>
+)}
 
     <img
       src={imageSrc}

@@ -148,6 +148,7 @@ export default function AdminProducts() {
   description: form.description || null,
   image_url,
   gallery: gallery.length ? gallery : null,
+  is_new: form.is_new || false,
 };
 
 
@@ -390,6 +391,23 @@ export default function AdminProducts() {
               Yeni yüklediklerin mevcut galeriye <b>eklenir</b>. (Silme desteği istenirse ekleriz.)
             </p>
           </div>
+           
+           {/* ✅ Yeni Ürün Kutusu */}
+<div className="col-span-2 flex items-center gap-2">
+  <input
+    type="checkbox"
+    id="is_new"
+    checked={form.is_new || false}
+    onChange={(e) => setForm((f) => ({ ...f, is_new: e.target.checked }))}
+    className="w-4 h-4 accent-yellow-500"
+  />
+  <label htmlFor="is_new" className="text-sm text-yellow-400 select-none">
+    🆕 Yeni Ürün
+  </label>
+</div>
+
+
+
 
           {/* Description */}
           <textarea
@@ -496,6 +514,7 @@ export default function AdminProducts() {
                             image_url: p.image_url || null,
                             gallery_files: [],
                             gallery: Array.isArray(p.gallery) ? p.gallery : [],
+                            is_new: p.is_new || false,
                           });
                         }}
                         className="text-yellow-400 hover:text-yellow-500"
