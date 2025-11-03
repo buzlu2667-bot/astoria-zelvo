@@ -82,8 +82,8 @@ export default function Home() {
               className="
                 absolute inset-0 w-full h-full
                 object-cover md:object-center
-                object-[center_25%]
-                scale-[1.25] md:scale-100
+                object-[center_35%]
+                scale-[0.85] md:scale-100
                 transition-all duration-700 ease-out
               "
             />
@@ -106,6 +106,7 @@ export default function Home() {
     ))}
   </Swiper>
 </section>
+
 
 
     {/* ✅ PRODUCTS */}
