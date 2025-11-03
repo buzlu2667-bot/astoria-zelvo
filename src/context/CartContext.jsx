@@ -22,11 +22,8 @@ export function CartProvider({ children }) {
   }, [cart]);
 
   
-  useEffect(() => {
-  const addListener = (e) => addToCart(e.detail);
-  window.addEventListener("cart-add", addListener);
-  return () => window.removeEventListener("cart-add", addListener);
-}, []);
+ 
+
 
 
   const total = useMemo(() => {
@@ -37,7 +34,7 @@ export function CartProvider({ children }) {
 
   const isInCart = (productId) => cart.some((p) => p.id === productId);
 
-  const addToCart = (product) => {
+ const addToCart = (product) => {
   setCart((prev) => {
     const existing = prev.find((p) => p.id === product.id);
     const updated = existing
@@ -47,10 +44,14 @@ export function CartProvider({ children }) {
             : p
         )
       : [...prev, { ...product, quantity: 1 }];
-    localStorage.setItem("elitemart_cart", JSON.stringify(updated)); // 🟡 burası eklenecek
+
+    localStorage.setItem("elitemart_cart", JSON.stringify(updated));
     return updated;
   });
 };
+
+
+
 
 
  const inc = (productId) => {

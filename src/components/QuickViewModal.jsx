@@ -2,6 +2,7 @@
 import { useEffect, useRef, useState } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Zoom, Navigation, Pagination, Keyboard } from "swiper/modules";
+import { useCart } from "../context/CartContext";
 
 import "swiper/css";
 import "swiper/css/zoom";
@@ -12,6 +13,7 @@ export default function QuickViewModal({ product, closeModal }) {
   if (!product) return null;
 
   const modalRef = useRef(null);
+  const { addToCart } = useCart();
 
   const isBrowser = typeof window !== "undefined"; // ✅ SSR koruması
 
@@ -86,15 +88,16 @@ useEffect(() => {
   }, [closeModal]);
 
   // Sepete ekle
-  const onAddToCart = () => {
-    window.dispatchEvent(new CustomEvent("cart-add", { detail: product }));
-    window.dispatchEvent(
-      new CustomEvent("toast", {
-        detail: { type: "success", text: "Sepete eklendi!" },
-      })
-    );
-    closeModal?.();
-  };
+ const onAddToCart = () => {
+  addToCart(product);
+  window.dispatchEvent(
+    new CustomEvent("toast", {
+      detail: { type: "success", text: "Sepete eklendi!" },
+    })
+  );
+  closeModal?.();
+};
+
 
   return (
     <div
