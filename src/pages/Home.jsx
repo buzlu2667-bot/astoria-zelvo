@@ -65,44 +65,51 @@ export default function Home() {
       { type: "image", src: "/hero/slide4.jpg", title: "Tarzını Göster!", text: "", color: "text-yellow-300" },
     ].map((slide, i) => (
       <SwiperSlide key={i}>
-        <div className="relative w-full h-full overflow-hidden">
-          {slide.type === "video" ? (
-            <video
-              className="absolute inset-0 w-full h-full object-cover object-center"
-              src={slide.src}
-              autoPlay
-              muted
-              loop
-              playsInline
-            />
-          ) : (
-            <img
-              src={slide.src}
-              alt=""
-              className="
-                absolute inset-0 w-full h-full
-                object-cover md:object-center
-                object-[center_35%]
-                scale-[0.85] md:scale-100
-                transition-all duration-700 ease-out
-              "
-            />
-          )}
+  <div className="relative w-full h-full overflow-hidden">
+    {slide.type === "video" ? (
+      <video
+        className="absolute inset-0 w-full h-full object-cover object-center"
+        src={slide.src}
+        autoPlay
+        muted
+        loop
+        playsInline
+      />
+    ) : (
+      <picture>
+        {/* ✅ Mobil görsel */}
+        <source
+          media="(max-width: 767px)"
+          srcSet={slide.src.replace(".jpg", "-mobile.jpg")}
+        />
+        {/* ✅ Masaüstü görsel */}
+        <img
+          src={slide.src}
+          alt=""
+          className="absolute inset-0 w-full h-full object-cover object-center transition-all duration-700 ease-out"
+        />
+      </picture>
+    )}
 
-          {/* ✅ Overlay */}
-          <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-black/25 to-black/50 shadow-[inset_0_0_60px_rgba(0,0,0,0.3)]"></div>
+    {/* ✅ Overlay */}
+    <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-black/25 to-black/50 shadow-[inset_0_0_60px_rgba(0,0,0,0.3)]"></div>
 
-          {/* ✅ İçerik */}
-          <div className="absolute inset-0 flex flex-col items-center justify-center text-center px-4 animate-fadeInUp">
-            <h1 className={`text-3xl sm:text-4xl md:text-6xl font-extrabold drop-shadow-xl ${slide.color}`}>
-              {slide.title}
-            </h1>
-            {slide.text && (
-              <p className="text-gray-200 mt-3 text-base sm:text-lg md:text-xl">{slide.text}</p>
-            )}
-          </div>
-        </div>
-      </SwiperSlide>
+    {/* ✅ İçerik */}
+    <div className="absolute inset-0 flex flex-col items-center justify-center text-center px-4 animate-fadeInUp">
+      <h1
+        className={`text-3xl sm:text-4xl md:text-6xl font-extrabold drop-shadow-xl ${slide.color}`}
+      >
+        {slide.title}
+      </h1>
+      {slide.text && (
+        <p className="text-gray-200 mt-3 text-base sm:text-lg md:text-xl">
+          {slide.text}
+        </p>
+      )}
+    </div>
+  </div>
+</SwiperSlide>
+
     ))}
   </Swiper>
 </section>
