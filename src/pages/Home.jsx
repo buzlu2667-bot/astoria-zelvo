@@ -122,9 +122,10 @@ export default function Home() {
           )}
 
           {/* ✅ Dark Overlay + Content */}
-         <div className="absolute inset-0 bg-gradient-to-b from-black/80 via-black/50 to-black/80
-shadow-[inset_0_0_120px_rgba(0,0,0,0.9)]
+        <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-black/25 to-black/50
+shadow-[inset_0_0_60px_rgba(0,0,0,0.3)]
 flex flex-col items-center justify-center text-center px-4">
+
             <h1
               className={`text-4xl md:text-6xl font-extrabold drop-shadow-xl ${slide.color}`}
             >

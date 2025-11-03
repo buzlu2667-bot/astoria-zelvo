@@ -23,6 +23,16 @@ const rawImages = [
   `/products/${baseImg}.1.png`,
   `/products/${baseImg}.2.png`,
   `/products/${baseImg}.3.png`,
+  `/products/${baseImg}.4.png`,
+  `/products/${baseImg}.5.png`,
+  `/products/${baseImg}.6.png`,
+  `/products/${baseImg}.7.png`,
+  `/products/${baseImg}.8.png`,
+  `/products/${baseImg}.9.png`,
+  `/products/${baseImg}.10.png`,
+  `/products/${baseImg}.11.png`,
+  `/products/${baseImg}.12.png`,
+  `/products/${baseImg}.13.png`,
 ].filter((src) => !src.includes("/products/.png"));
 
 const [productImages, setProductImages] = useState([]);
@@ -188,6 +198,12 @@ useEffect(() => {
         {/* Sticky CTA */}
         <div className="absolute bottom-0 left-0 right-0 p-3 sm:p-4 bg-gradient-to-t from-black/80 via-black/60 to-transparent">
           <div className="max-w-4xl mx-auto">
+           <p
+  className="text-yellow-400/90 text-sm text-center mb-3 italic animate-glow"
+>
+  🎨 Sipariş verirken lütfen tercih ettiğiniz rengi açıklama kısmında belirtiniz.!
+</p>
+
             <button
               onClick={onAddToCart}
               className="w-full py-3 rounded-lg font-bold text-lg

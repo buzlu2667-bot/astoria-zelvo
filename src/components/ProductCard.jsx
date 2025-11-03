@@ -52,69 +52,98 @@ export default function ProductCard({ product, openModal }) {
 >
 
 
-      {/* ❤️ FAVORİ BUTONU — Artık Global! */}
-      <button
-  onClick={(e) => {
-    e.stopPropagation(); // ✅ Kart tıklamasını engeller
-    handleFavorite();
-  }}
-
-        
-        className="absolute top-3 right-3 z-20 cursor-pointer bg-black/70 backdrop-blur-md w-9 h-9 rounded-full flex items-center justify-center hover:scale-125 transition"
-        aria-label="Favorilere Ekle"
-      >
-        {favorite ? "❤️" : "🤍"}
-      </button>
-
-      {hasDiscount && (
-        <span className="absolute top-3 left-3 z-20 bg-red-600 text-white text-xs font-semibold px-2 py-1 rounded-md shadow">
-          %{discountRate} İndirim
-        </span>
-      )}
-
       <div
-        className="w-full h-28 sm:h-36 md:h-48 bg-black overflow-hidden cursor-pointer"
-        onClick={() => openModal(product)}
-        aria-label="Hızlı İncele"
-      >
-        <img
-          src={imageSrc}
-          alt={product.name}
-          className="object-cover w-full h-full group-hover:scale-110 transition-transform duration-500 ease-out"
-        />
+  className="cursor-pointer bg-neutral-900 rounded-xl p-3 border border-neutral-800 hover:border-yellow-500 hover:scale-[1.03] transition relative"
+  onClick={() => openModal(product)}
+>
+  <div className="relative w-full h-40 sm:h-48 md:h-56 bg-black overflow-hidden rounded-lg mb-3 flex items-center justify-center">
+    {/* ❤️ Favori Butonu */}
+    <button
+      onClick={(e) => {
+        e.stopPropagation();
+        const next = !favorite;
+        setFavorite(next);
+        if (next) {
+          addFav(product);
+          window.dispatchEvent(
+            new CustomEvent("toast", {
+              detail: { type: "success", text: "❤️ Favorilere eklendi!" },
+            })
+          );
+        } else {
+          removeFav(product.id);
+          window.dispatchEvent(
+            new CustomEvent("toast", {
+              detail: { type: "danger", text: "❌ Favorilerden çıkarıldı" },
+            })
+          );
+        }
+      }}
+      className="absolute top-3 right-3 z-20 cursor-pointer bg-black/70 backdrop-blur-md w-9 h-9 rounded-full flex items-center justify-center hover:scale-125 transition"
+      aria-label="Favorilere Ekle"
+    >
+      {favorite ? "❤️" : "🤍"}
+    </button>
 
-        <button
-          onClick={() => openModal(product)}
-          className="absolute bottom-3 px-3 py-1 text-xs rounded-md bg-black/70 backdrop-blur-sm text-white opacity-0 group-hover:opacity-100 transition-all duration-300"
-        >
-          🔍 İncele
-        </button>
-      </div>
+    {/* 🔻 İndirim Etiketi */}
+    {hasDiscount && (
+      <span className="absolute top-2 left-2 z-10 bg-red-600 text-white text-xs px-2 py-1 rounded-md shadow-md">
+        %{discountRate} İndirim
+      </span>
+    )}
 
-      <div className="p-3 flex flex-col justify-between min-h-[170px]">
-        <h3 className="font-semibold text-base text-center truncate">
-          {product.name}
-        </h3>
+    <img
+      src={imageSrc}
+      alt={product.name}
+      draggable="false"
+      className="w-full h-full object-cover transition-transform duration-500 ease-out group-hover:scale-[1.03]"
+      style={{
+        aspectRatio: "3 / 4",
+        objectPosition: "center",
+        filter: "brightness(1) contrast(1) saturate(1)",
+        imageRendering: "auto",
+        transform: "translateZ(0)",
+        backfaceVisibility: "hidden",
+        
+      }}
+    />
+  </div>
+{/* 🔍 İncele Butonu */}
+<button
+  onClick={(e) => {
+    e.stopPropagation();
+    openModal(product);
+  }}
+  className="absolute inset-0 flex items-center justify-center bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity duration-300 text-white text-sm font-semibold"
+>
+  ✨🔎 İncele
+</button>
 
-        <div className="mt-1 flex items-center justify-center gap-2 min-h-[22px]">
-          {outOfStock && (
-            <span className="text-red-500 text-xs font-semibold">Tükendi ❌</span>
-          )}
-          {lowStock && !outOfStock && (
-            <span className="text-yellow-400 text-xs font-semibold">Az Kaldı ⚠️</span>
-          )}
-        </div>
+  <p className="font-semibold truncate">{product.name}</p>
 
-        <div className="mt-2 flex items-end justify-center gap-2">
-          {hasDiscount && (
-            <span className="text-sm text-gray-500 line-through">
-              ₺{oldPrice.toLocaleString("tr-TR")}
-            </span>
-          )}
-          <span className="text-yellow-400 font-bold text-lg drop-shadow-sm">
-            ₺{price.toLocaleString("tr-TR")}
-          </span>
-        </div>
+  {/* ✅ Stok Etiketi */}
+  {outOfStock ? (
+    <p className="text-red-500 text-sm font-bold">Tükendi ❌</p>
+  ) : lowStock ? (
+    <p className="text-amber-400 text-sm font-bold">Az Kaldı ⚠️</p>
+  ) : (
+    <p className="text-green-500 text-sm font-bold">Stokta ✅</p>
+  )}
+
+  {hasDiscount ? (
+    <p className="text-yellow-400 font-bold">
+      <span className="text-gray-400 line-through text-sm mr-2">
+        ₺{oldPrice.toLocaleString("tr-TR")}
+      </span>
+      ₺{price.toLocaleString("tr-TR")}
+    </p>
+  ) : (
+    <p className="text-yellow-400 font-bold">
+      ₺{price.toLocaleString("tr-TR")}
+    </p>
+  )}
+</div>
+
 
      <button
   disabled={outOfStock}
@@ -158,6 +187,6 @@ export default function ProductCard({ product, openModal }) {
 
 
       </div>
-    </div>
+    
   );
 }
