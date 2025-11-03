@@ -23,7 +23,7 @@ export default {
         badgeRedText: "#ffc2c6",
         badgeRedBorder: "#842029",
       },
-
+        
       keyframes: {
         pulseSlow: {
           '0%, 100%': { opacity: 0.5 },
