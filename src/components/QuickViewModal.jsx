@@ -175,10 +175,10 @@ useEffect(() => {
 
           {/* Metin & fiyatlar */}
           <div className="px-4 sm:px-6 pb-28 max-w-4xl w-full mx-auto text-center">
-            {/* 🆕 Yeni Ürün Rozeti */}
+            {/* ⭐ Yeni Ürün Rozeti */}
             {product.is_new && (
              <div className="inline-block bg-emerald-600/20 border border-emerald-400 text-emerald-300 text-xs font-semibold px-3 py-[3px] rounded-full mb-2 animate-pulse shadow-[0_0_15px_rgba(0,255,150,0.3)]">
-             🆕 Yeni Ürün
+             ⭐ Yeni Ürün
                 </div>
                )}
 

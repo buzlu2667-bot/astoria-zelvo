@@ -90,10 +90,25 @@ const discount = hasDiscount ? Math.round(((old - price) / old) * 100) : 0;
       %{discount} İndirim
     </span>
   )}
-     {/* 🆕 Yeni Ürün Rozeti (Premium) */}
+    {/* 🌟 Yeni Ürün Rozeti (Yanıp Sönen Premium Gold) */}
 {p.is_new && (
-  <span className="absolute top-10 left-2 z-10 inline-flex items-center gap-1.5 bg-amber-500/10 border border-amber-400/50 text-amber-300 text-[11px] font-semibold px-2.5 py-[2px] rounded-md shadow-[0_0_10px_rgba(255,200,0,0.3)] backdrop-blur-sm">
-    <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+  <span
+    className="absolute top-[38px] left-2 z-10 inline-flex items-center gap-1.5 
+               bg-gradient-to-r from-yellow-400/20 via-amber-500/10 to-yellow-400/20
+               border border-yellow-400/60 text-yellow-300 text-[12px] font-semibold 
+               px-3 py-[3px] rounded-md shadow-[0_0_15px_rgba(255,220,0,0.4)] 
+               backdrop-blur-sm tracking-wide animate-glow"
+  >
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="12"
+      height="12"
+      fill="none"
+      viewBox="0 0 24 24"
+      stroke="currentColor"
+      strokeWidth="2"
+      className="drop-shadow-[0_0_6px_rgba(255,255,200,0.8)]"
+    >
       <path d="M12 2L13.09 8.26L19 9.27L14.5 13.14L15.82 19.02L12 16L8.18 19.02L9.5 13.14L5 9.27L10.91 8.26L12 2Z" />
     </svg>
     Yeni
