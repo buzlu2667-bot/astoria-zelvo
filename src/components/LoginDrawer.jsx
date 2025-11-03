@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
+import { EyeIcon, EyeSlashIcon } from "@heroicons/react/24/outline";
 import { supabase } from "../lib/supabaseClient";
 
 export default function LoginDrawer({ open, setOpen, onForgot, onSignup }) {

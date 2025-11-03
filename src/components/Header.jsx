@@ -117,8 +117,14 @@ useEffect(() => {
   const [login, setLogin] = useState(initialLogin);
   const [signup, setSignup] = useState(initialSignup);
   const [reset, setReset] = useState(initialReset);
-  const [error, setError] = useState("");
-  const [message, setMessage] = useState("");
+ const [loginError, setLoginError] = useState("");
+const [signupError, setSignupError] = useState("");
+const [resetError, setResetError] = useState("");
+const [signupMsg, setSignupMsg] = useState("");
+const [resetMsg, setResetMsg] = useState("");
+
+
+
 
   const [orderCheckOpen, setOrderCheckOpen] = useState(false);
 const [orderId, setOrderId] = useState("");
@@ -143,9 +149,9 @@ const [foundOrder, setFoundOrder] = useState(null);
     location.pathname.startsWith("/orders");
 
   // ---- Auth handlers
- async function handleLogin(e) {
+async function handleLogin(e) {
   e.preventDefault();
-  setError("");
+  setLoginError("");
 
   const { error } = await supabase.auth.signInWithPassword({
     email: (login.email || "").trim(),
@@ -153,52 +159,66 @@ const [foundOrder, setFoundOrder] = useState(null);
   });
 
   if (error) {
-    setError(error.message);
-  } else {
-    setLogin(initialLogin);
-    setLoginOpen(false);
+    const msg =
+      error.message?.includes("Invalid login credentials") ||
+      error.message?.includes("Invalid")
+        ? "E-posta veya şifre hatalı!"
+        : "Giriş başarısız, tekrar deneyin.";
 
-    // ✅ Toast göster
-    window.dispatchEvent(new CustomEvent("toast", {
+    setLoginError(msg);
+    return;
+  }
+
+  setLogin(initialLogin);
+  setLoginOpen(false);
+
+  window.dispatchEvent(
+    new CustomEvent("toast", {
       detail: {
         type: "success",
-        text: "✅ Giriş başarılı! 👑 Hoş geldin!"
-      }
-    }));
+        text: "✅ Giriş başarılı! 👑 Hoş geldin!",
+      },
+    })
+  );
 
-    // ✅ Toast görünürken bekle → sonra yönlendir
-    setTimeout(() => {
-      const redirectTo =
-        localStorage.getItem("redirect_after_login") || "/";
-      localStorage.removeItem("redirect_after_login");
-
-      window.location.href = redirectTo;
-    }, 1400);
-  }
+  setTimeout(() => {
+    const redirectTo =
+      localStorage.getItem("redirect_after_login") || "/";
+    localStorage.removeItem("redirect_after_login");
+    window.location.href = redirectTo;
+  }, 1400);
 }
 
 
-  async function handleSignup(e) {
-    e.preventDefault();
-    setError("");
-    setMessage("");
-    const { error } = await supabase.auth.signUp({
-      email: (signup.email || "").trim(),
-      password: signup.password || "",
-    });
-    if (error) setError(error.message);
-    else setMessage("✅ Kayıt başarılı! Giriş yapabilirsiniz.");
-  }
-  async function handleReset(e) {
-    e.preventDefault();
-    setError("");
-    setMessage("");
-    const { error } = await supabase.auth.resetPasswordForEmail(
-      (reset.email || "").trim()
-    );
-    if (error) setError(error.message);
-    else setMessage("📩 E-postanı kontrol et!");
-  }
+
+
+ async function handleSignup(e) {
+  e.preventDefault();
+  setSignupError("");
+  setSignupMsg("");
+
+  const { error } = await supabase.auth.signUp({
+    email: (signup.email || "").trim(),
+    password: signup.password || "",
+  });
+
+  if (error) setSignupError(error.message);
+  else setSignupMsg("✅ Kayıt başarılı! Giriş yapabilirsiniz.");
+}
+
+ async function handleReset(e) {
+  e.preventDefault();
+  setResetError("");
+  setResetMsg("");
+
+  const { error } = await supabase.auth.resetPasswordForEmail(
+    (reset.email || "").trim()
+  );
+
+  if (error) setResetError(error.message);
+  else setResetMsg("📩 E-postanı kontrol et!");
+}
+
 
  const go = (to, protect = false) => {
   if (protect && (!session || isRecovering)) {
@@ -654,6 +674,9 @@ function renderStatus(status) {
     >
       Giriş Yap
     </button>
+ {loginError && (
+      <p className="text-red-400 text-sm text-center">{loginError}</p>
+    )}
 
     {/* Links */}
     <div className="flex justify-between text-sm pt-1">
@@ -682,7 +705,7 @@ function renderStatus(status) {
   </form>
 </div>
 {/* ✅ Signup Drawer */}
-{signupOpen && (
+{!loginOpen && signupOpen && (
   <>
     <div
       className="fixed inset-0 bg-black/40 backdrop-blur-sm z-[9998]"
@@ -770,8 +793,9 @@ function renderStatus(status) {
 </div>
 
 
-        {error && <p className="text-red-400 text-sm">{error}</p>}
-        {message && <p className="text-emerald-400 text-sm">{message}</p>}
+        {signupError && <p className="text-red-400 text-sm">{signupError}</p>}
+         {signupMsg && <p className="text-emerald-400 text-sm">{signupMsg}</p>}
+
 
         <button className="w-full py-3 rounded-lg bg-gradient-to-r from-yellow-400 to-rose-400 text-black font-semibold">Kayıt Ol</button>
       </form>
@@ -779,7 +803,7 @@ function renderStatus(status) {
   </>
 )}
 {/* ✅ Password Reset Drawer */}
-{resetOpen && (
+{!loginOpen && !signupOpen && resetOpen && (
   <>
     <div
       className="fixed inset-0 bg-black/40 backdrop-blur-sm z-[9998]"
@@ -803,8 +827,9 @@ function renderStatus(status) {
           className="w-full p-3 rounded-lg bg-[#1b1b1b] border border-yellow-500/20 focus:ring-yellow-400"
         />
 
-        {message && <p className="text-emerald-400 text-sm">{message}</p>}
-        {error && <p className="text-red-400 text-sm">{error}</p>}
+        {resetError && <p className="text-red-400 text-sm">{resetError}</p>}
+      {resetMsg && <p className="text-emerald-400 text-sm">{resetMsg}</p>}
+
 
         <button className="w-full py-3 rounded-lg bg-gradient-to-r from-yellow-400 to-rose-400 text-black font-semibold">
           Sıfırlama Bağlantısını Gönder
