@@ -48,7 +48,17 @@ export default function Home() {
   <div className="min-h-screen bg-black text-white">
 
    {/* ✅ FULLSCREEN PREMIUM HERO SLIDER — FINAL */}
-<section className="w-full h-[65vh] sm:h-[70vh] md:h-[80vh] relative overflow-hidden">
+<section
+  className="w-full relative overflow-hidden
+  h-[70vh] sm:h-[75vh] md:h-[78vh] lg:h-[85vh] xl:h-[85vh]
+  [@media(max-width:768px)]:aspect-[16/9]
+  [@media(max-width:768px)]:h-auto"
+>
+
+
+
+
+
   <Swiper
     modules={[Autoplay, Pagination]}
     autoplay={{ delay: 3500 }}
@@ -58,11 +68,15 @@ export default function Home() {
   >
     {[
       { type: "image", src: "/hero/slide5.jpg", title: "", text: "", color: "text-yellow-400" },
-      { type: "image", src: "/hero/slide6.jpg", title: "", text: "", color: "text-yellow-400" },
-      { type: "image", src: "/hero/slide2.jpg", title: "Premium Çanta Koleksiyonu", text: "", color: "text-yellow-400" },
       { type: "image", src: "/hero/slide1.jpg", title: "", text: "", color: "text-yellow-400" },
+      { type: "image", src: "/hero/slide2.jpg", title: "Premium Çanta Koleksiyonu", text: "", color: "text-yellow-400" },
+      { type: "image", src: "/hero/slide6.jpg", title: "", text: "", color: "text-yellow-400" },
       { type: "image", src: "/hero/slide3.jpg", title: "Premium Çanta Koleksiyonu", text: "", color: "text-yellow-400" },
       { type: "image", src: "/hero/slide4.jpg", title: "Tarzını Göster!", text: "", color: "text-yellow-300" },
+      { type: "image", src: "/hero/slide7.jpg", title: "", text: "", color: "text-yellow-400" },
+      { type: "image", src: "/hero/slide8.jpg", title: "", text: "", color: "text-yellow-400" },
+      { type: "image", src: "/hero/slide9.jpg", title: "", text: "", color: "text-yellow-400" },
+      { type: "image", src: "/hero/slide10.jpg", title: "", text: "", color: "text-yellow-400" },
     ].map((slide, i) => (
       <SwiperSlide key={i}>
   <div className="relative w-full h-full overflow-hidden">
@@ -82,17 +96,24 @@ export default function Home() {
           media="(max-width: 767px)"
           srcSet={slide.src.replace(".jpg", "-mobile.jpg")}
         />
-        {/* ✅ Masaüstü görsel */}
-        <img
-          src={slide.src}
-          alt=""
-          className="absolute inset-0 w-full h-full object-cover object-center transition-all duration-700 ease-out"
-        />
+       {/* ✅ Masaüstü + Mobil görsel (renk canlı + 16:9 uyumlu) */}
+<img
+  src={slide.src}
+  alt=""
+  className="absolute inset-0 w-full h-auto md:h-full object-cover object-center 
+  brightness-[1.05] contrast-[1.1] saturate-[1.1]
+  [@media(max-width:768px)]:aspect-[16/9]
+  [@media(max-width:768px)]:h-auto
+  transition-all duration-700 ease-out"
+/>
+
+
+
       </picture>
     )}
 
     {/* ✅ Overlay */}
-    <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-black/25 to-black/50 shadow-[inset_0_0_60px_rgba(0,0,0,0.3)]"></div>
+    <div className="absolute inset-0 bg-black/10"></div>
 
     {/* ✅ İçerik */}
     <div className="absolute inset-0 flex flex-col items-center justify-center text-center px-4 animate-fadeInUp">
