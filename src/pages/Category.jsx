@@ -21,10 +21,11 @@ const [favorites, setFavorites] = useState([]);
   // ✅ Ürünleri yükleme fonksiyonu
   const fetchProducts = async () => {
     setLoading(true);
-    const { data, error } = await supabase
-      .from("products")
-      .select("*")
-      .ilike("category", categoryName);
+   const { data, error } = await supabase
+  .from("products")
+  .select("*")
+  .ilike("category", categoryName)
+  .order("created_at", { ascending: false }); // ✅ En yeni en üstte
 
     if (error) {
       console.error("❌ Ürün yükleme hatası:", error.message);
