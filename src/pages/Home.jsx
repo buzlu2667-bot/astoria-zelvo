@@ -50,9 +50,8 @@ export default function Home() {
    {/* ✅ FULLSCREEN PREMIUM HERO SLIDER — FINAL */}
 <section
   className="w-full relative overflow-hidden
-  h-[55vh] sm:h-[75vh] md:h-[78vh] lg:h-[85vh] xl:h-[85vh]
-  [@media(max-width:768px)]:aspect-[16/9]
-  [@media(max-width:768px)]:h-auto"
+  h-[70vh] sm:h-[75vh] md:h-[78vh] lg:h-[85vh] xl:h-[85vh]
+  max-md:h-auto max-md:aspect-[16/9]"
 >
 
 
