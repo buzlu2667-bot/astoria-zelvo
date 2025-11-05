@@ -51,9 +51,10 @@ export default function Home() {
     <div className="min-h-screen bg-black text-white">
       {/* ✅ HERO SLIDER */}
       <section className="relative w-full overflow-hidden mb-8">
-        <div className="w-full h-[60vh] sm:h-[70vh] md:h-[80vh] lg:h-[80vh]">
-          <Swiper
-            modules={[Autoplay, Pagination, Navigation]}
+       <div className="w-full aspect-[16/9] sm:h-[70vh] md:h-[80vh] lg:h-[80vh] sm:aspect-auto">
+  <Swiper
+    modules={[Autoplay, Pagination, Navigation]}
+
             autoplay={{ delay: 4000, disableOnInteraction: false }}
             loop={true}
             pagination={{ clickable: true }}
@@ -66,18 +67,11 @@ export default function Home() {
             {slides.map((slide, i) => (
               <SwiperSlide key={i}>
                 <div className="relative w-full h-full">
-                  <picture>
-                    <source
-                      media="(max-width: 767px)"
-                      srcSet={slide.src.replace(".jpg", "-mobile.jpg")}
-                    />
-                    <img
-                      src={slide.src}
-                      alt=""
-                      className="w-full h-full object-cover object-top"
-                      draggable={false}
-                    />
-                  </picture>
+                <div
+  className="w-full h-full bg-center bg-cover"
+  style={{ backgroundImage: `url(${slide.src})` }}
+></div>
+
 
                   {/* ✅ Altın yazı */}
                   {slide.text && (
