@@ -105,7 +105,7 @@ export default function Home() {
         { src: "/hero/slide3.jpg" },
         { src: "/hero/slide4.jpg" },
         { src: "/hero/slide5.jpg" },
-        { src: "/hero/slide10.jpg" },
+        { src: "/hero/slide11.jpg" },
       ].map((slide, i) => (
         <SwiperSlide key={i}>
           <div className="relative w-full h-full">
