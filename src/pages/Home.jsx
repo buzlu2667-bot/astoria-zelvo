@@ -15,7 +15,7 @@ export default function Home() {
   const [quickViewProduct, setQuickViewProduct] = useState(null);
   const { name: category } = useParams();
 
-  // ✅ Ürünleri getir
+  // ✅ Ürünleri çek
   useEffect(() => {
     const fetchProducts = async () => {
       setLoading(true);
@@ -30,7 +30,7 @@ export default function Home() {
     fetchProducts();
   }, []);
 
-  // ✅ Kategori filtresi
+  // ✅ Filtreleme
   const filteredProducts = useMemo(() => {
     if (!category) return products;
     return products.filter(
@@ -38,7 +38,7 @@ export default function Home() {
     );
   }, [category, products]);
 
-  // ✅ Slider görselleri
+  // ✅ Slider resimleri
   const slides = [
     { src: "/hero/slide1.jpg", text: "" },
     { src: "/hero/slide2.jpg", text: "" },
@@ -51,13 +51,18 @@ export default function Home() {
     { src: "/hero/slide9.jpg", text: "" },
   ];
 
-  // ✅ Mobil algılama (GERÇEK ZAMANLI)
-  const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
+  // ✅ Mobil mi?
+  const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
-    const handleResize = () => setIsMobile(window.innerWidth <= 768);
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
+    const checkMobile = () => {
+      const isM = window.matchMedia("(max-width: 768px)").matches;
+      setIsMobile(isM);
+    };
+
+    checkMobile(); // İlk kontrol
+    window.addEventListener("resize", checkMobile);
+    return () => window.removeEventListener("resize", checkMobile);
   }, []);
 
   return (
@@ -76,42 +81,43 @@ export default function Home() {
             }}
             className="w-full h-full"
           >
-            {slides.map((slide, i) => (
-              <SwiperSlide key={i}>
-                <div className="relative w-full h-full">
-                  <div
-                    className="w-full h-[65vh] sm:h-full bg-cover bg-center sm:bg-top"
-                    style={{
-                      backgroundImage: `url(${
-                        isMobile
-                          ? slide.src.replace(".jpg", "-mobile.jpg")
-                          : slide.src
-                      })`,
-                      backgroundRepeat: "no-repeat",
-                      backgroundSize: "cover",
-                      backgroundPosition: "center",
-                    }}
-                  ></div>
+            {slides.map((slide, i) => {
+              const imagePath = isMobile
+                ? slide.src.replace(".jpg", "-mobile.jpg")
+                : slide.src;
+              return (
+                <SwiperSlide key={i}>
+                  <div className="relative w-full h-full">
+                    <div
+                      className="w-full h-[65vh] sm:h-full bg-cover bg-center sm:bg-top"
+                      style={{
+                        backgroundImage: `url(${imagePath})`,
+                        backgroundRepeat: "no-repeat",
+                        backgroundSize: "cover",
+                        backgroundPosition: "center",
+                      }}
+                    ></div>
 
-                  {/* ✅ Altın yazı */}
-                  {slide.text && (
-                    <div className="absolute inset-0 flex items-center justify-center">
-                      <h2
-                        className="text-3xl sm:text-4xl md:text-5xl font-extrabold 
-                        text-transparent bg-clip-text bg-gradient-to-b from-yellow-300 to-yellow-500 
-                        drop-shadow-[0_0_15px_rgba(255,215,0,0.8)] animate-fadeUp"
-                      >
-                        {slide.text}
-                      </h2>
-                    </div>
-                  )}
-                </div>
-              </SwiperSlide>
-            ))}
+                    {/* ✅ Altın yazı */}
+                    {slide.text && (
+                      <div className="absolute inset-0 flex items-center justify-center">
+                        <h2
+                          className="text-3xl sm:text-4xl md:text-5xl font-extrabold 
+                          text-transparent bg-clip-text bg-gradient-to-b from-yellow-300 to-yellow-500 
+                          drop-shadow-[0_0_15px_rgba(255,215,0,0.8)] animate-fadeUp"
+                        >
+                          {slide.text}
+                        </h2>
+                      </div>
+                    )}
+                  </div>
+                </SwiperSlide>
+              );
+            })}
           </Swiper>
         </div>
 
-        {/* ✅ Zarif SVG kırmızı oklar */}
+        {/* ✅ Oklar */}
         <button className="custom-prev absolute left-3 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-white flex items-center justify-center z-20">
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -144,7 +150,7 @@ export default function Home() {
           </svg>
         </button>
 
-        {/* ✅ CSS STYLES */}
+        {/* ✅ Styles */}
         <style>
           {`
             .swiper-pagination-bullet {
@@ -175,16 +181,8 @@ export default function Home() {
               animation: fadeUp 1s ease-out both;
             }
 
-            html, body {
-              margin: 0 !important;
-              padding: 0 !important;
-              background: black !important;
-              overscroll-behavior-y: none !important;
-            }
-
             @media (max-width: 767px) {
-              .custom-prev,
-              .custom-next {
+              .custom-prev, .custom-next {
                 display: none !important;
               }
             }
@@ -201,7 +199,6 @@ export default function Home() {
             Göster • Kaliteli Ürün • Güvenli Ödeme • İade ve Değişim •
           </div>
         </div>
-
         <style>
           {`
             .marquee {
