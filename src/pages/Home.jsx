@@ -50,9 +50,8 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-black text-white">
       {/* ✅ HERO SLIDER */}
-      <section className="relative w-full overflow-hidden mb-8">
-      <div className="w-full h-[95vw] sm:h-[70vh] md:h-[80vh] lg:h-[80vh] sm:aspect-auto">
-
+      <section className="relative w-full overflow-hidden mb-8 mt-6 sm:mt-0">
+      <div className="w-full h-[100vw] sm:h-[70vh] md:h-[80vh] lg:h-[80vh] sm:aspect-auto">
   <Swiper
     modules={[Autoplay, Pagination, Navigation]}
 
