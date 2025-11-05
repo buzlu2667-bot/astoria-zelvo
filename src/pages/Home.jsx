@@ -45,6 +45,7 @@ export default function Home() {
     { src: "/hero/slide6.jpg", text: "" },
     { src: "/hero/slide7.jpg", text: "" },
     { src: "/hero/slide8.jpg", text: "" },
+    { src: "/hero/slide9.jpg", text: "" },
   ];
 
   return (
@@ -235,6 +236,16 @@ export default function Home() {
   .custom-next {
     display: none !important;
   }
+
+}
+
+/* ✅ Tüm cihazlarda boşluk ve kayma önleme */
+html, body {
+  margin: 0 !important;
+  padding: 0 !important;
+  background: #000 !important;
+  overflow-x: hidden !important;
+  overscroll-behavior-y: none !important;
 }
 
   @keyframes marquee {
