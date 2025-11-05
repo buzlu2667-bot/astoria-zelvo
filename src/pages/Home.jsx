@@ -1,4 +1,4 @@
-// ✅ HOME PAGE — PERFECT 16:9 MOBILE + 85vh DESKTOP FINAL
+// ✅ HOME PAGE — FINAL FIXED (Full bleed mobile + spacing)
 import { useEffect, useState, useMemo } from "react";
 import { supabase } from "../lib/supabaseClient";
 import ProductCard from "../components/ProductCard";
@@ -39,7 +39,7 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-black text-white">
       {/* ✅ HERO SLIDER */}
-      <section className="relative w-full overflow-hidden mt-[110px] md:mt-[80px]">
+      <section className="relative w-full overflow-hidden mt-[110px] md:mt-[80px] mb-8">
         <div className="relative w-full">
           <div
             className="slider-wrapper"
@@ -49,12 +49,12 @@ export default function Home() {
               overflow: "hidden",
             }}
           >
-            {/* ✅ 16:9 oranı — padding-bottom hilesi */}
+            {/* ✅ Mobilde dolu görünüm */}
             <div
               className="ratio-fix"
               style={{
                 width: "100%",
-                paddingBottom: "56.25%", // 9 / 16 oranı
+                paddingBottom: "56.25%", // 16:9 oran
                 position: "relative",
               }}
             >
@@ -75,12 +75,14 @@ export default function Home() {
                   { src: "/hero/slide12.jpg" },
                 ].map((slide, i) => (
                   <SwiperSlide key={i}>
-                    <img
-                      src={slide.src}
-                      alt=""
-                      className="w-full h-full object-cover object-center
-                        brightness-[1.05] contrast-[1.1] saturate-[1.1]"
-                    />
+                    <div className="absolute inset-0">
+                      <img
+                        src={slide.src}
+                        alt=""
+                        className="w-full h-full object-cover object-center
+                          brightness-[1.05] contrast-[1.1] saturate-[1.1]"
+                      />
+                    </div>
                   </SwiperSlide>
                 ))}
               </Swiper>
@@ -88,7 +90,6 @@ export default function Home() {
           </div>
         </div>
 
-        {/* ✅ Masaüstü için yükseklik değişimi */}
         <style>
           {`
           @media (min-width: 768px) {
@@ -97,12 +98,27 @@ export default function Home() {
               height: 85vh !important;
             }
           }
+
+          /* ✅ Pagination biraz yukarı */
+          .swiper-pagination {
+            bottom: 18px !important;
+            z-index: 50 !important;
+          }
+
+          /* ✅ Siyah boşlukları kapatmak için (iPhone ekran farkı) */
+          @supports (-webkit-touch-callout: none) {
+            .ratio-fix img {
+              object-fit: cover !important;
+              height: 100% !important;
+              width: 100% !important;
+            }
+          }
         `}
         </style>
       </section>
 
       {/* ✅ PRODUCTS */}
-      <main className="max-w-7xl mx-auto px-6 pb-10 mt-10">
+      <main className="max-w-7xl mx-auto px-6 pb-10 mt-4 md:mt-8">
         {loading ? (
           <p className="text-gray-500 text-center">Yükleniyor...</p>
         ) : filteredProducts.length === 0 ? (
