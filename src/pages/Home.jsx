@@ -50,9 +50,9 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-black text-white">
      {/* ✅ Sadece mobilde sabit yazı */}
-<div className="block sm:hidden fixed top-[60px] left-0 w-full bg-black text-center py-[6px] border-t border-b border-yellow-500/10 z-[9999]">
+<div className="block sm:hidden fixed top-[66px] left-0 w-full bg-black text-center py-[6px] border-t border-b border-yellow-500/10 z-[9999]">
   <p className="text-[11px] tracking-[0.25em] text-[#ffbfbf] uppercase font-light drop-shadow-[0_0_4px_rgba(255,192,192,0.4)]">
-    ✨ Kaliteli Ürün • Güvenli Ödeme • Premium Koleksiyon ✨
+    • Premium Koleksiyon ✨
   </p>
 </div>
 
