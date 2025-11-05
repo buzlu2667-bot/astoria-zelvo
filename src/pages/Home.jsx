@@ -87,19 +87,16 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-black text-white">
-     {/* ✅ HERO SLIDER - HEADER FIXLİ 16:9 */}
-<section
-  className="relative w-full overflow-hidden mt-[120px] md:mt-[80px]"
->
-  <div
-    className="relative w-full md:h-[85vh] h-0 pb-[56.25%]" // mobilde 16:9
-  >
+    {/* ✅ HERO SLIDER - FINAL */}
+<section className="relative w-full overflow-hidden mt-[110px] md:mt-[80px]">
+  {/* ✅ Wrapper: masaüstü height, mobil 16:9 */}
+  <div className="relative w-full md:h-[85vh] h-auto aspect-[16/9]">
     <Swiper
       modules={[Autoplay, Pagination]}
       autoplay={{ delay: 3500 }}
       loop
       pagination={{ clickable: true }}
-      className="absolute inset-0 w-full h-full min-h-[250px]"
+      className="absolute inset-0 w-full h-full"
     >
       {[
         { src: "/hero/slide1.jpg" },
@@ -107,14 +104,16 @@ export default function Home() {
         { src: "/hero/slide3.jpg" },
         { src: "/hero/slide4.jpg" },
         { src: "/hero/slide5.jpg" },
-        { src: "/hero/slide11.jpg" },
       ].map((slide, i) => (
         <SwiperSlide key={i}>
-          <img
-            src={slide.src}
-            alt=""
-            className="absolute inset-0 w-full h-full object-cover object-center brightness-[1.05] contrast-[1.1] saturate-[1.1]"
-          />
+          <div className="relative w-full h-full">
+            <img
+              src={slide.src}
+              alt=""
+              className="absolute inset-0 w-full h-full object-cover object-center 
+              brightness-[1.05] contrast-[1.1] saturate-[1.1]"
+            />
+          </div>
         </SwiperSlide>
       ))}
     </Swiper>
@@ -122,15 +121,34 @@ export default function Home() {
 
   <style>
     {`
+      /* ✅ Masaüstü yüksekliği sabit kalır */
       @media (min-width: 768px) {
         section > div {
-          padding-bottom: 0 !important;
+          aspect-ratio: auto !important;
           height: 85vh !important;
+        }
+      }
+
+      /* ✅ Mobilde kesin 16:9 */
+      @media (max-width: 768px) {
+        section > div {
+          height: auto !important;
+          aspect-ratio: 16 / 9 !important;
+        }
+        .swiper, .swiper-wrapper, .swiper-slide {
+          height: auto !important;
+        }
+        .swiper-slide img {
+          height: auto !important;
+          width: 100% !important;
+          object-fit: cover !important;
+          display: block !important;
         }
       }
     `}
   </style>
 </section>
+
 
 
 
