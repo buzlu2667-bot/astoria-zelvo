@@ -88,69 +88,62 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-black text-white">
       {/* ✅ HERO SLIDER */}
-      <section className="relative w-full overflow-hidden">
-        <Swiper
-          modules={[Autoplay, Pagination]}
-          autoplay={{ delay: 3500 }}
-          loop
-          pagination={{ clickable: true }}
-          className="hero-swiper w-full h-full"
-        >
-          {[
-            { src: "/hero/slide5.jpg", title: "", color: "text-yellow-400" },
-            { src: "/hero/slide1.jpg", title: "", color: "text-yellow-400" },
-            {
-              src: "/hero/slide2.jpg",
-              title: "Premium Çanta Koleksiyonu",
-              color: "text-yellow-400",
-            },
-            { src: "/hero/slide6.jpg", title: "", color: "text-yellow-400" },
-            {
-              src: "/hero/slide3.jpg",
-              title: "Premium Çanta Koleksiyonu",
-              color: "text-yellow-400",
-            },
-            {
-              src: "/hero/slide4.jpg",
-              title: "Tarzını Göster!",
-              color: "text-yellow-300",
-            },
-            { src: "/hero/slide7.jpg", title: "", color: "text-yellow-400" },
-            { src: "/hero/slide8.jpg", title: "", color: "text-yellow-400" },
-            { src: "/hero/slide9.jpg", title: "", color: "text-yellow-400" },
-            { src: "/hero/slide10.jpg", title: "", color: "text-yellow-400" },
-            { src: "/hero/slide11.jpg", title: "", color: "text-yellow-400" },
-          ].map((slide, i) => (
-            <SwiperSlide key={i}>
-              <div className="relative w-full h-full overflow-hidden">
-                <img
-                  src={slide.src}
-                  alt=""
-                  className="w-full h-full object-cover object-center 
-                  brightness-[1.05] contrast-[1.1] saturate-[1.1]"
-                />
-                <div className="absolute inset-0 bg-black/10"></div>
-                <div className="absolute inset-0 flex flex-col items-center justify-center text-center px-4">
-                  <h1
-                    className={`text-3xl sm:text-4xl md:text-6xl font-extrabold drop-shadow-xl ${slide.color}`}
-                  >
-                    {slide.title}
-                  </h1>
-                </div>
-              </div>
-            </SwiperSlide>
-          ))}
-        </Swiper>
+     <section className="relative w-full overflow-hidden">
+  {/* Masaüstü: 85vh */}
+  <div className="hidden md:block h-[85vh]">
+    <Swiper
+      modules={[Autoplay, Pagination]}
+      autoplay={{ delay: 3500 }}
+      loop
+      pagination={{ clickable: true }}
+      className="w-full h-full"
+    >
+      {[
+        { src: "/hero/slide5.jpg" },
+        { src: "/hero/slide1.jpg" },
+        { src: "/hero/slide2.jpg" },
+        { src: "/hero/slide3.jpg" },
+        { src: "/hero/slide4.jpg" },
+      ].map((slide, i) => (
+        <SwiperSlide key={i}>
+          <img
+            src={slide.src}
+            alt=""
+            className="w-full h-full object-cover object-center brightness-[1.05] contrast-[1.1] saturate-[1.1]"
+          />
+        </SwiperSlide>
+      ))}
+    </Swiper>
+  </div>
 
-        <style>
-          {`
-            .swiper-pagination {
-              bottom: 25px !important;
-              z-index: 50 !important;
-            }
-          `}
-        </style>
-      </section>
+  {/* ✅ Mobil: gerçek 16:9 */}
+  <div className="block md:hidden relative w-full" style={{ paddingBottom: "56.25%" }}>
+    <Swiper
+      modules={[Autoplay, Pagination]}
+      autoplay={{ delay: 3500 }}
+      loop
+      pagination={{ clickable: true }}
+      className="absolute inset-0 w-full h-full"
+    >
+      {[
+        { src: "/hero/slide5.jpg" },
+        { src: "/hero/slide1.jpg" },
+        { src: "/hero/slide2.jpg" },
+        { src: "/hero/slide3.jpg" },
+        { src: "/hero/slide4.jpg" },
+      ].map((slide, i) => (
+        <SwiperSlide key={i}>
+          <img
+            src={slide.src}
+            alt=""
+            className="absolute inset-0 w-full h-full object-cover object-center brightness-[1.05] contrast-[1.1] saturate-[1.1]"
+          />
+        </SwiperSlide>
+      ))}
+    </Swiper>
+  </div>
+</section>
+
 
       {/* ✅ PRODUCTS */}
       <main className="max-w-7xl mx-auto px-6 pb-10">
