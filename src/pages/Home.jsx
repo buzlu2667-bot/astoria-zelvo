@@ -1,3 +1,4 @@
+// ✅ HOME PAGE — FINAL SLIDER FIX (MOBILE 16:9 + DESKTOP 85vh)
 import { useEffect, useState, useMemo } from "react";
 import { supabase } from "../lib/supabaseClient";
 import ProductCard from "../components/ProductCard";
@@ -12,14 +13,9 @@ export default function Home() {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [quickViewProduct, setQuickViewProduct] = useState(null);
-  const heroImages = [
-    "/hero/slide1.jpg",
-    "/hero/slide2.jpg",
-    "/hero/slide3.jpg",
-    "/hero/slide4.jpg",
-  ];
-
   const { name: category } = useParams();
+
+  const [sliderReady, setSliderReady] = useState(false);
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -35,47 +31,10 @@ export default function Home() {
     fetchProducts();
   }, []);
 
-    // ✅ Mobilde 16:9 oranı zorlama (JS yöntemi)
+  // ✅ Slider'ı biraz geciktir (yükseklik hatası olmasın)
   useEffect(() => {
-    const setSliderRatio = () => {
-      const sliders = document.querySelectorAll(".hero-swiper");
-      sliders.forEach(slider => {
-        if (window.innerWidth <= 768) {
-          const width = slider.offsetWidth;
-          slider.style.height = `${width * 0.5625}px`; // 16:9 oranı
-        } else {
-          slider.style.height = "85vh"; // masaüstü sabit kalır
-        }
-      });
-    };
-
-    setSliderRatio();
-    window.addEventListener("resize", setSliderRatio);
-    return () => window.removeEventListener("resize", setSliderRatio);
-  }, []);
-
-
-  // 🚀 MOBİLDE SWIPER YÜKSEKLİĞİNİ 16:9 AYARLA
-  useEffect(() => {
-    const adjustSliderHeight = () => {
-      if (window.innerWidth <= 768) {
-        const sliders = document.querySelectorAll(".hero-swiper");
-        sliders.forEach((slider) => {
-          const width = slider.offsetWidth;
-          const height = width * 0.5625; // 16:9 oranı
-          slider.style.height = `${height}px`;
-        });
-      } else {
-        const sliders = document.querySelectorAll(".hero-swiper");
-        sliders.forEach((slider) => {
-          slider.style.height = "85vh"; // masaüstü sabit
-        });
-      }
-    };
-
-    adjustSliderHeight();
-    window.addEventListener("resize", adjustSliderHeight);
-    return () => window.removeEventListener("resize", adjustSliderHeight);
+    const timer = setTimeout(() => setSliderReady(true), 400);
+    return () => clearTimeout(timer);
   }, []);
 
   const filteredProducts = useMemo(() => {
@@ -87,77 +46,68 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-black text-white">
-    {/* ✅ HERO SLIDER - FINAL */}
-<section
-  className="relative w-full overflow-hidden mt-[110px] md:mt-[80px]"
->
-  {/* ✅ Masaüstü 85vh, Mobil 16:9 */}
-  <div
-    className="relative w-full overflow-hidden"
-    style={{
-      height: "85vh",
-    }}
-  >
-    <Swiper
-      modules={[Autoplay, Pagination]}
-      autoplay={{ delay: 3500 }}
-      loop
-      pagination={{ clickable: true }}
-      className="absolute inset-0 w-full h-full"
-    >
-      {[
-        { src: "/hero/slide1.jpg" },
-        { src: "/hero/slide2.jpg" },
-        { src: "/hero/slide3.jpg" },
-        { src: "/hero/slide4.jpg" },
-        { src: "/hero/slide5.jpg" },
-      ].map((slide, i) => (
-        <SwiperSlide key={i}>
-          <div
-            className="relative w-full h-full"
-            style={{
-              height: "100%",
-            }}
-          >
-            <img
-              src={slide.src}
-              alt=""
-              className="absolute inset-0 w-full h-full object-cover object-center
-              brightness-[1.05] contrast-[1.1] saturate-[1.1]"
-            />
+      {/* ✅ HERO SLIDER */}
+      <section className="relative w-full overflow-hidden mt-[110px] md:mt-[80px]">
+        {!sliderReady ? (
+          <div className="w-full aspect-[16/9] flex items-center justify-center bg-black/20 text-yellow-400">
+            🔄 Slider yükleniyor...
           </div>
-        </SwiperSlide>
-      ))}
-    </Swiper>
-  </div>
+        ) : (
+          <div
+            className="relative w-full overflow-hidden md:h-[85vh] aspect-[16/9]"
+            style={{ maxHeight: "100vh" }}
+          >
+            <Swiper
+              modules={[Autoplay, Pagination]}
+              autoplay={{ delay: 3500 }}
+              loop
+              pagination={{ clickable: true }}
+              className="absolute inset-0 w-full h-full"
+            >
+              {[
+                { src: "/hero/slide1.jpg" },
+                { src: "/hero/slide2.jpg" },
+                { src: "/hero/slide3.jpg" },
+                { src: "/hero/slide4.jpg" },
+                { src: "/hero/slide5.jpg" },
+              ].map((slide, i) => (
+                <SwiperSlide key={i}>
+                  <div className="relative w-full h-full">
+                    <img
+                      src={slide.src}
+                      alt=""
+                      className="absolute inset-0 w-full h-full object-cover object-center 
+                        brightness-[1.05] contrast-[1.1] saturate-[1.1]"
+                    />
+                  </div>
+                </SwiperSlide>
+              ))}
+            </Swiper>
+          </div>
+        )}
 
-  {/* ✅ 16:9 fix sadece mobil için */}
-  <style>
-    {`
-      @media (max-width: 768px) {
-        section > div {
-          height: auto !important;
-          position: relative;
-          padding-bottom: 56.25% !important; /* 16:9 oranı */
-        }
-        section img {
-          width: 100% !important;
-          height: 100% !important;
-          object-fit: cover !important;
-        }
-      }
-    `}
-  </style>
-</section>
-
-
-
-
-
-
+        {/* ✅ Mobilde 16:9 oranını sabitle */}
+        <style>
+          {`
+          @media (max-width: 768px) {
+            section > div {
+              height: auto !important;
+              position: relative;
+              padding-bottom: 56.25% !important; /* 16:9 */
+            }
+            section img {
+              width: 100% !important;
+              height: 100% !important;
+              object-fit: cover !important;
+              display: block !important;
+            }
+          }
+        `}
+        </style>
+      </section>
 
       {/* ✅ PRODUCTS */}
-      <main className="max-w-7xl mx-auto px-6 pb-10">
+      <main className="max-w-7xl mx-auto px-6 pb-10 mt-10">
         {loading ? (
           <p className="text-gray-500 text-center">Yükleniyor...</p>
         ) : filteredProducts.length === 0 ? (
@@ -177,6 +127,7 @@ export default function Home() {
         )}
       </main>
 
+      {/* ✅ QUICK VIEW MODAL */}
       <QuickViewModal
         product={quickViewProduct}
         closeModal={() => setQuickViewProduct(null)}
