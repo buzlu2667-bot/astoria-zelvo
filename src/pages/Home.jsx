@@ -22,7 +22,6 @@ export default function Home() {
         .select("*")
         .is("category", null)
         .order("id", { ascending: false });
-
       setProducts(data || []);
       setLoading(false);
     };
@@ -38,10 +37,9 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-black text-white">
-      {/* ✅ HERO SLIDER (sade, stabil) */}
-      <section className="relative w-full overflow-hidden mt-[100px] mb-8">
-        {/* Yüksekliği buradan kontrol ediyoruz */}
-        <div className="w-full h-[55vh] sm:h-[60vh] md:h-[70vh] lg:h-[80vh]">
+      {/* ✅ HERO SLIDER (yukarıdan sıfır, tam oturmuş) */}
+      <section className="relative w-full overflow-hidden mb-8">
+        <div className="w-full h-[60vh] sm:h-[70vh] md:h-[80vh] lg:h-[85vh]">
           <Swiper
             modules={[Autoplay, Pagination]}
             autoplay={{ delay: 4000, disableOnInteraction: false }}
@@ -63,10 +61,9 @@ export default function Home() {
                   <img
                     src={slide.src}
                     alt=""
-                    className="w-full h-full object-cover object-[center_top]"
+                    className="w-full h-full object-cover object-top"
                     draggable={false}
                   />
-                  {/* Hafif overlay istersen: */}
                   <div className="absolute inset-0 bg-black/10" />
                 </div>
               </SwiperSlide>
@@ -74,12 +71,17 @@ export default function Home() {
           </Swiper>
         </div>
 
-        {/* Sadece pagination pozisyonu için mini CSS */}
         <style>
           {`
             .swiper-pagination {
-              bottom: 16px !important;
+              bottom: 14px !important;
               z-index: 20 !important;
+            }
+            html, body {
+              margin: 0 !important;
+              padding: 0 !important;
+              background: black !important;
+              overscroll-behavior-y: none !important;
             }
           `}
         </style>
@@ -106,7 +108,6 @@ export default function Home() {
         )}
       </main>
 
-      {/* ✅ QUICK VIEW MODAL */}
       <QuickViewModal
         product={quickViewProduct}
         closeModal={() => setQuickViewProduct(null)}
