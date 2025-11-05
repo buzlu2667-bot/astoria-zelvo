@@ -357,19 +357,41 @@ iframe[src*="livechat"] {
   from { opacity: 0; transform: translateY(-10px); }
   to { opacity: 1; transform: translateY(0); }
 }
-@keyframes glow {
+/* ✨ Premium Glow Efektleri (karışmayan versiyon) */
+
+/* 🟡 Ürün Detay Uyarı Yazısı İçin */
+@keyframes goldGlowPulse {
   0%, 100% {
-    opacity: 0.7;
-    filter: drop-shadow(0 0 6px rgba(255, 215, 0, 0.6));
+    opacity: 0.8;
+    text-shadow: 0 0 6px rgba(255, 215, 0, 0.6),
+                 0 0 12px rgba(255, 215, 0, 0.4),
+                 0 0 20px rgba(255, 215, 0, 0.2);
   }
   50% {
     opacity: 1;
-    filter: drop-shadow(0 0 16px rgba(255, 230, 120, 0.9));
+    text-shadow: 0 0 12px rgba(255, 215, 0, 0.9),
+                 0 0 25px rgba(255, 215, 0, 0.7),
+                 0 0 40px rgba(255, 215, 0, 0.5);
   }
 }
-
-.animate-glow {
-  animation: glow 2s ease-in-out infinite;
+.animate-goldGlow {
+  animation: goldGlowPulse 2.8s ease-in-out infinite;
 }
+
+/* 🟡 “Yeni” Etiketi İçin — Daha Sert Parlama */
+@keyframes newBadgeGlow {
+  0%, 100% {
+    opacity: 0.9;
+    filter: drop-shadow(0 0 6px rgba(255, 255, 120, 0.6));
+  }
+  50% {
+    opacity: 1;
+    filter: drop-shadow(0 0 20px rgba(255, 255, 0, 0.9));
+  }
+}
+.animate-newBadge {
+  animation: newBadgeGlow 1.6s ease-in-out infinite;
+}
+
 
 
