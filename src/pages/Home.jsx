@@ -1,4 +1,4 @@
-// ✅ HOME PAGE — ULTRA FINAL (Masaüstü 85vh / Mobil full ekran, siyah yok)
+// ✅ HOME PAGE — ULTRA FINAL (No zoom, full responsive, smooth)
 import { useEffect, useState, useMemo } from "react";
 import { supabase } from "../lib/supabaseClient";
 import ProductCard from "../components/ProductCard";
@@ -40,12 +40,20 @@ export default function Home() {
     <div className="min-h-screen bg-black text-white">
       {/* ✅ HERO SLIDER */}
       <section className="relative w-full overflow-hidden mb-10 -mt-[10px]">
-
         <Swiper
           modules={[Autoplay, Pagination]}
-          autoplay={{ delay: 3500 }}
-          loop
+          autoplay={{ delay: 4000, disableOnInteraction: false }}
+          loop={true}
           pagination={{ clickable: true }}
+          speed={900}
+          effect="fade"
+          fadeEffect={{ crossFade: true }}
+          allowTouchMove={true}
+          onSlideChangeTransitionStart={(swiper) => {
+            swiper.slides.forEach((slide) => {
+              slide.style.transform = "none";
+            });
+          }}
           className="hero-swiper w-full"
         >
           {[
@@ -62,8 +70,7 @@ export default function Home() {
                 <img
                   src={slide.src}
                   alt=""
-                  className="absolute inset-0 w-full h-full object-cover object-center
-                    brightness-[1.05] contrast-[1.1] saturate-[1.1]"
+                  className="absolute inset-0 w-full h-full object-cover object-center brightness-[1.05] contrast-[1.1] saturate-[1.1]"
                 />
                 <div className="absolute inset-0 bg-black/10"></div>
               </div>
@@ -72,63 +79,68 @@ export default function Home() {
         </Swiper>
 
         <style>
-  {`
-    /* ✅ Masaüstü: 85vh sabit, premium dolgu */
-    @media (min-width: 768px) {
-      .hero-swiper,
-      .hero-swiper .swiper-wrapper,
-      .hero-swiper .swiper-slide {
-        height: 85vh !important;
-      }
-    }
+          {`
+            /* ✅ Masaüstü: 85vh sabit, premium dolgu */
+            @media (min-width: 768px) {
+              .hero-swiper,
+              .hero-swiper .swiper-wrapper,
+              .hero-swiper .swiper-slide {
+                height: 85vh !important;
+              }
+            }
 
-    /* ✅ Mobil: tam ekran, akıcı scroll */
-    @media (max-width: 767px) {
-      .hero-swiper,
-      .hero-swiper .swiper-wrapper,
-      .hero-swiper .swiper-slide {
-        height: calc(100dvh - env(safe-area-inset-top, 0)) !important;
-      }
+            /* ✅ Mobil: tam ekran, akıcı scroll */
+            @media (max-width: 767px) {
+              .hero-swiper,
+              .hero-swiper .swiper-wrapper,
+              .hero-swiper .swiper-slide {
+                height: calc(100dvh - env(safe-area-inset-top, 0)) !important;
+              }
 
-      .hero-swiper img {
-        object-fit: cover !important;
-        object-position: center top !important;
-        height: 100% !important;
-        width: 100% !important;
-        transform: none !important;
-        transition: none !important;
-      }
-    }
+              .hero-swiper img {
+                object-fit: cover !important;
+                object-position: center top !important;
+                height: 100% !important;
+                width: 100% !important;
+                transform: none !important;
+                transition: none !important;
+              }
+            }
 
-    /* ✅ Pagination görünür & sabit */
-    .swiper-pagination {
-      bottom: 15px !important;
-      opacity: 1 !important;
-      visibility: visible !important;
-      z-index: 100 !important;
-    }
+            /* ✅ Pagination görünür & sabit */
+            .swiper-pagination {
+              bottom: 15px !important;
+              opacity: 1 !important;
+              visibility: visible !important;
+              z-index: 100 !important;
+            }
 
-    .swiper-pagination-bullet {
-      background: rgba(255, 255, 255, 0.8) !important;
-      width: 8px;
-      height: 8px;
-      margin: 0 3px !important;
-    }
+            .swiper-pagination-bullet {
+              background: rgba(255, 255, 255, 0.8) !important;
+              width: 8px;
+              height: 8px;
+              margin: 0 3px !important;
+            }
 
-    .swiper-pagination-bullet-active {
-      background: #ffd700 !important;
-    }
+            .swiper-pagination-bullet-active {
+              background: #ffd700 !important;
+            }
 
-    /* ✅ iPhone Safe Area düzeltmesi */
-    @supports (-webkit-touch-callout: none) {
-      .hero-swiper {
-        padding-top: env(safe-area-inset-top, 0) !important;
-        margin-top: -env(safe-area-inset-top, 0) !important;
-      }
-    }
-  `}
-</style>
+            /* ✅ iPhone Safe Area düzeltmesi */
+            @supports (-webkit-touch-callout: none) {
+              .hero-swiper {
+                padding-top: env(safe-area-inset-top, 0) !important;
+                margin-top: -env(safe-area-inset-top, 0) !important;
+              }
+            }
 
+            /* ✅ Zoom ve geçiş engeli */
+            .hero-swiper .swiper-slide {
+              transform: none !important;
+              transition: none !important;
+            }
+          `}
+        </style>
       </section>
 
       {/* ✅ PRODUCTS */}
