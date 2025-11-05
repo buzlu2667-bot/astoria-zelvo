@@ -50,9 +50,9 @@ export default function Home() {
    {/* ✅ FULLSCREEN PREMIUM HERO SLIDER — FINAL */}
 <section
   className="relative w-full overflow-hidden 
-  h-[70vh] sm:h-[75vh] md:h-[80vh] lg:h-[85vh] xl:h-[85vh] 
-  max-md:h-auto max-md:aspect-[16/9]"
+  h-[85vh] sm:h-[85vh] md:h-[85vh] lg:h-[85vh] xl:h-[85vh]"
 >
+
 
 
 
@@ -112,10 +112,9 @@ export default function Home() {
 <img
   src={slide.src}
   alt=""
-  className="w-full h-full object-cover object-center
+  className="absolute inset-0 w-full h-full object-cover object-center
   brightness-[1.05] contrast-[1.1] saturate-[1.1]
-  transition-all duration-700 ease-out
-  max-md:h-auto max-md:w-full max-md:object-cover"
+  transition-all duration-700 ease-out"
 />
 
 
@@ -147,25 +146,42 @@ export default function Home() {
 </SwiperSlide>
 
     ))}
-  </Swiper>
-  <style>
+    <style>
 {`
+  /* Masaüstü düzgün kalsın */
+  .swiper {
+    height: 100% !important;
+  }
+
+  /* Pagination aşağıya taşmasın */
   .swiper-pagination {
-    position: absolute !important;
-    bottom: 15px !important;
+    bottom: 25px !important;
     z-index: 50 !important;
   }
 
+  /* 🚀 Mobilde gerçek 16:9 oranı */
   @media (max-width: 768px) {
-    .swiper, .swiper-wrapper, .swiper-slide {
+    .swiper {
       height: auto !important;
       aspect-ratio: 16 / 9 !important;
+    }
+    .swiper-wrapper,
+    .swiper-slide {
+      height: auto !important;
+    }
+    .swiper-slide img {
+      width: 100% !important;
+      height: auto !important;
+      object-fit: cover !important;
+      display: block !important;
     }
   }
 `}
 </style>
 
 
+  </Swiper>
+  
   </div>
 </section>
 
