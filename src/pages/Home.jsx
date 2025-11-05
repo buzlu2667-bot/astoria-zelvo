@@ -35,6 +35,29 @@ export default function Home() {
     fetchProducts();
   }, []);
 
+  // 🚀 MOBİLDE SWIPER YÜKSEKLİĞİNİ 16:9 AYARLA
+  useEffect(() => {
+    const adjustSliderHeight = () => {
+      if (window.innerWidth <= 768) {
+        const sliders = document.querySelectorAll(".hero-swiper");
+        sliders.forEach((slider) => {
+          const width = slider.offsetWidth;
+          const height = width * 0.5625; // 16:9 oranı
+          slider.style.height = `${height}px`;
+        });
+      } else {
+        const sliders = document.querySelectorAll(".hero-swiper");
+        sliders.forEach((slider) => {
+          slider.style.height = "85vh"; // masaüstü sabit
+        });
+      }
+    };
+
+    adjustSliderHeight();
+    window.addEventListener("resize", adjustSliderHeight);
+    return () => window.removeEventListener("resize", adjustSliderHeight);
+  }, []);
+
   const filteredProducts = useMemo(() => {
     if (!category) return products;
     return products.filter(
@@ -45,12 +68,7 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-black text-white">
       {/* ✅ HERO SLIDER */}
-      <section
-        className="relative w-full overflow-hidden"
-        style={{
-          height: "85vh",
-        }}
-      >
+      <section className="relative w-full overflow-hidden">
         <Swiper
           modules={[Autoplay, Pagination]}
           autoplay={{ delay: 3500 }}
@@ -104,40 +122,11 @@ export default function Home() {
           ))}
         </Swiper>
 
-        {/* ✅ Mobil Override */}
         <style>
           {`
-            /* Masaüstü */
-            .swiper {
-              height: 100% !important;
-            }
             .swiper-pagination {
               bottom: 25px !important;
-            }
-
-            /* ✅ Mobil: kesin 16:9 oran */
-            @media (max-width: 768px) {
-              .hero-swiper {
-                height: auto !important;
-              }
-              .hero-swiper .swiper-wrapper,
-              .hero-swiper .swiper-slide {
-                height: auto !important;
-              }
-              .hero-swiper .swiper-slide div {
-                position: relative !important;
-                width: 100% !important;
-                padding-bottom: 56.25% !important; /* 16:9 oranı */
-                height: 0 !important;
-              }
-              .hero-swiper img {
-                position: absolute !important;
-                top: 0 !important;
-                left: 0 !important;
-                width: 100% !important;
-                height: 100% !important;
-                object-fit: cover !important;
-              }
+              z-index: 50 !important;
             }
           `}
         </style>
