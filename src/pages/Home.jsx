@@ -63,12 +63,13 @@ export default function Home() {
       ].map((slide, i) => (
         <SwiperSlide key={i}>
           <div className="relative w-full h-full bg-black">
-            <img
+           <img
   src={slide.src}
   alt=""
-  className="w-full h-full object-contain object-center translate-y-[-35px]"
+  className="w-full h-full object-contain object-center translate-y-[-50px]"
   draggable={false}
 />
+
 
 
           </div>
