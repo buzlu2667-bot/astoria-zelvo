@@ -52,21 +52,9 @@ export default function Home() {
   className="w-full relative overflow-hidden
   h-[70vh] sm:h-[75vh] md:h-[78vh] lg:h-[85vh] xl:h-[85vh]
   md:h-[85vh]
-  max-md:h-auto"
-  style={{
-    aspectRatio: "16 / 9",
-  }}
+  max-md:h-auto max-md:aspect-[16/9]"
 >
-<style>
-{`
-  @media (max-width: 768px) {
-    section {
-      height: auto !important;
-      aspect-ratio: 16 / 9 !important;
-    }
-  }
-`}
-</style>
+
 
 
   <Swiper
