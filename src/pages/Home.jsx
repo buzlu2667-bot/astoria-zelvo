@@ -50,10 +50,10 @@ export default function Home() {
    {/* ✅ FULLSCREEN PREMIUM HERO SLIDER — FINAL */}
 <section
   className="relative w-full overflow-hidden 
-  h-[70vh] sm:h-[75vh] md:h-[80vh] lg:h-[85vh] xl:h-[85vh]
+  h-[70vh] sm:h-[75vh] md:h-[80vh] lg:h-[85vh] xl:h-[85vh] 
   max-md:h-auto max-md:aspect-[16/9]"
-  style={{ position: "relative", zIndex: 1 }}
 >
+
 
 
   <div className="relative w-full h-full md:h-auto max-md:aspect-[16/9] max-md:h-auto">
@@ -66,12 +66,14 @@ export default function Home() {
   autoplay={{ delay: 3500 }}
   loop
   pagination={{ clickable: true }}
-  className="w-full h-full max-md:h-auto max-md:aspect-[16/9]"
+  className="w-full h-full"
   style={{
+    height: "100%",
     position: "relative",
     zIndex: 10,
   }}
 >
+
 
 
 
@@ -111,10 +113,11 @@ export default function Home() {
   src={slide.src}
   alt=""
   className="w-full h-full object-cover object-center
-  max-md:h-auto max-md:w-full max-md:object-contain
   brightness-[1.05] contrast-[1.1] saturate-[1.1]
-  transition-all duration-700 ease-out"
+  transition-all duration-700 ease-out
+  max-md:h-auto max-md:w-full max-md:object-cover"
 />
+
 
 
 
@@ -148,25 +151,20 @@ export default function Home() {
   <style>
 {`
   .swiper-pagination {
-    bottom: 20px !important;
-    z-index: 50 !important;
     position: absolute !important;
+    bottom: 15px !important;
+    z-index: 50 !important;
   }
+
   @media (max-width: 768px) {
-    .swiper,
-    .swiper-wrapper,
-    .swiper-slide {
+    .swiper, .swiper-wrapper, .swiper-slide {
       height: auto !important;
       aspect-ratio: 16 / 9 !important;
-    }
-    .swiper-slide img {
-      width: 100% !important;
-      height: auto !important;
-      object-fit: cover !important;
     }
   }
 `}
 </style>
+
 
   </div>
 </section>
