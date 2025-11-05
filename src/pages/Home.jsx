@@ -51,7 +51,7 @@ export default function Home() {
 <section
   className="w-full relative overflow-hidden
   h-[70vh] sm:h-[75vh] md:h-[78vh] lg:h-[85vh] xl:h-[85vh]
-  md:h-[85vh]"
+  md:h-[85vh] max-md:h-auto"
 >
   <div className="relative w-full h-full md:h-auto max-md:aspect-[16/9] max-md:h-auto">
 
@@ -63,8 +63,9 @@ export default function Home() {
   autoplay={{ delay: 3500 }}
   loop
   pagination={{ clickable: true }}
-  className="w-full h-full max-md:h-auto"
+  className="w-full h-full max-md:h-auto max-md:aspect-[16/9]"
 >
+
 
     {[
       { type: "image", src: "/hero/slide5.jpg", title: "", text: "", color: "text-yellow-400" },
@@ -100,10 +101,11 @@ export default function Home() {
 <img
   src={slide.src}
   alt=""
-  className="absolute inset-0 w-full h-full max-md:h-auto object-cover object-center
+  className="absolute inset-0 w-full h-full max-md:h-auto object-cover object-center 
   brightness-[1.05] contrast-[1.1] saturate-[1.1]
   transition-all duration-700 ease-out"
 />
+
 
 
 
