@@ -22,6 +22,7 @@ export default function Home() {
         .select("*")
         .is("category", null)
         .order("id", { ascending: false });
+
       setProducts(data || []);
       setLoading(false);
     };
@@ -37,78 +38,52 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-black text-white">
-      {/* ✅ HERO SLIDER (yukarıdan sıfır, tam oturmuş) */}
-     <section className="relative w-full overflow-hidden bg-black">
-  <div className="relative w-full">
-    <Swiper
-      modules={[Autoplay, Pagination]}
-      autoplay={{ delay: 3500 }}
-      loop
-      pagination={{ clickable: true }}
-      className="hero-swiper"
-    >
-      {[
-        { src: "/hero/slide1.jpg" },
-        { src: "/hero/slide2.jpg" },
-        { src: "/hero/slide3.jpg" },
-        { src: "/hero/slide4.jpg" },
-        { src: "/hero/slide11.jpg" },
-        { src: "/hero/slide12.jpg" },
-        { src: "/hero/slide13.jpg" },
-      ].map((slide, i) => (
-        <SwiperSlide key={i}>
-          <div className="relative w-full">
-            <img
-              src={slide.src}
-              alt=""
-              className="block w-full h-auto object-cover object-center select-none"
-              draggable={false}
-            />
-          </div>
-        </SwiperSlide>
-      ))}
-    </Swiper>
-  </div>
+      {/* ✅ HERO SLIDER (sade, stabil) */}
+      <section className="relative w-full overflow-hidden mt-[100px] mb-8">
+        {/* Yüksekliği buradan kontrol ediyoruz */}
+        <div className="w-full h-[55vh] sm:h-[60vh] md:h-[70vh] lg:h-[80vh]">
+          <Swiper
+            modules={[Autoplay, Pagination]}
+            autoplay={{ delay: 4000, disableOnInteraction: false }}
+            loop={true}
+            pagination={{ clickable: true }}
+            className="w-full h-full"
+          >
+            {[
+              { src: "/hero/slide1.jpg" },
+              { src: "/hero/slide2.jpg" },
+              { src: "/hero/slide3.jpg" },
+              { src: "/hero/slide4.jpg" },
+              { src: "/hero/slide5.jpg" },
+              { src: "/hero/slide11.jpg" },
+              { src: "/hero/slide12.jpg" },
+            ].map((slide, i) => (
+              <SwiperSlide key={i}>
+                <div className="relative w-full h-full">
+                  <img
+                    src={slide.src}
+                    alt=""
+                    className="w-full h-full object-cover object-[center_top]"
+                    draggable={false}
+                  />
+                  {/* Hafif overlay istersen: */}
+                  <div className="absolute inset-0 bg-black/10" />
+                </div>
+              </SwiperSlide>
+            ))}
+          </Swiper>
+        </div>
 
-  <style>{`
-    .swiper-pagination {
-      bottom: 12px !important;
-      z-index: 50 !important;
-    }
-
-    .swiper-pagination-bullet {
-      background: rgba(255,255,255,0.8) !important;
-      width: 8px;
-      height: 8px;
-    }
-
-    .swiper-pagination-bullet-active {
-      background: #ffd700 !important;
-    }
-
-    /* Masaüstü */
-    @media (min-width: 1024px) {
-      .hero-swiper img {
-        aspect-ratio: 16 / 9 !important;
-        height: auto !important;
-      }
-    }
-
-    /* Mobil */
-    @media (max-width: 1023px) {
-      .hero-swiper img {
-        width: 100% !important;
-        height: auto !important;
-        aspect-ratio: 16 / 9 !important;
-        object-fit: cover !important;
-      }
-    }
-  `}</style>
-</section>
-
-
-
-
+        {/* Sadece pagination pozisyonu için mini CSS */}
+        <style>
+          {`
+            .swiper-pagination {
+              bottom: 16px !important;
+              z-index: 20 !important;
+            }
+          `}
+        </style>
+      </section>
 
       {/* ✅ PRODUCTS */}
       <main className="max-w-7xl mx-auto px-6 pb-10">
@@ -131,6 +106,7 @@ export default function Home() {
         )}
       </main>
 
+      {/* ✅ QUICK VIEW MODAL */}
       <QuickViewModal
         product={quickViewProduct}
         closeModal={() => setQuickViewProduct(null)}
