@@ -222,14 +222,21 @@ export default function Home() {
   transform: scale(1.05);
   box-shadow: 0 0 8px rgba(255, 0, 0, 0.25);
 }
-       @media (max-width: 767px) {
+      @media (max-width: 767px) {
   .custom-prev {
     left: 10px !important;
   }
   .custom-next {
     right: 10px !important;
   }
+
+  /* ✅ Mobilde okları tamamen gizle */
+  .custom-prev,
+  .custom-next {
+    display: none !important;
+  }
 }
+
   @keyframes marquee {
   0% { transform: translateX(100%); }
   100% { transform: translateX(-100%); }
