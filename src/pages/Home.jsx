@@ -35,6 +35,26 @@ export default function Home() {
     fetchProducts();
   }, []);
 
+    // ✅ Mobilde 16:9 oranı zorlama (JS yöntemi)
+  useEffect(() => {
+    const setSliderRatio = () => {
+      const sliders = document.querySelectorAll(".hero-swiper");
+      sliders.forEach(slider => {
+        if (window.innerWidth <= 768) {
+          const width = slider.offsetWidth;
+          slider.style.height = `${width * 0.5625}px`; // 16:9 oranı
+        } else {
+          slider.style.height = "85vh"; // masaüstü sabit kalır
+        }
+      });
+    };
+
+    setSliderRatio();
+    window.addEventListener("resize", setSliderRatio);
+    return () => window.removeEventListener("resize", setSliderRatio);
+  }, []);
+
+
   // 🚀 MOBİLDE SWIPER YÜKSEKLİĞİNİ 16:9 AYARLA
   useEffect(() => {
     const adjustSliderHeight = () => {
