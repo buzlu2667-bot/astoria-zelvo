@@ -49,14 +49,7 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-black text-white">
-     {/* ✅ Sadece mobilde sabit yazı */}
-<div className="block sm:hidden fixed top-[66px] left-0 w-full bg-black text-center py-[6px] border-t border-b border-yellow-500/10 z-[9999]">
-  <p className="text-[11px] tracking-[0.25em] text-[#ffbfbf] uppercase font-light drop-shadow-[0_0_4px_rgba(255,192,192,0.4)]">
-    • Premium Koleksiyon ✨
-  </p>
-</div>
-
-
+      
       {/* ✅ HERO SLIDER */}
       <section className="relative w-full overflow-hidden mb-8 mt-12 sm:mt-0 -translate-y-2">
       <div className="w-full h-[100vw] sm:h-[70vh] md:h-[80vh] lg:h-[80vh] sm:aspect-auto">
