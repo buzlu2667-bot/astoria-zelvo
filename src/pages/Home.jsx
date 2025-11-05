@@ -1,4 +1,4 @@
-// ✅ HOME PAGE — FINAL SLIDER FIX (MOBILE 16:9 + DESKTOP 85vh)
+// ✅ HOME PAGE — PERFECT 16:9 MOBILE + 85vh DESKTOP FINAL
 import { useEffect, useState, useMemo } from "react";
 import { supabase } from "../lib/supabaseClient";
 import ProductCard from "../components/ProductCard";
@@ -15,8 +15,6 @@ export default function Home() {
   const [quickViewProduct, setQuickViewProduct] = useState(null);
   const { name: category } = useParams();
 
-  const [sliderReady, setSliderReady] = useState(false);
-
   useEffect(() => {
     const fetchProducts = async () => {
       setLoading(true);
@@ -31,12 +29,6 @@ export default function Home() {
     fetchProducts();
   }, []);
 
-  // ✅ Slider'ı biraz geciktir (yükseklik hatası olmasın)
-  useEffect(() => {
-    const timer = setTimeout(() => setSliderReady(true), 400);
-    return () => clearTimeout(timer);
-  }, []);
-
   const filteredProducts = useMemo(() => {
     if (!category) return products;
     return products.filter(
@@ -48,59 +40,60 @@ export default function Home() {
     <div className="min-h-screen bg-black text-white">
       {/* ✅ HERO SLIDER */}
       <section className="relative w-full overflow-hidden mt-[110px] md:mt-[80px]">
-        {!sliderReady ? (
-          <div className="w-full aspect-[16/9] flex items-center justify-center bg-black/20 text-yellow-400">
-            🔄 Slider yükleniyor...
-          </div>
-        ) : (
+        <div className="relative w-full">
           <div
-            className="relative w-full overflow-hidden md:h-[85vh] aspect-[16/9]"
-            style={{ maxHeight: "100vh" }}
+            className="slider-wrapper"
+            style={{
+              position: "relative",
+              width: "100%",
+              overflow: "hidden",
+            }}
           >
-            <Swiper
-              modules={[Autoplay, Pagination]}
-              autoplay={{ delay: 3500 }}
-              loop
-              pagination={{ clickable: true }}
-              className="absolute inset-0 w-full h-full"
+            {/* ✅ 16:9 oranı — padding-bottom hilesi */}
+            <div
+              className="ratio-fix"
+              style={{
+                width: "100%",
+                paddingBottom: "56.25%", // 9 / 16 oranı
+                position: "relative",
+              }}
             >
-              {[
-                { src: "/hero/slide1.jpg" },
-                { src: "/hero/slide2.jpg" },
-                { src: "/hero/slide3.jpg" },
-                { src: "/hero/slide4.jpg" },
-                { src: "/hero/slide5.jpg" },
-                { src: "/hero/slide11.jpg" },
-              ].map((slide, i) => (
-                <SwiperSlide key={i}>
-                  <div className="relative w-full h-full">
+              <Swiper
+                modules={[Autoplay, Pagination]}
+                autoplay={{ delay: 3500 }}
+                loop
+                pagination={{ clickable: true }}
+                className="absolute top-0 left-0 w-full h-full"
+              >
+                {[
+                  { src: "/hero/slide1.jpg" },
+                  { src: "/hero/slide2.jpg" },
+                  { src: "/hero/slide3.jpg" },
+                  { src: "/hero/slide4.jpg" },
+                  { src: "/hero/slide5.jpg" },
+                  { src: "/hero/slide11.jpg" },
+                ].map((slide, i) => (
+                  <SwiperSlide key={i}>
                     <img
                       src={slide.src}
                       alt=""
-                      className="absolute inset-0 w-full h-full object-cover object-center 
+                      className="w-full h-full object-cover object-center
                         brightness-[1.05] contrast-[1.1] saturate-[1.1]"
                     />
-                  </div>
-                </SwiperSlide>
-              ))}
-            </Swiper>
+                  </SwiperSlide>
+                ))}
+              </Swiper>
+            </div>
           </div>
-        )}
+        </div>
 
-        {/* ✅ Mobilde 16:9 oranını sabitle */}
+        {/* ✅ Masaüstü için yükseklik değişimi */}
         <style>
           {`
-          @media (max-width: 768px) {
-            section > div {
-              height: auto !important;
-              position: relative;
-              padding-bottom: 56.25% !important; /* 16:9 */
-            }
-            section img {
-              width: 100% !important;
-              height: 100% !important;
-              object-fit: cover !important;
-              display: block !important;
+          @media (min-width: 768px) {
+            .ratio-fix {
+              padding-bottom: 0 !important;
+              height: 85vh !important;
             }
           }
         `}
