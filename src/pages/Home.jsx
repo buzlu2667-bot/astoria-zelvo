@@ -57,10 +57,16 @@ export default function Home() {
     aspectRatio: "16 / 9",
   }}
 >
-
-
-
-
+<style>
+{`
+  @media (max-width: 768px) {
+    section {
+      height: auto !important;
+      aspect-ratio: 16 / 9 !important;
+    }
+  }
+`}
+</style>
 
 
   <Swiper
@@ -104,10 +110,8 @@ export default function Home() {
 <img
   src={slide.src}
   alt=""
-  className="absolute inset-0 w-full h-auto md:h-full object-cover object-center 
+  className="absolute inset-0 w-full h-full object-cover object-center
   brightness-[1.05] contrast-[1.1] saturate-[1.1]
-  [@media(max-width:768px)]:aspect-[16/9]
-  [@media(max-width:768px)]:h-auto
   transition-all duration-700 ease-out"
 />
 
