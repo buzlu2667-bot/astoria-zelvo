@@ -64,11 +64,12 @@ export default function Home() {
         <SwiperSlide key={i}>
           <div className="relative w-full h-full bg-black">
             <img
-              src={slide.src}
-              alt=""
-              className="w-full h-full object-contain object-center"
-              draggable={false}
-            />
+  src={slide.src}
+  alt=""
+  className="w-full h-full object-contain object-center translate-y-[-20px]"
+  draggable={false}
+/>
+
           </div>
         </SwiperSlide>
       ))}
