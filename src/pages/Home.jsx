@@ -46,36 +46,12 @@ export default function Home() {
 
   return (
   <div className="min-h-screen bg-black text-white">
-    <style>
-{`
-@media (max-width: 768px) {
-  .hero-slider {
-    position: relative;
-    width: 100%;
-    height: auto !important;
-    aspect-ratio: 16 / 9 !important;
-  }
-  .hero-slider .swiper,
-  .hero-slider .swiper-wrapper,
-  .hero-slider .swiper-slide {
-    height: auto !important;
-  }
-  .hero-slider img,
-  .hero-slider video {
-    height: auto !important;
-    width: 100% !important;
-    object-fit: cover !important;
-  }
-}
-`}
-</style>
-
-
+   
    {/* ✅ FULLSCREEN PREMIUM HERO SLIDER — FINAL */}
 <section
-  className="hero-slider w-full relative overflow-hidden
+  className="w-full relative overflow-hidden
   h-[70vh] sm:h-[75vh] md:h-[78vh] lg:h-[85vh] xl:h-[85vh]
-  md:h-[85vh]"
+  md:h-[85vh] max-md:h-auto"
 >
   <div className="relative w-full h-full md:h-auto max-md:aspect-[16/9] max-md:h-auto">
 
@@ -125,10 +101,12 @@ export default function Home() {
 <img
   src={slide.src}
   alt=""
-  className="absolute inset-0 w-full h-full max-md:h-auto object-cover object-center 
+  className="absolute inset-0 w-full h-full object-cover object-center
   brightness-[1.05] contrast-[1.1] saturate-[1.1]
+  max-md:static max-md:h-auto max-md:w-full
   transition-all duration-700 ease-out"
 />
+
 
 
 
