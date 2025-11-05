@@ -392,6 +392,12 @@ iframe[src*="livechat"] {
 .animate-newBadge {
   animation: newBadgeGlow 1.6s ease-in-out infinite;
 }
+@media (max-width: 768px) {
+  a[href*="wa.me"] {
+    bottom: 85px !important;
+    right: 12px !important;
+  }
+}
 
 
 

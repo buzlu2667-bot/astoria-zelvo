@@ -88,6 +88,21 @@ export default function Footer() {
             © 2025 MAXIMORA — Tüm Hakları Saklıdır.
           </p>
         </div>
+      <a
+  href="https://wa.me/905xxxxxxxxx"
+  target="_blank"
+  rel="noopener noreferrer"
+  className="fixed bottom-5 right-5 flex items-center gap-2 bg-white text-[#444] font-medium px-3 py-1.5 rounded-md shadow-md transition-all duration-300 z-[9999] cursor-pointer select-none"
+>
+  <FaWhatsapp className="text-green-600 text-lg" />
+  <span className="text-[13px] tracking-tight">WhatsApp Destek</span>
+</a>
+
+
+
+
+
+
       </footer>
 
       {/* ✅ Premium Drawer (Modal) */}
