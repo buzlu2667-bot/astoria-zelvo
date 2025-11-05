@@ -51,9 +51,10 @@ export default function Home() {
 <section
   className="w-full relative overflow-hidden
   h-[70vh] sm:h-[75vh] md:h-[78vh] lg:h-[85vh] xl:h-[85vh]
-  md:h-[85vh]
-  max-md:h-auto max-md:aspect-[16/9]"
+  md:h-[85vh]"
 >
+  <div className="relative w-full h-full md:h-auto max-md:aspect-[16/9] max-md:h-auto">
+
 
 
 
@@ -129,6 +130,7 @@ export default function Home() {
 
     ))}
   </Swiper>
+  </div>
 </section>
 
 
