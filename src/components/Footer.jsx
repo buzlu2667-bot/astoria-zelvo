@@ -89,7 +89,7 @@ export default function Footer() {
           </p>
         </div>
       <a
-  href="https://wa.me/905xxxxxxxxx"
+  href="https://wa.me/905384657526"
   target="_blank"
   rel="noopener noreferrer"
   className="fixed bottom-5 right-5 flex items-center gap-2 bg-white text-[#444] font-medium px-3 py-1.5 rounded-md shadow-md transition-all duration-300 z-[9999] cursor-pointer select-none"
