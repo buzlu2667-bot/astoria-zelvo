@@ -49,10 +49,11 @@ export default function Home() {
    
    {/* ✅ FULLSCREEN PREMIUM HERO SLIDER — FINAL */}
 <section
-  className="w-full relative overflow-hidden
-  h-[70vh] sm:h-[75vh] md:h-[78vh] lg:h-[85vh] xl:h-[85vh]
-  md:h-[85vh] max-md:h-auto"
+  className="w-full relative overflow-hidden 
+  h-[70vh] sm:h-[75vh] md:h-[80vh] lg:h-[85vh] xl:h-[85vh] 
+  max-md:h-auto max-md:aspect-[16/9]"
 >
+
   <div className="relative w-full h-full md:h-auto max-md:aspect-[16/9] max-md:h-auto">
 
 
@@ -65,6 +66,7 @@ export default function Home() {
   pagination={{ clickable: true }}
   className="w-full h-full max-md:h-auto max-md:aspect-[16/9]"
 >
+
 
 
     {[
@@ -101,11 +103,12 @@ export default function Home() {
 <img
   src={slide.src}
   alt=""
-  className="absolute inset-0 w-full h-full object-cover object-center
+  className="w-full h-full object-cover object-center 
+  max-md:h-auto max-md:w-full max-md:object-contain
   brightness-[1.05] contrast-[1.1] saturate-[1.1]
-  max-md:static max-md:h-auto max-md:w-full
   transition-all duration-700 ease-out"
 />
+
 
 
 
