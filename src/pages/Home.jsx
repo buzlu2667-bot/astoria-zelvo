@@ -38,56 +38,50 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-black text-white">
       {/* ✅ HERO SLIDER (yukarıdan sıfır, tam oturmuş) */}
-      <section className="relative w-full overflow-hidden mb-8">
-        <div className="w-full h-[60vh] sm:h-[70vh] md:h-[80vh] lg:h-[85vh]">
-          <Swiper
-            modules={[Autoplay, Pagination]}
-            autoplay={{ delay: 4000, disableOnInteraction: false }}
-            loop={true}
-            pagination={{ clickable: true }}
-            className="w-full h-full"
-          >
-            {[
-              { src: "/hero/slide1.jpg" },
-              { src: "/hero/slide2.jpg" },
-              { src: "/hero/slide3.jpg" },
-              { src: "/hero/slide4.jpg" },
-              { src: "/hero/slide5.jpg" },
-              { src: "/hero/slide11.jpg" },
-              { src: "/hero/slide12.jpg" },
-              { src: "/hero/slide13.jpg" },
-              { src: "/hero/slide14.jpg" },
-            ].map((slide, i) => (
-              <SwiperSlide key={i}>
-                <div className="relative w-full h-full">
-                  <img
-                    src={slide.src}
-                    alt=""
-                    className="w-full h-full object-cover object-top"
-                    draggable={false}
-                  />
-                  <div className="absolute inset-0 bg-black/10" />
-                </div>
-              </SwiperSlide>
-            ))}
-          </Swiper>
-        </div>
+      <section className="relative w-full overflow-hidden mt-[100px] mb-8">
+  <div className="w-full h-[90vh] sm:h-[95vh] md:h-[95vh] lg:h-[95vh]">
+    <Swiper
+      modules={[Autoplay, Pagination]}
+      autoplay={{ delay: 4000, disableOnInteraction: false }}
+      loop={true}
+      pagination={{ clickable: true }}
+      className="w-full h-full"
+    >
+      {[
+        { src: "/hero/slide1.jpg" },
+        { src: "/hero/slide2.jpg" },
+        { src: "/hero/slide3.jpg" },
+        { src: "/hero/slide4.jpg" },
+        { src: "/hero/slide5.jpg" },
+        { src: "/hero/slide11.jpg" },
+        { src: "/hero/slide12.jpg" },
+        { src: "/hero/slide13.jpg" },
+        { src: "/hero/slide14.jpg" },
+      ].map((slide, i) => (
+        <SwiperSlide key={i}>
+          <div className="relative w-full h-full bg-black">
+            <img
+              src={slide.src}
+              alt=""
+              className="w-full h-full object-contain object-center"
+              draggable={false}
+            />
+          </div>
+        </SwiperSlide>
+      ))}
+    </Swiper>
+  </div>
 
-        <style>
-          {`
-            .swiper-pagination {
-              bottom: 14px !important;
-              z-index: 20 !important;
-            }
-            html, body {
-              margin: 0 !important;
-              padding: 0 !important;
-              background: black !important;
-              overscroll-behavior-y: none !important;
-            }
-          `}
-        </style>
-      </section>
+  <style>
+    {`
+      .swiper-pagination {
+        bottom: 18px !important;
+        z-index: 20 !important;
+      }
+    `}
+  </style>
+</section>
+
 
       {/* ✅ PRODUCTS */}
       <main className="max-w-7xl mx-auto px-6 pb-10">
