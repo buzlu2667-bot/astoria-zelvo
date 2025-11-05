@@ -1,4 +1,4 @@
-// ✅ HOME PAGE — ULTRA FINAL (No zoom, full responsive, smooth)
+// ✅ HOME PAGE — ZERO ZOOM / ZERO LAG / FULL PENTI STYLE
 import { useEffect, useState, useMemo } from "react";
 import { supabase } from "../lib/supabaseClient";
 import ProductCard from "../components/ProductCard";
@@ -41,20 +41,19 @@ export default function Home() {
       {/* ✅ HERO SLIDER */}
       <section className="relative w-full overflow-hidden mb-10 -mt-[10px]">
         <Swiper
-          modules={[Autoplay, Pagination]}
-          autoplay={{ delay: 4000, disableOnInteraction: false }}
+          modules={[Pagination, Autoplay]}
           loop={true}
           pagination={{ clickable: true }}
-          speed={900}
-          effect="fade"
-          fadeEffect={{ crossFade: true }}
+          autoplay={{ delay: 4000, disableOnInteraction: false }}
+          speed={0} // 🚫 animasyon yok
           allowTouchMove={true}
           onSlideChangeTransitionStart={(swiper) => {
             swiper.slides.forEach((slide) => {
-              slide.style.transform = "none";
+              slide.style.transform = "translate3d(0,0,0)";
+              slide.style.transition = "none";
             });
           }}
-          className="hero-swiper w-full"
+          className="hero-swiper w-full select-none touch-pan-y"
         >
           {[
             { src: "/hero/slide1.jpg" },
@@ -66,11 +65,14 @@ export default function Home() {
             { src: "/hero/slide12.jpg" },
           ].map((slide, i) => (
             <SwiperSlide key={i}>
-              <div className="relative w-full h-full">
+              <div className="relative w-full h-full overflow-hidden">
                 <img
                   src={slide.src}
                   alt=""
-                  className="absolute inset-0 w-full h-full object-cover object-center brightness-[1.05] contrast-[1.1] saturate-[1.1]"
+                  className="absolute inset-0 w-full h-full object-cover object-center 
+                    !transform-none !transition-none will-change-auto
+                    brightness-[1.05] contrast-[1.1] saturate-[1.1]"
+                  draggable={false}
                 />
                 <div className="absolute inset-0 bg-black/10"></div>
               </div>
@@ -80,7 +82,7 @@ export default function Home() {
 
         <style>
           {`
-            /* ✅ Masaüstü: 85vh sabit, premium dolgu */
+            /* ✅ Masaüstü: 85vh sabit */
             @media (min-width: 768px) {
               .hero-swiper,
               .hero-swiper .swiper-wrapper,
@@ -89,7 +91,7 @@ export default function Home() {
               }
             }
 
-            /* ✅ Mobil: tam ekran, akıcı scroll */
+            /* ✅ Mobil: tam ekran, akıcı */
             @media (max-width: 767px) {
               .hero-swiper,
               .hero-swiper .swiper-wrapper,
@@ -104,19 +106,20 @@ export default function Home() {
                 width: 100% !important;
                 transform: none !important;
                 transition: none !important;
+                will-change: auto !important;
               }
             }
 
-            /* ✅ Pagination görünür & sabit */
+            /* ✅ Pagination sabit & görünür */
             .swiper-pagination {
-              bottom: 15px !important;
+              bottom: 18px !important;
               opacity: 1 !important;
               visibility: visible !important;
               z-index: 100 !important;
             }
 
             .swiper-pagination-bullet {
-              background: rgba(255, 255, 255, 0.8) !important;
+              background: rgba(255,255,255,0.8) !important;
               width: 8px;
               height: 8px;
               margin: 0 3px !important;
@@ -126,7 +129,7 @@ export default function Home() {
               background: #ffd700 !important;
             }
 
-            /* ✅ iPhone Safe Area düzeltmesi */
+            /* ✅ iPhone Safe Area fix */
             @supports (-webkit-touch-callout: none) {
               .hero-swiper {
                 padding-top: env(safe-area-inset-top, 0) !important;
@@ -134,10 +137,25 @@ export default function Home() {
               }
             }
 
-            /* ✅ Zoom ve geçiş engeli */
+            /* ✅ Zoom & kasma fix */
+            .hero-swiper,
+            .hero-swiper .swiper-wrapper,
             .hero-swiper .swiper-slide {
+              will-change: auto !important;
               transform: none !important;
               transition: none !important;
+              backface-visibility: hidden !important;
+              perspective: 1000px !important;
+            }
+
+            .hero-swiper img {
+              transform: none !important;
+              transition: none !important;
+              will-change: auto !important;
+            }
+
+            html, body {
+              overscroll-behavior-y: contain !important;
             }
           `}
         </style>
