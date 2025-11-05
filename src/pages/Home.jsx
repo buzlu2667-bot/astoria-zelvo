@@ -39,7 +39,8 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-black text-white">
       {/* ✅ HERO SLIDER */}
-      <section className="relative w-full overflow-hidden mt-[100px] mb-10">
+      <section className="relative w-full overflow-hidden mb-10 -mt-[10px]">
+
         <Swiper
           modules={[Autoplay, Pagination]}
           autoplay={{ delay: 3500 }}
@@ -100,6 +101,13 @@ export default function Home() {
               bottom: 20px !important;
               z-index: 50 !important;
             }
+              @supports (-webkit-touch-callout: none) {
+  .hero-swiper {
+    padding-top: env(safe-area-inset-top, 0) !important;
+    margin-top: -env(safe-area-inset-top, 0) !important;
+  }
+}
+
           `}
         </style>
       </section>
