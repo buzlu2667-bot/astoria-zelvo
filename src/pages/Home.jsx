@@ -88,57 +88,39 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-black text-white">
       {/* ✅ HERO SLIDER */}
-    <section
-  className="relative w-full overflow-hidden"
-  style={{
-    height: "85vh",
-  }}
->
-  <Swiper
-    modules={[Autoplay, Pagination]}
-    autoplay={{ delay: 3500 }}
-    loop
-    pagination={{ clickable: true }}
-    className="hero-swiper w-full h-full"
-  >
-    {[
-      { src: "/hero/slide1.jpg" },
-      { src: "/hero/slide2.jpg" },
-      { src: "/hero/slide3.jpg" },
-      { src: "/hero/slide4.jpg" },
-      { src: "/hero/slide5.jpg" },
-    ].map((slide, i) => (
-      <SwiperSlide key={i}>
-        <div className="relative w-full h-full">
-          <img
-            src={slide.src}
-            alt=""
-            className="absolute inset-0 w-full h-full object-cover object-center brightness-[1.05] contrast-[1.1] saturate-[1.1]"
-          />
-        </div>
-      </SwiperSlide>
-    ))}
-  </Swiper>
-
-  {/* ✅ Sadece mobilde JS ile oranı zorla */}
-  <script dangerouslySetInnerHTML={{
-    __html: `
-      function adjustHeroHeight() {
-        const slider = document.querySelector('.hero-swiper');
-        if (!slider) return;
-        if (window.innerWidth <= 768) {
-          const width = slider.offsetWidth;
-          const height = width * 0.5625; // 16:9 oran
-          slider.style.height = height + 'px';
-        } else {
-          slider.style.height = '85vh';
-        }
-      }
-      window.addEventListener('load', adjustHeroHeight);
-      window.addEventListener('resize', adjustHeroHeight);
-    `
-  }} />
+   {/* ✅ HERO SLIDER FINAL FIX */}
+<section className="relative w-full overflow-hidden">
+  {/* Oran sabitleyici wrapper */}
+  <div className="relative w-full md:h-[85vh] h-0 pb-[56.25%] md:pb-0">
+    <Swiper
+      modules={[Autoplay, Pagination]}
+      autoplay={{ delay: 3500 }}
+      loop
+      pagination={{ clickable: true }}
+      className="absolute inset-0 w-full h-full"
+    >
+      {[
+        { src: "/hero/slide1.jpg" },
+        { src: "/hero/slide2.jpg" },
+        { src: "/hero/slide3.jpg" },
+        { src: "/hero/slide4.jpg" },
+        { src: "/hero/slide5.jpg" },
+        { src: "/hero/slide10.jpg" },
+      ].map((slide, i) => (
+        <SwiperSlide key={i}>
+          <div className="relative w-full h-full">
+            <img
+              src={slide.src}
+              alt=""
+              className="absolute inset-0 w-full h-full object-cover object-center brightness-[1.05] contrast-[1.1] saturate-[1.1]"
+            />
+          </div>
+        </SwiperSlide>
+      ))}
+    </Swiper>
+  </div>
 </section>
+
 
 
 
