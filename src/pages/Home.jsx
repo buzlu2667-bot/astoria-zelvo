@@ -87,17 +87,19 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-black text-white">
-      {/* ✅ HERO SLIDER */}
-   {/* ✅ HERO SLIDER FINAL FIX */}
-<section className="relative w-full overflow-hidden">
-  {/* Oran sabitleyici wrapper */}
-  <div className="relative w-full md:h-[85vh] h-0 pb-[56.25%] md:pb-0">
+     {/* ✅ HERO SLIDER - HEADER FIXLİ 16:9 */}
+<section
+  className="relative w-full overflow-hidden mt-[120px] md:mt-[80px]"
+>
+  <div
+    className="relative w-full md:h-[85vh] h-0 pb-[56.25%]" // mobilde 16:9
+  >
     <Swiper
       modules={[Autoplay, Pagination]}
       autoplay={{ delay: 3500 }}
       loop
       pagination={{ clickable: true }}
-      className="absolute inset-0 w-full h-full"
+      className="absolute inset-0 w-full h-full min-h-[250px]"
     >
       {[
         { src: "/hero/slide1.jpg" },
@@ -108,18 +110,28 @@ export default function Home() {
         { src: "/hero/slide11.jpg" },
       ].map((slide, i) => (
         <SwiperSlide key={i}>
-          <div className="relative w-full h-full">
-            <img
-              src={slide.src}
-              alt=""
-              className="absolute inset-0 w-full h-full object-cover object-center brightness-[1.05] contrast-[1.1] saturate-[1.1]"
-            />
-          </div>
+          <img
+            src={slide.src}
+            alt=""
+            className="absolute inset-0 w-full h-full object-cover object-center brightness-[1.05] contrast-[1.1] saturate-[1.1]"
+          />
         </SwiperSlide>
       ))}
     </Swiper>
   </div>
+
+  <style>
+    {`
+      @media (min-width: 768px) {
+        section > div {
+          padding-bottom: 0 !important;
+          height: 85vh !important;
+        }
+      }
+    `}
+  </style>
 </section>
+
 
 
 
