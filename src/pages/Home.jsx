@@ -38,55 +38,82 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-black text-white">
       {/* ✅ HERO SLIDER (yukarıdan sıfır, tam oturmuş) */}
-      <section
-  className="relative w-full overflow-hidden mb-8"
-  style={{ transform: "translateY(10px)" }}
->
-  <div className="w-full h-[90vh] sm:h-[95vh] md:h-[95vh] lg:h-[95vh]">
-    <Swiper
-      modules={[Autoplay, Pagination]}
-      autoplay={{ delay: 4000, disableOnInteraction: false }}
-      loop={true}
-      pagination={{ clickable: true }}
-      className="w-full h-full"
-    >
-      {[
-        { src: "/hero/slide1.jpg" },
-        { src: "/hero/slide2.jpg" },
-        { src: "/hero/slide3.jpg" },
-        { src: "/hero/slide4.jpg" },
-        { src: "/hero/slide5.jpg" },
-        { src: "/hero/slide11.jpg" },
-        { src: "/hero/slide12.jpg" },
-        { src: "/hero/slide13.jpg" },
-        { src: "/hero/slide14.jpg" },
-      ].map((slide, i) => (
-        <SwiperSlide key={i}>
-          <div className="relative w-full h-full bg-black">
-           <img
-  src={slide.src}
-  alt=""
-  className="w-full h-full object-contain object-center translate-y-[-90px]"
-  draggable={false}
-/>
+     <section className="relative w-full overflow-hidden">
+  <Swiper
+    modules={[Autoplay, Pagination]}
+    autoplay={{ delay: 3500 }}
+    loop
+    pagination={{ clickable: true }}
+    className="hero-swiper w-full"
+  >
+    {[
+      { src: "/hero/slide1.jpg" },
+      { src: "/hero/slide2.jpg" },
+      { src: "/hero/slide3.jpg" },
+      { src: "/hero/slide4.jpg" },
+      { src: "/hero/slide11.jpg" },
+      { src: "/hero/slide12.jpg" },
+      { src: "/hero/slide13.jpg" },
+    ].map((slide, i) => (
+      <SwiperSlide key={i}>
+        <div className="relative w-full h-full">
+          <img
+            src={slide.src}
+            alt=""
+            className="w-full h-full object-cover object-top md:object-center brightness-[1.05] contrast-[1.1] saturate-[1.1]"
+            draggable={false}
+          />
+          <div className="absolute inset-0 bg-black/10"></div>
+        </div>
+      </SwiperSlide>
+    ))}
+  </Swiper>
 
-
-
-          </div>
-        </SwiperSlide>
-      ))}
-    </Swiper>
-  </div>
-
-  <style>
-    {`
-      .swiper-pagination {
-        bottom: 18px !important;
-        z-index: 20 !important;
+  <style>{`
+    /* ✅ Masaüstü - tam ekran, premium oran */
+    @media (min-width: 768px) {
+      .hero-swiper,
+      .hero-swiper .swiper-wrapper,
+      .hero-swiper .swiper-slide {
+        height: 85vh !important;
       }
-    `}
-  </style>
+    }
+
+    /* ✅ Mobil - tam 16:9, taş gibi */
+    @media (max-width: 767px) {
+      .hero-swiper,
+      .hero-swiper .swiper-wrapper,
+      .hero-swiper .swiper-slide {
+        height: auto !important;
+        aspect-ratio: 16 / 9 !important;
+      }
+      .hero-swiper img {
+        height: 100% !important;
+        width: 100% !important;
+        object-fit: cover !important;
+        object-position: center top !important;
+        transform: translateY(-15px) !important;
+      }
+    }
+
+    /* ✅ Pagination */
+    .swiper-pagination {
+      bottom: 15px !important;
+      z-index: 100 !important;
+    }
+
+    .swiper-pagination-bullet {
+      background: rgba(255,255,255,0.8) !important;
+      width: 8px;
+      height: 8px;
+    }
+
+    .swiper-pagination-bullet-active {
+      background: #ffd700 !important;
+    }
+  `}</style>
 </section>
+
 
 
 
