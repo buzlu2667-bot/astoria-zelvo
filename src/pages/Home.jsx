@@ -51,7 +51,7 @@ export default function Home() {
     <div className="min-h-screen bg-black text-white">
       {/* ✅ HERO SLIDER */}
       <section className="relative w-full overflow-hidden mb-8">
-        <div className="w-full h-[60vh] sm:h-[70vh] md:h-[80vh] lg:h-[85vh]">
+        <div className="w-full h-[60vh] sm:h-[70vh] md:h-[80vh] lg:h-[80vh]">
           <Swiper
             modules={[Autoplay, Pagination, Navigation]}
             autoplay={{ delay: 4000, disableOnInteraction: false }}
@@ -230,10 +230,66 @@ export default function Home() {
     right: 10px !important;
   }
 }
+  @keyframes marquee {
+  0% { transform: translateX(100%); }
+  100% { transform: translateX(-100%); }
+}
+
+.animate-marquee {
+  display: inline-block;
+  animation: marquee 25s linear infinite;
+}
 
           `}
         </style>
       </section>
+   {/* ✅ Kusursuz kenardan gelen Premium Loop */}
+<div className="relative overflow-hidden border-t border-yellow-500/10 -mt-5 mb-4">
+  <div className="marquee-wrapper">
+    <div className="marquee-track">
+      <span className="marquee-text text-[11px] sm:text-[12px] tracking-[0.25em] uppercase 
+        font-light text-[#ffbfbf] drop-shadow-[0_0_3px_rgba(255,192,192,0.25)] px-4">
+        Alışveriş Yaptıkça Kazanın 20 000 Puan!.... • Her 20.000 Puanda Özel Bir Hediye... • ✨MüştERİ Panelinden GöR.. • Kapıda Ödeme •
+      </span>
+      <span className="marquee-text text-[11px] sm:text-[12px] tracking-[0.25em] uppercase 
+        font-light text-[#ffbfbf] drop-shadow-[0_0_3px_rgba(255,192,192,0.25)] px-4">
+         • Premium Çanta Koleksiyonu .......  • Tarzını Göster .... ✨ Kaliteli Ürün •  Güvenli Ödeme  • İADE VE DEĞİŞİM  •
+      </span>
+    </div>
+  </div>
+
+  <style>
+    {`
+      .marquee-wrapper {
+        position: relative;
+        width: 100%;
+        overflow: hidden;
+      }
+
+      .marquee-track {
+        display: inline-flex;
+        white-space: nowrap;
+        will-change: transform;
+        animation: marqueeFlow 30s linear infinite;
+      }
+
+      @keyframes marqueeFlow {
+        0% {
+          transform: translateX(70%);
+        }
+        100% {
+          transform: translateX(-100%);
+        }
+      }
+    `}
+  </style>
+</div>
+
+
+
+
+
+
 
       {/* ✅ PRODUCTS */}
       <main className="max-w-7xl mx-auto px-6 pb-10">
