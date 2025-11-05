@@ -88,9 +88,16 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-black text-white">
     {/* ✅ HERO SLIDER - FINAL */}
-<section className="relative w-full overflow-hidden mt-[110px] md:mt-[80px]">
-  {/* ✅ Wrapper: masaüstü height, mobil 16:9 */}
-  <div className="relative w-full md:h-[85vh] h-auto aspect-[16/9]">
+<section
+  className="relative w-full overflow-hidden mt-[110px] md:mt-[80px]"
+>
+  {/* ✅ Masaüstü 85vh, Mobil 16:9 */}
+  <div
+    className="relative w-full overflow-hidden"
+    style={{
+      height: "85vh",
+    }}
+  >
     <Swiper
       modules={[Autoplay, Pagination]}
       autoplay={{ delay: 3500 }}
@@ -106,11 +113,16 @@ export default function Home() {
         { src: "/hero/slide5.jpg" },
       ].map((slide, i) => (
         <SwiperSlide key={i}>
-          <div className="relative w-full h-full">
+          <div
+            className="relative w-full h-full"
+            style={{
+              height: "100%",
+            }}
+          >
             <img
               src={slide.src}
               alt=""
-              className="absolute inset-0 w-full h-full object-cover object-center 
+              className="absolute inset-0 w-full h-full object-cover object-center
               brightness-[1.05] contrast-[1.1] saturate-[1.1]"
             />
           </div>
@@ -119,35 +131,25 @@ export default function Home() {
     </Swiper>
   </div>
 
+  {/* ✅ 16:9 fix sadece mobil için */}
   <style>
     {`
-      /* ✅ Masaüstü yüksekliği sabit kalır */
-      @media (min-width: 768px) {
-        section > div {
-          aspect-ratio: auto !important;
-          height: 85vh !important;
-        }
-      }
-
-      /* ✅ Mobilde kesin 16:9 */
       @media (max-width: 768px) {
         section > div {
           height: auto !important;
-          aspect-ratio: 16 / 9 !important;
+          position: relative;
+          padding-bottom: 56.25% !important; /* 16:9 oranı */
         }
-        .swiper, .swiper-wrapper, .swiper-slide {
-          height: auto !important;
-        }
-        .swiper-slide img {
-          height: auto !important;
+        section img {
           width: 100% !important;
+          height: 100% !important;
           object-fit: cover !important;
-          display: block !important;
         }
       }
     `}
   </style>
 </section>
+
 
 
 
