@@ -49,23 +49,29 @@ export default function Home() {
    
    {/* ✅ FULLSCREEN PREMIUM HERO SLIDER — FINAL */}
 <section
-  className="w-full relative overflow-hidden 
-  h-[70vh] sm:h-[75vh] md:h-[80vh] lg:h-[85vh] xl:h-[85vh] 
+  className="relative w-full overflow-hidden
+  h-[70vh] sm:h-[75vh] md:h-[80vh] lg:h-[85vh] xl:h-[85vh]
   max-md:h-auto max-md:aspect-[16/9]"
 >
+
 
   <div className="relative w-full h-full md:h-auto max-md:aspect-[16/9] max-md:h-auto">
 
 
 
 
-  <Swiper
+ <Swiper
   modules={[Autoplay, Pagination]}
   autoplay={{ delay: 3500 }}
   loop
   pagination={{ clickable: true }}
   className="w-full h-full max-md:h-auto max-md:aspect-[16/9]"
+  style={{
+    position: "relative",
+    zIndex: 10,
+  }}
 >
+
 
 
 
@@ -103,7 +109,7 @@ export default function Home() {
 <img
   src={slide.src}
   alt=""
-  className="w-full h-full object-cover object-center 
+  className="w-full h-full object-cover object-center
   max-md:h-auto max-md:w-full max-md:object-contain
   brightness-[1.05] contrast-[1.1] saturate-[1.1]
   transition-all duration-700 ease-out"
