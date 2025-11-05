@@ -59,12 +59,13 @@ export default function Home() {
 
 
   <Swiper
-    modules={[Autoplay, Pagination]}
-    autoplay={{ delay: 3500 }}
-    loop
-    pagination={{ clickable: true }}
-    className="w-full h-full"
-  >
+  modules={[Autoplay, Pagination]}
+  autoplay={{ delay: 3500 }}
+  loop
+  pagination={{ clickable: true }}
+  className="w-full h-full max-md:h-auto"
+>
+
     {[
       { type: "image", src: "/hero/slide5.jpg", title: "", text: "", color: "text-yellow-400" },
       { type: "image", src: "/hero/slide1.jpg", title: "", text: "", color: "text-yellow-400" },
@@ -99,7 +100,7 @@ export default function Home() {
 <img
   src={slide.src}
   alt=""
-  className="absolute inset-0 w-full h-full object-cover object-center
+  className="absolute inset-0 w-full h-full max-md:h-auto object-cover object-center
   brightness-[1.05] contrast-[1.1] saturate-[1.1]
   transition-all duration-700 ease-out"
 />
