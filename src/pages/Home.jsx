@@ -40,7 +40,7 @@ export default function Home() {
       {/* ✅ HERO SLIDER (yukarıdan sıfır, tam oturmuş) */}
       <section
   className="relative w-full overflow-hidden mb-8"
-  style={{ transform: "translateY(-15px)" }}
+  style={{ transform: "translateY(10px)" }}
 >
   <div className="w-full h-[90vh] sm:h-[95vh] md:h-[95vh] lg:h-[95vh]">
     <Swiper
@@ -66,9 +66,10 @@ export default function Home() {
             <img
   src={slide.src}
   alt=""
-  className="w-full h-full object-contain object-center translate-y-[-20px]"
+  className="w-full h-full object-contain object-center translate-y-[-35px]"
   draggable={false}
 />
+
 
           </div>
         </SwiperSlide>
