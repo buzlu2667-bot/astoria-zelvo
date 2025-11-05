@@ -70,13 +70,18 @@ export default function Home() {
             {slides.map((slide, i) => (
               <SwiperSlide key={i}>
                 <div className="relative w-full h-full">
-                <div
+               <div
   className="w-full h-[65vh] sm:h-full bg-cover bg-center sm:bg-top"
   style={{
-    backgroundImage: `url(${slide.src})`,
+    backgroundImage: `url(${
+      window.innerWidth <= 768
+        ? slide.src.replace(".jpg", "-mobile.jpg") // 📱 Mobil versiyonu kullan
+        : slide.src // 💻 Masaüstü versiyonu
+    })`,
     backgroundRepeat: "no-repeat",
   }}
 ></div>
+
 
 
 
