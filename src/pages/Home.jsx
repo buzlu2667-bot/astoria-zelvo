@@ -66,7 +66,7 @@ export default function Home() {
            <img
   src={slide.src}
   alt=""
-  className="w-full h-full object-contain object-center translate-y-[-50px]"
+  className="w-full h-full object-contain object-center translate-y-[-70px]"
   draggable={false}
 />
 
