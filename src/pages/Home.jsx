@@ -246,42 +246,42 @@ export default function Home() {
       </section>
    {/* ✅ Kusursuz kenardan gelen Premium Loop */}
 <div className="relative overflow-hidden border-t border-yellow-500/10 -mt-5 mb-4">
-  <div className="marquee-wrapper">
-    <div className="marquee-track">
-      <span className="marquee-text text-[11px] sm:text-[12px] tracking-[0.25em] uppercase 
-        font-light text-[#ffbfbf] drop-shadow-[0_0_3px_rgba(255,192,192,0.25)] px-4">
-        Alışveriş Yaptıkça Kazanın 20 000 Puan!.... • Her 20.000 Puanda Özel Bir Hediye... • ✨MüştERİ Panelinden GöR.. • Kapıda Ödeme •
-      </span>
-      <span className="marquee-text text-[11px] sm:text-[12px] tracking-[0.25em] uppercase 
-        font-light text-[#ffbfbf] drop-shadow-[0_0_3px_rgba(255,192,192,0.25)] px-4">
-         • Premium Çanta Koleksiyonu .......  • Tarzını Göster .... ✨ Kaliteli Ürün •  Güvenli Ödeme  • İADE VE DEĞİŞİM  •
-      </span>
-    </div>
+  <div class="marquee" id="promoMarquee">
+  <div class="marquee__inner">
+  •Alışveriş Yaptıkça Kazan 20 000 Puan!  • Her 20 000 Puanda Hediyeni Kap • Müşteri Panelinden Hediye Barını GöR • Tarzını Göster • Kaliteli Ürün • Güvenli Ödeme • İade ve Değişim •
   </div>
+</div>
+
 
   <style>
     {`
-      .marquee-wrapper {
-        position: relative;
-        width: 100%;
-        overflow: hidden;
-      }
+      .marquee {
+  overflow: hidden;
+  white-space: nowrap;
+  width: 100%;
+  background: transparent;
+  color: #ffbfbf;
+  font-size: 12px;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  text-shadow: 0 0 3px rgba(255,192,192,0.25);
+}
 
-      .marquee-track {
-        display: inline-flex;
-        white-space: nowrap;
-        will-change: transform;
-        animation: marqueeFlow 30s linear infinite;
-      }
+.marquee__inner {
+  display: inline-block;
+  padding-left: 100%;
+  animation: move 25s linear infinite;
+}
 
-      @keyframes marqueeFlow {
-        0% {
-          transform: translateX(70%);
-        }
-        100% {
-          transform: translateX(-100%);
-        }
-      }
+@keyframes move {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-100%);
+  }
+}
+
     `}
   </style>
 </div>
