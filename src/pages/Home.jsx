@@ -46,12 +46,36 @@ export default function Home() {
 
   return (
   <div className="min-h-screen bg-black text-white">
+    <style>
+{`
+@media (max-width: 768px) {
+  .hero-slider {
+    position: relative;
+    width: 100%;
+    height: auto !important;
+    aspect-ratio: 16 / 9 !important;
+  }
+  .hero-slider .swiper,
+  .hero-slider .swiper-wrapper,
+  .hero-slider .swiper-slide {
+    height: auto !important;
+  }
+  .hero-slider img,
+  .hero-slider video {
+    height: auto !important;
+    width: 100% !important;
+    object-fit: cover !important;
+  }
+}
+`}
+</style>
+
 
    {/* ✅ FULLSCREEN PREMIUM HERO SLIDER — FINAL */}
 <section
-  className="w-full relative overflow-hidden
+  className="hero-slider w-full relative overflow-hidden
   h-[70vh] sm:h-[75vh] md:h-[78vh] lg:h-[85vh] xl:h-[85vh]
-  md:h-[85vh] max-md:h-auto"
+  md:h-[85vh]"
 >
   <div className="relative w-full h-full md:h-auto max-md:aspect-[16/9] max-md:h-auto">
 
