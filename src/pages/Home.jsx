@@ -38,7 +38,7 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-black text-white">
       {/* ✅ HERO SLIDER (yukarıdan sıfır, tam oturmuş) */}
-      <section className="relative w-full overflow-hidden mt-[100px] mb-8">
+      <section className="relative w-full overflow-hidden -mt-[20px] mb-8">
   <div className="w-full h-[90vh] sm:h-[95vh] md:h-[95vh] lg:h-[95vh]">
     <Swiper
       modules={[Autoplay, Pagination]}
@@ -81,6 +81,7 @@ export default function Home() {
     `}
   </style>
 </section>
+
 
 
       {/* ✅ PRODUCTS */}
