@@ -15,6 +15,7 @@ export default function Home() {
   const [quickViewProduct, setQuickViewProduct] = useState(null);
   const { name: category } = useParams();
 
+  // ✅ Ürünleri getir
   useEffect(() => {
     const fetchProducts = async () => {
       setLoading(true);
@@ -29,6 +30,7 @@ export default function Home() {
     fetchProducts();
   }, []);
 
+  // ✅ Kategori filtresi
   const filteredProducts = useMemo(() => {
     if (!category) return products;
     return products.filter(
@@ -36,6 +38,7 @@ export default function Home() {
     );
   }, [category, products]);
 
+  // ✅ Slider görselleri
   const slides = [
     { src: "/hero/slide1.jpg", text: "" },
     { src: "/hero/slide2.jpg", text: "" },
@@ -48,42 +51,47 @@ export default function Home() {
     { src: "/hero/slide9.jpg", text: "" },
   ];
 
+  // ✅ Mobil algılama (GERÇEK ZAMANLI)
+  const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
+
+  useEffect(() => {
+    const handleResize = () => setIsMobile(window.innerWidth <= 768);
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
   return (
     <div className="min-h-screen bg-black text-white">
-      
       {/* ✅ HERO SLIDER */}
       <section className="relative w-full overflow-hidden mb-8 mt-12 sm:mt-0 -translate-y-2">
-      <div className="w-full h-[65vh] sm:h-[70vh] md:h-[80vh] lg:h-[80vh] sm:aspect-auto">
-
-  <Swiper
-    modules={[Autoplay, Pagination, Navigation]}
-
+        <div className="w-full h-[65vh] sm:h-[70vh] md:h-[80vh] lg:h-[80vh] sm:aspect-auto">
+          <Swiper
+            modules={[Autoplay, Pagination, Navigation]}
             autoplay={{ delay: 4000, disableOnInteraction: false }}
             loop={true}
             pagination={{ clickable: true }}
             navigation={{
-  nextEl: ".custom-next",
-  prevEl: ".custom-prev",
-}}
+              nextEl: ".custom-next",
+              prevEl: ".custom-prev",
+            }}
             className="w-full h-full"
           >
             {slides.map((slide, i) => (
               <SwiperSlide key={i}>
                 <div className="relative w-full h-full">
-               <div
-  className="w-full h-[65vh] sm:h-full bg-cover bg-center sm:bg-top"
-  style={{
-    backgroundImage: `url(${
-      window.innerWidth <= 768
-        ? slide.src.replace(".jpg", "-mobile.jpg") // 📱 Mobil versiyonu kullan
-        : slide.src // 💻 Masaüstü versiyonu
-    })`,
-    backgroundRepeat: "no-repeat",
-  }}
-></div>
-
-
-
+                  <div
+                    className="w-full h-[65vh] sm:h-full bg-cover bg-center sm:bg-top"
+                    style={{
+                      backgroundImage: `url(${
+                        isMobile
+                          ? slide.src.replace(".jpg", "-mobile.jpg")
+                          : slide.src
+                      })`,
+                      backgroundRepeat: "no-repeat",
+                      backgroundSize: "cover",
+                      backgroundPosition: "center",
+                    }}
+                  ></div>
 
                   {/* ✅ Altın yazı */}
                   {slide.text && (
@@ -102,45 +110,43 @@ export default function Home() {
             ))}
           </Swiper>
         </div>
-        {/* ✅ Zarif SVG kırmızı oklar (senin gönderdiğin gibi) */}
-{/* ✅ Ultra zarif, tıklanabilir açık kırmızı oklar */}
-<button className="custom-prev absolute left-3 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-white flex items-center justify-center z-20">
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    viewBox="0 0 28 24"
-    fill="none"
-    stroke="#ff5c5c" /* 🔴 daha açık kırmızı */
-    strokeWidth="1.3" /* ✅ daha ince çizgi */
-    strokeLinecap="round"
-    strokeLinejoin="round"
-    className="w-[18px] h-[18px]" /* ✅ biraz daha uzun görünüm */
-  >
-    <line x1="23" y1="12" x2="4" y2="12" /> 
-    <polyline points="11 19 4 12 11 5" />
-  </svg>
-</button>
 
-<button className="custom-next absolute right-3 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-white flex items-center justify-center z-20">
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    viewBox="0 0 28 24"
-    fill="none"
-    stroke="#ff5c5c" /* 🔴 açık kırmızı */
-    strokeWidth="1.3"
-    strokeLinecap="round"
-    strokeLinejoin="round"
-    className="w-[18px] h-[18px]"
-  >
-    <line x1="5" y1="12" x2="24" y2="12" />
-    <polyline points="17 5 24 12 17 19" />
-  </svg>
-</button>
+        {/* ✅ Zarif SVG kırmızı oklar */}
+        <button className="custom-prev absolute left-3 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-white flex items-center justify-center z-20">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 28 24"
+            fill="none"
+            stroke="#ff5c5c"
+            strokeWidth="1.3"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            className="w-[18px] h-[18px]"
+          >
+            <line x1="23" y1="12" x2="4" y2="12" />
+            <polyline points="11 19 4 12 11 5" />
+          </svg>
+        </button>
 
+        <button className="custom-next absolute right-3 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-white flex items-center justify-center z-20">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 28 24"
+            fill="none"
+            stroke="#ff5c5c"
+            strokeWidth="1.3"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            className="w-[18px] h-[18px]"
+          >
+            <line x1="5" y1="12" x2="24" y2="12" />
+            <polyline points="17 5 24 12 17 19" />
+          </svg>
+        </button>
 
-
+        {/* ✅ CSS STYLES */}
         <style>
           {`
-            /* ✅ Pagination noktaları altın */
             .swiper-pagination-bullet {
               background: rgba(255, 215, 0, 0.6) !important;
               width: 8px !important;
@@ -153,49 +159,6 @@ export default function Home() {
               transform: scale(1.15);
             }
 
-           /* ✅ Zarif kırmızı oklar (senin attığın görsel gibi) */
-.swiper-button-next,
-.swiper-button-prev {
-  color: #ff0000 !important;            /* 🔴 kırmızı ok */
-  width: 34px !important;               /* 🔘 küçük beyaz daire */
-  height: 34px !important;
-  background: #ffffff !important;       /* beyaz zemin */
-  border-radius: 50% !important;
-  box-shadow: none !important;          /* gölgeyi kaldır */
-  opacity: 1 !important;
-  border: 1.2px solid #ff0000 !important; /* 🔴 kırmızı ince çerçeve */
-  display: flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-}
-
-.swiper-button-next:after,
-.swiper-button-prev:after {
-  font-size: 13px !important;           /* 🔸daha ince ok */
-  font-weight: 400 !important;
-}
-
-.swiper-button-next:hover,
-.swiper-button-prev:hover {
-  background: #fff !important;
-  transform: scale(1.02);
-}
-
-            .swiper-button-next {
-              right: 12px !important;
-            }
-            .swiper-button-prev {
-              left: 12px !important;
-            }
-
-            /* ✅ Hover’da zarif parlama */
-            .swiper-button-next:hover,
-            .swiper-button-prev:hover {
-              background: #fff !important;
-              box-shadow: 0 0 12px rgba(255, 0, 0, 0.4);
-            }
-
-            /* ✅ Fade yazı animasyonu */
             @keyframes fadeUp {
               0% {
                 opacity: 0;
@@ -218,103 +181,53 @@ export default function Home() {
               background: black !important;
               overscroll-behavior-y: none !important;
             }
-              /* ✅ Ok hover efekti */
-.custom-prev,
-.custom-next {
-  transition: all 0.3s ease;
-}
-.custom-prev:hover,
-.custom-next:hover {
-  transform: scale(1.05);
-  box-shadow: 0 0 8px rgba(255, 0, 0, 0.25);
-}
-      @media (max-width: 767px) {
-  .custom-prev {
-    left: 10px !important;
-  }
-  .custom-next {
-    right: 10px !important;
-  }
 
-  /* ✅ Mobilde okları tamamen gizle */
-  .custom-prev,
-  .custom-next {
-    display: none !important;
-  }
-
-}
-
-/* ✅ Tüm cihazlarda boşluk ve kayma önleme */
-html, body {
-  margin: 0 !important;
-  padding: 0 !important;
-  background: #000 !important;
-  overflow-x: hidden !important;
-  overscroll-behavior-y: none !important;
-}
-
-  @keyframes marquee {
-  0% { transform: translateX(100%); }
-  100% { transform: translateX(-100%); }
-}
-
-.animate-marquee {
-  display: inline-block;
-  animation: marquee 25s linear infinite;
-}
-
+            @media (max-width: 767px) {
+              .custom-prev,
+              .custom-next {
+                display: none !important;
+              }
+            }
           `}
         </style>
       </section>
-   {/* ✅ Kusursuz kenardan gelen Premium Loop */}
-<div className="relative overflow-hidden border-t border-yellow-500/10 -mt-5 mb-4">
-  <div class="marquee" id="promoMarquee">
-  <div class="marquee__inner">
-  •Alışveriş Yaptıkça Kazan 20 000 Puan!  • Her 20 000 Puanda Hediyeni Kap • Müşteri Panelinden Hediye Barını GöR • Tarzını Göster • Kaliteli Ürün • Güvenli Ödeme • İade ve Değişim •
-  </div>
-</div>
 
+      {/* ✅ Alt kayan yazı */}
+      <div className="relative overflow-hidden border-t border-yellow-500/10 -mt-5 mb-4">
+        <div className="marquee">
+          <div className="marquee__inner">
+            • Alışveriş Yaptıkça Kazan 20 000 Puan! • Her 20 000 Puanda
+            Hediyeni Kap • Müşteri Panelinden Hediye Barını Gör • Tarzını
+            Göster • Kaliteli Ürün • Güvenli Ödeme • İade ve Değişim •
+          </div>
+        </div>
 
-  <style>
-    {`
-      .marquee {
-  overflow: hidden;
-  white-space: nowrap;
-  width: 100%;
-  background: transparent;
-  color: #ffbfbf;
-  font-size: 12px;
-  letter-spacing: 0.25em;
-  text-transform: uppercase;
-  text-shadow: 0 0 3px rgba(255,192,192,0.25);
-}
+        <style>
+          {`
+            .marquee {
+              overflow: hidden;
+              white-space: nowrap;
+              width: 100%;
+              color: #ffbfbf;
+              font-size: 12px;
+              letter-spacing: 0.25em;
+              text-transform: uppercase;
+              text-shadow: 0 0 3px rgba(255,192,192,0.25);
+            }
+            .marquee__inner {
+              display: inline-block;
+              padding-left: 100%;
+              animation: move 25s linear infinite;
+            }
+            @keyframes move {
+              0% { transform: translateX(0); }
+              100% { transform: translateX(-100%); }
+            }
+          `}
+        </style>
+      </div>
 
-.marquee__inner {
-  display: inline-block;
-  padding-left: 100%;
-  animation: move 25s linear infinite;
-}
-
-@keyframes move {
-  0% {
-    transform: translateX(0);
-  }
-  100% {
-    transform: translateX(-100%);
-  }
-}
-
-    `}
-  </style>
-</div>
-
-
-
-
-
-
-
-      {/* ✅ PRODUCTS */}
+      {/* ✅ ÜRÜNLER */}
       <main className="max-w-7xl mx-auto px-6 pb-10">
         {loading ? (
           <p className="text-gray-500 text-center">Yükleniyor...</p>
