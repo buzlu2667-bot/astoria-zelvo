@@ -85,6 +85,7 @@ export default function Home() {
             { src: "/hero/slide8.jpg", title: "", color: "text-yellow-400" },
             { src: "/hero/slide9.jpg", title: "", color: "text-yellow-400" },
             { src: "/hero/slide10.jpg", title: "", color: "text-yellow-400" },
+            { src: "/hero/slide11.jpg", title: "", color: "text-yellow-400" },
           ].map((slide, i) => (
             <SwiperSlide key={i}>
               <div className="relative w-full h-full overflow-hidden">
