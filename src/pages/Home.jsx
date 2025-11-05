@@ -58,12 +58,17 @@ export default function Home() {
             ].map((slide, i) => (
               <SwiperSlide key={i}>
                 <div className="relative w-full h-full">
-                  <img
-                    src={slide.src}
-                    alt=""
-                    className="w-full h-full object-cover object-top"
-                    draggable={false}
-                  />
+                  <picture>
+  {/* Mobil için -max-width: 767px */}
+  <source media="(max-width: 767px)" srcSet={slide.src.replace(".jpg", "-mobile.jpg")} />
+  <img
+    src={slide.src}
+    alt=""
+    className="w-full h-full object-cover object-top"
+    draggable={false}
+  />
+</picture>
+
                   <div className="absolute inset-0 bg-black/10" />
                 </div>
               </SwiperSlide>
