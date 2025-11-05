@@ -38,7 +38,10 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-black text-white">
       {/* ✅ HERO SLIDER (yukarıdan sıfır, tam oturmuş) */}
-      <section className="relative w-full overflow-hidden -mt-[20px] mb-8">
+      <section
+  className="relative w-full overflow-hidden mb-8"
+  style={{ transform: "translateY(-15px)" }}
+>
   <div className="w-full h-[90vh] sm:h-[95vh] md:h-[95vh] lg:h-[95vh]">
     <Swiper
       modules={[Autoplay, Pagination]}
