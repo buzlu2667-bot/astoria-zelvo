@@ -38,68 +38,42 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-black text-white">
       {/* ✅ HERO SLIDER (yukarıdan sıfır, tam oturmuş) */}
-     <section className="relative w-full overflow-hidden">
-  <Swiper
-    modules={[Autoplay, Pagination]}
-    autoplay={{ delay: 3500 }}
-    loop
-    pagination={{ clickable: true }}
-    className="hero-swiper w-full"
-  >
-    {[
-      { src: "/hero/slide1.jpg" },
-      { src: "/hero/slide2.jpg" },
-      { src: "/hero/slide3.jpg" },
-      { src: "/hero/slide4.jpg" },
-      { src: "/hero/slide11.jpg" },
-      { src: "/hero/slide12.jpg" },
-      { src: "/hero/slide13.jpg" },
-    ].map((slide, i) => (
-      <SwiperSlide key={i}>
-        <div className="relative w-full h-full">
-          <img
-            src={slide.src}
-            alt=""
-            className="w-full h-full object-cover object-top md:object-center brightness-[1.05] contrast-[1.1] saturate-[1.1]"
-            draggable={false}
-          />
-          <div className="absolute inset-0 bg-black/10"></div>
-        </div>
-      </SwiperSlide>
-    ))}
-  </Swiper>
+     <section className="relative w-full overflow-hidden bg-black">
+  <div className="relative w-full">
+    <Swiper
+      modules={[Autoplay, Pagination]}
+      autoplay={{ delay: 3500 }}
+      loop
+      pagination={{ clickable: true }}
+      className="hero-swiper"
+    >
+      {[
+        { src: "/hero/slide1.jpg" },
+        { src: "/hero/slide2.jpg" },
+        { src: "/hero/slide3.jpg" },
+        { src: "/hero/slide4.jpg" },
+        { src: "/hero/slide11.jpg" },
+        { src: "/hero/slide12.jpg" },
+        { src: "/hero/slide13.jpg" },
+      ].map((slide, i) => (
+        <SwiperSlide key={i}>
+          <div className="relative w-full">
+            <img
+              src={slide.src}
+              alt=""
+              className="block w-full h-auto object-cover object-center select-none"
+              draggable={false}
+            />
+          </div>
+        </SwiperSlide>
+      ))}
+    </Swiper>
+  </div>
 
   <style>{`
-    /* ✅ Masaüstü - tam ekran, premium oran */
-    @media (min-width: 768px) {
-      .hero-swiper,
-      .hero-swiper .swiper-wrapper,
-      .hero-swiper .swiper-slide {
-        height: 85vh !important;
-      }
-    }
-
-    /* ✅ Mobil - tam 16:9, taş gibi */
-    @media (max-width: 767px) {
-      .hero-swiper,
-      .hero-swiper .swiper-wrapper,
-      .hero-swiper .swiper-slide {
-        height: auto !important;
-        aspect-ratio: 16 / 9 !important;
-      }
-      .hero-swiper img {
-        height: 100% !important;
-        width: 100% !important;
-        object-fit: cover !important;
-        object-position: center top !important;
-        transform: translateY(-15px) !important;
-      }
-    }
-
-    /* ✅ Pagination */
     .swiper-pagination {
-      bottom: 15px !important;
-      z-index: 100 !important;
+      bottom: 12px !important;
+      z-index: 50 !important;
     }
 
     .swiper-pagination-bullet {
@@ -111,8 +85,27 @@ export default function Home() {
     .swiper-pagination-bullet-active {
       background: #ffd700 !important;
     }
+
+    /* Masaüstü */
+    @media (min-width: 1024px) {
+      .hero-swiper img {
+        aspect-ratio: 16 / 9 !important;
+        height: auto !important;
+      }
+    }
+
+    /* Mobil */
+    @media (max-width: 1023px) {
+      .hero-swiper img {
+        width: 100% !important;
+        height: auto !important;
+        aspect-ratio: 16 / 9 !important;
+        object-fit: cover !important;
+      }
+    }
   `}</style>
 </section>
+
 
 
 
