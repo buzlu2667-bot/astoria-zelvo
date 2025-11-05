@@ -49,9 +49,10 @@ export default function Home() {
    
    {/* ✅ FULLSCREEN PREMIUM HERO SLIDER — FINAL */}
 <section
-  className="relative w-full overflow-hidden
+  className="relative w-full overflow-hidden 
   h-[70vh] sm:h-[75vh] md:h-[80vh] lg:h-[85vh] xl:h-[85vh]
   max-md:h-auto max-md:aspect-[16/9]"
+  style={{ position: "relative", zIndex: 1 }}
 >
 
 
@@ -144,6 +145,29 @@ export default function Home() {
 
     ))}
   </Swiper>
+  <style>
+{`
+  .swiper-pagination {
+    bottom: 20px !important;
+    z-index: 50 !important;
+    position: absolute !important;
+  }
+  @media (max-width: 768px) {
+    .swiper,
+    .swiper-wrapper,
+    .swiper-slide {
+      height: auto !important;
+      aspect-ratio: 16 / 9 !important;
+    }
+    .swiper-slide img {
+      width: 100% !important;
+      height: auto !important;
+      object-fit: cover !important;
+    }
+  }
+`}
+</style>
+
   </div>
 </section>
 
