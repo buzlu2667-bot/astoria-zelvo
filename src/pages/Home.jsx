@@ -49,9 +49,9 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-black text-white">
-      {/* ✅ Sadece mobilde üstte kayan yazı */}
-<div className="block sm:hidden overflow-hidden bg-black border-t border-b border-yellow-500/10 py-1">
-  <div className="whitespace-nowrap animate-marquee text-[11px] tracking-[0.2em] text-[#ffbfbf] uppercase font-light drop-shadow-[0_0_4px_rgba(255,192,192,0.3)]">
+     {/* ✅ Sadece mobilde sabit kayan yazı */}
+<div className="block sm:hidden fixed top-[64px] left-0 w-full overflow-hidden bg-black border-t border-b border-yellow-500/10 py-1 z-[9999]">
+  <div className="whitespace-nowrap animate-marquee text-[11px] tracking-[0.25em] text-[#ffbfbf] uppercase font-light drop-shadow-[0_0_4px_rgba(255,192,192,0.4)]">
     <span className="px-6">✨ Kapıda Ödeme • Premium Çanta Koleksiyonu • Tarzını Göster • Kaliteli Ürün • Güvenli Ödeme ✨</span>
     <span className="px-6">✨ 20.000 Puanla Özel Hediye Kazan • Müşteri Panelinden Gör • İade & Değişim Kolaylığı ✨</span>
   </div>
@@ -69,6 +69,7 @@ export default function Home() {
     }
   `}
 </style>
+
 
       {/* ✅ HERO SLIDER */}
       <section className="relative w-full overflow-hidden mb-8 mt-12 sm:mt-0 -translate-y-2">
