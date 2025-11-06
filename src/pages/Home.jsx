@@ -49,7 +49,7 @@ export default function Home() {
     { src: "/hero/slide7.jpg", text: "" },
     { src: "/hero/slide8.jpg", text: "" },
     { src: "/hero/slide9.jpg", text: "" },
-    { src: "/hero/slide9.jpg", text: "" },
+    { src: "/hero/slide10.jpg", text: "" },
   ];
 
   // ✅ Mobil algılayıcı (gerçek zamanlı)
