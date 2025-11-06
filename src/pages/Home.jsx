@@ -66,13 +66,15 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-black text-white">
       {/* ✅ HERO SLIDER */}
-      <section className="relative w-full overflow-hidden mb-8 mt-0 sm:mt-0 !pt-0 !translate-y-0">
+     <section className="relative w-full overflow-hidden mb-4 mt-0 sm:mt-0 !pt-0 !translate-y-0">
+
         <div
           className="w-full aspect-[16/9] sm:aspect-auto"
           style={{
-  height: isMobile ? "calc(100vh - 80px)" : "75vh",
-  marginTop: isMobile ? "-15px" : "-20px", // ✅ slider’ı hafif yukarı çek
+  height: isMobile ? "calc(100vh - 120px)" : "70vh", // ✅ sadece biraz yukarı çek
+  objectPosition: "center top", // ✅ görselin üst kısmını koru
 }}
+
 
         >
           <Swiper
