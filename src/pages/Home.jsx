@@ -185,7 +185,7 @@ export default function Home() {
       </section>
 
       {/* ✅ ALT YAZI */}
-      <div className="relative overflow-hidden border-t border-yellow-500/10 -mt-5 mb-4">
+      <div className="relative overflow-hidden border-t border-yellow-500/10 mt-6 mb-4">
         <div className="marquee">
           <div className="marquee__inner">
             • Alışveriş Yaptıkça Kazan 20 000 Puan! • Her 20 000 Puanda Hediyeni Kap • Müşteri Panelinden Hediye Barını Gör • Tarzını Göster • Kaliteli Ürün • Güvenli Ödeme • İade ve Değişim •
