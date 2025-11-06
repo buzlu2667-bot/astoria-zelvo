@@ -167,7 +167,7 @@ async function handleLogin(e) {
       error.message?.includes("Invalid login credentials") ||
       error.message?.includes("Invalid")
         ? "E-posta veya şifre hatalı!"
-        : "Lütfen E-posta Adresinizi Onaylayın";
+        : "Lütfen e-postanı onayla ve tekrar giriş yap!";
 
     setLoginError(msg);
     return;
