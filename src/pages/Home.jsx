@@ -185,7 +185,8 @@ export default function Home() {
       </section>
 
       {/* ✅ ALT YAZI */}
-      <div className="relative overflow-hidden border-t border-yellow-500/10 mt-0 mb-0">
+      <div className="relative overflow-hidden mt-0 mb-0">
+
 
         <div className="marquee">
           <div className="marquee__inner">
