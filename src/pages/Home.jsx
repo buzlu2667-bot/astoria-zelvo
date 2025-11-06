@@ -38,7 +38,7 @@ export default function Home() {
     );
   }, [category, products]);
 
-  // ✅ Slider resimleri
+  // ✅ Slider foto listesi
   const slides = [
     { src: "/hero/slide1.jpg", text: "" },
     { src: "/hero/slide2.jpg", text: "" },
@@ -51,28 +51,22 @@ export default function Home() {
     { src: "/hero/slide9.jpg", text: "" },
   ];
 
-  // ✅ Mobil mi?
-  const [isMobile, setIsMobile] = useState(false);
+  // ✅ Mobil algılayıcı (gerçek zamanlı)
+  const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
 
   useEffect(() => {
-    const checkMobile = () => {
-      const isM = window.matchMedia("(max-width: 768px)").matches;
-      setIsMobile(isM);
+    const handleResize = () => {
+      setIsMobile(window.innerWidth <= 768);
     };
-
-    checkMobile(); // İlk kontrol
-    window.addEventListener("resize", checkMobile);
-    return () => window.removeEventListener("resize", checkMobile);
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
   }, []);
 
   return (
     <div className="min-h-screen bg-black text-white">
       {/* ✅ HERO SLIDER */}
-      <section className="relative w-full overflow-hidden mb-8 mt-10 sm:mt-0 -translate-y-10 sm:-translate-y-2">
-
-
-
-        <div className="w-full h-[72vh] sm:h-[70vh] md:h-[80vh] lg:h-[80vh] sm:aspect-auto">
+      <section className="relative w-full overflow-hidden mb-8 mt-12 sm:mt-0">
+        <div className="w-full h-[72vh] sm:h-[75vh] md:h-[80vh] lg:h-[80vh] sm:aspect-auto">
 
           <Swiper
             modules={[Autoplay, Pagination, Navigation]}
@@ -86,16 +80,16 @@ export default function Home() {
             className="w-full h-full"
           >
             {slides.map((slide, i) => {
-              const imagePath = isMobile
+              const imageSrc = isMobile
                 ? slide.src.replace(".jpg", "-mobile.jpg")
                 : slide.src;
               return (
                 <SwiperSlide key={i}>
                   <div className="relative w-full h-full">
                     <div
-                      className="w-full h-[65vh] sm:h-full bg-cover bg-center sm:bg-top"
+                      className="w-full h-full bg-cover bg-center"
                       style={{
-                        backgroundImage: `url(${imagePath})`,
+                        backgroundImage: `url(${imageSrc}?t=${Date.now()})`, // ✅ cache temizleme
                         backgroundRepeat: "no-repeat",
                         backgroundSize: "cover",
                         backgroundPosition: "center",
@@ -121,34 +115,16 @@ export default function Home() {
           </Swiper>
         </div>
 
-        {/* ✅ Oklar */}
+        {/* ✅ Navigation Okları */}
         <button className="custom-prev absolute left-3 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-white flex items-center justify-center z-20">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            viewBox="0 0 28 24"
-            fill="none"
-            stroke="#ff5c5c"
-            strokeWidth="1.3"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            className="w-[18px] h-[18px]"
-          >
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 28 24" fill="none" stroke="#ff5c5c" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round" className="w-[18px] h-[18px]">
             <line x1="23" y1="12" x2="4" y2="12" />
             <polyline points="11 19 4 12 11 5" />
           </svg>
         </button>
 
         <button className="custom-next absolute right-3 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-white flex items-center justify-center z-20">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            viewBox="0 0 28 24"
-            fill="none"
-            stroke="#ff5c5c"
-            strokeWidth="1.3"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            className="w-[18px] h-[18px]"
-          >
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 28 24" fill="none" stroke="#ff5c5c" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round" className="w-[18px] h-[18px]">
             <line x1="5" y1="12" x2="24" y2="12" />
             <polyline points="17 5 24 12 17 19" />
           </svg>
@@ -168,39 +144,25 @@ export default function Home() {
               background: #ffd700 !important;
               transform: scale(1.15);
             }
-
             @keyframes fadeUp {
-              0% {
-                opacity: 0;
-                transform: translateY(25px);
-                filter: blur(5px);
-              }
-              100% {
-                opacity: 1;
-                transform: translateY(0);
-                filter: blur(0);
-              }
+              0% { opacity: 0; transform: translateY(25px); filter: blur(5px); }
+              100% { opacity: 1; transform: translateY(0); filter: blur(0); }
             }
             .animate-fadeUp {
               animation: fadeUp 1s ease-out both;
             }
-
             @media (max-width: 767px) {
-              .custom-prev, .custom-next {
-                display: none !important;
-              }
+              .custom-prev, .custom-next { display: none !important; }
             }
           `}
         </style>
       </section>
 
-      {/* ✅ Alt kayan yazı */}
+      {/* ✅ ALT YAZI */}
       <div className="relative overflow-hidden border-t border-yellow-500/10 -mt-5 mb-4">
         <div className="marquee">
           <div className="marquee__inner">
-            • Alışveriş Yaptıkça Kazan 20 000 Puan! • Her 20 000 Puanda
-            Hediyeni Kap • Müşteri Panelinden Hediye Barını Gör • Tarzını
-            Göster • Kaliteli Ürün • Güvenli Ödeme • İade ve Değişim •
+            • Alışveriş Yaptıkça Kazan 20 000 Puan! • Her 20 000 Puanda Hediyeni Kap • Müşteri Panelinden Hediye Barını Gör • Tarzını Göster • Kaliteli Ürün • Güvenli Ödeme • İade ve Değişim •
           </div>
         </div>
         <style>
@@ -233,26 +195,17 @@ export default function Home() {
         {loading ? (
           <p className="text-gray-500 text-center">Yükleniyor...</p>
         ) : filteredProducts.length === 0 ? (
-          <p className="text-center text-gray-400">
-            Bu kategoride ürün bulunamadı.
-          </p>
+          <p className="text-center text-gray-400">Bu kategoride ürün bulunamadı.</p>
         ) : (
           <div className="grid grid-cols-2 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
             {filteredProducts.map((product) => (
-              <ProductCard
-                key={product.id}
-                product={product}
-                openModal={setQuickViewProduct}
-              />
+              <ProductCard key={product.id} product={product} openModal={setQuickViewProduct} />
             ))}
           </div>
         )}
       </main>
 
-      <QuickViewModal
-        product={quickViewProduct}
-        closeModal={() => setQuickViewProduct(null)}
-      />
+      <QuickViewModal product={quickViewProduct} closeModal={() => setQuickViewProduct(null)} />
     </div>
   );
 }
