@@ -69,12 +69,12 @@ export default function Home() {
      <section className="relative w-full overflow-hidden mb-4 mt-0 sm:mt-0 !pt-0 !translate-y-0">
 
         <div
-          className="w-full aspect-[16/9] sm:aspect-auto"
-          style={{
-  height: isMobile ? "calc(100vh - 120px)" : "90vh", // 📱 mobil yukarı çek, 💻 masaüstü uzat
-  objectPosition: isMobile ? "center top" : "center", // 📱 üstten odak, 💻 ortalı
-}}
-
+  className="w-full aspect-[16/9] sm:aspect-auto"
+  style={{
+    height: isMobile ? "calc(100vh - 120px)" : "90vh", // 📱 mobil yukarı çek, 💻 masaüstü uzat
+    objectPosition: isMobile ? "center top" : "center", // 📱 üstten odak, 💻 ortalı
+    transform: isMobile ? "translateY(-60px)" : "translateY(-40px)", // 🪄 pozisyon farkı burada!
+  }}
 
 
         >
