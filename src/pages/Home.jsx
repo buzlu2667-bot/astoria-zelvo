@@ -66,7 +66,7 @@ export default function Home() {
     <div className="min-h-screen bg-black text-white">
       {/* ✅ HERO SLIDER */}
       <section className="relative w-full overflow-hidden mb-8 mt-12 sm:mt-0">
-        <div className="w-full h-[76vh] sm:h-[75vh] md:h-[80vh] lg:h-[80vh] sm:aspect-auto">
+        <div className="w-full h-[80vh] sm:h-[75vh] md:h-[80vh] lg:h-[80vh] sm:aspect-auto">
 
           <Swiper
             modules={[Autoplay, Pagination, Navigation]}
@@ -80,38 +80,39 @@ export default function Home() {
             className="w-full h-full"
           >
             {slides.map((slide, i) => {
-              const imageSrc = isMobile
-                ? slide.src.replace(".jpg", "-mobile.jpg")
-                : slide.src;
-              return (
-                <SwiperSlide key={i}>
-                  <div className="relative w-full h-full">
-                    <div
-                      className="w-full h-full bg-cover bg-center"
-                      style={{
-                        backgroundImage: `url(${imageSrc}?t=${Date.now()})`, // ✅ cache temizleme
-                        backgroundRepeat: "no-repeat",
-                        backgroundSize: "cover",
-                        backgroundPosition: "center",
-                      }}
-                    ></div>
+  const imageSrc = isMobile
+    ? slide.src.replace(".jpg", "-mobile.jpg")
+    : slide.src;
+  return (
+    <SwiperSlide key={i}>
+      <div className="relative w-full h-full">
+        <img
+          src={
+            isMobile
+              ? `${slide.src.replace(".jpg", "-mobile.jpg")}?t=${Date.now()}`
+              : `${slide.src}?t=${Date.now()}`
+          }
+          alt={`slide-${i}`}
+          className="w-full h-[80vh] sm:h-full object-cover object-center sm:object-top"
+          draggable="false"
+        />
 
-                    {/* ✅ Altın yazı */}
-                    {slide.text && (
-                      <div className="absolute inset-0 flex items-center justify-center">
-                        <h2
-                          className="text-3xl sm:text-4xl md:text-5xl font-extrabold 
-                          text-transparent bg-clip-text bg-gradient-to-b from-yellow-300 to-yellow-500 
-                          drop-shadow-[0_0_15px_rgba(255,215,0,0.8)] animate-fadeUp"
-                        >
-                          {slide.text}
-                        </h2>
-                      </div>
-                    )}
-                  </div>
-                </SwiperSlide>
-              );
-            })}
+        {slide.text && (
+          <div className="absolute inset-0 flex items-center justify-center">
+            <h2
+              className="text-3xl sm:text-4xl md:text-5xl font-extrabold 
+              text-transparent bg-clip-text bg-gradient-to-b from-yellow-300 to-yellow-500 
+              drop-shadow-[0_0_15px_rgba(255,215,0,0.8)] animate-fadeUp"
+            >
+              {slide.text}
+            </h2>
+          </div>
+        )}
+      </div>
+    </SwiperSlide>
+  );
+})}
+
           </Swiper>
         </div>
 
