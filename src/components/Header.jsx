@@ -208,6 +208,12 @@ async function handleLogin(e) {
 
   if (error) {
     setSignupError(error.message);
+    if (msg.includes("Password should be at least 6 characters")) {
+      msg = "Şifre en az 6 karakter olmalıdır.";
+    } else if (msg.includes("Email not confirmed")) {
+      msg = "🎉 Lütfen e-postanı onayla ve tekrar giriş yap!";
+    }
+    setSignupError(msg);
     return;
   }
 
