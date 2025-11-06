@@ -71,7 +71,7 @@ export default function Home() {
         <div
   className="w-full aspect-[16/9] sm:aspect-auto"
   style={{
-   height: isMobile ? "calc(100vh - 80px)" : "90vh",
+   height: isMobile ? "calc(100vh - 100px)" : "90vh",
     objectPosition: isMobile ? "center top" : "center",
     marginTop: isMobile ? "-60px" : "-40px", // ✅ artık tüm slider bloğu yukarı kayıyor
   }}
