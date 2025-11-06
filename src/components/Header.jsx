@@ -225,7 +225,7 @@ async function handleLogin(e) {
       detail: {
         type: "info",
         text: "📨💛💫 E-posta adresine doğrulama bağlantısı gönderildi! Lütfen mailini kontrol et.",
-         duration: 10000
+         duration: 14000
       },
     })
   );
