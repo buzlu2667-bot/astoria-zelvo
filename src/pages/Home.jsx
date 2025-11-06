@@ -65,11 +65,15 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-black text-white">
       {/* ✅ HERO SLIDER */}
-     <section className="relative w-full overflow-hidden mb-8 mt-0 sm:mt-0 !pt-0 !translate-y-0">
-
-        <div className="w-full h-[80vh] sm:h-[75vh] md:h-[80vh] lg:h-[80vh] sm:aspect-auto">
-
+      <section className="relative w-full overflow-hidden mb-8 mt-0 sm:mt-0 !pt-0 !translate-y-0">
+        <div
+          className="w-full aspect-[16/9] sm:aspect-auto"
+          style={{
+            height: isMobile ? "calc(100vh - 60px)" : "80vh",
+          }}
+        >
           <Swiper
+            key={isMobile ? "mobile" : "desktop"} // ✅ Cache reset fix
             modules={[Autoplay, Pagination, Navigation]}
             autoplay={{ delay: 4000, disableOnInteraction: false }}
             loop={true}
@@ -81,52 +85,66 @@ export default function Home() {
             className="w-full h-full"
           >
             {slides.map((slide, i) => {
-  const imageSrc = isMobile
-    ? slide.src.replace(".jpg", "-mobile.jpg")
-    : slide.src;
-  return (
-    <SwiperSlide key={i}>
-      <div className="relative w-full h-full">
-        <img
-          src={
-            isMobile
-              ? `${slide.src.replace(".jpg", "-mobile.jpg")}?t=${Date.now()}`
-              : `${slide.src}?t=${Date.now()}`
-          }
-          alt={`slide-${i}`}
-          className="w-full h-[80vh] sm:h-full object-cover object-center sm:object-top"
-          draggable="false"
-        />
+              const imageSrc = isMobile
+                ? slide.src.replace(".jpg", "-mobile.jpg")
+                : slide.src;
+              const finalSrc = `${imageSrc}?v=${Date.now()}`; // ✅ Cache kırıcı
+              return (
+                <SwiperSlide key={i}>
+                  <div className="relative w-full h-full">
+                    <img
+                      src={finalSrc}
+                      alt={`slide-${i}`}
+                      className="w-full h-full object-cover object-center sm:object-top"
+                      draggable="false"
+                    />
 
-        {slide.text && (
-          <div className="absolute inset-0 flex items-center justify-center">
-            <h2
-              className="text-3xl sm:text-4xl md:text-5xl font-extrabold 
-              text-transparent bg-clip-text bg-gradient-to-b from-yellow-300 to-yellow-500 
-              drop-shadow-[0_0_15px_rgba(255,215,0,0.8)] animate-fadeUp"
-            >
-              {slide.text}
-            </h2>
-          </div>
-        )}
-      </div>
-    </SwiperSlide>
-  );
-})}
-
+                    {slide.text && (
+                      <div className="absolute inset-0 flex items-center justify-center">
+                        <h2
+                          className="text-3xl sm:text-4xl md:text-5xl font-extrabold 
+                          text-transparent bg-clip-text bg-gradient-to-b from-yellow-300 to-yellow-500 
+                          drop-shadow-[0_0_15px_rgba(255,215,0,0.8)] animate-fadeUp"
+                        >
+                          {slide.text}
+                        </h2>
+                      </div>
+                    )}
+                  </div>
+                </SwiperSlide>
+              );
+            })}
           </Swiper>
         </div>
 
         {/* ✅ Navigation Okları */}
         <button className="custom-prev absolute left-3 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-white flex items-center justify-center z-20">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 28 24" fill="none" stroke="#ff5c5c" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round" className="w-[18px] h-[18px]">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 28 24"
+            fill="none"
+            stroke="#ff5c5c"
+            strokeWidth="1.3"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            className="w-[18px] h-[18px]"
+          >
             <line x1="23" y1="12" x2="4" y2="12" />
             <polyline points="11 19 4 12 11 5" />
           </svg>
         </button>
 
         <button className="custom-next absolute right-3 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-white flex items-center justify-center z-20">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 28 24" fill="none" stroke="#ff5c5c" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round" className="w-[18px] h-[18px]">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 28 24"
+            fill="none"
+            stroke="#ff5c5c"
+            strokeWidth="1.3"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            className="w-[18px] h-[18px]"
+          >
             <line x1="5" y1="12" x2="24" y2="12" />
             <polyline points="17 5 24 12 17 19" />
           </svg>
@@ -197,17 +215,26 @@ export default function Home() {
         {loading ? (
           <p className="text-gray-500 text-center">Yükleniyor...</p>
         ) : filteredProducts.length === 0 ? (
-          <p className="text-center text-gray-400">Bu kategoride ürün bulunamadı.</p>
+          <p className="text-center text-gray-400">
+            Bu kategoride ürün bulunamadı.
+          </p>
         ) : (
           <div className="grid grid-cols-2 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
             {filteredProducts.map((product) => (
-              <ProductCard key={product.id} product={product} openModal={setQuickViewProduct} />
+              <ProductCard
+                key={product.id}
+                product={product}
+                openModal={setQuickViewProduct}
+              />
             ))}
           </div>
         )}
       </main>
 
-      <QuickViewModal product={quickViewProduct} closeModal={() => setQuickViewProduct(null)} />
+      <QuickViewModal
+        product={quickViewProduct}
+        closeModal={() => setQuickViewProduct(null)}
+      />
     </div>
   );
 }
