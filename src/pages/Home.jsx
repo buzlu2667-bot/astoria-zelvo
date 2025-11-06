@@ -72,7 +72,8 @@ export default function Home() {
 
 
 
-        <div className="w-full h-[65vh] sm:h-[70vh] md:h-[80vh] lg:h-[80vh] sm:aspect-auto">
+        <div className="w-full h-[72vh] sm:h-[70vh] md:h-[80vh] lg:h-[80vh] sm:aspect-auto">
+
           <Swiper
             modules={[Autoplay, Pagination, Navigation]}
             autoplay={{ delay: 4000, disableOnInteraction: false }}
