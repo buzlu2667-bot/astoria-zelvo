@@ -70,8 +70,10 @@ export default function Home() {
         <div
           className="w-full aspect-[16/9] sm:aspect-auto"
           style={{
-            height: isMobile ? "calc(100vh - 60px)" : "80vh",
-          }}
+  height: isMobile ? "calc(100vh - 80px)" : "75vh",
+  marginTop: isMobile ? "-15px" : "-20px", // ✅ slider’ı hafif yukarı çek
+}}
+
         >
           <Swiper
             key={isMobile ? "mobile" : "desktop"} // ✅ Cache reset fix
