@@ -71,9 +71,10 @@ export default function Home() {
         <div
           className="w-full aspect-[16/9] sm:aspect-auto"
           style={{
-  height: isMobile ? "calc(100vh - 120px)" : "70vh", // ✅ sadece biraz yukarı çek
-  objectPosition: "center top", // ✅ görselin üst kısmını koru
+  height: isMobile ? "calc(100vh - 120px)" : "90vh", // 📱 mobil yukarı çek, 💻 masaüstü uzat
+  objectPosition: isMobile ? "center top" : "center", // 📱 üstten odak, 💻 ortalı
 }}
+
 
 
         >
