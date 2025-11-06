@@ -206,9 +206,33 @@ async function handleLogin(e) {
     password: signup.password || "",
   });
 
-  if (error) setSignupError(error.message);
-  else setSignupMsg("✅ Kayıt başarılı! Giriş yapabilirsiniz.");
+  if (error) {
+    setSignupError(error.message);
+    return;
+  }
+
+  // ✅ Kullanıcıya ekranda da bilgi verelim
+  setSignupMsg("✅🎉 Kayıt başarılı! Lütfen e-posta adresine gelen onay linkine tıkla, ardından giriş yapabilirsin.");
+
+  // ✅ Drawer'ı kapat (toast görünür olsun)
+  setTimeout(() => {
+    setSignupOpen(false);
+  }, 500); // hafif gecikmeli kapanma, animasyon düzgün olur
+
+  // ✅ Toast bildirimi gönderelim
+  window.dispatchEvent(
+    new CustomEvent("toast", {
+      detail: {
+        type: "info",
+        text: "📨💛💫 E-posta adresine doğrulama bağlantısı gönderildi! Lütfen mailini kontrol et.",
+      },
+    })
+  );
+
+  // ✅ Formu sıfırla (güzel dursun)
+  setSignup(initialSignup);
 }
+
 
  async function handleReset(e) {
   e.preventDefault();
@@ -220,7 +244,7 @@ async function handleLogin(e) {
   );
 
   if (error) setResetError(error.message);
-  else setResetMsg("📩 E-postanı kontrol et!");
+  else setResetMsg("📨 E-postanı kontrol et!");
 }
 
 
