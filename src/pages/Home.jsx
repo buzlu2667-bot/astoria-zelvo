@@ -71,7 +71,7 @@ export default function Home() {
         <div
   className="w-full aspect-[16/9] sm:aspect-auto"
   style={{
-    height: isMobile ? "calc(100vh - 120px)" : "90vh",
+   height: isMobile ? "calc(100vh - 80px)" : "90vh",
     objectPosition: isMobile ? "center top" : "center",
     marginTop: isMobile ? "-60px" : "-40px", // ✅ artık tüm slider bloğu yukarı kayıyor
   }}
@@ -185,7 +185,8 @@ export default function Home() {
       </section>
 
       {/* ✅ ALT YAZI */}
-      <div className="relative overflow-hidden border-t border-yellow-500/10 mt-6 mb-4">
+      <div className="relative overflow-hidden border-t border-yellow-500/10 mt-0 mb-0">
+
         <div className="marquee">
           <div className="marquee__inner">
             • Alışveriş Yaptıkça Kazan 20 000 Puan! • Her 20 000 Puanda Hediyeni Kap • Müşteri Panelinden Hediye Barını Gör • Tarzını Göster • Kaliteli Ürün • Güvenli Ödeme • İade ve Değişim •
