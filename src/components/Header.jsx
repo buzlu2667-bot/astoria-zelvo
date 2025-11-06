@@ -217,7 +217,7 @@ async function handleLogin(e) {
   // ✅ Drawer'ı kapat (toast görünür olsun)
   setTimeout(() => {
   setSignupOpen(false);
-}, 5000); // ✅ 1.5 sn sonra kapanır
+}, 4500); // ✅ 1.5 sn sonra kapanır
 
   // ✅ Toast bildirimi gönderelim
   window.dispatchEvent(
@@ -225,7 +225,7 @@ async function handleLogin(e) {
       detail: {
         type: "info",
         text: "📨💛💫 E-posta adresine doğrulama bağlantısı gönderildi! Lütfen mailini kontrol et.",
-         duration: 16000
+         duration: 20000
       },
     })
   );
