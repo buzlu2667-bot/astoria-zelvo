@@ -59,7 +59,7 @@ export default function Header() {
   fetchCategories();
 }, []);
 
-// ✅ Aktif bildirimleri çek + Realtime dinleme
+// ✅ Aktif bildirimleri dinleme
 useEffect(() => {
   console.log("👂 Realtime dinleniyor...");
 
@@ -71,11 +71,9 @@ useEffect(() => {
         event: "*",
         schema: "public",
         table: "notifications",
-        filter: "is_active=eq.true", // sadece aktifleri dinle
+        filter: "is_active=eq.true",
       },
       (payload) => {
-        console.log("⚡ REALTIME GELDİ:", payload);
-
         if (payload.eventType === "INSERT" && payload.new?.is_active) {
           setNotifications((prev) => [payload.new, ...prev]);
         } else if (payload.eventType === "UPDATE") {
@@ -91,11 +89,12 @@ useEffect(() => {
         }
       }
     )
-    .subscribe((status) => console.log("📡 Kanal durumu:", status));
+    .subscribe();
 
   return () => supabase.removeChannel(channel);
 }, []);
-// ✅ Kullanıcı daha önce bu bildirimi kapatmış mı kontrol et
+
+// ✅ Supabase’de daha önce kapatılmış mı kontrol et
 useEffect(() => {
   (async () => {
     if (notifications.length === 0) return;
@@ -109,6 +108,22 @@ useEffect(() => {
     }
   })();
 }, [notifications, session]);
+
+// ✅ Cookie + LocalStorage kontrolü (yedek)
+useEffect(() => {
+  if (notifications.length === 0) return;
+
+  const activeNotif = notifications[0];
+  const cookieKey = `closed_notification_${activeNotif.id}`;
+  const cookieExists = document.cookie.includes(`${cookieKey}=true`);
+  const localExists = localStorage.getItem(cookieKey) === "true";
+
+  if (cookieExists || localExists) {
+    setHideNotification(true);
+  } else {
+    setHideNotification(false);
+  }
+}, [notifications]);
 
 
 
