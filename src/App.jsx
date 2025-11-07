@@ -1,5 +1,5 @@
 // ✅ src/App.jsx — FULL FINAL ✅
-import GlobalBanner from "./components/GlobalBanner";
+
 import Favorites from "./pages/Favorites";
 import { Routes, Route, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
@@ -95,7 +95,7 @@ export default function App() {
     <SessionProvider>
       <CartProvider>
         <FavoritesProvider>
-          <GlobalBanner />
+          
           <Header />
           <Toast />
           <HashRedirector />
