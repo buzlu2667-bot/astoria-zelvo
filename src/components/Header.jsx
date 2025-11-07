@@ -63,8 +63,6 @@ export default function Header() {
 useEffect(() => {
   console.log("👂 Realtime dinleniyor...");
 
-  
-
   const channel = supabase
     .channel("realtime:notifications")
     .on(
@@ -97,8 +95,20 @@ useEffect(() => {
 
   return () => supabase.removeChannel(channel);
 }, []);
+// ✅ Kullanıcı daha önce bu bildirimi kapatmış mı kontrol et
+useEffect(() => {
+  (async () => {
+    if (notifications.length === 0) return;
+    const { data: dismissed } = await supabase
+      .from("notification_dismiss")
+      .select("notification_id")
+      .eq("user_email", session?.user?.email || "guest");
 
-
+    if (dismissed?.some((d) => d.notification_id === notifications[0].id)) {
+      setHideNotification(true);
+    }
+  })();
+}, [notifications, session]);
 
 
 
@@ -326,17 +336,24 @@ function renderStatus(status) {
       return "❓ Bilinmeyen Durum";
   }
 }
-// ✅ Bildirim cookie kontrolü (React-friendly)
+// ✅ Bildirim cookie kontrolü (tam çalışır)
 useEffect(() => {
-  if (notifications.length > 0) {
-    const cookieName = `closed_notification_${notifications[0].id}=true`;
-    if (document.cookie.includes(cookieName)) {
-      setHideNotification(true);
-    } else {
-      setHideNotification(false);
-    }
+  if (notifications.length === 0) return;
+
+  const activeNotif = notifications[0];
+  const cookieKey = `closed_notification_${activeNotif.id}`;
+
+  // Cookie veya localStorage kontrolü
+  const cookieExists = document.cookie.includes(`${cookieKey}=true`);
+  const localExists = localStorage.getItem(cookieKey) === "true";
+
+  if (cookieExists || localExists) {
+    setHideNotification(true);
+  } else {
+    setHideNotification(false);
   }
 }, [notifications]);
+
 
  
   return (
@@ -359,10 +376,16 @@ useEffect(() => {
     <button
       onClick={async () => {
         try {
-          // Bildirim kapatıldı → cookie + localStorage
-          localStorage.setItem(`closed_notification_${notifications[0].id}`, "true");
-          document.cookie = `closed_notification_${notifications[0].id}=true; max-age=31536000; path=/`;
-          setHideNotification(true);
+          // ✅ Supabase’e kaydet (sunucu tarafında hatırlansın)
+await supabase.from("notification_dismiss").insert({
+  user_email: session?.user?.email || "guest",
+  notification_id: notifications[0].id,
+});
+
+         // Bildirim kapatıldı → cookie + localStorage
+localStorage.setItem(`closed_notification_${notifications[0].id}`, "true");
+document.cookie = `closed_notification_${notifications[0].id}=true; max-age=31536000; path=/`;
+setHideNotification(true);
 
           // Supabase’de pasif yap (admin tarafında da yansır)
           await supabase
