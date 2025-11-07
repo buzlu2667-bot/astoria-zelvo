@@ -45,27 +45,37 @@ useEffect(() => {
   let isMounted = true;
   const validImages = [];
 
-  Promise.all(
-    rawImages.map(
-      (url) =>
-        new Promise((resolve) => {
-          const img = new Image();
-          img.src = url;
-          img.onload = () => resolve(url);
-          img.onerror = () => resolve(null);
-        })
-    )
-  ).then((results) => {
-    if (isMounted) {
-      const filtered = results.filter(Boolean);
-      setProductImages(filtered);
-    }
+  // Görselleri sırayla, birer birer dene:
+  const loadSequentially = async () => {
+  for (let i = 0; i < rawImages.length; i++) {
+  const url = rawImages[i];
+  const img = new Image();
+  // sadece ilk resim lazy yüklensin, diğerleri normal
+  if (i === 0) {
+    img.loading = "lazy";
+    img.decoding = "async";
+  } else {
+    img.decoding = "async";
+  }
+  img.src = url;
+
+  const loaded = await new Promise((resolve) => {
+    img.onload = () => resolve(url);
+    img.onerror = () => resolve(null);
   });
 
+  if (loaded && isMounted) validImages.push(loaded);
+  if (isMounted) setProductImages([...validImages]);
+}
+
+  };
+
+  loadSequentially();
   return () => {
     isMounted = false;
   };
 }, [product.image_url]);
+
 
 
 
@@ -138,7 +148,10 @@ useEffect(() => {
           <div className="relative w-full h-[52vh] sm:h-[58vh] md:h-[62vh] lg:h-[66vh] p-3 sm:p-5">
             <div className="w-full h-full rounded-xl overflow-hidden bg-black border border-yellow-500/30">
              {isBrowser && productImages.length > 0 && (
- <Swiper
+<Swiper
+  preloadImages={false}
+  lazy={true}
+  watchSlidesProgress
   zoom={{ maxRatio: 3 }}
   loop={productImages.length > 1}
   slidesPerView={1}
@@ -154,7 +167,6 @@ useEffect(() => {
   speed={600}
   onSwiper={(swiper) => {
     window.swiperInstance = swiper;
-    // ✅ Zoom merkezini düzelt ve yeniden hesaplat
     setTimeout(() => {
       swiper.update();
       swiper.zoom.out();
@@ -167,14 +179,15 @@ useEffect(() => {
   }}
 >
 
+
     {productImages.map((src, i) => (
       <SwiperSlide key={i}>
         <div className="swiper-zoom-container w-full h-full flex items-center justify-center bg-black cursor-grab active:cursor-grabbing">
-       <img
-  src={`${src}?cache=1`}
+      <img
+  src={`${src}?width=900&quality=80`}
   alt={product.name}
   draggable="false"
-  loading="eager"
+  loading="lazy"
   decoding="async"
   className="w-full h-full object-contain transition-transform duration-300 ease-out"
   style={{
