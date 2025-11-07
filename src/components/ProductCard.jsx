@@ -7,6 +7,14 @@ export default function ProductCard({ product, openModal }) {
   const { addFav, removeFav, isFav } = useFavorites();
   const [favorite, setFavorite] = useState(false);
 
+    // ✅ Ürün görsellerini RAM'e al (preload)
+  useEffect(() => {
+    if (!product?.image_url) return;
+    const preload = new Image();
+    preload.src = product.image_url;
+  }, [product.image_url]);
+
+
  const imageSrc = product.image_url?.startsWith("http")
   ? product.image_url
   : `/products/${product.image_url}`;

@@ -9,6 +9,7 @@ import "swiper/css/zoom";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
 
+
 export default function QuickViewModal({ product, closeModal }) {
   if (!product) return null;
 
@@ -41,20 +42,31 @@ const [productImages, setProductImages] = useState([]);
 
 // ✅ Tarayıcıda gerçekten yüklenebilenleri filtrele
 useEffect(() => {
+  let isMounted = true;
   const validImages = [];
 
-  rawImages.forEach((url) => {
-    const img = new Image();
-    img.src = url;
-    img.onload = () => {
-      validImages.push(url);
-      setProductImages([...validImages]);
-    };
-    img.onerror = () => {
-      // resim yoksa pas geç
-    };
+  Promise.all(
+    rawImages.map(
+      (url) =>
+        new Promise((resolve) => {
+          const img = new Image();
+          img.src = url;
+          img.onload = () => resolve(url);
+          img.onerror = () => resolve(null);
+        })
+    )
+  ).then((results) => {
+    if (isMounted) {
+      const filtered = results.filter(Boolean);
+      setProductImages(filtered);
+    }
   });
+
+  return () => {
+    isMounted = false;
+  };
 }, [product.image_url]);
+
 
 
 
@@ -126,30 +138,52 @@ useEffect(() => {
           <div className="relative w-full h-[52vh] sm:h-[58vh] md:h-[62vh] lg:h-[66vh] p-3 sm:p-5">
             <div className="w-full h-full rounded-xl overflow-hidden bg-black border border-yellow-500/30">
              {isBrowser && productImages.length > 0 && (
-  <Swiper
-    zoom={{ maxRatio: 3 }}
-    loop={productImages.length > 1}
-    slidesPerView={1}
-    navigation={
-      productImages.length > 1
-        ? { enabled: true, nextEl: ".arrow-next", prevEl: ".arrow-prev" }
-        : false
-    }
-    pagination={productImages.length > 1 ? { clickable: true } : false}
-    keyboard={{ enabled: true }}
-    modules={[Zoom, Navigation, Pagination, Keyboard]}
-    className="w-full h-full select-none"
-    speed={600}
-  >
+ <Swiper
+  zoom={{ maxRatio: 3 }}
+  loop={productImages.length > 1}
+  slidesPerView={1}
+  navigation={
+    productImages.length > 1
+      ? { enabled: true, nextEl: ".arrow-next", prevEl: ".arrow-prev" }
+      : false
+  }
+  pagination={productImages.length > 1 ? { clickable: true } : false}
+  keyboard={{ enabled: true }}
+  modules={[Zoom, Navigation, Pagination, Keyboard]}
+  className="w-full h-full select-none"
+  speed={600}
+  onSwiper={(swiper) => {
+    window.swiperInstance = swiper;
+    // ✅ Zoom merkezini düzelt ve yeniden hesaplat
+    setTimeout(() => {
+      swiper.update();
+      swiper.zoom.out();
+      const imgs = swiper.el.querySelectorAll(".swiper-zoom-container img");
+      imgs.forEach((img) => {
+        img.style.transformOrigin = "center center";
+        img.style.transform = "translate(0,0) scale(1)";
+      });
+    }, 200);
+  }}
+>
+
     {productImages.map((src, i) => (
       <SwiperSlide key={i}>
         <div className="swiper-zoom-container w-full h-full flex items-center justify-center bg-black cursor-grab active:cursor-grabbing">
-          <img
-            src={src}
-            alt={product.name}
-            draggable="false"
-            className="w-full h-full object-contain will-change-transform"
-          />
+       <img
+  src={`${src}?cache=1`}
+  alt={product.name}
+  draggable="false"
+  loading="eager"
+  decoding="async"
+  className="w-full h-full object-contain transition-transform duration-300 ease-out"
+  style={{
+    willChange: "transform",
+    imageRendering: "auto",
+  }}
+/>
+
+
         </div>
       </SwiperSlide>
     ))}
@@ -242,5 +276,6 @@ useEffect(() => {
         </div>
       </div>
     </div>
+    
   );
 }
