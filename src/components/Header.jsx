@@ -196,6 +196,8 @@ const [orderId, setOrderId] = useState("");
 const [orderPhone, setOrderPhone] = useState("");
 const [foundOrder, setFoundOrder] = useState(null);
 const [hideNotification, setHideNotification] = useState(false);
+const [notificationsReady, setNotificationsReady] = useState(false);
+
 
 
   // ✅ Admin mail fix
@@ -410,7 +412,7 @@ useEffect(() => {
   return (
     <>
 {/* ✅ Premium Modal Notification (Center Popup) */}
-{notifications.length > 0 && !hideNotification && (
+{notificationsReady && notifications.length > 0 && !hideNotification && (
   <div className="fixed inset-0 bg-black/70 backdrop-blur-md z-[99999] flex items-center justify-center p-4">
     <div className="bg-[#111] border border-yellow-500/40 rounded-2xl shadow-[0_0_35px_rgba(255,215,0,0.3)] p-6 max-w-sm w-full text-center animate-fadeIn">
       <h2 className="text-yellow-400 text-lg font-bold mb-3">
