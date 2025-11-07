@@ -329,7 +329,8 @@ function renderStatus(status) {
   return (
     <>
 {/* ✅ Premium Global Notification Banner — Active & Public */}
-{notifications.length > 0 && (
+{notifications.length > 0 &&
+ !document.cookie.includes(`closed_notification_${notifications[0].id}=true`) && (
   <div
     className="fixed top-0 left-0 w-full z-[99999]
     bg-gradient-to-r from-yellow-400 via-amber-400 to-orange-500
@@ -339,19 +340,18 @@ function renderStatus(status) {
     px-3 sm:px-6 py-2 sm:py-2.5 animate-slideDown
     leading-snug text-sm sm:text-base"
   >
-    {/* ✅ Bildirim Metni */}
     <div className="px-4 flex-1 text-center break-words">
       🔔 {notifications[0].title || "Yeni Duyuru"} — {notifications[0].message}
     </div>
 
-    {/* ✅ Kapatma Butonu */}
     <button
       onClick={async () => {
         try {
-          // localStorage’da “kapatıldı” olarak işaretle
+          // localStorage ve cookie’ye kaydet
           localStorage.setItem(`closed_notification_${notifications[0].id}`, "true");
+          document.cookie = `closed_notification_${notifications[0].id}=true; max-age=31536000; path=/`;
 
-          // Supabase’de pasif yap (admin tarafı güncellenmiş olur)
+          // Supabase’de pasif yap
           await supabase
             .from("notifications")
             .update({ is_active: false })
@@ -377,6 +377,7 @@ function renderStatus(status) {
     </button>
   </div>
 )}
+
 
 
       {/* TOPBAR */}
