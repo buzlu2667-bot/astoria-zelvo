@@ -134,6 +134,7 @@ const [resetMsg, setResetMsg] = useState("");
 const [orderId, setOrderId] = useState("");
 const [orderPhone, setOrderPhone] = useState("");
 const [foundOrder, setFoundOrder] = useState(null);
+const [hideNotification, setHideNotification] = useState(false);
 
 
   // ✅ Admin mail fix
@@ -274,6 +275,7 @@ useEffect(() => {
     window.dispatchEvent(new CustomEvent("cart-add", { detail: product }));
     localStorage.removeItem("pending_add_to_cart");
   }
+  
 }, [session]);
 async function fetchOrder() {
   setFoundOrder(null);
@@ -324,13 +326,23 @@ function renderStatus(status) {
       return "❓ Bilinmeyen Durum";
   }
 }
+// ✅ Bildirim cookie kontrolü (React-friendly)
+useEffect(() => {
+  if (notifications.length > 0) {
+    const cookieName = `closed_notification_${notifications[0].id}=true`;
+    if (document.cookie.includes(cookieName)) {
+      setHideNotification(true);
+    } else {
+      setHideNotification(false);
+    }
+  }
+}, [notifications]);
 
  
   return (
     <>
 {/* ✅ Premium Global Notification Banner — Active & Public */}
-{notifications.length > 0 &&
- !document.cookie.includes(`closed_notification_${notifications[0].id}=true`) && (
+{notifications.length > 0 && !hideNotification && (
   <div
     className="fixed top-0 left-0 w-full z-[99999]
     bg-gradient-to-r from-yellow-400 via-amber-400 to-orange-500
@@ -347,20 +359,21 @@ function renderStatus(status) {
     <button
       onClick={async () => {
         try {
-          // localStorage ve cookie’ye kaydet
+          // Bildirim kapatıldı → cookie + localStorage
           localStorage.setItem(`closed_notification_${notifications[0].id}`, "true");
           document.cookie = `closed_notification_${notifications[0].id}=true; max-age=31536000; path=/`;
+          setHideNotification(true);
 
-          // Supabase’de pasif yap
+          // Supabase’de pasif yap (admin tarafında da yansır)
           await supabase
             .from("notifications")
             .update({ is_active: false })
             .eq("id", notifications[0].id);
 
-          // State’ten kaldır
+          // Bildirimi state’ten kaldır
           setNotifications((prev) => prev.slice(1));
 
-          // Toast gönder
+          // Toast
           window.dispatchEvent(
             new CustomEvent("toast", {
               detail: { type: "info", text: "🔕 Bildirim kapatıldı." },
@@ -377,6 +390,7 @@ function renderStatus(status) {
     </button>
   </div>
 )}
+
 
 
 
