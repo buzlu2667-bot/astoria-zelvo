@@ -75,13 +75,7 @@ export default function MaintenancePage() {
         </div>
       )}
 
-      {/* ✅ Admin için gizli geçit */}
-      <Link
-        to="/admin"
-        className="relative mt-10 text-xs opacity-40 hover:opacity-100 hover:text-yellow-300 transition z-10"
-      >
-        👑
-      </Link>
+      
 
       <p className="relative mt-8 text-gray-500 text-xs z-10 tracking-widest">
         © {new Date().getFullYear()} MAXIMORA
