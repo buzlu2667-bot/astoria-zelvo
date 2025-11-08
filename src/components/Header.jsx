@@ -345,10 +345,13 @@ async function closeNotification() {
       notification_id: notif.id,
     });
 
-    await supabase
-      .from("notifications")
-      .update({ is_active: false })
-      .eq("id", notif.id);
+    // ✅ Eğer süresizse, sunucuda da kapat
+    if (!notif.expires_at) {
+      await supabase
+        .from("notifications")
+        .update({ is_active: false })
+        .eq("id", notif.id);
+    }
 
     setHideNotification(true);
 
@@ -362,13 +365,14 @@ async function closeNotification() {
   }
 }
 
+
  
   return (
     <>
 {/* ✅ Premium Modal Notification (Center Popup - Final Clean Version) */}
 {notificationsReady && notifications.length > 0 && !hideNotification && (
   <div className="fixed inset-0 bg-black/70 backdrop-blur-md z-[99999] flex items-center justify-center p-4">
-    <div className="bg-[#111] border border-yellow-500/40 rounded-2xl shadow-[0_0_35px_rgba(255,215,0,0.3)] p-6 max-w-sm w-full text-center animate-fadeIn">
+    <div className="bg-[#111] border border-yellow-500/40 rounded-2xl shadow-[0_0_35px_rgba(255,215,0,0.3)] p-4 sm:p-6 w-full max-w-sm sm:max-w-md text-center animate-fadeIn">
       <h2 className="text-yellow-400 text-lg font-bold mb-3">
         🔔 {notifications[0]?.title || "Yeni Duyuru"}
       </h2>
