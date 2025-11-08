@@ -275,6 +275,10 @@ export default function ProductDetail() {
                 Hemen Al
               </Link>
             </div>
+             
+             <p className="mt-4 text-yellow-400/90 text-center italic text-sm sm:text-base animate-pulse drop-shadow-[0_0_10px_rgba(255,200,0,0.3)] flex items-center justify-center gap-2 px-2">
+  🎨 Sipariş verirken lütfen tercih ettiğiniz rengi açıklama kısmında belirtiniz.!
+</p>
 
             {/* Sekmeler */}
             <div className="mt-8">
