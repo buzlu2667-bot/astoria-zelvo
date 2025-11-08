@@ -84,7 +84,7 @@ export default function MaintenancePage() {
       </Link>
 
       <p className="relative mt-8 text-gray-500 text-xs z-10 tracking-widest">
-        © {new Date().getFullYear()} ASTORIA ZELVO
+        © {new Date().getFullYear()} MAXIMORA
       </p>
     </div>
   );
