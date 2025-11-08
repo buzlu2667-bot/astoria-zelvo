@@ -59,107 +59,6 @@ export default function Header() {
   fetchCategories();
 }, []);
 
-// ✅ Aktif bildirimleri dinleme
-useEffect(() => {
-  console.log("👂 Realtime dinleniyor...");
-
-  const channel = supabase
-    .channel("realtime:notifications")
-    .on(
-      "postgres_changes",
-      {
-        event: "*",
-        schema: "public",
-        table: "notifications",
-        filter: "is_active=eq.true",
-      },
-      (payload) => {
-        if (payload.eventType === "INSERT" && payload.new?.is_active) {
-          setNotifications((prev) => [payload.new, ...prev]);
-        } else if (payload.eventType === "UPDATE") {
-          setNotifications((prev) =>
-            prev.map((n) =>
-              n.id === payload.new.id ? { ...n, ...payload.new } : n
-            )
-          );
-        } else if (payload.eventType === "DELETE") {
-          setNotifications((prev) =>
-            prev.filter((n) => n.id !== payload.old.id)
-          );
-        }
-      }
-    )
-    .subscribe();
-
-  return () => supabase.removeChannel(channel);
-}, []);
-
-// ✅ Sayfa ilk yüklendiğinde aktif bildirimleri kontrol et (offline kullanıcılar için)
-useEffect(() => {
-  async function fetchActiveNotifications() {
-    try {
-      const { data, error } = await supabase
-        .from("notifications")
-        .select("*")
-        .eq("is_active", true)
-        .order("created_at", { ascending: false })
-        .limit(1);
-
-      if (error) {
-        console.error("⚠️ Bildirim sorgu hatası:", error.message);
-        return;
-      }
-
-      if (data && data.length > 0) {
-        const notif = data[0];
-        const cookieKey = `closed_notification_${notif.id}`;
-        const cookieExists = document.cookie.includes(`${cookieKey}=true`);
-        const localExists = localStorage.getItem(cookieKey) === "true";
-
-        if (!cookieExists && !localExists) {
-          setNotifications([notif]);
-          setHideNotification(false);
-        }
-      }
-    } catch (err) {
-      console.error("❌ Bildirim kontrol hatası:", err);
-    }
-  }
-
-  fetchActiveNotifications();
-}, []);
-
-
-// ✅ Supabase’de daha önce kapatılmış mı kontrol et
-useEffect(() => {
-  (async () => {
-    if (notifications.length === 0) return;
-    const { data: dismissed } = await supabase
-      .from("notification_dismiss")
-      .select("notification_id")
-      .eq("user_email", session?.user?.email || "guest");
-
-    if (dismissed?.some((d) => d.notification_id === notifications[0].id)) {
-      setHideNotification(true);
-    }
-  })();
-}, [notifications, session]);
-
-// ✅ Cookie + LocalStorage kontrolü (yedek)
-useEffect(() => {
-  if (notifications.length === 0) return;
-
-  const activeNotif = notifications[0];
-  const cookieKey = `closed_notification_${activeNotif.id}`;
-  const cookieExists = document.cookie.includes(`${cookieKey}=true`);
-  const localExists = localStorage.getItem(cookieKey) === "true";
-
-  if (cookieExists || localExists) {
-    setHideNotification(true);
-  } else {
-    setHideNotification(false);
-  }
-}, [notifications]);
 
 
 
@@ -197,8 +96,51 @@ const [orderPhone, setOrderPhone] = useState("");
 const [foundOrder, setFoundOrder] = useState(null);
 const [hideNotification, setHideNotification] = useState(false);
 const [notificationsReady, setNotificationsReady] = useState(false);
+// 🔔 1️⃣ Realtime Dinleme
+useEffect(() => {
+  const channel = supabase
+    .channel("realtime:notifications")
+    .on("postgres_changes", { event: "*", schema: "public", table: "notifications" }, (payload) => {
+      if (payload.eventType === "INSERT" && payload.new?.is_active) {
+        setNotifications([payload.new]);
+        setHideNotification(false);
+      } else if (payload.eventType === "UPDATE") {
+        if (payload.new?.is_active) {
+          setNotifications([payload.new]);
+          setHideNotification(false);
+        } else {
+          setHideNotification(true);
+        }
+      }
+    })
+    .subscribe();
 
+  setTimeout(() => setNotificationsReady(true), 800);
+  return () => supabase.removeChannel(channel);
+}, []);
 
+// 🧭 2️⃣ Offline fetch
+useEffect(() => {
+  (async () => {
+    const { data } = await supabase
+      .from("notifications")
+      .select("*")
+      .eq("is_active", true)
+      .order("created_at", { ascending: false })
+      .limit(1);
+
+    if (data?.length > 0) {
+      const notif = data[0];
+      const key = `closed_notification_${notif.id}`;
+      const cookieExists = document.cookie.includes(`${key}=true`);
+      const localExists = localStorage.getItem(key) === "true";
+      if (!cookieExists && !localExists) {
+        setNotifications([notif]);
+        setHideNotification(false);
+      }
+    }
+  })();
+}, []);
 
   // ✅ Admin mail fix
   const isAdmin = useMemo(
@@ -389,76 +331,53 @@ function renderStatus(status) {
       return "❓ Bilinmeyen Durum";
   }
 }
-// ✅ Bildirim cookie kontrolü (tam çalışır)
-useEffect(() => {
-  if (notifications.length === 0) return;
+async function closeNotification() {
+  try {
+    const notif = notifications[0];
+    if (!notif) return;
 
-  const activeNotif = notifications[0];
-  const cookieKey = `closed_notification_${activeNotif.id}`;
+    const key = `closed_notification_${notif.id}`;
+    localStorage.setItem(key, "true");
+    document.cookie = `${key}=true; max-age=31536000; path=/`;
 
-  // Cookie veya localStorage kontrolü
-  const cookieExists = document.cookie.includes(`${cookieKey}=true`);
-  const localExists = localStorage.getItem(cookieKey) === "true";
+    await supabase.from("notification_dismiss").insert({
+      user_email: session?.user?.email || "guest",
+      notification_id: notif.id,
+    });
 
-  if (cookieExists || localExists) {
+    await supabase
+      .from("notifications")
+      .update({ is_active: false })
+      .eq("id", notif.id);
+
     setHideNotification(true);
-  } else {
-    setHideNotification(false);
-  }
-}, [notifications]);
 
+    window.dispatchEvent(
+      new CustomEvent("toast", {
+        detail: { type: "info", text: "🔕 Bildirim kapatıldı." },
+      })
+    );
+  } catch (err) {
+    console.error("❌ Bildirim kapatma hatası:", err.message);
+  }
+}
 
  
   return (
     <>
-{/* ✅ Premium Modal Notification (Center Popup) */}
+{/* ✅ Premium Modal Notification (Center Popup - Final Clean Version) */}
 {notificationsReady && notifications.length > 0 && !hideNotification && (
   <div className="fixed inset-0 bg-black/70 backdrop-blur-md z-[99999] flex items-center justify-center p-4">
     <div className="bg-[#111] border border-yellow-500/40 rounded-2xl shadow-[0_0_35px_rgba(255,215,0,0.3)] p-6 max-w-sm w-full text-center animate-fadeIn">
       <h2 className="text-yellow-400 text-lg font-bold mb-3">
-        🔔 {notifications[0].title || "Yeni Duyuru"}
+        🔔 {notifications[0]?.title || "Yeni Duyuru"}
       </h2>
       <p className="text-gray-300 mb-5 leading-snug">
-        {notifications[0].message || "Yeni bir bildirim var."}
+        {notifications[0]?.message || "Yeni bir bildirim var."}
       </p>
 
       <button
-        onClick={async () => {
-          try {
-            // Supabase'e kaydet
-            await supabase.from("notification_dismiss").insert({
-              user_email: session?.user?.email || "guest",
-              notification_id: notifications[0].id,
-            });
-
-            // Local kayıt
-            localStorage.setItem(
-              `closed_notification_${notifications[0].id}`,
-              "true"
-            );
-            document.cookie = `closed_notification_${notifications[0].id}=true; max-age=31536000; path=/`;
-
-            setHideNotification(true);
-
-            // Supabase'de pasif yap (admin tarafında da kapanır)
-            await supabase
-              .from("notifications")
-              .update({ is_active: false })
-              .eq("id", notifications[0].id);
-
-            // Bildirimi listeden çıkar
-            setNotifications((prev) => prev.slice(1));
-
-            // Toast
-            window.dispatchEvent(
-              new CustomEvent("toast", {
-                detail: { type: "info", text: "🔕 Bildirim kapatıldı." },
-              })
-            );
-          } catch (err) {
-            console.error("❌ Bildirim kapatma hatası:", err.message);
-          }
-        }}
+        onClick={closeNotification}
         className="bg-gradient-to-r from-yellow-400 to-rose-400 text-black font-semibold py-2 px-6 rounded-lg hover:brightness-110 transition"
       >
         Kapat
@@ -466,10 +385,6 @@ useEffect(() => {
     </div>
   </div>
 )}
-
-
-
-
 
       {/* TOPBAR */}
       <header className="bg-[#050505] text-white border-b border-yellow-500/20 shadow-[0_0_20px_rgba(255,215,0,0.08)] z-[60] overflow-hidden">
