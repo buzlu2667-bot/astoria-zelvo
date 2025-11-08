@@ -31,7 +31,7 @@ export default function ProductDetail() {
   const [zoomOpen, setZoomOpen] = useState(false);
   const [images, setImages] = useState([]);
 
-  // 🔹 Ürünü çek
+  // 🔹 Ürünü çek + yorumları getir
   useEffect(() => {
     let alive = true;
     (async () => {
@@ -46,23 +46,32 @@ export default function ProductDetail() {
       setP(data || null);
       setLoading(false);
 
-      // sahte yorum örnekleri
-      setReviews([
-        {
-          id: 1,
-          name: "Misafir",
-          text: "Kaliteli ürün, hızlı kargo!",
-          rating: 5,
-          created_at: "2025-01-05",
-        },
-        {
-          id: 2,
-          name: "Ece",
-          text: "Fiyat/performans başarılı.",
-          rating: 4,
-          created_at: "2025-01-11",
-        },
-      ]);
+      // 🔹 Yorumları getir
+      const { data: comments } = await supabase
+        .from("comments")
+        .select("*")
+        .eq("product_id", Number(id))
+        .order("created_at", { ascending: false });
+
+      setReviews(comments || []);
+
+      // 🔹 Realtime dinleyici
+      const sub = supabase
+        .channel("realtime-comments")
+        .on(
+          "postgres_changes",
+          { event: "INSERT", schema: "public", table: "comments" },
+          (payload) => {
+            if (payload.new.product_id === Number(id)) {
+              setReviews((prev) => [payload.new, ...prev]);
+            }
+          }
+        )
+        .subscribe();
+
+      return () => {
+        supabase.removeChannel(sub);
+      };
     })();
     return () => (alive = false);
   }, [id]);
@@ -124,17 +133,43 @@ export default function ProductDetail() {
     return STATUS.in_stock;
   }, [p]);
 
-  const handleAddReview = () => {
-    if (!newReview.name || !newReview.text) return;
-    setReviews((prev) => [
-      ...prev,
-      {
-        id: Date.now(),
-        ...newReview,
-        created_at: new Date().toISOString(),
-      },
-    ]);
-    setNewReview({ name: "", text: "", rating: 5 });
+  // 🔹 Gerçek yorum ekleme
+  const handleAddReview = async () => {
+    if (!newReview.name || !newReview.text) {
+      window.dispatchEvent(
+        new CustomEvent("toast", {
+          detail: { type: "error", text: "Lütfen adınızı ve yorumunuzu girin." },
+        })
+      );
+      return;
+    }
+
+    const { error } = await supabase
+      .from("comments")
+      .insert([
+        {
+          product_id: Number(id),
+          name: newReview.name,
+          text: newReview.text,
+          rating: newReview.rating,
+        },
+      ]);
+
+    if (error) {
+      console.error(error);
+      window.dispatchEvent(
+        new CustomEvent("toast", {
+          detail: { type: "error", text: "Yorum eklenirken hata oluştu." },
+        })
+      );
+    } else {
+      setNewReview({ name: "", text: "", rating: 5 });
+      window.dispatchEvent(
+        new CustomEvent("toast", {
+          detail: { type: "success", text: "💬 Yorum eklendi!" },
+        })
+      );
+    }
   };
 
   if (loading)
@@ -275,10 +310,10 @@ export default function ProductDetail() {
                 Hemen Al
               </Link>
             </div>
-             
-             <p className="mt-4 text-yellow-400/90 text-center italic text-sm sm:text-base animate-pulse drop-shadow-[0_0_10px_rgba(255,200,0,0.3)] flex items-center justify-center gap-2 px-2">
-  🎨 Sipariş verirken lütfen tercih ettiğiniz rengi açıklama kısmında belirtiniz.!
-</p>
+
+            <p className="mt-4 text-yellow-400/90 text-center italic text-sm sm:text-base animate-pulse drop-shadow-[0_0_10px_rgba(255,200,0,0.3)] flex items-center justify-center gap-2 px-2">
+              🎨 Sipariş verirken lütfen tercih ettiğiniz rengi açıklama kısmında belirtiniz.!
+            </p>
 
             {/* Sekmeler */}
             <div className="mt-8">
@@ -369,14 +404,13 @@ export default function ProductDetail() {
         </div>
 
         <div className="mt-10 text-center">
-  <Link
-    to="/"
-    className="inline-block px-6 py-3 rounded-xl bg-yellow-500 hover:bg-yellow-400 text-black font-bold shadow-[0_0_15px_rgba(255,200,0,0.3)] transition"
-  >
-    ← Alışverişe Dön
-  </Link>
-</div>
-
+          <Link
+            to="/"
+            className="inline-block px-6 py-3 rounded-xl bg-yellow-500 hover:bg-yellow-400 text-black font-bold shadow-[0_0_15px_rgba(255,200,0,0.3)] transition"
+          >
+            ← Alışverişe Dön
+          </Link>
+        </div>
       </div>
 
       {/* Zoom Modal */}
