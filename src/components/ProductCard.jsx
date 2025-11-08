@@ -57,14 +57,16 @@ export default function ProductCard({ product }) {
 
   return (
     <div
-      className="relative group bg-neutral-950 text-gray-200 rounded-xl shadow-lg border border-neutral-800 overflow-hidden transition-all duration-300 hover:-translate-y-1 hover:border-yellow-600 hover:shadow-yellow-600/20 cursor-pointer"
-      onClick={() => navigate(`/product/${product.id}`)}
-    >
+  className="cursor-pointer bg-neutral-950 rounded-2xl p-5 border border-neutral-800 hover:border-yellow-500 hover:scale-[1.02] transition-all duration-300 relative"
+  onClick={() => navigate(`/product/${product.id}`)}
+>
+
       <div
         className="cursor-pointer bg-neutral-900 rounded-xl p-3 border border-neutral-800 hover:border-yellow-500 hover:scale-[1.03] transition relative"
         onClick={() => navigate(`/product/${product.id}`)}
       >
-        <div className="relative w-full h-40 sm:h-48 md:h-56 bg-black overflow-hidden rounded-lg mb-3 flex items-center justify-center">
+       <div className="relative w-full h-[380px] sm:h-[420px] md:h-[480px] bg-black overflow-hidden rounded-2xl mb-5 flex items-center justify-center shadow-lg hover:shadow-yellow-400/10 transition-shadow">
+
           {/* ❤️ Favori Butonu */}
           <button
             onClick={handleFavorite}
@@ -113,7 +115,7 @@ export default function ProductCard({ product }) {
             className="w-full h-full object-cover transition-transform duration-500 ease-out group-hover:scale-[1.03]"
             style={{
               aspectRatio: "3 / 4",
-              objectPosition: "center",
+             objectPosition: "top center",
               filter: "brightness(1) contrast(1) saturate(1)",
               imageRendering: "auto",
               transform: "translateZ(0)",
