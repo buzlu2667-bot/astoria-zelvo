@@ -275,11 +275,9 @@ export default function ProductDetail() {
             <p className="text-gray-400 mt-2">{p.category || "Kategori"}</p>
 
             <div className="mt-4 flex items-center gap-3">
-              <span className={stockBadge.cls}>{stockBadge.t}</span>
-              <span className="text-gray-400 text-sm">
-                Stok: {Number(p.stock || 0)}
-              </span>
-            </div>
+  <span className={stockBadge.cls}>{stockBadge.t}</span>
+</div>
+
 
             <div className="mt-5 text-yellow-400 text-2xl sm:text-3xl font-extrabold drop-shadow-[0_0_12px_rgba(255,200,0,0.25)]">
               {TRY(p.price)}
