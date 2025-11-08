@@ -89,10 +89,13 @@ export default function AdminOrders() {
   }
 
   return (
-    <div className="bg-neutral-900 text-white rounded-2xl p-6">
-      <h1 className="text-2xl font-bold mb-6 text-yellow-400">
+  <div className="bg-neutral-900 text-white rounded-2xl p-6 shadow-[0_0_30px_rgba(255,215,0,0.05)]">
+      <h1 className="text-3xl font-extrabold mb-6 
+        bg-gradient-to-r from-yellow-400 via-amber-300 to-yellow-600 
+        bg-clip-text text-transparent animate-pulse flex items-center gap-2">
         📦 Sipariş Yönetimi
       </h1>
+
 
       {orders.length === 0 ? (
         <p className="text-gray-500">Henüz sipariş yok.</p>
@@ -110,9 +113,17 @@ const discount = o.discount_amount ?? 0;
 
           return (
             <div
-              key={o.id}
-              className="border border-neutral-700 bg-neutral-800/40 rounded-xl p-4 mb-4 shadow-lg"
-            >
+  key={o.id}
+  className="relative border border-yellow-600/20 
+  bg-gradient-to-br from-[#0b0b0b] via-[#111] to-[#181818]
+  rounded-2xl p-5 mb-5 shadow-[0_0_20px_rgba(255,215,0,0.05)]
+  hover:shadow-[0_0_40px_rgba(255,215,0,0.25)] transition-all duration-300 group overflow-hidden"
+>
+  {/* Işık efekti */}
+ <div className="absolute inset-0 bg-gradient-to-r from-yellow-500/10 to-transparent 
+    opacity-0 group-hover:opacity-30 blur-xl transition-all duration-500 pointer-events-none"></div>
+
+
               <header className="flex justify-between items-start gap-3">
                 <div>
                   <p className="font-semibold">Sipariş #{o.id}</p>
@@ -162,9 +173,11 @@ const discount = o.discount_amount ?? 0;
 
                   {o.status === "pending" || o.status === "awaiting_payment" ? (
                     <button
-                      onClick={() => approve(o.id)}
-                      className="mt-2 bg-yellow-500 hover:bg-yellow-400 text-black px-3 py-1.5 rounded-lg text-sm font-semibold"
-                    >
+  onClick={() => approve(o.id)}
+  className="mt-2 bg-gradient-to-r from-yellow-500 to-amber-400 hover:opacity-90
+  text-black px-3 py-1.5 rounded-lg text-sm font-semibold shadow-[0_0_10px_rgba(255,215,0,0.3)] transition-all"
+>
+
                       ✅ Ödeme Onayla
                     </button>
                   ) : (
@@ -188,7 +201,8 @@ const discount = o.discount_amount ?? 0;
                 </div>
               </header>
 
-              <ul className="mt-3 text-xs text-gray-300 ml-2 space-y-1">
+              <ul className="mt-3 text-xs text-gray-300 ml-2 space-y-1 border-t border-yellow-700/20 pt-2">
+
                 {(items[o.id] || []).map(it => (
                   <li key={it.id}>
                     ✅ {it.product_name} × {it.quantity} —{" "}

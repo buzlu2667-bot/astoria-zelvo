@@ -72,7 +72,11 @@ async function handleDelete(id, name) {
     
   return (
     <div className="min-h-screen bg-black text-white p-8">
-      <div className="max-w-7xl mx-auto bg-neutral-900 p-6 rounded-2xl shadow-xl border border-purple-500/30">
+      <div className="relative max-w-7xl mx-auto bg-neutral-900 p-6 rounded-2xl shadow-xl border border-yellow-600/30 overflow-hidden group">
+  {/* ✨ Kayan Altın Işık Efekti */}
+  <div className="absolute inset-0 bg-gradient-to-r from-yellow-500/10 via-yellow-400/20 to-transparent 
+      opacity-0 group-hover:opacity-40 animate-slideGlow blur-xl pointer-events-none transition-all duration-700"></div>
+
         <h1 className="text-2xl font-bold text-yellow-400 mb-6">
           👥 Kullanıcı Bilgileri & Puan Takip
         </h1>
@@ -82,7 +86,13 @@ async function handleDelete(id, name) {
             Hiç kullanıcı bulunamadı.
           </p>
         ) : (
-          <div className="overflow-x-auto">
+          <div className="relative overflow-x-auto rounded-xl border border-yellow-500/10 bg-neutral-900/60 shadow-inner overflow-hidden">
+  {/* 💫 Kayan Altın Şerit */}
+   <div className="absolute top-0 left-[-40%] w-[40%] h-full 
+    bg-gradient-to-r from-transparent via-yellow-400/70 to-transparent 
+    animate-glowLine blur-2xl pointer-events-none mix-blend-screen"></div>
+
+
             <table className="w-full text-sm border-collapse">
               <thead className="border-b border-gray-700 text-gray-400">
                 <tr>
@@ -144,3 +154,24 @@ async function handleDelete(id, name) {
     </div>
   );
 }
+<style jsx global>{`
+  @keyframes glowLine {
+    0% {
+      transform: translateX(-100%);
+      opacity: 0.3;
+    }
+    50% {
+      transform: translateX(100%);
+      opacity: 0.8;
+    }
+    100% {
+      transform: translateX(200%);
+      opacity: 0.3;
+    }
+  }
+
+  .animate-glowLine {
+    animation: glowLine 4s linear infinite;
+  }
+`}</style>
+

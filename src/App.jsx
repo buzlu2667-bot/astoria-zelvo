@@ -24,7 +24,6 @@ import AdminLayout from "./pages/admin/AdminLayout.jsx";
 import AdminOrders from "./pages/admin/AdminOrders.jsx";
 import AdminProducts from "./pages/admin/AdminProducts.jsx";
 import AdminDashboard from "./pages/admin/AdminDashboard.jsx";
-import AdminNotes from "./pages/admin/AdminNotes.jsx";
 import { AdminGuard } from "./pages/admin/AdminGuard.jsx";
 import AdminUsers from "./pages/admin/AdminUsers.jsx";
 import AdminCategories from "./pages/admin/AdminCategories.jsx";
@@ -125,7 +124,6 @@ export default function App() {
               <Route index element={<AdminDashboard />} />
               <Route path="orders" element={<AdminOrders />} />
               <Route path="products" element={<AdminProducts />} />
-              <Route path="notes" element={<AdminNotes />} />
               <Route path="coupons" element={<AdminCoupons />} />
               <Route path="users" element={<AdminUsers />} />
               <Route path="categories" element={<AdminCategories />} />

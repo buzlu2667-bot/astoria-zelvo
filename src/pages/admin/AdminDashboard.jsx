@@ -1,5 +1,9 @@
 // ✅ src/pages/admin/AdminDashboard.jsx — FULL PREMIUM FINAL
 import { useEffect, useMemo, useState } from "react";
+import {
+  BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid,
+} from "recharts";
+
 import { supabase } from "../../lib/supabaseClient";
 
 export default function AdminDashboard() {
@@ -9,6 +13,7 @@ export default function AdminDashboard() {
   });
 
   const [orders, setOrders] = useState([]);
+  const [chartData, setChartData] = useState([]);
   const [maint, setMaint] = useState(false);
   const [loading, setLoading] = useState(true);
   const [modal, setModal] = useState(false);
@@ -36,6 +41,23 @@ export default function AdminDashboard() {
         .maybeSingle();
 
       setOrders(od || []);
+
+      // 📊 Günlük ciroyu hesapla
+if (od?.length) {
+  const grouped = {};
+  od.forEach(o => {
+    const day = new Date(o.created_at).toLocaleDateString("tr-TR");
+    grouped[day] = (grouped[day] || 0) + Number(o.total_amount || 0);
+  });
+
+  const chartArr = Object.entries(grouped).map(([date, total]) => ({
+    date,
+    total,
+  }));
+
+  setChartData(chartArr.reverse()); // Son gün sağda olsun
+}
+
 
       if (st?.value) {
         setMaint(st.value.enabled);
@@ -97,7 +119,10 @@ export default function AdminDashboard() {
 
   return (
     <div className="space-y-6 text-white">
-      <h1 className="text-2xl font-bold">Admin Dashboard</h1>
+      <h1 className="text-3xl font-extrabold bg-gradient-to-r from-yellow-400 via-amber-300 to-yellow-600 bg-clip-text text-transparent animate-pulse">
+  ⚙️ Admin Dashboard
+</h1>
+
 
       {/* 🔥 Stats */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
@@ -106,30 +131,71 @@ export default function AdminDashboard() {
         <Card title="Ort. Sepet" value={TRY.format(sums.avg)} />
       </div>
 
+{/* 📊 Günlük Ciro Grafiği */}
+<div className="mt-10 bg-neutral-900/80 border border-yellow-600/30 rounded-2xl p-6 shadow-lg">
+  <h2 className="text-xl font-bold text-yellow-400 mb-4">
+    💹 Son 30 Günlük Ciro Grafiği
+  </h2>
+
+  {chartData.length > 0 ? (
+    <ResponsiveContainer width="100%" height={300}>
+      <BarChart data={chartData}>
+        <CartesianGrid strokeDasharray="3 3" stroke="#444" />
+        <XAxis dataKey="date" tick={{ fill: "#ccc", fontSize: 12 }} />
+        <YAxis tickFormatter={(v) => `${(v / 1000).toFixed(0)}K`} tick={{ fill: "#ccc" }} />
+        <Tooltip
+          contentStyle={{ background: "#111", border: "1px solid #555", borderRadius: "8px" }}
+          labelStyle={{ color: "#ffda6b" }}
+          formatter={(v) => TRY.format(v)}
+        />
+        <Bar dataKey="total" fill="url(#goldGradient)" radius={[6, 6, 0, 0]} />
+        <defs>
+          <linearGradient id="goldGradient" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stopColor="#FFD700" stopOpacity={0.9}/>
+            <stop offset="100%" stopColor="#B8860B" stopOpacity={0.7}/>
+          </linearGradient>
+        </defs>
+      </BarChart>
+    </ResponsiveContainer>
+  ) : (
+    <p className="text-gray-400 text-sm">Grafik verisi bulunamadı.</p>
+  )}
+</div>
+
+
+
       {/* 🛠 Bakım Kontrolleri */}
       <div className="mt-4 flex flex-wrap gap-3 items-center">
-        <button
-          onClick={() => setModal(true)}
-          className="px-4 py-2 rounded-lg bg-yellow-600 text-black font-bold hover:bg-yellow-500"
-        >
-          🛑 Bakım Ayarları
-        </button>
+  <button
+    onClick={() => setModal(true)}
+    className="px-4 py-2 rounded-lg bg-yellow-600 text-black font-bold hover:bg-yellow-500"
+  >
+    🛑 Bakım Ayarları
+  </button>
 
-        {maint && (
-          <>
-            <button
-              onClick={disableMaintenance}
-              className="px-4 py-2 rounded-lg bg-green-600 font-bold hover:bg-green-700"
-            >
-              ✅ Bakım Kapalı
-            </button>
+  {/* 🔄 Sıfırlama butonu HER ZAMAN görünür */}
+  <button
+    onClick={() => window.location.reload()}
+    className="px-4 py-2 rounded-lg bg-red-600 text-white font-bold hover:bg-red-500 shadow-[0_0_15px_rgba(255,0,0,0.4)] transition"
+  >
+    🔄 Sıfırla
+  </button>
 
-            <div className="px-4 py-2 rounded-lg bg-neutral-800 border border-yellow-600 self-center">
-              ⏳ {countdown || "Hesaplanıyor…"}
-            </div>
-          </>
-        )}
+  {maint && (
+    <>
+      <button
+        onClick={disableMaintenance}
+        className="px-4 py-2 rounded-lg bg-green-600 font-bold hover:bg-green-700"
+      >
+        ✅ Bakım Kapalı
+      </button>
+
+      <div className="px-4 py-2 rounded-lg bg-neutral-800 border border-yellow-600 self-center">
+        ⏳ {countdown || "Hesaplanıyor…"}
       </div>
+    </>
+  )}
+</div>
 
       {/* 🪄 Maintenance Modal */}
       {modal && (
@@ -192,9 +258,19 @@ function Preset({ hours, setUntil }) {
 
 function Card({ title, value }) {
   return (
-    <div className="p-4 bg-neutral-900 rounded-xl">
-      <p className="text-gray-400">{title}</p>
-      <p className="text-2xl font-bold">{value}</p>
+    <div className="
+      relative p-5 bg-gradient-to-br from-[#111] via-[#0a0a0a] to-[#151515]
+      rounded-2xl border border-yellow-500/20 shadow-[0_0_20px_rgba(255,215,0,0.15)]
+      hover:shadow-[0_0_35px_rgba(255,215,0,0.4)] transition-all duration-300 group overflow-hidden
+    ">
+      {/* ✨ Arka plan ışık efekti */}
+      <div className="absolute inset-0 bg-gradient-to-r from-yellow-500/10 to-transparent opacity-0 group-hover:opacity-30 blur-xl transition-all duration-500"></div>
+      
+      <p className="text-gray-400 text-sm">{title}</p>
+      <p className="text-3xl font-extrabold bg-gradient-to-r from-yellow-400 to-amber-200 bg-clip-text text-transparent">
+        {value}
+      </p>
     </div>
   );
 }
+

@@ -79,6 +79,21 @@ expires_at: expires, // 🔥 artık senin seçtiğin tarih kaydediliyor
       fetchNotifications();
     }
   }
+  // 🗑️ Bildirim Silme Fonksiyonu
+async function deleteNotification(id) {
+  if (!confirm("⚠️ Bu bildirimi kalıcı olarak silmek istiyor musun?")) return;
+
+  const { error } = await supabase
+    .from("notifications")
+    .delete()
+    .eq("id", id);
+
+  if (error) alert("❌ Silinemedi: " + error.message);
+  else {
+    alert("🗑️ Bildirim silindi!");
+    fetchNotifications(); // listeyi yeniler
+  }
+}
 
   return (
     <div className="bg-neutral-900 border border-yellow-700/40 rounded-xl p-5 max-w-3xl mx-auto mt-6 shadow-lg">
@@ -189,6 +204,14 @@ expires_at: expires, // 🔥 artık senin seçtiğin tarih kaydediliyor
                   </p>
                 )}
               </div>
+              {/* 🗑️ Silme Butonu */}
+<button
+  onClick={() => deleteNotification(n.id)}
+  className="mr-2 px-2 py-1 rounded bg-gray-700 hover:bg-red-700 text-white text-xs font-semibold transition"
+  title="Kalıcı olarak sil"
+>
+  ✖
+</button>
 
               <button
                 onClick={() => toggleNotification(n.id, !n.is_active)}
