@@ -68,7 +68,7 @@ const [favorites, setFavorites] = useState([]);
       <h1 className="text-3xl font-bold mb-6 text-yellow-400">Ürünler</h1>
 
       {products.length > 0 ? (
-        <div className="grid grid-cols-2 md:grid-cols-3 gap-5">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
           {products.map((p) => {
            const price = Number(p.price ?? 0);
 const old = Number(p.old_price ?? 0);
@@ -81,9 +81,11 @@ const discount = hasDiscount ? Math.round(((old - price) / old) * 100) : 0;
                 key={p.id}
                onClick={() => navigate(`/product/${p.id}`)}
 
-                className="cursor-pointer bg-neutral-900 rounded-xl p-3 border border-neutral-800 hover:border-yellow-500 hover:scale-[1.03] transition relative"
+               className="cursor-pointer bg-neutral-950 rounded-2xl p-5 border border-neutral-800 hover:border-yellow-500 hover:scale-[1.02] transition-all duration-300 relative"
+
               >
-                <div className="relative w-full h-40 sm:h-48 md:h-56 bg-black overflow-hidden rounded-lg mb-3 flex items-center justify-center">
+                <div className="relative w-full h-[380px] sm:h-[420px] md:h-[480px] bg-black overflow-hidden rounded-2xl mb-5 flex items-center justify-center shadow-lg hover:shadow-yellow-400/10 transition-shadow">
+
   {/* ✅ İndirim etiketi artık resmin ÜSTÜNDE */}
   {discount > 0 && (
     <span className="absolute top-2 left-2 z-10 bg-red-600 text-white text-xs px-2 py-1 rounded-md shadow-md">
@@ -116,23 +118,25 @@ const discount = hasDiscount ? Math.round(((old - price) / old) * 100) : 0;
 )}
 
   <img
-    src={
-      p.image_url?.startsWith("http")
-        ? p.image_url
-        : `/products/${p.image_url}`
-    }
-    alt={p.name}
-    draggable="false"
-   className="w-full h-full object-cover transition-transform duration-500 ease-out group-hover:scale-[1.03]"
-    style={{
-      aspectRatio: "3 / 4",
-      objectPosition: "center",
-      filter: "brightness(1) contrast(1) saturate(1)",
-      imageRendering: "auto",
-      transform: "translateZ(0)",
-      backfaceVisibility: "hidden",
-    }}
-  />
+  src={
+    p.image_url?.startsWith("http")
+      ? p.image_url
+      : `/products/${p.image_url}`
+  }
+  alt={p.name}
+  draggable="false"
+  className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
+  style={{
+    aspectRatio: "3/4",
+    objectPosition: "top center",
+    filter: "brightness(1) contrast(1) saturate(1)",
+    imageRendering: "auto",
+    transform: "translateZ(0)",
+    backfaceVisibility: "hidden",
+  }}
+/>
+
+  
   {/* 🔍 İncele Butonu */}
 <button
   onClick={(e) => {
@@ -178,7 +182,8 @@ const discount = hasDiscount ? Math.round(((old - price) / old) * 100) : 0;
 
 
 
-                <p className="font-semibold truncate">{p.name}</p>
+                <p className="font-semibold text-lg truncate mt-2">{p.name}</p>
+
                 {/* ✅ Stok Etiketi */}
 {p.stock <= 0 ? (
   <p className="text-red-500 text-sm font-bold">Tükendi ❌</p>
@@ -197,7 +202,7 @@ const discount = hasDiscount ? Math.round(((old - price) / old) * 100) : 0;
     ₺{price.toLocaleString("tr-TR")}
   </p>
 ) : (
-  <p className="text-yellow-400 font-bold">
+  <p className="text-yellow-400 font-bold text-lg tracking-wide mt-1">
     ₺{price.toLocaleString("tr-TR")}
   </p>
 )}

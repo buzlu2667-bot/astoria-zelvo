@@ -1,3 +1,4 @@
+import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import QuickViewModal from "../components/QuickViewModal";
 import { useFavorites } from "../context/FavoritesContext";
@@ -13,9 +14,9 @@ const TRY = (n) =>
 export default function Favorites() {
   const { favorites, removeFav } = useFavorites();
   const { addToCart } = useCart();
-
-  const [modalOpen, setModalOpen] = useState(false);
-  const [selected, setSelected] = useState(null);
+const navigate = useNavigate();
+ 
+  
 
   if (!favorites || favorites.length === 0)
     return (
@@ -61,10 +62,8 @@ export default function Favorites() {
               {/* ✅ ANA GÖRSEL */}
               <div
                 className="relative aspect-square overflow-hidden rounded-xl bg-black/30 group cursor-pointer"
-                onClick={() => {
-                  setSelected(p);
-                  setModalOpen(true);
-                }}
+               onClick={() => navigate(`/product/${p.id}`)}
+
               >
                 <img
                   src={images[0]}
@@ -83,10 +82,8 @@ export default function Favorites() {
                 <div className="grid grid-cols-3 gap-2 mt-3">
                   {images.slice(1, 4).map((s, i) => (
                     <div key={i} className="cursor-pointer"
-                      onClick={() => {
-                        setSelected(p);
-                        setModalOpen(true);
-                      }}
+                      onClick={() => navigate(`/product/${p.id}`)}
+
                     >
                       <img
                         src={s}
@@ -137,14 +134,7 @@ export default function Favorites() {
         })}
       </div>
 
-      {/* ✅ Quick View Modal */}
-      {modalOpen && (
-        <QuickViewModal
-  product={selected}
-  closeModal={() => setModalOpen(false)}
-/>
-
-      )}
+     
     </div>
   );
 }

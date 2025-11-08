@@ -212,20 +212,27 @@ export default function ProductDetail() {
           {/* Görseller */}
           <div className="bg-neutral-950 rounded-2xl p-4 border border-neutral-800">
             <div
-              className="aspect-[4/5] sm:aspect-[4/3] bg-neutral-900 rounded-xl overflow-hidden flex items-center justify-center relative group cursor-zoom-in"
-              onClick={() => setZoomOpen(true)}
-            >
-              {mainImage ? (
-                <img
-                  src={mainImage}
-                  alt={p.name}
-                  className="object-contain w-full h-full transition-transform duration-500 group-hover:scale-[1.03]"
-                />
-              ) : (
-                <div className="text-gray-500">Görsel bulunamadı</div>
-              )}
-              <ZoomIn className="absolute bottom-3 right-3 text-yellow-400 w-6 h-6 opacity-70" />
-            </div>
+  className="w-full bg-black rounded-2xl overflow-hidden flex items-center justify-center relative group cursor-zoom-in"
+  onClick={() => setZoomOpen(true)}
+>
+  {mainImage ? (
+    <img
+      src={mainImage}
+      alt={p.name}
+      className="w-full h-auto object-cover transition-transform duration-700 ease-out group-hover:scale-105"
+      style={{
+        aspectRatio: "3/4",
+        objectPosition: "center",
+        filter: "brightness(1) contrast(1.05) saturate(1.05)",
+        imageRendering: "auto",
+      }}
+    />
+  ) : (
+    <div className="text-gray-500">Görsel bulunamadı</div>
+  )}
+
+  <ZoomIn className="absolute bottom-3 right-3 text-yellow-400 w-6 h-6 opacity-70" />
+</div>
 
             {images.length > 1 && (
               <div className="mt-4 grid grid-cols-4 sm:grid-cols-5 gap-3">
