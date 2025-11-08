@@ -149,8 +149,8 @@ useEffect(() => {
             <div className="w-full h-full rounded-xl overflow-hidden bg-black border border-yellow-500/30">
              {isBrowser && productImages.length > 0 && (
 <Swiper
-  preloadImages={false}
-  lazy={true}
+ preloadImages={true}
+lazy={false}
   watchSlidesProgress
   zoom={{ maxRatio: 3 }}
   loop={productImages.length > 1}
@@ -187,7 +187,6 @@ useEffect(() => {
   src={`${src}?width=900&quality=80`}
   alt={product.name}
   draggable="false"
-  loading="lazy"
   decoding="async"
   className="w-full h-full object-contain transition-transform duration-300 ease-out"
   style={{
