@@ -1,5 +1,6 @@
 // ✅ src/App.jsx — FULL FINAL ✅
-
+import ScrollToTop from "./components/ScrollToTop";
+import ProductDetail from "./pages/ProductDetail";
 import Favorites from "./pages/Favorites";
 import { Routes, Route, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
@@ -98,7 +99,7 @@ export default function App() {
           <Header />
           <Toast />
           <HashRedirector />
-
+         <ScrollToTop /> 
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/favorites" element={<Favorites />} />
@@ -108,6 +109,7 @@ export default function App() {
             <Route path="/orders" element={<Orders />} />
             <Route path="/orders/:id" element={<OrderDetail />} />
             <Route path="/reset-password" element={<ResetPassword />} />
+             <Route path="/product/:id" element={<ProductDetail />} /> 
 
             {/* ✅ Categories */}
             <Route path="/category/:id" element={<Category />} />

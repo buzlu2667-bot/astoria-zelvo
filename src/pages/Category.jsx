@@ -1,17 +1,18 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { supabase } from "../lib/supabaseClient";
-import QuickViewModal from "../components/QuickViewModal";
+import { useNavigate } from "react-router-dom";
 import { useFavorites } from "../context/FavoritesContext";
 
 export default function Category() {
   const { addFav, removeFav, isFav } = useFavorites();
+   const navigate = useNavigate();
 const [favorites, setFavorites] = useState([]);
   const { id } = useParams();
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [selectedProduct, setSelectedProduct] = useState(null);
-  const [modalOpen, setModalOpen] = useState(false);
+ 
+ 
 
   const categoryName = id?.toLowerCase();
 
@@ -78,10 +79,8 @@ const discount = hasDiscount ? Math.round(((old - price) / old) * 100) : 0;
             return (
               <div
                 key={p.id}
-                onClick={() => {
-                  setSelectedProduct(p);
-                  setModalOpen(true);
-                }}
+               onClick={() => navigate(`/product/${p.id}`)}
+
                 className="cursor-pointer bg-neutral-900 rounded-xl p-3 border border-neutral-800 hover:border-yellow-500 hover:scale-[1.03] transition relative"
               >
                 <div className="relative w-full h-40 sm:h-48 md:h-56 bg-black overflow-hidden rounded-lg mb-3 flex items-center justify-center">
@@ -137,10 +136,10 @@ const discount = hasDiscount ? Math.round(((old - price) / old) * 100) : 0;
   {/* 🔍 İncele Butonu */}
 <button
   onClick={(e) => {
-    e.stopPropagation();
-    setSelectedProduct(p);
-    setModalOpen(true);
-  }}
+  e.stopPropagation();
+  navigate(`/product/${p.id}`);
+}}
+
   className="absolute inset-0 flex items-center justify-center bg-black/60 opacity-0 hover:opacity-100 transition-opacity duration-300 text-white text-sm font-semibold"
 >
  ✨🔎 İncele
@@ -216,12 +215,7 @@ const discount = hasDiscount ? Math.round(((old - price) / old) * 100) : 0;
         </div>
       )}
 
-      {modalOpen && (
-        <QuickViewModal
-          product={selectedProduct}
-          closeModal={() => setModalOpen(false)}
-        />
-      )}
+    
     </div>
   );
 }
