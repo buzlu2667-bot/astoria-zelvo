@@ -9,6 +9,14 @@ import "swiper/css/zoom";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
 
+// Görseli önceden ısıtmak (cache warmup)
+useEffect(() => {
+  if (!product?.image_url) return;
+
+  const img = new Image();
+  img.src = `${product.image_url}?width=500&quality=50`;
+}, [product.image_url]);
+
 
 export default function QuickViewModal({ product, closeModal }) {
   if (!product) return null;
