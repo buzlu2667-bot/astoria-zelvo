@@ -13,6 +13,7 @@ import { useCart } from "../context/CartContext";
 import { useFavorites } from "../context/FavoritesContext";
 import { Heart, ShoppingCart, User2, LogOut, PackageSearch, Menu, ShieldCheck, X } from "lucide-react";
 import { Truck } from "lucide-react";
+import { v4 as uuidv4 } from "uuid";
 
 
 function useFavoriteCount() {
@@ -28,6 +29,17 @@ const initialReset = { email: "" };
 export default function Header() {
   const { session, isRecovering } = useSession();
   const { cart } = useCart();
+    const [clientId, setClientId] = useState("");
+
+  useEffect(() => {
+    let id = localStorage.getItem("client_id");
+    if (!id) {
+      id = uuidv4();
+      localStorage.setItem("client_id", id);
+    }
+    setClientId(id);
+  }, []);
+
   const favCount = useFavoriteCount();
   const location = useLocation();
 
@@ -122,25 +134,38 @@ useEffect(() => {
 // 🧭 2️⃣ Offline fetch
 useEffect(() => {
   (async () => {
+    const now = new Date().toISOString();
+
     const { data } = await supabase
       .from("notifications")
       .select("*")
       .eq("is_active", true)
+      .or(`expires_at.is.null,expires_at.gt.${now}`)
       .order("created_at", { ascending: false })
       .limit(1);
 
     if (data?.length > 0) {
       const notif = data[0];
+
+      // 🧠 Artık clientId’yi kontrol ediyoruz (giriş yapmadıysa)
+      const { data: dismissed } = await supabase
+        .from("notification_dismiss")
+        .select("id")
+        .eq("notification_id", notif.id)
+        .eq("user_email", session?.user?.email || clientId);
+
       const key = `closed_notification_${notif.id}`;
       const cookieExists = document.cookie.includes(`${key}=true`);
       const localExists = localStorage.getItem(key) === "true";
-      if (!cookieExists && !localExists) {
+
+      if (!cookieExists && !localExists && dismissed?.length === 0) {
         setNotifications([notif]);
         setHideNotification(false);
       }
     }
   })();
-}, []);
+}, [clientId, session]);
+
 
   // ✅ Admin mail fix
   const isAdmin = useMemo(
@@ -340,10 +365,11 @@ async function closeNotification() {
     localStorage.setItem(key, "true");
     document.cookie = `${key}=true; max-age=31536000; path=/`;
 
-    await supabase.from("notification_dismiss").insert({
-      user_email: session?.user?.email || "guest",
-      notification_id: notif.id,
-    });
+   await supabase.from("notification_dismiss").insert({
+  user_email: session?.user?.email || clientId, // ✅ benzersiz kimlik
+  notification_id: notif.id,
+});
+
 
     // ✅ Eğer süresizse, sunucuda da kapat
     if (!notif.expires_at) {
