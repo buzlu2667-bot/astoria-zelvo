@@ -136,13 +136,14 @@ useEffect(() => {
   (async () => {
     const now = new Date().toISOString();
 
-    const { data } = await supabase
-      .from("notifications")
-      .select("*")
-      .eq("is_active", true)
-      .or(`expires_at.is.null,expires_at.gt.${now}`)
-      .order("created_at", { ascending: false })
-      .limit(1);
+    const { data, error } = await supabase
+  .from("notifications")
+  .select("*")
+  .eq("is_active", true)
+  .or(`expires_at.is.null,expires_at.gt.${now}`) // ⏰ Süresi geçmemiş veya süresiz olanlar
+  .order("created_at", { ascending: false })
+  .limit(1)
+  .maybeSingle();
 
     if (data?.length > 0) {
       const notif = data[0];

@@ -10,6 +10,8 @@ export default function AdminNotificationForm() {
   const [duration, setDuration] = useState("none"); // ⏱️ yeni: süre
   const [loading, setLoading] = useState(false);
   const [notifications, setNotifications] = useState([]);
+  const [expiresAt, setExpiresAt] = useState(""); // 🔥 manuel bitiş zamanı
+
 
   async function fetchNotifications() {
     const { data, error } = await supabase
@@ -31,13 +33,10 @@ export default function AdminNotificationForm() {
       return;
     }
 
-    // ⏱️ Süre seçimine göre expires_at hesapla
-    let expiresAt = null;
-    const now = new Date();
-    if (duration === "30m") expiresAt = new Date(now.getTime() + 30 * 60000);
-    if (duration === "1h") expiresAt = new Date(now.getTime() + 60 * 60000);
-    if (duration === "3h") expiresAt = new Date(now.getTime() + 3 * 60 * 60000);
-    if (duration === "1d") expiresAt = new Date(now.getTime() + 24 * 60 * 60000);
+   // ⏱️ Süre seçimine göre expires_at hesapla
+const now = new Date();
+const expires = expiresAt ? new Date(expiresAt).toISOString() : null;
+
 
     setLoading(true);
     const { error } = await supabase.from("notifications").insert([
@@ -48,7 +47,8 @@ export default function AdminNotificationForm() {
         link_url: linkUrl || null,
         is_active: true,
         starts_at: now.toISOString(),
-        expires_at: expiresAt ? expiresAt.toISOString() : null,
+expires_at: expires, // 🔥 artık senin seçtiğin tarih kaydediliyor
+
       },
     ]);
     setLoading(false);
@@ -123,21 +123,20 @@ export default function AdminNotificationForm() {
             </select>
           </div>
 
-          {/* ⏱️ Süre seçimi */}
-          <div>
-            <label className="block text-gray-300 text-sm mb-1">Süre</label>
-            <select
-              value={duration}
-              onChange={(e) => setDuration(e.target.value)}
-              className="w-full p-2 rounded bg-neutral-800 border border-neutral-700 text-gray-200"
-            >
-              <option value="none">Süresiz</option>
-              <option value="30m">30 Dakika</option>
-              <option value="1h">1 Saat</option>
-              <option value="3h">3 Saat</option>
-              <option value="1d">1 Gün</option>
-            </select>
-          </div>
+         {/* ⏰ Bitiş Tarihi ve Saati */}
+<div>
+  <label className="block text-gray-300 text-sm mb-1">Bitiş Tarihi / Saati</label>
+  <input
+    type="datetime-local"
+    value={expiresAt}
+    onChange={(e) => setExpiresAt(e.target.value)}
+    className="w-full p-2 rounded bg-neutral-800 border border-neutral-700 text-gray-200"
+  />
+  <p className="text-xs text-gray-500 mt-1">
+    Boş bırakırsan süresiz olur (örnek: 2025-11-08 22:15)
+  </p>
+</div>
+
         </div>
 
         <div>
