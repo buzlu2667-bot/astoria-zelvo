@@ -40,6 +40,7 @@ export default function Home() {
 
   // ✅ Slider foto listesi
   const slides = [
+    { src: "/hero/slide13.jpg", text: "" },
     { src: "/hero/slide1.jpg", text: "" },
     { src: "/hero/slide2.jpg", text: "" },
     { src: "/hero/slide3.jpg", text: "" },
