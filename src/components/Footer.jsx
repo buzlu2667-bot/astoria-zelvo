@@ -54,10 +54,34 @@ export default function Footer() {
           <div className="text-center">
             <h3 className="font-bold text-white mb-3 text-lg"></h3>
             <div className="flex justify-center gap-6 text-2xl">
-              {[FaInstagram, FaFacebookF, FaTiktok, FaTelegramPlane].map((Icon, i) => (
-                <Icon key={i} className="text-gray-400 hover:text-white transition cursor-pointer" />
-              ))}
-            </div>
+  <FaInstagram className="text-gray-400 hover:text-white transition" />
+  <FaFacebookF className="text-gray-400 hover:text-white transition" />
+  <FaTiktok className="text-gray-400 hover:text-white transition" />
+
+  {/* 🔗 Sadece Telegram tıklanabilir */}
+ {/* 🔗 Telegram (parlak mavi neon glow) */}
+<a
+  href="https://t.me/maximoraofficial"
+  target="_blank"
+  rel="noopener noreferrer"
+  className="text-blue-400 hover:text-blue-300 transition drop-shadow-[0_0_6px_#0088cc] hover:drop-shadow-[0_0_12px_#33ccff]"
+>
+  <FaTelegramPlane />
+</a>
+
+{/* 🔗 WhatsApp (parlak yeşil neon glow) */}
+<a
+  href="https://wa.me/905384657526" // 🔹 numaranı yaz
+  target="_blank"
+  rel="noopener noreferrer"
+  className="text-green-400 hover:text-green-300 transition drop-shadow-[0_0_6px_#00ff88] hover:drop-shadow-[0_0_12px_#00ff88]"
+>
+  <FaWhatsapp />
+</a>
+
+
+</div>
+
           </div>
 
           {/* ✅ Güvenli Ödeme */}
