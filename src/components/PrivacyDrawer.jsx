@@ -44,18 +44,20 @@ const privacyHtml = `
 <ul>
 <li>Hesap bilgileri (ad, e-posta, telefon, adres)</li>
 <li>Sipariş, fatura ve teslimat bilgileri</li>
-<li>Canlı destek mesaj kayıtları (Tawk.to veya LiveChat üzerinden)</li>
+<li>Canlı destek mesaj kayıtları (Tawk.to, LiveChat veya Comm100 üzerinden)</li>
 <li>IP adresi, tarayıcı bilgisi, cihaz verileri</li>
 <li>Çerez (cookie) verileri — site işlevselliği, güvenlik ve analiz için</li>
 </ul>
 
-<h3 style="color:#ffd54d;">3. Canlı Destek Servisleri (Tawk.to ve LiveChat)</h3>
+<h3 style="color:#ffd54d;">3. Canlı Destek Servisleri (Tawk.to, LiveChat ve Comm100)</h3>
 <p>MAXIMORA, ziyaretçilerine anlık destek sağlamak amacıyla üçüncü taraf canlı destek servislerinden yararlanabilir:</p>
 
 <ul>
 <li><strong>Tawk.to:</strong> ABD merkezli bir canlı destek sağlayıcısıdır. Sohbet sırasında paylaştığınız bilgiler (isim, e-posta, mesaj içeriği) Tawk.to sunucularında şifreli olarak saklanabilir. Tawk.to, <a href="https://www.tawk.to/privacy-policy" target="_blank" rel="noopener noreferrer" style="color:#ffd54d;">gizlilik politikası</a> kapsamında GDPR ve veri güvenliği standartlarına uygundur.</li>
 
 <li><strong>LiveChat:</strong> Avrupa Birliği merkezli altyapı sunar. Kullanıcı verilerini Avrupa Ekonomik Alanı içinde işleyebilir. LiveChat, <a href="https://www.livechat.com/legal/privacy-policy/" target="_blank" rel="noopener noreferrer" style="color:#ffd54d;">GDPR uyumlu gizlilik politikası</a> ile hizmet verir.</li>
+
+<li><strong>Comm100:</strong> Kanada merkezli bir müşteri iletişim platformudur. Sohbet, e-posta ve bot etkileşimlerinde paylaşılan kişisel veriler (isim, e-posta, mesaj içeriği, IP adresi) Comm100 sunucularında şifreli biçimde işlenir. Comm100, <a href="https://www.comm100.com/privacy/" target="_blank" rel="noopener noreferrer" style="color:#ffd54d;">gizlilik politikası</a> kapsamında GDPR, CCPA ve diğer veri koruma düzenlemelerine uygundur.</li>
 </ul>
 
 <p>Canlı sohbet özelliğini kullanarak, mesaj gönderdiğinizde kişisel verilerinizin müşteri desteği amacıyla işlenmesini kabul etmiş olursunuz.</p>
@@ -70,7 +72,7 @@ const privacyHtml = `
 <p>Sitemiz, oturum yönetimi, sepet bilgisi, tercihlerin hatırlanması ve performans analizi için çerezler kullanır. Tarayıcınızın ayarlarından çerezleri devre dışı bırakabilirsiniz, ancak bazı site özellikleri düzgün çalışmayabilir.</p>
 
 <h3 style="color:#ffd54d;">7. Kullanıcı Hakları</h3>
-<p>Kullanıcılar KVKK kapsamında; verilerine erişim, düzeltilme, silinme, işlemeye itiraz ve veri aktarımı haklarına sahiptir. Bu haklarınızı kullanmak için <a href="mailto:info@astoriazelvo.example" style="color:#ffd54d;">info@astoriazelvo.example</a> adresine başvurabilirsiniz.</p>
+<p>Kullanıcılar KVKK kapsamında; verilerine erişim, düzeltilme, silinme, işlemeye itiraz ve veri aktarımı haklarına sahiptir. Bu haklarınızı kullanmak için <a href="mailto:destek@maximorashop.com" style="color:#ffd54d;">destek@maximorashop.com</a> adresine başvurabilirsiniz.</p>
 
 <h3 style="color:#ffd54d;">8. Güvenlik</h3>
 <p>Veri güvenliği için SSL şifreleme, erişim kontrolü, düzenli sunucu güvenlik testleri ve şifreli veri saklama yöntemleri uygulanır.</p>

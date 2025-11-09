@@ -2,6 +2,9 @@
 import { FaInstagram, FaFacebookF, FaTiktok, FaTelegramPlane, FaWhatsapp } from "react-icons/fa";
 import { useState } from "react";
 import PrivacyDrawer from "./PrivacyDrawer"; // ← bunu ekledik (dosya yolu senin components klasörüne göre)
+import ReturnDrawer from "./ReturnDrawer";
+import KvkkDrawer from "./KvkkDrawer";
+
 
 const shippingIcons = [
   { name: "Yurtiçi", src: "/footer/shipping-yurtici.png" },
@@ -19,16 +22,23 @@ const paymentIcons = [
 
 export default function Footer() {
   const [privacyOpen, setPrivacyOpen] = useState(false); // ✅ gizlilik modalı için state
+  const [returnOpen, setReturnOpen] = useState(false); // ✅ iade koşulları drawer için state
+  const [kvkkOpen, setKvkkOpen] = useState(false);
+
+
+  
 
   return (
     <>
       <footer className="bg-black border-t border-neutral-800 text-gray-400 pt-14 pb-10 mt-20">
-        <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-3 items-center px-6 gap-10">
+       <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-3 items-center px-6 gap-y-10 md:gap-10 text-center md:text-left">
+
 
           {/* ✅ Kargo Firmaları */}
           <div className="text-left">
             <h3 className="font-bold text-white mb-3 text-lg"></h3>
-            <div className="flex gap-5">
+           <div className="flex flex-wrap justify-center md:justify-start gap-5">
+
               {shippingIcons.map((item) => (
                 <img
                   key={item.name}
@@ -53,7 +63,7 @@ export default function Footer() {
           {/* ✅ Güvenli Ödeme */}
           <div className="text-right">
             <h3 className="font-bold text-white mb-3 text-lg"></h3>
-            <div className="flex justify-end gap-5">
+           <div className="flex flex-wrap justify-center md:justify-end gap-5">
               {paymentIcons.map((item) => (
                 <img
                   key={item.name}
@@ -71,7 +81,12 @@ export default function Footer() {
          {/* ✅ Alt Bilgi */}
         <div className="mt-10 text-center border-t border-neutral-800 pt-6">
           <div className="flex justify-center gap-8 text-xs mb-3">
-            <span className="hover:text-white cursor-pointer">KVKK</span>
+           <span
+  onClick={() => setKvkkOpen(true)}
+  className="hover:text-yellow-400 cursor-pointer transition"
+>
+  KVKK
+</span>
 
             {/* 🔥 işte burası — onClick ekledik */}
             <span
@@ -81,8 +96,26 @@ export default function Footer() {
               Gizlilik Politikası
             </span>
 
-            <span className="hover:text-white cursor-pointer">İade Koşulları</span>
+           <span
+  onClick={() => setReturnOpen(true)}
+  className="hover:text-yellow-400 cursor-pointer transition"
+>
+  İade Koşulları
+</span>
+
           </div>
+          
+          {/* ✅ İletişim Satırı */}
+<p className="text-xs mb-2 text-gray-400">
+  İletişim:{" "}
+  <a
+    href="mailto:destek@maximorashop.com"
+    className="text-yellow-400 hover:underline hover:text-yellow-300 transition"
+  >
+    destek@maximorashop.com
+  </a>
+</p>
+
 
           <p className="text-xs text-gray-500">
             © 2025 MAXIMORA — Tüm Hakları Saklıdır.
@@ -94,6 +127,9 @@ export default function Footer() {
 
       {/* ✅ Premium Drawer (Modal) */}
       <PrivacyDrawer open={privacyOpen} onClose={() => setPrivacyOpen(false)} />
+        <ReturnDrawer open={returnOpen} onClose={() => setReturnOpen(false)} />
+          <KvkkDrawer open={kvkkOpen} onClose={() => setKvkkOpen(false)} />
+
     </>
   );
 }

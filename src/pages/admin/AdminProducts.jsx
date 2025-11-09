@@ -9,6 +9,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { supabase } from "../../lib/supabaseClient";
+import { sendTelegramMessage } from "../../lib/sendTelegramMessage";
 
 // -------------------------------------
 // Helpers
@@ -153,11 +154,18 @@ export default function AdminProducts() {
 
 
       // 4) Insert / Update
-      if (editing) {
-        await supabase.from("products").update(payload).eq("id", editing);
-      } else {
-        await supabase.from("products").insert([payload]);
-      }
+     if (editing) {
+  await supabase.from("products").update(payload).eq("id", editing);
+} else {
+  const { data, error } = await supabase.from("products").insert([payload]);
+  
+  // ✅ Telegram'a otomatik mesaj gönder
+  if (!error && data && data.length > 0) {
+    const newProduct = { ...payload, id: data[0].id };
+    await sendTelegramMessage(newProduct);
+  }
+}
+
 
       toast("✅ Ürün kaydedildi!", "success");
       resetForm();
