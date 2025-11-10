@@ -42,22 +42,26 @@
 <!--End Comm100 Live Chat Code-->
 
 <style>
-  /* 🔥 Comm100 balonunu sola al */
-  #comm100-button-b53a33fa-9458-42c8-bc5d-ed828cf33360 {
+  /* 🔹 Comm100 butonunu sola taşıyoruz */
+  #comm100-button-b53a33fa-9458-42c8-bc5d-ed828cf33360,
+  iframe[id*="comm100"] {
     position: fixed !important;
     bottom: 25px !important;
-    left: 25px !important;
+    left: 25px !important;  /* 🔥 sola aldık */
     right: auto !important;
     z-index: 999999 !important;
   }
 
-  /* Balonun görünürlüğünü garantiye al */
-  iframe[id*="comm100"] {
+  /* 🔹 Ekstra garanti: görünür ve aktif tut */
+  iframe[id*="comm100"],
+  [id^="comm100-button"] {
     display: block !important;
     opacity: 1 !important;
-    z-index: 999999 !important;
+    visibility: visible !important;
+    pointer-events: all !important;
   }
 </style>
+
 
 
 
