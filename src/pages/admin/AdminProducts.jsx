@@ -154,18 +154,11 @@ export default function AdminProducts() {
 
 
       // 4) Insert / Update
-     if (editing) {
-  await supabase.from("products").update(payload).eq("id", editing);
-} else {
-  const { data, error } = await supabase.from("products").insert([payload]);
-  
-  // ✅ Telegram'a otomatik mesaj gönder
-  if (!error && data && data.length > 0) {
-    const newProduct = { ...payload, id: data[0].id };
-    await sendTelegramMessage(newProduct);
-  }
-}
-
+      if (editing) {
+        await supabase.from("products").update(payload).eq("id", editing);
+      } else {
+        await supabase.from("products").insert([payload]);
+      }
 
       toast("✅ Ürün kaydedildi!", "success");
       resetForm();
@@ -529,6 +522,12 @@ export default function AdminProducts() {
                       >
                         Düzenle
                       </button>
+                          <button
+    onClick={() => sendTelegramMessage(p)}
+    className="text-blue-400 hover:text-blue-500"
+  >
+    Telegram’a Gönder 📩
+  </button>
 
                       <button
                         onClick={() => remove(p.id, p.image_url, p.gallery)}

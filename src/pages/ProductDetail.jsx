@@ -4,6 +4,9 @@ import { supabase } from "../lib/supabaseClient";
 import { useCart } from "../context/CartContext";
 import { useFavorites } from "../context/FavoritesContext";
 import { Heart, ZoomIn } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import { useSession } from "../context/SessionContext";
+
 
 const TRY = (n) =>
   Number(n || 0).toLocaleString("tr-TR", {
@@ -30,7 +33,8 @@ export default function ProductDetail() {
   const [mainImage, setMainImage] = useState("");
   const [zoomOpen, setZoomOpen] = useState(false);
   const [images, setImages] = useState([]);
-
+const { session } = useSession();
+const navigate = useNavigate();
   // 🔹 Ürünü çek + yorumları getir
   useEffect(() => {
     let alive = true;
@@ -308,12 +312,35 @@ export default function ProductDetail() {
                 Sepete Ekle
               </button>
 
-              <Link
-                to="/checkout"
-                className="w-full sm:w-auto px-6 py-3 rounded-xl bg-yellow-500 hover:bg-yellow-400 text-black font-bold shadow-[0_0_15px_rgba(255,200,0,0.3)] text-center"
-              >
-                Hemen Al
-              </Link>
+              <button
+  onClick={() => {
+    if (!session) {
+      window.dispatchEvent(
+        new CustomEvent("toast", {
+          detail: {
+            type: "error",
+            text: "🔐 Satın alma işlemi için lütfen giriş yapın!",
+          },
+        })
+      );
+      return;
+    }
+
+    addToCart(p);
+    window.dispatchEvent(
+      new CustomEvent("toast", {
+        detail: { type: "success", text: "🛍️ Ürün sepete eklendi!" },
+      })
+    );
+
+    navigate("/checkout");
+  }}
+  className="w-full sm:w-auto px-6 py-3 rounded-xl bg-yellow-500 hover:bg-yellow-400 text-black font-bold shadow-[0_0_15px_rgba(255,200,0,0.3)] text-center"
+>
+  Hemen Al
+</button>
+
+
             </div>
 
             <p className="mt-4 text-yellow-400/90 text-center italic text-sm sm:text-base animate-pulse drop-shadow-[0_0_10px_rgba(255,200,0,0.3)] flex items-center justify-center gap-2 px-2">
