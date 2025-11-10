@@ -35,13 +35,7 @@
     <div id="root"></div>
     <script type="module" src="/src/main.jsx"></script>
 
-    <div class="livechat-info-box">
-  ⚠️ <i>MAXIMORA herhangi bir iletişim ağı ile (Whatsapp, Telegram vb.) hiçbir kullanıcı ile iletişim kurmamaktadır.</i><br>
-  Güncel adresimiz ve kampanyalar için:<br>
-  <a href="https://t.me/senintelegramadresin" target="_blank" class="gold-link">⦿ Telegram</a>
-  &nbsp;&nbsp;
-  <a href="https://seninmobiluygulamaadresin.com" target="_blank" class="gold-link">⦿ Mobil Uygulama</a>
-</div>
+    
  <!-- Start of LiveChat (www.livechat.com) code -->
 <script>
     window.__lc = window.__lc || {};
@@ -53,72 +47,6 @@
 <noscript><a href="https://www.livechat.com/chat-with/19358602/" rel="nofollow">Chat with us</a>, powered by <a href="https://www.livechat.com/?welcome" rel="noopener nofollow" target="_blank">LiveChat</a></noscript>
 <!-- End of LiveChat code -->
 
-
-
-
-<script>
-  // Modal açıldığında "Canlı Destek" butonunu gizle
-  const destekBtn = document.getElementById("canli-destek");
-
-  // MutationObserver: body'deki class değişimini izler (örneğin modal-open)
-  const observer = new MutationObserver(() => {
-    const modalAcik = document.body.classList.contains("modal-open");
-    if (destekBtn) destekBtn.style.display = modalAcik ? "none" : "flex";
-  });
-
-  observer.observe(document.body, { attributes: true, attributeFilter: ["class"] });
-</script>
-
-
-<script>
-  window.addEventListener("load", () => {
-    // 💬 Canlı destek etiketi oluştur
-    const label = document.createElement("div");
-    label.className = "canli-destek-label";
-    label.textContent = "💬 Canlı Destek";
-    document.body.appendChild(label);
-
-    // Fade-in animasyonu
-    setTimeout(() => label.classList.add("visible"), 100);
-
-    // 💬 Modal açık mı kontrol et
-    const kontrolEt = () => {
-      // Tailwind modal'ını tespit et (örnek: fixed.inset-0.bg-black/80)
-      const modal = document.querySelector('.fixed.inset-0.bg-black\\/80');
-      const modalAcik = modal && window.getComputedStyle(modal).display !== "none";
-
-      // 💬 Bizim gold etiket fade animasyonu
-      if (modalAcik) {
-        label.style.opacity = "0";
-        label.style.transform = "translateY(6px)";
-      } else {
-        label.style.display = "flex";
-        setTimeout(() => {
-          label.style.opacity = "1";
-          label.style.transform = "translateY(0)";
-        }, 100);
-      }
-
-      // 💬 LIVECHAT widget (gizle / göster)
-      const liveChat = document.querySelector("#chat-widget-container");
-      const compact = document.querySelector("#livechat-compact-container");
-      const eye = document.querySelector("#livechat-eye-catcher");
-
-      if (modalAcik) {
-        if (liveChat) liveChat.style.display = "none";
-        if (compact) compact.style.display = "none";
-        if (eye) eye.style.display = "none";
-      } else {
-        if (liveChat) liveChat.style.display = "block";
-        if (compact) compact.style.display = "block";
-        if (eye) eye.style.display = "block";
-      }
-    };
-
-    // 💫 Düzenli kontrol (her 250ms'de bir)
-    setInterval(kontrolEt, 250);
-  });
-</script>
 
 </script>
 
