@@ -41,29 +41,6 @@
 </script>
 <!--End Comm100 Live Chat Code-->
 
-<style>
-  /* 🔹 Comm100 butonunu sola taşıyoruz */
-  #comm100-button-b53a33fa-9458-42c8-bc5d-ed828cf33360,
-  iframe[id*="comm100"] {
-    position: fixed !important;
-    bottom: 25px !important;
-    left: 25px !important;  /* 🔥 sola aldık */
-    right: auto !important;
-    z-index: 999999 !important;
-  }
-
-  /* 🔹 Ekstra garanti: görünür ve aktif tut */
-  iframe[id*="comm100"],
-  [id^="comm100-button"] {
-    display: block !important;
-    opacity: 1 !important;
-    visibility: visible !important;
-    pointer-events: all !important;
-  }
-</style>
-
-
-
 
 
 <script>
@@ -78,45 +55,6 @@
 
   observer.observe(document.body, { attributes: true, attributeFilter: ["class"] });
 </script>
-
-
-  <!-- 💬 CANLI DESTEK YAZISI (Sol tarafta) -->
-<style>
-  .canli-destek-label {
-    position: fixed;
-    bottom: 10px;  /* 🔹 Tawk ikonunun yüksekliği hizasında */
-    left: 60px;    /* 🔹 sola aldık */
-    background: linear-gradient(90deg, #f6b800, #a07600);
-    color: #000;
-    font-weight: 600;
-    padding: 3px 8px;
-    border-radius: 8px;
-    font-family: "Poppins", sans-serif;
-    box-shadow: 0 0 6px gold;
-    font-size: 11.5px; /* 🔥 daha da küçülttük */
-    animation: glow 1.5s infinite alternate;
-    z-index: 9999999;
-    transition: opacity 0.4s ease, transform 0.3s ease;
-    opacity: 0;
-    transform: translateY(8px);
-  }
-
-  .canli-destek-label.visible {
-    opacity: 1;
-    transform: translateY(0);
-  }
-
-  .canli-destek-label:hover {
-    transform: scale(1.05);
-    filter: brightness(1.3);
-  }
-
-  @keyframes glow {
-    from { filter: brightness(0.9); }
-    to { filter: brightness(1.15); }
-  }
-</style>
-
 
 
 <script>
