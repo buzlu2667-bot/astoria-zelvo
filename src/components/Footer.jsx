@@ -103,48 +103,61 @@ export default function Footer() {
 
     
          {/* ✅ Alt Bilgi */}
-        <div className="mt-10 text-center border-t border-neutral-800 pt-6">
-          <div className="flex justify-center gap-8 text-xs mb-3">
-           <span
-  onClick={() => setKvkkOpen(true)}
-  className="hover:text-yellow-400 cursor-pointer transition"
->
-  KVKK
-</span>
+<div className="mt-10 text-center border-t border-neutral-800 pt-6">
+  <div className="flex justify-center items-center gap-8 text-xs mb-3 flex-wrap">
 
-            {/* 🔥 işte burası — onClick ekledik */}
-            <span
-              onClick={() => setPrivacyOpen(true)}
-              className="hover:text-yellow-400 cursor-pointer transition"
-            >
-              Gizlilik Politikası
-            </span>
+    {/* 🛡️ Güvenli Alışveriş */}
+    <div className="flex items-center gap-1 text-yellow-400 text-xs">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+        stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"
+        className="w-4 h-4">
+        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+        <path d="M9 12l2 2 4-4" />
+      </svg>
+    <span className="font-light text-[10px] tracking-wide">GÜVENLİ ALIŞVERİŞ</span>
+    </div>
 
-           <span
-  onClick={() => setReturnOpen(true)}
-  className="hover:text-yellow-400 cursor-pointer transition"
->
-  İade Koşulları
-</span>
+    {/* KVKK */}
+    <span
+      onClick={() => setKvkkOpen(true)}
+      className="hover:text-yellow-400 cursor-pointer transition"
+    >
+      KVKK
+    </span>
 
-          </div>
-          
-          {/* ✅ İletişim Satırı */}
-<p className="text-xs mb-2 text-gray-400">
-  İletişim:{" "}
-  <a
-    href="mailto:destek@maximorashop.com"
-    className="text-yellow-400 hover:underline hover:text-yellow-300 transition"
-  >
-    destek@maximorashop.com
-  </a>
-</p>
+    {/* Gizlilik Politikası */}
+    <span
+      onClick={() => setPrivacyOpen(true)}
+      className="hover:text-yellow-400 cursor-pointer transition"
+    >
+      Gizlilik Politikası
+    </span>
 
+    {/* İade Koşulları */}
+    <span
+      onClick={() => setReturnOpen(true)}
+      className="hover:text-yellow-400 cursor-pointer transition"
+    >
+      İade Koşulları
+    </span>
+  </div>
 
-          <p className="text-xs text-gray-500">
-            © 2025 MAXIMORA — Tüm Hakları Saklıdır.
-          </p>
-        </div>
+  {/* ✅ İletişim Satırı */}
+  <p className="text-xs mb-2 text-gray-400">
+    İletişim:{" "}
+    <a
+      href="mailto:destek@maximorashop.com"
+      className="text-yellow-400 hover:underline hover:text-yellow-300 transition"
+    >
+      destek@maximorashop.com
+    </a>
+  </p>
+
+  <p className="text-xs text-gray-500">
+    © 2025 MAXIMORA — Tüm Hakları Saklıdır.
+  </p>
+</div>
+
      
 
  </footer>
