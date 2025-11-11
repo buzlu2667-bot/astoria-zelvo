@@ -2,6 +2,7 @@ import { supabase } from "../lib/supabaseClient";
 import { useState } from "react";
 import { useCart } from "../context/CartContext";
 import { useNavigate } from "react-router-dom";
+import { useEffect } from "react";
 
 const TRY = (n) =>
   Number(n || 0).toLocaleString("tr-TR", {
@@ -27,8 +28,20 @@ const [coupon, setCoupon] = useState("");
 const [discount, setDiscount] = useState(0);
   const [ibanModal, setIbanModal] = useState(false);
   const [msg, setMsg] = useState("");
+  const [user, setUser] = useState(null);
 
   const change = (k, v) => setForm((f) => ({ ...f, [k]: v }));
+// ✅ Kullanıcıyı çek ve form e-postasını doldur
+useEffect(() => {
+  (async () => {
+    const { data: ud } = await supabase.auth.getUser();
+    const u = ud?.user;
+    if (u) {
+      setUser(u);
+      setForm((f) => ({ ...f, email: u.email }));
+    }
+  })();
+}, []);
 
   
 
@@ -44,7 +57,7 @@ const [discount, setDiscount] = useState(0);
         .upsert(
           {
             id: user.id,
-            email: form.email,
+           email: user.email,
             full_name: form.name,
             phone: form.phone,
             address: form.address,
@@ -153,8 +166,16 @@ const toast = (text) =>
     })
   );
 
-  const validateBeforePayment = () => {
-    if (!form.name || !form.phone || !form.email || !form.address) {
+ // ✅ login kontrolü eklendi
+const validateBeforePayment = async () => {
+  if (!user) {
+    setMsg("Sipariş vermek için giriş yapmalısınız!");
+    setTimeout(() => nav("/login"), 1500);
+    return;
+  }
+
+  if (!form.name || !form.phone || !form.address) {
+
       setMsg("Lütfen zorunlu alanları doldurun.");
       return;
     }
@@ -185,7 +206,13 @@ const toast = (text) =>
           <div className="grid md:grid-cols-2 gap-3">
             <Input label="Ad Soyad *" value={form.name} onChange={(v) => change("name", v)} />
             <Input label="Telefon *" value={form.phone} onChange={(v) => change("phone", v)} />
-            <Input label="E-posta *" value={form.email} onChange={(v) => change("email", v)} />
+            {/* ✅ Email artık değiştirilemez */}
+<Input
+  label="E-posta (hesap)"
+  value={form.email}
+  onChange={() => {}}
+  className="opacity-60 cursor-not-allowed"
+/>
             <Input label="Adres *" value={form.address} onChange={(v) => change("address", v)} />
             <Textarea className="md:col-span-2" label="Not (opsiyonel)" value={form.note} onChange={(v) => change("note", v)} />
           </div>
