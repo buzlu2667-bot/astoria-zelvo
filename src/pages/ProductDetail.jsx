@@ -409,7 +409,11 @@ setRelated(relatedData || []);
 
               {tab === "desc" && (
                 <div className="mt-4 bg-neutral-900 border border-neutral-800 rounded-xl p-4 text-gray-300 leading-relaxed">
-                  {p.description || "Bu ürün hakkında açıklama eklenmemiştir."}
+                 <p
+  className="whitespace-pre-line"
+>
+  {p.description || "Bu ürün hakkında açıklama eklenmemiştir."}
+</p>
                 </div>
               )}
 
