@@ -53,6 +53,7 @@ export default function Home() {
     { src: "/hero/slide10.jpg", text: "" },
     { src: "/hero/slide11.jpg", text: "" },
     { src: "/hero/slide12.jpg", text: "" },
+    { src: "/hero/slide13.jpg", text: "" },
     
   ];
 
