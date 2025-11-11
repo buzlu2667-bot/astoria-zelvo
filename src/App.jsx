@@ -1,4 +1,5 @@
 // ✅ src/App.jsx — FULL FINAL ✅
+import ScrollTopButton from "./components/ScrollTopButton";
 import ScrollToTop from "./components/ScrollToTop";
 import ProductDetail from "./pages/ProductDetail";
 import Favorites from "./pages/Favorites";
@@ -134,6 +135,9 @@ export default function App() {
           </Routes>
 
           <Footer /> {/* ✅ FOOTER HER SAYFADA */}
+
+          <ScrollTopButton />
+
 
         </FavoritesProvider>
       </CartProvider>

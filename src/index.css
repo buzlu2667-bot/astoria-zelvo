@@ -418,6 +418,26 @@ iframe[src*="livechat"] {
 .animate-fadeIn {
   animation: fadeIn 0.3s ease-out;
 }
+/* Scroll bar gizle */
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* Benzer ürünler otomatik kayma animasyonu */
+@keyframes autoScroll {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+.auto-scroll {
+  display: flex;
+  width: max-content;
+  animation: autoScroll 35s linear infinite;
+}
 
 
 

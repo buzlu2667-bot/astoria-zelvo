@@ -60,6 +60,20 @@ export default function Home() {
   // ✅ Mobil algılayıcı (gerçek zamanlı)
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
 
+    // ✅ Sayfa açıldığında veya yenilenince yukarı kaydır
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      window.scrollTo({
+        top: 0,
+        left: 0,
+        behavior: "smooth", // istersen "auto" yap
+      });
+    }, 400); // slider ve görseller render bitsin diye küçük gecikme
+
+    return () => clearTimeout(timeout);
+  }, []); // sadece ilk render’da çalışır
+
+
   useEffect(() => {
     const handleResize = () => {
       setIsMobile(window.innerWidth <= 768);

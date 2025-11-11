@@ -25,10 +25,27 @@ export default function ProductDetail() {
   const { addToCart } = useCart();
   const { addFav, removeFav, isFav } = useFavorites();
 
+    // ✅ Sayfa tamamen yüklendikten sonra en üste çıkar
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      window.scrollTo({
+        top: 0,
+        left: 0,
+        behavior: "smooth",
+      });
+    }, 300); // 0.3 saniye gecikme — görseller yüklensin diye
+
+    return () => clearTimeout(timeout);
+  }, [id]);
+
+
   const [p, setP] = useState(null);
   const [loading, setLoading] = useState(true);
   const [tab, setTab] = useState("desc");
   const [reviews, setReviews] = useState([]);
+  // ✅ Benzer ürünler
+const [related, setRelated] = useState([]);
+
   const [newReview, setNewReview] = useState({ name: "", text: "", rating: 5 });
   const [mainImage, setMainImage] = useState("");
   const [zoomOpen, setZoomOpen] = useState(false);
@@ -49,6 +66,23 @@ const navigate = useNavigate();
       if (!alive) return;
       setP(data || null);
       setLoading(false);
+
+      // ✅ Benzer ürünleri getir (kategoriye göre)
+// ✅ Benzer ürünleri getir (her zaman bir şey göstersin)
+let relatedQuery = supabase
+  .from("products")
+  .select("*")
+  .neq("id", Number(id))
+  .limit(10);
+
+if (data?.category) {
+  relatedQuery = relatedQuery.eq("category", data.category);
+}
+
+const { data: relatedData } = await relatedQuery;
+setRelated(relatedData || []);
+
+
 
       // 🔹 Yorumları getir
       const { data: comments } = await supabase
@@ -211,7 +245,8 @@ const navigate = useNavigate();
 
   return (
     <div className="bg-black text-white min-h-screen">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-8 py-8 md:py-10">
+     <div className="w-full mx-auto px-4 sm:px-6 md:px-8 py-8 md:py-10">
+
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 md:gap-8">
           {/* Görseller */}
           <div className="bg-neutral-950 rounded-2xl p-4 border border-neutral-800">
@@ -434,6 +469,58 @@ const navigate = useNavigate();
             </div>
           </div>
         </div>
+          
+  {/* ✅ Benzer Ürünler */}
+{related.length > 0 && (
+  <div className="mt-16 w-full overflow-hidden relative">
+    <h2 className="text-2xl font-bold text-yellow-400 mb-5 text-center">
+      Benzer Ürünler
+    </h2>
+
+    {/* Kaydırma Alanı */}
+    <div
+      className="scrollbar-hide overflow-hidden w-full"
+      onMouseEnter={(e) => e.currentTarget.querySelector(".auto-scroll").style.animationPlayState = "paused"}
+      onMouseLeave={(e) => e.currentTarget.querySelector(".auto-scroll").style.animationPlayState = "running"}
+    >
+      <div className="auto-scroll gap-4 px-4 pb-6">
+        {[...related, ...related].map((item, i) => {
+          const imageUrl = item.image_url?.startsWith("http")
+            ? item.image_url
+            : `/products/${item.image_url}`;
+
+          return (
+            <Link
+              key={i}
+              to={`/product/${item.id}`}
+              className="flex-shrink-0 w-[150px] sm:w-[180px] bg-neutral-900 border border-neutral-800 rounded-xl shadow-lg overflow-hidden hover:border-yellow-500/60 hover:shadow-yellow-500/20 transition"
+            >
+              <img
+                src={imageUrl}
+                alt={item.name}
+                className="w-full h-[160px] object-cover"
+              />
+              <div className="p-3 text-center">
+                <p className="text-sm font-semibold text-gray-200 truncate">
+                  {item.name}
+                </p>
+                <p className="text-yellow-400 text-sm font-bold mt-1">
+                  {TRY(item.price)}
+                </p>
+              </div>
+            </Link>
+          );
+        })}
+      </div>
+    </div>
+  </div>
+)}
+
+
+
+
+
+
 
         <div className="mt-10 text-center">
           <Link
@@ -443,6 +530,8 @@ const navigate = useNavigate();
             ← Alışverişe Dön
           </Link>
         </div>
+
+
       </div>
 
       {/* Zoom Modal */}
