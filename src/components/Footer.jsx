@@ -161,7 +161,8 @@ export default function Footer() {
   href="https://wa.me/905384657526"
   target="_blank"
   rel="noopener noreferrer"
- className="fixed bottom-1 right-3 sm:bottom-5 sm:right-5 flex items-center gap-2 bg-white text-[#444] font-medium px-4 py-2 rounded-md shadow-md transition-all duration-300 z-[9999] cursor-pointer select-none hover:scale-105 hover:shadow-lg sm:px-4 sm:py-2 sm:text-[13px] text-[13px] !m-0 !translate-y-0"
+ className="fixed bottom-[env(safe-area-inset-bottom,8px)] right-2 sm:bottom-3 sm:right-5 flex items-center gap-2 bg-white text-[#444] font-medium px-4 py-2 rounded-md shadow-md transition-all duration-300 z-[99999] cursor-pointer select-none hover:scale-105 hover:shadow-lg sm:px-4 sm:py-2 sm:text-[13px] text-[13px]"
+
 
 >
   <FaWhatsapp className="text-green-600 text-[20px] sm:text-[18px]" />
