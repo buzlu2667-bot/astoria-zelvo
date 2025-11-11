@@ -161,7 +161,7 @@ export default function Footer() {
   href="https://wa.me/905384657526"
   target="_blank"
   rel="noopener noreferrer"
- className="fixed bottom-[env(safe-area-inset-bottom,8px)] right-2 sm:bottom-3 sm:right-5 flex items-center gap-2 bg-white text-[#444] font-medium px-4 py-2 rounded-md shadow-md transition-all duration-300 z-[99999] cursor-pointer select-none hover:scale-105 hover:shadow-lg sm:px-4 sm:py-2 sm:text-[13px] text-[13px]"
+className="fixed right-3 sm:right-5 flex items-center gap-2 bg-white text-[#444] font-medium px-4 py-2 rounded-md shadow-md transition-all duration-300 z-[99999] cursor-pointer select-none hover:scale-105 hover:shadow-lg sm:px-4 sm:py-2 sm:text-[13px] text-[13px] bottom-[calc(env(safe-area-inset-bottom,0px)+10px)] sm:bottom-5"
 
 
 >
