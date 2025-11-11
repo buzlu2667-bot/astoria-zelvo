@@ -88,33 +88,7 @@ export default function Footer() {
               ))}
             </div>
 
-            {/* 🔒 SSL Sertifikalı Site Rozeti */}
-<div className="flex items-center justify-end gap-2 mt-4 text-xs text-gray-400">
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    viewBox="0 0 24 24"
-    fill="none"
-    stroke="url(#grad)"
-    strokeWidth="1.5"
-    strokeLinecap="round"
-    strokeLinejoin="round"
-    className="w-5 h-5 drop-shadow-[0_0_6px_#facc15]"
-  >
-    <defs>
-      <linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="100%">
-        <stop offset="0%" stopColor="#FFD700" />
-        <stop offset="100%" stopColor="#B8860B" />
-      </linearGradient>
-    </defs>
-    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
-    <path d="M9 12l2 2 4-4" />
-  </svg>
-
-  <span className="text-yellow-400 tracking-wide">
-    SSL Sertifikalı Güvenli Site
-  </span>
-</div>
-
+          
           </div>
         </div>
 
@@ -137,8 +111,11 @@ export default function Footer() {
                 <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
                 <path d="M9 12l2 2 4-4" />
               </svg>
-              <span className="font-light text-[10px] tracking-wide">GÜVENLİ ALIŞVERİŞ</span>
-            </div>
+              <span className="font-light text-[10px] tracking-wide text-yellow-400 drop-shadow-[0_0_12px_rgba(255,215,0,0.9)] brightness-125">
+                   GÜVENLİ ALIŞVERİŞ
+                    </span>
+                    
+                  </div>
 
             {/* KVKK */}
             <span
