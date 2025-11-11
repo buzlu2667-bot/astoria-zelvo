@@ -114,7 +114,7 @@ export default function Footer() {
               <span className="font-light text-[10px] tracking-wide text-yellow-400 drop-shadow-[0_0_12px_rgba(255,215,0,0.9)] brightness-125">
                    GÜVENLİ ALIŞVERİŞ
                     </span>
-                    
+
                   </div>
 
             {/* KVKK */}
@@ -157,16 +157,17 @@ export default function Footer() {
             © 2025 MAXIMORA — Tüm Hakları Saklıdır.
           </p>
         </div>
-        <a
+       <a
   href="https://wa.me/905384657526"
   target="_blank"
   rel="noopener noreferrer"
-  className="fixed bottom-5 right-5 flex items-center gap-2 bg-white text-[#444] font-medium px-3 py-1.5 rounded-md shadow-md transition-all duration-300 z-[9999] cursor-pointer select-none hover:scale-105 hover:shadow-lg
-             sm:px-3 sm:py-1.5 sm:text-[13px] text-[12px] p-[6px]"
+  className="fixed bottom-3 right-3 sm:bottom-5 sm:right-5 flex items-center justify-center bg-[#25D366] text-white rounded-full shadow-lg
+             w-[58px] h-[58px] sm:w-[55px] sm:h-[55px]
+             transition-transform duration-300 hover:scale-110 z-[9999] cursor-pointer select-none"
 >
-  <FaWhatsapp className="text-green-600 text-lg sm:text-lg text-base" />
-  <span className="hidden sm:inline text-[13px] tracking-tight">WhatsApp Destek</span>
+  <FaWhatsapp className="text-[28px] sm:text-[26px]" />
 </a>
+
 
 
 
