@@ -23,7 +23,7 @@ function useFavoriteCount() {
 
 
 const initialLogin = { email: "", password: "", show: false };
-const initialSignup = { email: "", password: "", show: false };
+const initialSignup = { email: "", password: "", username: "", show: false };
 const initialReset = { email: "" };
 
 export default function Header() {
@@ -49,28 +49,8 @@ export default function Header() {
   const [loginOpen, setLoginOpen] = useState(false);
   const [signupOpen, setSignupOpen] = useState(false);
   const [resetOpen, setResetOpen] = useState(false);
- useEffect(() => {
-  async function fetchCategories() {
-    try {
-      const { data, error } = await supabase
-        .from("categories")
-        .select("id, name, slug")
-        .order("created_at", { ascending: true });
-
-      if (error) {
-        console.error("❌ Kategori çekme hatası:", error.message);
-      } else {
-        console.log("✅ Supabase'den gelen kategoriler:", data);
-        setCategories(data || []);
-      }
-    } catch (err) {
-      console.error("🚨 İstisna hatası:", err);
-    }
-  }
-
-  fetchCategories();
-}, []);
-
+  const [knightOpen, setKnightOpen] = useState(false);
+ 
 
 
 
@@ -99,7 +79,22 @@ const [resetError, setResetError] = useState("");
 const [signupMsg, setSignupMsg] = useState("");
 const [resetMsg, setResetMsg] = useState("");
 
+const [accountOpen, setAccountOpen] = useState(false);
 
+// 🟡 Hesabım menüsü dışına tıklayınca kapansın
+useEffect(() => {
+  function handleClickOutside(e) {
+    if (
+      !e.target.closest(".account-menu") &&
+      !e.target.closest(".account-button")
+    ) {
+      setAccountOpen(false);
+    }
+  }
+
+  document.addEventListener("mousedown", handleClickOutside);
+  return () => document.removeEventListener("mousedown", handleClickOutside);
+}, []);
 
 
   const [orderCheckOpen, setOrderCheckOpen] = useState(false);
@@ -233,10 +228,16 @@ async function handleLogin(e) {
   setSignupError("");
   setSignupMsg("");
 
-  const { error } = await supabase.auth.signUp({
-    email: (signup.email || "").trim(),
-    password: signup.password || "",
-  });
+ const { data, error } = await supabase.auth.signUp({
+  email: signup.email.trim(),
+  password: signup.password,
+  options: {
+    data: {
+      username: signup.username.trim()
+    }
+  }
+});
+
 
   if (error) {
   let msg = error.message; // ✅ önce msg tanımla
@@ -418,7 +419,8 @@ async function closeNotification() {
 )}
 
       {/* TOPBAR */}
-      <header className="bg-[#050505] text-white border-b border-yellow-500/20 shadow-[0_0_20px_rgba(255,215,0,0.08)] z-[60] overflow-hidden">
+   <header className="bg-[#050505] text-white border-b border-yellow-500/20 shadow-[0_0_20px_rgba(255,215,0,0.08)] z-[60]">
+
   <div className="max-w-7xl mx-auto flex items-center justify-between px-3 sm:px-6 py-3">
 
           {/* Menu */}
@@ -484,91 +486,166 @@ async function closeNotification() {
 </Link>
 
 
-     {/* Right Nav */}
-         <div className="flex items-center gap-3 sm:gap-7 flex-wrap justify-end min-w-0 overflow-x-visible">
-            <button
-  onClick={() => setOrderCheckOpen(true)}
-  aria-label="Sipariş Sorgula"
-  className="hover:text-purple-400 transition"
+  {/* Right Nav — HESABIM DROPDOWN */}
+<div className="relative flex items-center gap-3 z-[2000]">
+
+  {/* ❤️ FAVORİLER */}
+  <Link
+    to="/favorites"
+    className="relative rounded-xl p-2 hover:bg-white/5 transition"
+  >
+    <Heart className="w-6 h-6 text-pink-400" />
+    {favCount > 0 && (
+      <span className="absolute -top-1.5 -right-1.5 bg-pink-500 text-white text-[10px] min-w-[18px] h-[18px] flex items-center justify-center rounded-full font-bold shadow-lg">
+        {favCount}
+      </span>
+    )}
+  </Link>
+
+  {/* 🛒 SEPET */}
+  <Link
+    to="/cart"
+    className="relative rounded-xl p-2 hover:bg-white/5 transition"
+  >
+    <ShoppingCart className="w-6 h-6 text-yellow-400" />
+    {cart?.length > 0 && (
+      <span className="absolute -top-1.5 -right-1.5 bg-yellow-500 text-black text-[10px] min-w-[18px] h-[18px] flex items-center justify-center rounded-full font-bold shadow-lg">
+        {cart.length}
+      </span>
+    )}
+  </Link>
+
+ {/* 👤 HESABIM BUTTON */}
+<button
+  onClick={() => {
+    setLoginOpen(false);
+    setSignupOpen(false);
+    setResetOpen(false);
+    setAccountOpen(!accountOpen);
+  }}
+  className="
+    account-button
+    flex items-center gap-2 px-3 py-2 rounded-xl
+    bg-white/10 border border-white/10
+    hover:bg-white/20 transition
+  "
 >
-  <Truck className="w-6 h-6" />
-</button>
-    
-            <button onClick={() => go("/favorites", true)} aria-label="Favoriler" className="relative hover:text-rose-400 transition">
-              <Heart className="w-6 h-6" />
-              {favCount > 0 && <Bubble value={favCount} tone="rose" />}
-            </button>
 
-            <button onClick={() => go("/orders", true)} aria-label="Siparişlerim" className="hover:text-yellow-300 transition">
-              <PackageSearch className="w-6 h-6" />
-            </button>
-            
+    <User2 className="w-5 h-5 text-yellow-400" />
 
-            {session && (
-              <button onClick={() => go("/dashboard", true)} aria-label="Hesabım" className="hover:text-yellow-300 transition">
-                <User2 className="w-6 h-6" />
-              </button>
-            )}
-
-            <button onClick={() => go("/cart")} aria-label="Sepetim" className="relative hover:text-emerald-400 transition">
-              <ShoppingCart className="w-6 h-6" />
-              {cart?.length > 0 && <Bubble value={cart.length} tone="emerald" />}
-            </button>
-
-            {/* Login / Logout */}
-{!session && !isRecovering && !location.pathname.startsWith("/cart") && (
-  <button
-    onClick={() => setLoginOpen(true)}
-   className="text-[10px] px-2 py-[3px] rounded-md font-semibold bg-gradient-to-r from-yellow-400 to-rose-400 text-black hover:brightness-110 transition"
-
-  >
-    Giriş
+    <div className="leading-tight text-left hidden sm:block">
+      <div className="text-[10px] text-gray-300">HESABIM</div>
+      <div className="text-xs font-bold">
+        {session ? session.user.email.split('@')[0].toUpperCase() : "Giriş Yap"}
+      </div>
+    </div>
   </button>
-)}
 
-{/* Admin */}
-{session && isAdmin && (
-  <button
-    onClick={() => (window.location.href = "/admin")}
-    className="px-3 py-[6px] rounded bg-yellow-400 text-black font-bold text-xs hover:bg-yellow-300 transition shadow-[0_0_12px_rgba(255,215,0,0.35)]"
-    title="Admin Panel"
+  {/* ⬇️ DROPDOWN */}
+  {accountOpen && (
+  <div
+    className="
+      account-menu
+      absolute right-0 top-full mt-2 w-56 
+      bg-[#111] border border-white/10 rounded-xl shadow-xl
+      z-[1500] animate-fadeIn
+    "
   >
-    <ShieldCheck className="w-4 h-4 inline-block mr-1" />
-    Admin
-  </button>
-)}
 
-{/* Logout */}
-{session && (
-  <button
-    onClick={async () => {
-      await supabase.auth.signOut();
+      {session ? (
+        <>
+          <button
+            onClick={() => {
+              setAccountOpen(false);
+              go("/dashboard", true);
+            }}
+            className="w-full flex items-center gap-3 px-4 py-3 text-left hover:bg-white/10 text-sm"
+          >
+            <User2 className="w-5 h-5 text-purple-400" />
+            Profilim
+          </button>
 
-      window.dispatchEvent(
-        new CustomEvent("toast", {
-          detail: {
-            type: "success",
-            text: "👋 Çıkış yapıldı! Tekrar bekleriz!"
-          }
-        })
-      );
+          <button
+            onClick={() => {
+              setAccountOpen(false);
+              go("/orders", true);
+            }}
+            className="w-full flex items-center gap-3 px-4 py-3 text-left hover:bg-white/10 text-sm"
+          >
+            <PackageSearch className="w-5 h-5 text-yellow-400" />
+            Siparişlerim
+          </button>
+             <button
+      onClick={() => setOrderCheckOpen(true)}
+      className="w-full flex items-center gap-3 px-4 py-3 text-left hover:bg-white/10 transition text-sm"
+    >
+      <PackageSearch className="w-5 h-5 text-blue-400" />
+      Sipariş Sorgula
+    </button>
+          <button
+            onClick={() => {
+              setAccountOpen(false);
+              go("/favorites", true);
+            }}
+            className="w-full flex items-center gap-3 px-4 py-3 text-left hover:bg-white/10 text-sm"
+          >
+            <Heart className="w-5 h-5 text-rose-400" />
+            Favorilerim
+          </button>
 
-      setTimeout(() => {
-        const redirectTo =
-          localStorage.getItem("redirect_after_login") || "/";
-        localStorage.removeItem("redirect_after_login");
-        window.location.href = redirectTo;
-      }, 1400);
-    }}
-    className="flex items-center gap-1 text-[10px] px-2 py-[3px] rounded-md bg-red-500 text-white hover:bg-red-400 transition"
+          {isAdmin && (
+            <button
+              onClick={() => {
+                setAccountOpen(false);
+                window.location.href = "/admin";
+              }}
+              className="w-full flex items-center gap-3 px-4 py-3 text-left hover:bg-white/10 text-sm text-yellow-400 font-semibold"
+            >
+              <ShieldCheck className="w-5 h-5 text-yellow-400" />
+              Admin Paneli
+            </button>
+          )}
 
-  >
-    <LogOut className="w-4 h-4" />
-    Çıkış
-  </button>
-)}
+          <button
+            onClick={async () => {
+              setAccountOpen(false);
+              await supabase.auth.signOut();
+              window.location.href = "/";
+            }}
+            className="w-full flex items-center gap-3 px-4 py-3 text-left hover:bg-red-500/10 text-sm text-red-300"
+          >
+            <LogOut className="w-5 h-5 text-red-400" />
+            Çıkış Yap
+          </button>
+        </>
+      ) : (
+        <>
+          <button
+            onClick={() => {
+              setAccountOpen(false);
+              setLoginOpen(true);
+            }}
+            className="w-full text-left px-4 py-3 hover:bg-white/10 text-sm"
+          >
+            Giriş Yap
+          </button>
 
-          </div>
+          <button
+            onClick={() => {
+              setAccountOpen(false);
+              setSignupOpen(true);
+            }}
+            className="w-full text-left px-4 py-3 hover:bg-white/10 text-sm"
+          >
+            Kayıt Ol
+          </button>
+        </>
+      )}
+    </div>
+  )}
+</div>
+
+
         </div>
       </header>
 
@@ -599,6 +676,9 @@ async function closeNotification() {
             <X className="w-6 h-6" />
           </button>
         </div>
+
+  
+
         {/* ✅ Dinamik kategoriler */}
 <nav className="p-5 flex flex-col gap-3">
   {categories.length === 0 ? (
@@ -634,6 +714,8 @@ async function closeNotification() {
   </div>
 
   <form onSubmit={handleLogin} className="px-6 py-4 space-y-5">
+
+  
     {/* Email */}
     <div>
       <label className="text-sm text-gray-400">E-posta</label>
@@ -783,15 +865,28 @@ async function closeNotification() {
 
 </div>
 
+
         
       <form onSubmit={handleSignup} className="px-6 py-4 space-y-5">
+        <div>
+  
+    <input
+      type="text"
+      placeholder="Kullanıcı Adı"
+      required
+      value={signup.username}
+      onChange={(v) => setSignup({ ...signup, username: v.target.value })}
+      className="mt-1 w-full p-3 rounded-lg bg-[#1b1b1b] border border-yellow-500/20"
+    />
+  </div>
+  
         <input type="email" placeholder="E-posta" required
           value={signup.email}
           onChange={(v) => setSignup({ ...signup, email: v.target.value })}
           className="w-full p-3 rounded-lg bg-[#1b1b1b] border border-yellow-500/20 focus:ring-yellow-400"
         />
 
-       <label className="text-sm text-gray-400">Şifre</label>
+      
 <div className="relative">
   <input
     type={signup.show ? "text" : "password"}
@@ -846,7 +941,7 @@ async function closeNotification() {
 
     <div
       className={`fixed top-0 right-0 h-full w-96 bg-black/70 backdrop-blur-2xl border-l border-yellow-500/20
-      shadow-[0_0_45px_rgba(255,215,0,0.25)] transform transition-transform duration-300 z-[9999]`}
+      shadow-[0_0_45px_rgba(255,215,0,0.25)] transform transition-tr99]`}
       onClick={(e) => e.stopPropagation()}
     >
       <div className="flex justify-between items-center px-6 py-5 border-b border-white/10">

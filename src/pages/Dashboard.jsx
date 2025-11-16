@@ -57,21 +57,38 @@ export default function Dashboard() {
   const navigate = useNavigate();
   const { favorites } = useFavorites?.() || { favorites: [] };
 
-  useEffect(() => {
-    async function run() {
-      const { data } = await supabase.auth.getUser();
-      if (!data?.user) return navigate("/", { replace: true });
-      setUser(data.user);
+ useEffect(() => {
+  async function run() {
+    const { data } = await supabase.auth.getUser();
+    if (!data?.user) return navigate("/", { replace: true });
 
-      const { data: ordersData } = await supabase
-        .from("orders")
-        .select("*")
-        .eq("user_id", data.user.id);
+    // 1) AUTH USER
+    setUser(data.user);
 
-      setOrders(ordersData || []);
+    // 2) PROFIL USERNAME ÇEK
+    const { data: profile } = await supabase
+      .from("profiles")
+      .select("username")
+      .eq("id", data.user.id)
+      .single();
+
+    if (profile?.username) {
+      setUser((prev) => ({
+        ...prev,
+        profile_username: profile.username, // 🔥 username artık burada
+      }));
     }
-    run();
-  }, [navigate]);
+
+    const { data: ordersData } = await supabase
+      .from("orders")
+      .select("*")
+      .eq("user_id", data.user.id);
+
+    setOrders(ordersData || []);
+  }
+  run();
+}, [navigate]);
+
 
   const totalSpent = useMemo(() => {
     return orders.reduce((sum, o) => sum + (Number(o.total_amount) || 0), 0);
@@ -87,10 +104,27 @@ export default function Dashboard() {
   return (
     <div className="min-h-screen bg-black text-white">
 
-      <div className="py-5 px-6 flex justify-between border-b border-yellow-500/20">
-        <h1 className="text-xl font-bold">🧍‍♀️ Müşteri Paneli</h1>
-        <span className="text-yellow-300">{user?.email}</span>
-      </div>
+     <div className="py-5 px-6 flex justify-between items-center border-b border-yellow-500/20">
+  <h1 className="text-xl font-bold">🧍‍♀️ Müşteri Paneli</h1>
+
+  <div className="flex flex-col text-right leading-tight">
+    <span className="text-yellow-300 font-semibold">{user?.email}</span>
+
+ {user?.profile_username && (
+  <span
+    className="
+      block text-[14px] font-bold 
+      text-red-400 
+      drop-shadow-[0_0_6px_rgba(255,0,0,0.6)]
+    "
+  >
+    @{user.profile_username}
+  </span>
+)}
+
+  </div>
+</div>
+
 
       <div className="max-w-4xl mx-auto p-8 mt-10 bg-[#0d0d0d] rounded-2xl border border-yellow-400/20 shadow-xl">
 

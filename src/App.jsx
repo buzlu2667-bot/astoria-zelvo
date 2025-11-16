@@ -22,6 +22,7 @@ import OrderDetail from "./pages/OrderDetail";
 import ResetPassword from "./pages/ResetPassword";
 
 // Admin pages
+
 import AdminLayout from "./pages/admin/AdminLayout.jsx";
 import AdminOrders from "./pages/admin/AdminOrders.jsx";
 import AdminProducts from "./pages/admin/AdminProducts.jsx";
@@ -30,6 +31,9 @@ import { AdminGuard } from "./pages/admin/AdminGuard.jsx";
 import AdminUsers from "./pages/admin/AdminUsers.jsx";
 import AdminCategories from "./pages/admin/AdminCategories.jsx";
 import AdminNotificationForm from "./pages/admin/AdminNotificationForm.jsx";
+
+
+
 
 
 // Contexts ✅
@@ -111,6 +115,7 @@ export default function App() {
             <Route path="/orders/:id" element={<OrderDetail />} />
             <Route path="/reset-password" element={<ResetPassword />} />
              <Route path="/product/:id" element={<ProductDetail />} /> 
+         
 
             {/* ✅ Categories */}
             <Route path="/category/:id" element={<Category />} />
@@ -131,6 +136,9 @@ export default function App() {
               <Route path="users" element={<AdminUsers />} />
               <Route path="categories" element={<AdminCategories />} />
               <Route path="notifications" element={<AdminNotificationForm />} />
+             
+            
+
             </Route>
           </Routes>
 

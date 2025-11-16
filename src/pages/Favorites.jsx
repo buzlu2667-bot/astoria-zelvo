@@ -111,7 +111,7 @@ const navigate = useNavigate();
                       new CustomEvent("toast", {
                         detail: {
                           type: "success",
-                          text: "🛒 Sepete eklendi!",
+                          text: " Sepete eklendi!",
                         },
                       })
                     );

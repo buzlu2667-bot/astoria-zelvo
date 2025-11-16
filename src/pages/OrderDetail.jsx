@@ -1,12 +1,14 @@
-// ✅ src/pages/OrderDetail.jsx — Premium Fixed Version
+// ✅ src/pages/OrderDetail.jsx — Premium Visual Fixed Version
 import { STATUS } from "../utils/statusBadge";
 import { useEffect, useState } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
 import { supabase } from "../lib/supabaseClient";
 
 const TRY = (n) =>
-  Number(n || 0).toLocaleString("tr-TR", { style: "currency", currency: "TRY" });
-
+  Number(n || 0).toLocaleString("tr-TR", {
+    style: "currency",
+    currency: "TRY",
+  });
 
 export default function OrderDetail() {
   const { id } = useParams();
@@ -29,7 +31,7 @@ export default function OrderDetail() {
 
       const { data: it } = await supabase
         .from("order_items")
-        .select("*, products:product_id(image_url,name)")
+        .select("*, products:product_id(image_url,name,sub_category)")
         .eq("order_id", id);
 
       setOrder(o);
@@ -49,43 +51,30 @@ export default function OrderDetail() {
   return (
     <div className="min-h-screen px-4 py-8 bg-black text-white">
       <div className="max-w-3xl mx-auto bg-neutral-900 p-6 rounded-xl shadow-xl border border-gray-700">
+        {/* Header */}
+        <div className="flex justify-between items-center mb-3">
+          <h1 className="text-2xl font-bold">Sipariş #{order.id}</h1>
 
-       {/* Header */}
-<div className="flex justify-between items-center mb-3">
-  <h1 className="text-2xl font-bold">Sipariş #{order.id}</h1>
-
-  <span
-  className={`px-3 py-1 rounded-full text-sm font-bold border ${
-    (STATUS[order.status]?.cls || STATUS.pending?.cls || "text-yellow-400 border-yellow-400")
-  } shadow-[0_0_12px_rgba(168,85,247,0.7)] border-purple-400/50 status-blink`}
->
-  {/* ✅ Durum yazısı: text veya txt fark etmez */}
-  {(STATUS[order.status]?.text || STATUS[order.status]?.txt || "Bekleyen Ödeme")}
-
-  {/* ✅ İkonlar */}
-  {["pending", "awaiting_payment"].includes(order.status) && (
-    <span className="ml-2 text-yellow-400">⚠️</span>
-  )}
-
-  {order.status === "processing" && (
-    <span className="ml-2 text-purple-400 gear-spin">⚙️</span>
-  )}
-
-  {order.status === "shipped" && (
-    <span className="truck-anim ml-2">🚚</span>
-  )}
-
-  {order.status === "delivered" && (
-    <span className="ml-2">✅</span>
-  )}
-
-  {order.status === "cancelled" && (
-    <span className="ml-2">❌</span>
-  )}
-</span>
-
-</div>
-
+          <span
+            className={`px-3 py-1 rounded-full text-sm font-bold border ${
+              status?.cls ||
+              "text-yellow-400 border-yellow-400"
+            } shadow-[0_0_12px_rgba(168,85,247,0.7)] border-purple-400/50 status-blink`}
+          >
+            {status?.text || status?.txt || "Bekleyen Ödeme"}
+            {["pending", "awaiting_payment"].includes(order.status) && (
+              <span className="ml-2 text-yellow-400">⚠️</span>
+            )}
+            {order.status === "processing" && (
+              <span className="ml-2 text-purple-400 gear-spin">⚙️</span>
+            )}
+            {order.status === "shipped" && (
+              <span className="truck-anim ml-2">🚚</span>
+            )}
+            {order.status === "delivered" && <span className="ml-2">✅</span>}
+            {order.status === "cancelled" && <span className="ml-2">❌</span>}
+          </span>
+        </div>
 
         <p className="text-gray-400 text-xs mb-4">
           {new Date(order.created_at).toLocaleString("tr-TR")}
@@ -95,23 +84,50 @@ export default function OrderDetail() {
         <h3 className="font-semibold mb-3 text-lg">Ürünler</h3>
         <div className="space-y-3">
           {items.map((i) => {
-            const img = i.products?.image_url;
-            const src = img?.startsWith("http")
-              ? img
-              : img
-              ? `/products/${img}`
-              : "/assets/placeholder-product.png";
+            const p = i.products || {};
+
+            // 🎨 Görsel fallback (Knight, Valorant, vb.)
+            const imgSrc =
+              p.image_url?.startsWith?.("http")
+                ? p.image_url
+                : p.image_url
+                ? `/products/${p.image_url}`
+                : p.name?.toLowerCase()?.includes("knight")
+                ? "/products/knight3.png"
+                : p.name?.toLowerCase()?.includes("valorant")
+                ? "/products/valorant3.png"
+                : p.name?.toLowerCase()?.includes("pubg")
+                ? "/products/pubg3.png"
+                : p.name?.toLowerCase()?.includes("steam")
+                ? "/products/steam3.png"
+                : "/products/default.png";
 
             return (
-              <div key={i.id} className="flex bg-neutral-800 p-3 rounded-lg gap-3">
-                <img src={src} className="w-20 h-20 object-cover rounded-lg" />
-                <div className="flex-1">
-                  <p className="font-medium">{i.products?.name || i.product_name}</p>
-                  <p className="text-gray-400 text-sm">× {i.quantity}</p>
+              <div
+                key={i.id}
+                className="flex flex-col sm:flex-row items-center sm:items-stretch gap-3 bg-neutral-800 p-3 rounded-lg"
+              >
+                {/* 🖼️ Görsel */}
+                <div className="w-24 h-24 rounded-xl overflow-hidden bg-black/40 border border-neutral-700 flex-shrink-0">
+                  <img
+                    src={imgSrc}
+                    className="w-full h-full object-cover object-center"
+                    alt={p.name}
+                  />
                 </div>
-                <p className="font-bold text-yellow-400">
-                  {TRY(Number(i.unit_price))}
-                </p>
+
+                {/* Bilgiler */}
+                <div className="flex-1">
+                  <p className="font-medium text-yellow-300">
+                    {p.name || i.product_name}
+                  </p>
+                  <p className="text-gray-400 text-sm">× {i.quantity}</p>
+                  <p className="font-bold text-green-400 mt-1">
+                    {TRY(Number(i.unit_price))}
+                  </p>
+
+                 
+                </div>
               </div>
             );
           })}
@@ -136,28 +152,23 @@ export default function OrderDetail() {
         )}
 
         {/* ✅ Toplam Fiyat Bölümü */}
-<div className="mt-6 text-right space-y-1">
+        <div className="mt-6 text-right space-y-1">
+          {order.discount_amount > 0 && (
+            <p className="text-sm text-blue-400 font-semibold">
+              Kupon: {order.coupon} — İndirim: -{TRY(order.discount_amount)}
+            </p>
+          )}
 
-  {/* ✅ İndirim varsa göster */}
-  {order.discount_amount > 0 && (
-    <p className="text-sm text-blue-400 font-semibold">
-      Kupon: {order.coupon} — İndirim: -{TRY(order.discount_amount)}
-    </p>
-  )}
+          <p className="text-2xl font-bold text-green-400">
+            Toplam: {TRY(order.final_amount ?? order.total_amount)}
+          </p>
 
-  {/* ✅ Final Tutar */}
-  <p className="text-2xl font-bold text-green-400">
-    Toplam: {TRY(order.final_amount ?? order.total_amount)}
-  </p>
-
-  {/* ✅ Orijinal fiyat üstü çizili göster (indirim varsa) */}
-  {order.discount_amount > 0 && (
-    <p className="text-sm text-gray-500 line-through">
-      {TRY(order.total_amount)}
-    </p>
-  )}
-</div>
-
+          {order.discount_amount > 0 && (
+            <p className="text-sm text-gray-500 line-through">
+              {TRY(order.total_amount)}
+            </p>
+          )}
+        </div>
 
         {/* Back */}
         <div className="mt-8 flex justify-end">
@@ -171,6 +182,4 @@ export default function OrderDetail() {
       </div>
     </div>
   );
-  
 }
-

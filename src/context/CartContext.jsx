@@ -37,13 +37,23 @@ export function CartProvider({ children }) {
  const addToCart = (product) => {
   setCart((prev) => {
     const existing = prev.find((p) => p.id === product.id);
+
     const updated = existing
       ? prev.map((p) =>
           p.id === product.id
-            ? { ...p, quantity: (p.quantity || 1) + 1 }
+            ? { ...p, quantity: (p.quantity || 1) + (product.quantity || 1) }
             : p
         )
-      : [...prev, { ...product, quantity: 1 }];
+      : [
+          ...prev,
+          {
+            ...product,
+            quantity: product.quantity || 1,
+          ...product,
+quantity: product.quantity || 1,
+
+          },
+        ];
 
     localStorage.setItem("elitemart_cart", JSON.stringify(updated));
     return updated;
@@ -119,43 +129,49 @@ const placeOrder = async (payload) => {
 
     if (userError) throw userError;
 
-    const res = await supabase
-      .from("orders")
-      .insert([
-        {
-          user_id: user.id,
-          full_name: payload.full_name,
-          phone: payload.phone,
-          email: payload.email,
-          address: payload.address,
-          note: payload.note,
-          payment_method: payload.payment_method,
+  const res = await supabase
+  .from("orders")
+  .insert([
+    {
+      user_id: user.id,
+      full_name: payload.full_name,
+      phone: payload.phone,
+      email: payload.email,
+      address: payload.address,
+      note: payload.note,
+      payment_method: payload.payment_method,
 
-          // ✅ Kupon bilgileri artık Supabase'e kaydediliyor!
-          coupon: payload.coupon,
-          discount_amount: payload.discount_amount,
-          final_amount: payload.final_amount,
+      // ⭐️ ÖNEMLİ → STATUS BURADA
+      status: payload.status,
 
-          // ✅ Güvenli fallback (indirim yoksa bile)
-          total_amount: total
-        },
-      ])
-      .select("id")
-      .single();
+      coupon: payload.coupon,
+      discount_amount: payload.discount_amount,
+      final_amount: payload.final_amount,
+
+      total_amount: total,
+      final_amount: payload.final_amount || total,
+    },
+  ])
+  .select("id")
+  .single();
+
 
     if (res.error) throw res.error;
 
     const orderId = res.data.id;
+const orderItems = cart.map((p) => ({
+  order_id: orderId,
+  product_id: p.id,
+  product_name: p.name,
+  unit_price: p.price * (p.quantity || 1), // 💥 fiyatı çarp
+  quantity: p.quantity || 1,
+  custom_info: p.custom_info ? JSON.stringify(p.custom_info) : null, // 🎯 form bilgileri
+}));
 
-    const orderItems = cart.map((p) => ({
-      order_id: orderId,
-      product_id: p.id,
-      product_name: p.name,
-      unit_price: p.price,
-      quantity: p.quantity || 1,
-    }));
+
 
     await supabase.from("order_items").insert(orderItems);
+
 
     clearCart();
 

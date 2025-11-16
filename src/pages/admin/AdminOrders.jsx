@@ -201,15 +201,36 @@ const discount = o.discount_amount ?? 0;
                 </div>
               </header>
 
-              <ul className="mt-3 text-xs text-gray-300 ml-2 space-y-1 border-t border-yellow-700/20 pt-2">
+             <ul className="mt-3 text-xs text-gray-300 ml-2 space-y-1 border-t border-yellow-700/20 pt-2">
+  {(items[o.id] || []).map((it) => {
+    let info = null;
+    try {
+      if (it.custom_info) info = JSON.parse(it.custom_info);
+    } catch (err) {
+      console.warn("custom_info JSON hatası:", err);
+    }
 
-                {(items[o.id] || []).map(it => (
-                  <li key={it.id}>
-                    ✅ {it.product_name} × {it.quantity} —{" "}
-                    {TRY.format(it.unit_price)}
-                  </li>
-                ))}
-              </ul>
+    return (
+      <li key={it.id}>
+        ✅ {it.product_name || it.name} × {it.quantity} —{" "}
+        {TRY.format(it.unit_price || it.price)}
+
+        {info && (
+          <div className="ml-6 mt-1 text-gray-400 space-y-0.5">
+            {Object.entries(info).map(([key, value]) => (
+              <p key={key}>
+                <span className="text-yellow-400 font-semibold">{key}:</span>{" "}
+                {value}
+              </p>
+            ))}
+          </div>
+        )}
+      </li>
+    );
+  })}
+</ul>
+
+          
             </div>
           );
         })

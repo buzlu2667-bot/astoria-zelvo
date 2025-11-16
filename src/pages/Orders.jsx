@@ -34,10 +34,12 @@ export default function Orders() {
 
       const ids = (od || []).map((o) => o.id);
       if (ids.length > 0) {
-        const { data: its } = await supabase
-          .from("order_items")
-          .select("*, products:product_id(image_url,name)")
-          .in("order_id", ids);
+      const { data: its } = await supabase
+  .from("order_items")
+  .select("id, order_id, product_id, quantity, unit_price, delivered_code, products:product_id(image_url,name)")
+  .in("order_id", ids)
+  .order("id", { ascending: false });
+
 
         const grouped = {};
         (its || []).forEach((it) => {
@@ -46,6 +48,18 @@ export default function Orders() {
 
         if (alive) setItemsByOrder(grouped);
       }
+      // ♻️ Realtime dinleme: kod teslim edildiğinde anında yenile
+supabase
+  .channel("realtime:order_items")
+  .on(
+    "postgres_changes",
+    { event: "*", schema: "public", table: "order_items" },
+    (payload) => {
+      console.log("🟢 order_items değişti → refreshOrders()");
+      setTimeout(() => window.location.reload(), 1000); // taze veri gelsin
+    }
+  )
+  .subscribe();
 
       setLoading(false);
     })();
@@ -181,40 +195,58 @@ export default function Orders() {
 
 
                 {/* Ürünler */}
-                <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-3">
-                  {(itemsByOrder[o.id] || []).map((it) => {
-                    const image = it.products?.image_url;
-                    return (
-                      <div
-                        key={it.id}
-                        className="flex items-center gap-3 bg-neutral-800 rounded-lg p-2"
-                      >
-                        <div className="w-14 h-14 rounded-md overflow-hidden bg-black/40">
-                          <img
-                            src={
-                              image?.startsWith?.("http")
-                                ? image
-                                : image
-                                ? `/products/${image}`
-                                : "/assets/placeholder-product.png"
-                            }
-                            className="w-full h-full object-cover"
-                            alt=""
-                          />
-                        </div>
-                        <div className="text-sm">
-                          <div className="font-semibold">
-                            {it.products?.name}
-                          </div>
-                          <div className="text-gray-400">× {it.quantity}</div>
-                        </div>
-                        <div className="ml-auto font-semibold">
-                          {TRY(it.unit_price)}
-                        </div>
-                      </div>
-                    );
-                  })}
-                </div>
+               <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-3">
+  {(itemsByOrder[o.id] || []).map((it) => {
+    // 🎨 Görsel fallback (Epin ürünleri dahil)
+    const p = it.products || {};
+    const imageSrc =
+      p.image_url?.startsWith?.("http")
+        ? p.image_url
+        : p.image_url
+        ? `/products/${p.image_url}`
+        : p.name?.toLowerCase()?.includes("knight")
+        ? "/products/knight3.png"
+        : p.name?.toLowerCase()?.includes("valorant")
+        ? "/products/valorant3.png"
+        : p.name?.toLowerCase()?.includes("pubg")
+        ? "/products/pubg3.png"
+        : p.name?.toLowerCase()?.includes("steam")
+        ? "/products/steam3.png"
+        : "/products/default.png";
+
+    return (
+      <div
+        key={it.id}
+        className="flex flex-col sm:flex-row items-center gap-3 bg-neutral-800 rounded-lg p-3 sm:p-4"
+      >
+        {/* 🖼️ Görsel kutusu biraz büyütüldü */}
+        <div className="w-24 h-24 flex-shrink-0 rounded-xl overflow-hidden bg-black/40 border border-neutral-700">
+          <img
+            src={imageSrc}
+            className="w-full h-full object-cover object-center"
+            alt={p.name || ""}
+          />
+        </div>
+
+       {/* 🧾 Ürün bilgileri */}
+<div className="flex-1 text-sm flex flex-col min-w-0">
+  <div className="font-semibold text-yellow-300 text-sm leading-tight line-clamp-2 break-words">
+    {p.name}
+  </div>
+
+  <div className="text-gray-400">× {it.quantity}</div>
+
+  <div className="font-semibold text-green-400 mt-1">
+    {TRY(it.unit_price)}
+  </div>
+
+          
+        </div>
+      </div>
+    );
+  })}
+</div>
+
 
                 {/* Sil & Detay */}
                 <footer className="mt-4 flex justify-end gap-3">
