@@ -487,7 +487,8 @@ async function closeNotification() {
 
 
   {/* Right Nav — HESABIM DROPDOWN */}
-<div className="relative flex items-center gap-3 z-[2000]">
+<div className="relative flex items-center gap-3 z-30">
+
 
   {/* ❤️ FAVORİLER */}
   <Link
