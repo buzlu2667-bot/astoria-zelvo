@@ -434,7 +434,7 @@ async function closeNotification() {
 
          
       {/* ✅ Maximora Logo (Blue + Gold Premium Edition) */}
-<Link to="/" className="flex items-center gap-4 group">
+<Link to="/" className="flex items-center gap-4 group mobile-hide-logo">
  {/* ✅ Mavi + Altın Degrade Logo */}
 {/* ✅ Mavi + Altın Premium Logo (Net Harf Versiyonu) */}
 <div
@@ -487,7 +487,7 @@ async function closeNotification() {
 
 
   {/* Right Nav — HESABIM DROPDOWN */}
-<div className="relative flex items-center gap-3 z-30">
+<div className="relative flex items-center gap-3 z-30 header-icons">
 
 
   {/* ❤️ FAVORİLER */}

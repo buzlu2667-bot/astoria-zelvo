@@ -452,6 +452,26 @@ iframe[src*="livechat"] {
 .animate-fadeIn {
   animation: fadeIn 0.25s ease-out;
 }
+/* 📱 Sadece mobilde logo gizle */
+@media (max-width: 640px) {
+  .mobile-hide-logo {
+    display: none !important;
+  }
+
+  /* İkonları sola çek */
+  .header-icons {
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    transform: translateX(-6px); /* ikonlar azıcık sola */
+  }
+
+  /* İkon butonlarının sağ boşluğunu kısalt */
+  .header-icons a,
+  .header-icons button {
+    margin-right: 4px !important;
+    padding-right: 6px !important;
+  }
+}
 
 
 
