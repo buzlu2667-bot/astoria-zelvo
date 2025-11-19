@@ -463,6 +463,29 @@ iframe[src*="livechat"] {
     gap: 6px !important;
   }
 }
+@media (max-width: 640px) {
+  /* Ürün kartları arasında boşluk */
+  .cart-card {
+    margin-bottom: 20px !important;
+  }
+
+  /* Toplam + Butonlar mobilde alta gelsin */
+  .cart-footer {
+    flex-direction: column !important;
+    gap: 15px !important;
+    align-items: flex-start !important;
+  }
+
+  .cart-footer-buttons {
+    width: 100% !important;
+    display: flex;
+    gap: 10px;
+  }
+
+  .cart-footer-buttons button {
+    flex: 1;
+  }
+}
 
 
 

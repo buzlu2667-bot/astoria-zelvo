@@ -60,7 +60,7 @@ if (!cart || cart.length === 0)
       new CustomEvent("toast", {
         detail: {
           type: "info",
-          text: "🛒 Devam etmek için giriş yapmalısın!"
+          text: " Devam etmek için giriş yapmalısın!"
         }
       })
     );
@@ -80,90 +80,91 @@ if (!cart || cart.length === 0)
 
   return (
     <div className="min-h-screen pt-8 max-w-4xl mx-auto p-4 bg-[#050505] text-white">
-      <h2 className="text-3xl font-extrabold mb-6">🛒 Sepetim</h2>
+      <h2 className="text-3xl font-extrabold mb-6"> Sepetim</h2>
 
       <ul className="divide-y divide-gray-700">
         {cart.map((item) => (
-          <li
-            key={item.id}
-            className="flex justify-between items-center py-5 hover:bg-white/5 rounded-xl px-3 transition"
-          >
-            <div className="flex items-center gap-4">
-              <div className="w-20 h-20 rounded-xl overflow-hidden bg-black border border-gray-700/40">
-                <img
-                  src={
-                    item.image_url?.startsWith("http")
-                      ? item.image_url
-                      : item.image_url
-                      ? `/products/${item.image_url}`
-                      : "/assets/placeholder-product.png"
-                  }
-                  alt={item.name}
-                  className="w-full h-full object-cover"
-                />
-              </div>
-
-              <div>
-                <p className="font-semibold text-lg text-white">{item.name}</p>
-                <p className="text-yellow-300 font-bold text-md">
-                  ₺{item.price}
-                </p>
-              </div>
-            </div>
-
-            <div className="flex items-center gap-3">
-              <button
-                onClick={() => dec(item.id)}
-                className="w-7 h-7 flex items-center justify-center rounded-lg bg-gray-800 hover:bg-gray-700 transition"
-                aria-label="Azalt"
-              >
-                <Minus size={16} />
-              </button>
-
-              <span className="w-8 text-center text-lg font-bold">
-                {item.quantity}
-              </span>
-
-              <button
-                onClick={() => inc(item.id)}
-                className="w-7 h-7 flex items-center justify-center rounded-lg bg-gray-800 hover:bg-gray-700 transition"
-                aria-label="Artır"
-              >
-                <Plus size={16} />
-              </button>
-
-             <button
-  onClick={() => {
-    removeFromCart(item.id); // ✅ Ürünü sil
-
-    window.dispatchEvent(
-      new CustomEvent("toast", {
-        detail: {
-          type: "danger",
-          text: " Ürün sepetten silindi!"
-        }
-      })
-    );
-  }}
-  className="text-red-500 hover:text-red-400 ml-3"
-  aria-label="Sil"
+      <li
+  key={item.id}
+  className="
+    cart-card
+    bg-[#111]
+    border border-yellow-500/10
+    rounded-2xl
+    p-4
+    mb-5
+    shadow-[0_0_20px_rgba(255,215,0,0.05)]
+    transition
+  "
 >
-  <Trash2 size={20} />
-</button>
+  <div className="flex gap-4">
+    <div className="w-24 h-24 rounded-xl overflow-hidden bg-black border border-gray-700/40">
+      <img
+        src={
+          item.image_url?.startsWith('http')
+            ? item.image_url
+            : item.image_url
+            ? `/products/${item.image_url}`
+            : '/assets/placeholder-product.png'
+        }
+        alt={item.name}
+        className="w-full h-full object-cover"
+      />
+    </div>
 
-            </div>
-          </li>
+    <div className="flex flex-col justify-between w-full">
+      <div>
+        <p className="font-bold text-lg">{item.name}</p>
+        <p className="text-yellow-300 font-extrabold text-xl mt-1">
+          ₺{item.price}
+        </p>
+      </div>
+
+      {/* Adet + Sil */}
+      <div className="flex justify-between items-center mt-3">
+        <div className="flex items-center gap-3">
+          <button
+            onClick={() => dec(item.id)}
+            className="w-8 h-8 flex items-center justify-center rounded-lg bg-gray-800"
+          >
+            <Minus size={16} />
+          </button>
+
+          <span className="w-8 text-center font-bold text-lg">
+            {item.quantity}
+          </span>
+
+          <button
+            onClick={() => inc(item.id)}
+            className="w-8 h-8 flex items-center justify-center rounded-lg bg-gray-800"
+          >
+            <Plus size={16} />
+          </button>
+        </div>
+
+        <button
+          onClick={() => removeFromCart(item.id)}
+          className="text-red-500 hover:text-red-400"
+        >
+          <Trash2 size={22} />
+        </button>
+      </div>
+    </div>
+  </div>
+</li>
+
         ))}
       </ul>
 
       {/* ✅ Alt toplam + butonlar */}
-      <div className="mt-10 flex justify-between items-center">
+    <div className="mt-10 flex justify-between items-center cart-footer">
         <p className="text-2xl font-extrabold">
           Toplam:
           <span className="text-yellow-400 ml-2">₺{total}</span>
         </p>
 
-        <div className="flex gap-3">
+       <div className="flex gap-3 cart-footer-buttons">
+
           <button
             onClick={() => clearCart()}
             className="px-5 py-2 rounded-lg bg-gray-800 hover:bg-gray-700 transition"
