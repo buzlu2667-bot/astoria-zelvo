@@ -108,13 +108,10 @@ export default function OrderDetail() {
                 className="flex flex-col sm:flex-row items-center sm:items-stretch gap-3 bg-neutral-800 p-3 rounded-lg"
               >
                 {/* 🖼️ Görsel */}
-                <div className="w-24 h-24 rounded-xl overflow-hidden bg-black/40 border border-neutral-700 flex-shrink-0">
-                  <img
-                    src={imgSrc}
-                    className="w-full h-full object-cover object-center"
-                    alt={p.name}
-                  />
-                </div>
+               <div className="order-detail-image-box">
+  <img src={imgSrc} alt={p.name} />
+</div>
+
 
                 {/* Bilgiler */}
                 <div className="flex-1">

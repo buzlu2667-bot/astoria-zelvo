@@ -937,31 +937,49 @@ async function closeNotification() {
 {/* ✅ Password Reset Drawer */}
 {!loginOpen && !signupOpen && resetOpen && (
   <>
+    {/* Overlay */}
     <div
       className="fixed inset-0 bg-black/40 backdrop-blur-sm z-[9998]"
       onClick={() => setResetOpen(false)}
     ></div>
 
+    {/* Drawer */}
     <div
-      className={`fixed top-0 right-0 h-full w-96 bg-black/70 backdrop-blur-2xl border-l border-yellow-500/20
-      shadow-[0_0_45px_rgba(255,215,0,0.25)] transform transition-tr99]`}
+      className={`fixed top-0 right-0 h-full w-96 bg-black/70 backdrop-blur-2xl 
+      border-l border-yellow-500/20 shadow-[0_0_45px_rgba(255,215,0,0.25)]
+      transform transition-transform duration-300 z-[9999]
+      ${resetOpen ? "translate-x-0" : "translate-x-full"}`}
       onClick={(e) => e.stopPropagation()}
     >
+
       <div className="flex justify-between items-center px-6 py-5 border-b border-white/10">
         <h2 className="text-lg font-bold text-yellow-400">Şifre Sıfırla</h2>
-        <button onClick={() => setResetOpen(false)} className="text-gray-300 hover:text-yellow-300">✕</button>
+
+        <button
+          onClick={() => setResetOpen(false)}
+          className="text-gray-300 hover:text-yellow-300 transition"
+        >
+          ✕
+        </button>
       </div>
 
       <form onSubmit={handleReset} className="px-6 py-4 space-y-5">
-        <input type="email" placeholder="E-posta adresin" required
+        <input
+          type="email"
+          placeholder="E-posta adresin"
+          required
           value={reset.email}
           onChange={(v) => setReset({ email: v.target.value })}
           className="w-full p-3 rounded-lg bg-[#1b1b1b] border border-yellow-500/20 focus:ring-yellow-400"
         />
 
-        {resetError && <p className="text-red-400 text-sm">{resetError}</p>}
-      {resetMsg && <p className="text-emerald-400 text-sm">{resetMsg}</p>}
+        {resetError && (
+          <p className="text-red-400 text-sm">{resetError}</p>
+        )}
 
+        {resetMsg && (
+          <p className="text-emerald-400 text-sm">{resetMsg}</p>
+        )}
 
         <button className="w-full py-3 rounded-lg bg-gradient-to-r from-yellow-400 to-rose-400 text-black font-semibold">
           Sıfırlama Bağlantısını Gönder
@@ -970,6 +988,7 @@ async function closeNotification() {
     </div>
   </>
 )}
+
 {/* ✅ Sipariş Sorgulama Modali */}
 {orderCheckOpen && (
   <div 

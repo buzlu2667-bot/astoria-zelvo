@@ -134,10 +134,19 @@ supabase
       const created = new Date(o.created_at).toLocaleString("tr-TR");
 
            return (
-  <div
-    key={o.id}
-    className="bg-neutral-900 border border-neutral-800 rounded-xl p-5 hover:shadow-[0_0_20px_rgba(168,85,247,0.4)] hover:border-purple-500/50 transition-all"
-  >
+ <div
+  key={o.id}
+  className="
+    orders-card
+    bg-neutral-900
+    border border-neutral-800
+    rounded-2xl
+    p-5
+    shadow-[0_0_15px_rgba(255,215,0,0.08)]
+    transition-all
+  "
+>
+
     <header className="flex flex-wrap items-center justify-between gap-3 mb-3">
       <div>
         <p className="font-semibold">Sipariş #{o.id}</p>
@@ -195,7 +204,7 @@ supabase
 
 
                 {/* Ürünler */}
-               <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-3">
+              <div className="orders-items grid sm:grid-cols-2 md:grid-cols-3 gap-3">
   {(itemsByOrder[o.id] || []).map((it) => {
     // 🎨 Görsel fallback (Epin ürünleri dahil)
     const p = it.products || {};
@@ -217,10 +226,20 @@ supabase
     return (
       <div
         key={it.id}
-        className="flex flex-col sm:flex-row items-center gap-3 bg-neutral-800 rounded-lg p-3 sm:p-4"
+      className="
+  order-item-card
+  flex flex-row items-center gap-3 
+  bg-neutral-800 
+  rounded-xl 
+  p-3 
+  border border-neutral-700/40
+"
+
+
       >
         {/* 🖼️ Görsel kutusu biraz büyütüldü */}
-        <div className="w-24 h-24 flex-shrink-0 rounded-xl overflow-hidden bg-black/40 border border-neutral-700">
+       <div className="order-image-box">
+
           <img
             src={imageSrc}
             className="w-full h-full object-cover object-center"
@@ -229,7 +248,7 @@ supabase
         </div>
 
        {/* 🧾 Ürün bilgileri */}
-<div className="flex-1 text-sm flex flex-col min-w-0">
+<div className="flex flex-col justify-center flex-1 min-w-0">
   <div className="font-semibold text-yellow-300 text-sm leading-tight line-clamp-2 break-words">
     {p.name}
   </div>
@@ -250,14 +269,7 @@ supabase
 
                 {/* Sil & Detay */}
                 <footer className="mt-4 flex justify-end gap-3">
-                  {["pending", "awaiting_payment", "processing"].includes(o.status) && (
-                    <button
-                      onClick={() => handleDelete(o.id)}
-                      className="px-4 py-2 rounded-lg bg-red-600 text-white font-semibold hover:bg-red-500"
-                    >
-                       Sil
-                    </button>
-                  )}
+                 
 
                   <Link
                     to={`/orders/${o.id}`}

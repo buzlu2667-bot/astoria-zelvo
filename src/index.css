@@ -486,6 +486,52 @@ iframe[src*="livechat"] {
     flex: 1;
   }
 }
+/* 📱 Mobilde sipariş kartlarını sepetteki gibi büyük kart yap */
+@media (max-width: 640px) {
+  .orders-card {
+    padding: 16px !important;
+    border-radius: 20px !important;
+    margin-bottom: 20px;
+  }
 
+  /* Header alanı dikey hizalansın */
+  .orders-card header {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    gap: 8px !important;
+  }
+
+  /* Ürün kartları — sepet tarzı */
+  .order-item-card {
+    padding: 10px !important;
+    border-radius: 14px !important;
+    gap: 12px !important;
+  }
+
+  .order-item-card img {
+    width: 80px !important;
+    height: 80px !important;
+    border-radius: 12px !important;
+  }
+
+  .orders-items {
+    grid-template-columns: 1fr !important;
+  }
+
+  /* Sil / Detaya Git butonları alta insin */
+  .orders-card footer {
+    margin-top: 18px !important;
+    flex-direction: column !important;
+    align-items: stretch !important;
+    gap: 10px !important;
+  }
+
+  .orders-card footer button,
+  .orders-card footer a {
+    width: 100% !important;
+    text-align: center !important;
+  }
+}
+@media (max-width: 640px) {   .order-image-box {     width: 75px;     height: 75px;   } }
 
 
