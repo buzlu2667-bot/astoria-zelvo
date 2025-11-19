@@ -452,24 +452,15 @@ iframe[src*="livechat"] {
 .animate-fadeIn {
   animation: fadeIn 0.25s ease-out;
 }
-/* 📱 Sadece mobilde logo gizle */
+/* 📱 Sadece mobilde yuvarlak logoyu gizle */
 @media (max-width: 640px) {
-  .mobile-hide-logo {
+  .logo-circle {
     display: none !important;
   }
-
-  /* İkonları sola çek */
+}
+@media (max-width: 640px) {
   .header-icons {
-    margin-left: 0 !important;
-    margin-right: 0 !important;
-    transform: translateX(-6px); /* ikonlar azıcık sola */
-  }
-
-  /* İkon butonlarının sağ boşluğunu kısalt */
-  .header-icons a,
-  .header-icons button {
-    margin-right: 4px !important;
-    padding-right: 6px !important;
+    gap: 6px !important;
   }
 }
 

@@ -439,6 +439,7 @@ async function closeNotification() {
 {/* ✅ Mavi + Altın Premium Logo (Net Harf Versiyonu) */}
 <div
   className="
+    logo-circle
     w-11 h-11 rounded-full 
     bg-gradient-to-br from-blue-500 via-blue-400 to-yellow-400
     flex items-center justify-center 
@@ -449,6 +450,7 @@ async function closeNotification() {
     transition-all duration-300
   "
 >
+
   <span
     className="
       text-white 
