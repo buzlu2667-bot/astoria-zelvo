@@ -5,8 +5,10 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import { Autoplay, Pagination } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/pagination";
-import { Flame, TrendingUp, Sparkles } from "lucide-react";
+import { useRef } from "react";
 import { useNavigate } from "react-router-dom";
+
+import { Star, Flame, Sparkles, ChevronLeft, ChevronRight } from "lucide-react";
 
 
 // ⚡ Slider yüksekliği buradan ayarlanabilir
@@ -243,25 +245,13 @@ const slides = [
 
 
         {/* 🟡 ÖNE ÇIKAN */}
-        <SectionWhite
-          title=" Öne Çıkan Ürünler"
-          products={featuredProducts}
-          loading={loading}
-        />
+     <SectionSwitch
+  featured={featuredProducts}
+  popular={popularProducts}
+  newest={newProducts}
+  loading={loading}
+/>
 
-        {/* 🔵 POPÜLER */}
-        <SectionWhite
-          title=" Popüler Ürünler"
-          products={popularProducts}
-          loading={loading}
-        />
-
-        {/* 🟢 YENİ GELENLER */}
-        <SectionWhite
-          title="Yeni Gelenler"
-          products={newProducts}
-          loading={loading}
-        />
 
       </div>
     </div>
@@ -271,99 +261,126 @@ const slides = [
 
 /* ----------------------------- COMPONENT ----------------------------- */
 
-function SectionWhite({ title, products, loading }) {
+function SectionSwitch({ featured, popular, newest, loading }) {
+  const [tab, setTab] = useState("featured");
 
-  // Başlığa göre ikon seç
-  const getIcon = () => {
-    if (title.includes("Öne")) {
-      return (
-        <Flame
-          className="
-            w-7 h-7 text-orange-400 
-            drop-shadow-[0_0_10px_rgba(255,150,0,0.8)]
-          "
-        />
-      );
+  const products =
+    tab === "featured" ? featured :
+    tab === "popular" ? popular :
+    newest;
+
+  const sliderRef = useRef(null);
+
+   // ⭐ SEKMELER DEĞİŞİNCE BAŞA SAR
+  useEffect(() => {
+    if (sliderRef.current) {
+      sliderRef.current.scrollTo({ left: 0, behavior: "smooth" });
     }
+  }, [tab]);
 
-    if (title.includes("Popüler")) {
-      return (
-        <TrendingUp
-          className="
-            w-7 h-7 text-blue-400 
-            drop-shadow-[0_0_10px_rgba(0,120,255,0.8)]
-          "
-        />
-      );
-    }
-
-    if (title.includes("Yeni")) {
-      return (
-        <Sparkles
-          className="
-            w-7 h-7 text-green-400 
-            drop-shadow-[0_0_10px_rgba(0,255,150,0.8)]
-          "
-        />
-      );
-    }
-
-    return null;
+  const scrollLeft = () => {
+    sliderRef.current?.scrollBy({ left: -350, behavior: "smooth" });
   };
+
+  const scrollRight = () => {
+    sliderRef.current?.scrollBy({ left: 350, behavior: "smooth" });
+  };
+
+  const tabs = [
+    { key: "featured", label: "Öne Çıkan", icon: <Star className="w-5 h-5" /> },
+    { key: "popular", label: "Popüler", icon: <Flame className="w-5 h-5" /> },
+    { key: "newest", label: "Yeni Gelenler", icon: <Sparkles className="w-5 h-5" /> },
+  ];
 
   return (
     <section className="max-w-7xl mx-auto px-4 py-10">
 
-      {/* Başlık */}
-      <div className="flex items-center gap-3 mb-8">
-        {getIcon()}
-        <h2
-          className="
-            text-3xl font-extrabold
-            bg-gradient-to-r from-yellow-300 to-yellow-600
-            text-transparent bg-clip-text
-            drop-shadow-[0_0_18px_rgba(255,200,0,0.45)]
-          "
-        >
-          {title}
-        </h2>
+      {/* TABS */}
+      <div className="flex gap-3 mb-8 justify-center">
+        {tabs.map((t) => (
+          <button
+            key={t.key}
+            onClick={() => setTab(t.key)}
+            className={`
+              flex items-center gap-2 px-4 py-2 rounded-xl font-semibold transition
+              ${
+                tab === t.key
+                  ? "bg-yellow-400 text-black shadow-[0_0_20px_rgba(255,200,0,0.5)]"
+                  : "bg-black/40 text-white border border-yellow-500/20 hover:border-yellow-400"
+              }
+            `}
+          >
+            {t.icon}
+            {t.label}
+          </button>
+        ))}
       </div>
 
-      {/* Durumlar */}
+      {/* LIST */}
       {loading ? (
-        <p className="text-gray-500">Yükleniyor...</p>
+        <p className="text-gray-500 text-center">Yükleniyor...</p>
       ) : products.length === 0 ? (
-        <p className="text-gray-500">Henüz ürün yok.</p>
+        <p className="text-gray-500 text-center">Henüz ürün yok.</p>
       ) : (
         <div className="relative">
 
-          {/* 🔥 TÜM CİHAZLARDA KAYAN ÜRÜN LİSTESİ */}
-      <div
-  className={`
-    flex gap-4 pb-4
-    overflow-x-auto overflow-y-hidden
-    whitespace-nowrap
-    ${window.innerWidth < 768 ? "no-scrollbar" : "scrollbar-thin"}
-  `}
-  style={{ scrollBehavior: "smooth" }}
->
-  {products.map((p, i) => (
-    <div 
-      key={p.id}
-      className="shrink-0 min-w-[280px]"
-    >
-      <ProductCard product={p} />
+          {/* SOL OK — SADECE MASAÜSTÜ */}
+          <button
+            onClick={scrollLeft}
+            className="
+              hidden md:flex
+              absolute left-0 top-1/2 -translate-y-1/2
+              bg-black/60 backdrop-blur-xl
+              w-10 h-10 rounded-full 
+              border border-white/10
+              items-center justify-center
+              hover:border-yellow-400 hover:scale-110 transition
+              z-20
+            "
+          >
+            <ChevronLeft className="w-6 h-6 text-yellow-300" />
+          </button>
 
-      {i === 0 && (
-        <span className="ml-3 text-yellow-400 text-3xl animate-pulse">
-          ➜
-        </span>
-      )}
-    </div>
-  ))}
-</div>
+          {/* SAĞ OK — SADECE MASAÜSTÜ */}
+          <button
+            onClick={scrollRight}
+            className="
+              hidden md:flex
+              absolute right-0 top-1/2 -translate-y-1/2
+              bg-black/60 backdrop-blur-xl
+              w-10 h-10 rounded-full 
+              border border-white/10
+              items-center justify-center
+              hover:border-yellow-400 hover:scale-110 transition
+              z-20
+            "
+          >
+            <ChevronRight className="w-6 h-6 text-yellow-300" />
+          </button>
 
+          {/* KARTLAR SCROLL ALANI */}
+          <div
+            ref={sliderRef}
+            className="
+              flex gap-4 pb-4
+              overflow-x-auto overflow-y-hidden
+              whitespace-nowrap scroll-smooth
+              no-scrollbar
+            "
+          >
+            {products.map((p) => (
+              <div key={p.id} className="shrink-0 min-w-[280px]">
+                <ProductCard product={p} />
+              </div>
+            ))}
+          </div>
 
+          {/* MOBİLDE ALTA KAYDIR OKU */}
+          <div className="md:hidden flex justify-center mt-2">
+            <div className="text-yellow-300 text-sm opacity-70 flex items-center gap-1">
+              <span>Kaydır</span> <ChevronRight className="w-4 h-4" />
+            </div>
+          </div>
 
         </div>
       )}
@@ -371,3 +388,4 @@ function SectionWhite({ title, products, loading }) {
     </section>
   );
 }
+
