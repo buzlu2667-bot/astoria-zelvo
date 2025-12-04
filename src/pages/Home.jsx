@@ -369,7 +369,7 @@ function SectionSwitch({ featured, popular, newest, loading }) {
             "
           >
             {products.map((p) => (
-             <div 
+            <div 
   key={p.id}
   className="
     shrink-0

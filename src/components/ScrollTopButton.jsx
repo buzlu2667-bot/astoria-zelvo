@@ -24,7 +24,8 @@ export default function ScrollTopButton() {
   return (
     <button
       onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
-      className={`fixed bottom-6 right-6 z-[99999] transition-all duration-300 shadow-lg
+    className={`fixed bottom-20 right-6 z-[99999] transition-all duration-300 shadow-lg
+
       ${isMobile
         ? "w-11 h-11 rounded-full bg-gradient-to-r from-yellow-400 to-yellow-600 flex items-center justify-center hover:scale-110"
         : "px-5 py-3 rounded-full bg-gradient-to-r from-yellow-400 to-yellow-600 text-black font-semibold text-sm tracking-wide hover:scale-105"
