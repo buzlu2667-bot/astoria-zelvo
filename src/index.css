@@ -737,5 +737,16 @@ body.login-page {
   background-attachment: fixed;
 }
 
+.no-scrollbar {
+  -webkit-overflow-scrolling: touch;
+}
+
+@supports (-webkit-touch-callout: none) {
+  .ios-fix-width {
+    min-width: 65vw !important;
+    max-width: 300px !important;
+  }
+}
+
 
 

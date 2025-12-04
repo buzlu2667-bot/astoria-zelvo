@@ -369,9 +369,18 @@ function SectionSwitch({ featured, popular, newest, loading }) {
             "
           >
             {products.map((p) => (
-              <div key={p.id} className="shrink-0 min-w-[280px]">
-                <ProductCard product={p} />
-              </div>
+             <div 
+  key={p.id}
+  className="
+    shrink-0
+    min-w-[65vw]        /* ⭐ iOS için ekranın %65'i */
+    max-w-[300px]       /* ⭐ Çok büyümesin */
+    sm:min-w-[250px]    /* Tablet/Desktop */
+  "
+>
+  <ProductCard product={p} />
+</div>
+
             ))}
           </div>
 
