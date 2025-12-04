@@ -72,6 +72,19 @@ useEffect(() => {
   })();
 }, [session]);
 
+// ---------------------------------------------------------
+// 🔥 MİSAFİR KULLANICI → CART HER DEĞİŞTİĞİNDE LS'YE YAZ
+// ---------------------------------------------------------
+useEffect(() => {
+  // loading bitmeden yazma
+  if (loading) return;
+
+  // login değilse → localStorage güncelle
+  if (!session) {
+    localStorage.setItem("elitemart_cart", JSON.stringify(cart));
+  }
+
+}, [cart, session, loading]);
 
 
 
