@@ -162,7 +162,7 @@ export default function Footer() {
                  <a href="/dashboard" className="hover:text-[#4afff9]">Profilim</a>
                 <a href="/orders" className="hover:text-[#4afff9]">Siparişlerim</a>
                 <a href="/favorites" className="hover:text-[#4afff9]">Favorilerim</a>
-                <a href="/destek" className="hover:text-[#4afff9]">Destek Merkezi</a>
+                
               </div>
             </div>
 
