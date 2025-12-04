@@ -3,127 +3,98 @@ export async function sendTelegramMessage(product) {
   const TOKEN = "8147067311:AAFsqP2Qn_nRp7rZX6P1eZ8ABA4lFDJSorQ";
   const CHAT_ID = "@maximoraofficial";
 
-  // 💎 stok etiketi
-  const s = Number(product.stock ?? 0);
-  let stockLabel = "🔴 <b>Tükendi</b>";
-  if (s > 3) stockLabel = " <b>Stokta</b>";
-  else if (s > 0) stockLabel = " <b>Az Kaldı</b>";
+  const title = product.title || "Yeni Ürün";
+  const price = Number(product.price || 0);
+  const oldPrice = Number(product.old_price || 0);
+  const stock = Number(product.stock ?? 0);
 
-  // 👑 premium caption
-  const caption = `
-<b>⭐✨ YENİ ÜRÜN GELDİ! ✨⭐</b>
-━━━━━━━━━━━━━━━━━━━━━━━
-<b>👑 MAXIMORA EXCLUSIVE COLLECTION 👑</b>
+  // 🎯 İNDİRİM HESABI
+  let discountText = "";
+  if (oldPrice > price) {
+    const rate = Math.round(((oldPrice - price) / oldPrice) * 100);
+    discountText = `🔥 <b>%${rate} İNDİRİM</b>`;
+  }
 
-👜 <b>${product.name}</b>  
-💰 <b>${product.price} ₺</b>  
-🎁 ${stockLabel}
+  // 🎯 STOK ETİKETİ – MODERN
+  let stockLabel = "🔴 <b>TÜKENDİ</b>";
+  if (stock > 10) stockLabel = "🟢 <b>STOKTA</b>";
+  else if (stock > 3) stockLabel = "🟡 <b>AZALIYOR</b>";
+  else if (stock > 0) stockLabel = "🧡 <b>SON ADETLER</b>";
 
-🛍️ <a href="https://maximorashop.com/product/${product.id}">Ürünü Hemen Gör</a>
-━━━━━━━━━━━━━━━━━━━━━━━
-<b>💝 Zarafetin, stilin ve lüksün adresi: MAXIMORA 💝</b>
-✨ <i>“Tarzını lüksle buluştur.”</i> ✨
-#Maximora #LuxuryDrop #NewArrival #ExclusiveStyle
-`.trim();
+  const productUrl = `https://maximorashop.com/product/${product.id}`;
 
-  // 📸 görsel URL temizliği
-   // 📸 Görsel URL (Supabase product bucket'tan public şekilde)
- let imageUrl = product.image_url;
+  // 🎯 Görsel
+  let imageUrl = product.main_img;
+  if (!imageUrl) imageUrl = "https://maximorashop.com/assets/placeholder.png";
 
-if (imageUrl) {
-  // 🔹 Supabase public URL'den direkt erişim linki oluştur
   if (!imageUrl.startsWith("http")) {
-    imageUrl = `https://tvsfhhxxligbqrcqtprq.supabase.co/storage/v1/object/public/product-images/${imageUrl.replace(/^\/+/, "")}`;
+    imageUrl =
+      "https://tvsfhhxxligbqrcqtprq.supabase.co/storage/v1/object/public/products/" +
+      imageUrl.replace(/^\/+/, "");
   }
 
-  // 🔹 Telegram cache sorununu aşmak için query param ekle
-  imageUrl = imageUrl.split("?")[0] + `?t=${Date.now()}`;
-  imageUrl = encodeURI(imageUrl);
-} else {
-  imageUrl = "https://maximorashop.com/assets/placeholder-product.png";
-}
+  imageUrl = encodeURI(imageUrl + `?t=${Date.now()}`);
 
+  // 💎 MODERN + GOLD + PREMIUM CAPTION
+  const caption = `
+<b>😎YENİ ÜRÜNN 💚 MAXIMORA LUXURY DROP 💚✨</b>
+━━━━━━━━━━━━━━━━━━
 
+<b>${title}</b>
 
+💰 <b>${price.toLocaleString("tr-TR")} ₺</b>  
+${oldPrice > price ? `❌ <s>${oldPrice.toLocaleString("tr-TR")} ₺</s>` : ""}
+
+${discountText ? discountText : ""}
+
+${stockLabel}
+
+━━━━━━━━━━━━━━━━━━
+🕞<a href="${productUrl}">Ürünü İncele</a>
+━━━━━━━━━━━━━━━━━━
+
+<b>♉️ Premium • Şıklık • Zarafet • Kalite ♉️</b>
+<i>“Tarzını lüksle buluştur.”</i>
+
+#Maximora #LuxuryDrop #Fashion #Exclusive
+  `.trim();
 
   try {
-    // 1️⃣ ana gönderi (foto + caption)
-    console.log("📸 Gönderilen imageUrl:", imageUrl);
-  try {
-  console.log("📸 Gönderilen imageUrl:", imageUrl);
+    // FOTO YÜKLEME
+    const img = await fetch(imageUrl);
+    const blob = await img.blob();
 
-  // 🔹 Supabase'ten fotoğrafı binary olarak çek
-  const imageRes = await fetch(imageUrl);
-  const blob = await imageRes.blob();
-  const formData = new FormData();
-  formData.append("chat_id", CHAT_ID);
-  formData.append("photo", blob, "product.jpg");
-  formData.append("caption", caption);
-  formData.append("parse_mode", "HTML");
+    const fd = new FormData();
+    fd.append("chat_id", CHAT_ID);
+    fd.append("photo", blob, "maximora.jpg");
+    fd.append("caption", caption);
+    fd.append("parse_mode", "HTML");
 
-  // 🔹 Telegram'a gönder (FormData ile)
-  const resPhoto = await fetch(`https://api.telegram.org/bot${TOKEN}/sendPhoto`, {
-    method: "POST",
-    body: formData,
-  });
+    const res = await fetch(
+      `https://api.telegram.org/bot${TOKEN}/sendPhoto`,
+      { method: "POST", body: fd }
+    );
 
-  const dataPhoto = await resPhoto.json();
-  console.log("📸 Telegram sendPhoto yanıtı:", dataPhoto);
+    const data = await res.json();
+    console.log("📸 Telegram sendPhoto:", data);
 
-  if (!dataPhoto.ok) {
-    console.warn("⚠️ Fotoğraf gönderilemedi, metin moduna geçiliyor...");
-    await fetch(`https://api.telegram.org/bot${TOKEN}/sendMessage`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        chat_id: CHAT_ID,
-        text: caption,
-        parse_mode: "HTML",
-      }),
-    });
-  }
-} catch (err) {
-  console.error("🚨 Telegram gönderim hatası:", err);
-}
-
-
-    const dataPhoto = await resPhoto.json();
-    console.log("📸 Telegram sendPhoto yanıtı:", dataPhoto);
-
-    // 2️⃣ eğer gönderi başarılıysa otomatik “lüks reaction”
-    if (dataPhoto?.ok && dataPhoto?.result?.message_id) {
-      const messageId = dataPhoto.result.message_id;
-
-      setTimeout(async () => {
-        const reaction =
-          "💫💛✨ YENİ MAXIMORA DROP — TARZINI LÜKSLE BULUŞTUR ✨💛💫";
-        await fetch(`https://api.telegram.org/bot${TOKEN}/sendMessage`, {
+    // FOTO HATA → fallback text
+    if (!data.ok) {
+      await fetch(
+        `https://api.telegram.org/bot${TOKEN}/sendMessage`,
+        {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
             chat_id: CHAT_ID,
-            reply_to_message_id: messageId,
-            text: reaction,
+            text: caption,
+            parse_mode: "HTML",
           }),
-        });
-        console.log("💬 Lüks reaction gönderildi:", reaction);
-      }, 5000);
+        }
+      );
     }
 
-    // 3️⃣ fallback (foto hata verirse metin olarak at)
-    if (!dataPhoto.ok) {
-      console.warn("⚠️ Fotoğraf gönderilemedi, metin moduna geçiliyor...");
-      await fetch(`https://api.telegram.org/bot${TOKEN}/sendMessage`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          chat_id: CHAT_ID,
-          text: caption,
-          parse_mode: "HTML",
-        }),
-      });
-    }
   } catch (err) {
-    console.error("🚨 Telegram gönderim hatası:", err);
+    console.error("❌ Telegram gönderim hatası:", err);
   }
 }

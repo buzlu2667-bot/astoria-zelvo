@@ -58,15 +58,75 @@ export default function AdminOrders() {
       })
     );
 
-  async function approve(orderId) {
-    await supabase
-      .from("orders")
-      .update({ status: "processing" })
-      .eq("id", orderId);
+ async function approve(orderId) {
+  // Siparişi processing yap
+  await supabase
+    .from("orders")
+    .update({ status: "processing" })
+    .eq("id", orderId);
 
-    toast("✅ Ödeme Onaylandı!");
-    fetchOrders();
+  // Siparişi getir
+  const { data: order } = await supabase
+    .from("orders")
+    .select("*")
+    .eq("id", orderId)
+    .single();
+
+  // Mail gönder
+  if (order) {
+   await fetch(
+  "https://tvsfhhxxligbqrcqtprq.supabase.co/functions/v1/send-mail",
+  {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_ANON_KEY}`,
+    },
+    body: JSON.stringify({
+      to: order.email,
+      subject: "Siparişiniz Onaylandı ✔",
+      html: `
+<div style="padding:20px;font-family:Arial;background:#0d0d0d;color:white;border-radius:14px;border:1px solid #333">
+
+  <div style="text-align:center; margin-bottom:20px;">
+    <img src="https://tvsfhhxxligbqrcqtprq.supabase.co/storage/v1/object/public/notification-images/logo%20(3).png" 
+         alt="MaximoraShop"
+         style="width:120px; height:auto; border-radius:10px;" />
+  </div>
+
+  <h2 style="color:#facc15; text-align:center;">🎉 Siparişiniz Onaylandı!</h2>
+
+  <p>Merhaba <b>${order.full_name}</b>,</p>
+  <p>Havale / EFT ödemeniz onaylanmıştır. Siparişiniz hazırlanıyor.</p>
+
+  <div style="margin-top:15px;padding:15px;background:#111;border-radius:10px;border:1px solid #444">
+    <b>Sipariş No:</b> #${order.id}<br/>
+    <b>Tutar:</b> ₺${order.final_amount}<br/>
+    <b>Adres:</b> ${order.address}<br/>
+    ${
+      order.coupon
+        ? `<b>Kupon:</b> ${order.coupon}<br/><b>İndirim:</b> ₺${order.discount_amount}<br/>`
+        : ""
+    }
+  </div>
+
+  <p style="margin-top:20px;color:#bbb;text-align:center;">
+   Bizi tercih ettiğiniz için teşekkür ederiz
+Siparişiniz özenle hazırlanıyor. Güvenli ödeme, hızlı teslimat ve premium alışveriş deneyimi için buradayız..<br/>
+    <b>MaximoraShop 💛</b>
+  </p>
+</div>
+`,
+    }),
   }
+);
+
+  }
+
+  toast("✅ Ödeme Onaylandı! Müşteriye mail gönderildi.");
+  fetchOrders();
+}
+
 
   async function updateStatus(orderId, status) {
     await supabase
@@ -215,16 +275,12 @@ const discount = o.discount_amount ?? 0;
         ✅ {it.product_name || it.name} × {it.quantity} —{" "}
         {TRY.format(it.unit_price || it.price)}
 
-        {info && (
-          <div className="ml-6 mt-1 text-gray-400 space-y-0.5">
-            {Object.entries(info).map(([key, value]) => (
-              <p key={key}>
-                <span className="text-yellow-400 font-semibold">{key}:</span>{" "}
-                {value}
-              </p>
-            ))}
-          </div>
-        )}
+       {it.color && (
+  <p className="ml-6 mt-1 text-yellow-400 text-xs">
+    Renk: <span className="text-gray-300">{it.color}</span>
+  </p>
+)}
+
       </li>
     );
   })}

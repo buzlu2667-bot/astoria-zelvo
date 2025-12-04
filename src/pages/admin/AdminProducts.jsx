@@ -1,567 +1,203 @@
-// ✅ src/pages/admin/AdminProducts.jsx — Premium Product Manager
-// - Supabase public URL + local assets desteği
-// - Eski fiyat, indirim yüzdesi
-// - Stok rozetleri (Tükendi / Az Kaldı / Stokta)
-// - Çoklu galeri yükleme (ekleme mantığı)
-// - Edit modunda ana görsel & galeri önizleme
-// - Thumbnail'lar tam oturur (object-cover + aspect-square)
-// - Sağlam hata/bildirimler (window.dispatchEvent('toast', ...))
-
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { supabase } from "../../lib/supabaseClient";
+import AddProductModal from "./AddProductModal";
 import { sendTelegramMessage } from "../../lib/sendTelegramMessage";
 
-// -------------------------------------
-// Helpers
-// -------------------------------------
-const PLACEHOLDER = "/assets/placeholder-product.png";
-
-// Tek satırda her şeyi çözen görsel resolver:
-// - http(s) ile başlıyorsa -> direkt kullan
-// - boşsa -> placeholder
-// - aksi halde 'src/assets/products/<ad>' kabul et
-function resolveImage(src) {
-  if (!src) return PLACEHOLDER;
-  const s = String(src);
-  if (s.startsWith("http://") || s.startsWith("https://")) return s;
-  // local asset ismi (örn: "canta1.png" ya da "products/canta1.png")
-  const clean = s.replace(/^\/?src\/assets\/products\//, "").replace(/^\/+/, "");
-  return `/src/assets/products/${clean}`;
-}
-
-function toNum(v, def = 0) {
-  const n = Number(v);
-  return Number.isFinite(n) ? n : def;
-}
-
-function pct(oldP, price) {
-  const o = toNum(oldP, 0);
-  const p = toNum(price, 0);
-  if (o > p && p > 0) return Math.round(((o - p) / o) * 100);
-  return 0;
-}
-
-function stockBadge(stock) {
-  const s = toNum(stock, 0);
-  if (s <= 0) return { text: "Tükendi", cls: "bg-red-600/20 text-red-400" };
-  if (s <= 3) return { text: "Az Kaldı", cls: "bg-yellow-600/20 text-yellow-400" };
-  return { text: "Stokta", cls: "bg-green-600/20 text-green-400" };
-}
-
-// -------------------------------------
-// Component
-// -------------------------------------
 export default function AdminProducts() {
+
   const [products, setProducts] = useState([]);
-  const [showForm, setShowForm] = useState(false);
-  const [editing, setEditing] = useState(null); // product id
-  const [loading, setLoading] = useState(false);
-  const [search, setSearch] = useState("");
+  const [open, setOpen] = useState(false);  
+  const [editData, setEditData] = useState(null); // 🔥 Düzenleme Modu
 
-  // Previews
-  const [preview, setPreview] = useState(null); // ana görsel (file seçilince)
-  const [galleryPreviews, setGalleryPreviews] = useState([]); // çoklu dosya önizleme
-
-  // Form
-  const [form, setForm] = useState({
-    name: "",
-    price: "",
-    old_price: "",
-    stock: "",
-    category: "",
-    description: "",
-    image: null,        // File (primary)
-    image_url: null,    // string (public URL or local name)
-    gallery_files: [],  // File[] (multiple)
-    gallery: [],        // string[] (public URLs or local names)
-  });
+  
 
   useEffect(() => {
-    fetchProducts();
+    load();
   }, []);
 
-  async function fetchProducts() {
-    const { data, error } = await supabase
-      .from("products")
-      .select("*")
-      .order("created_at", { ascending: false });
-
-    if (error) {
-      console.error(error);
-      toast("❌ Ürünler yüklenemedi!", "error");
-    }
+  async function load() {
+    const { data } = await supabase.from("products").select("*").order("id", { ascending: false });
     setProducts(data || []);
   }
 
-  // ---------------- Uploads ----------------
-  async function uploadToBucket(file) {
-    if (!file) return null;
-    const ext = file.name.split(".").pop();
-    const fileName = `prod_${Date.now()}_${Math.random().toString(16).slice(2)}.${ext}`;
-    const { error } = await supabase.storage.from("product-images").upload(fileName, file);
+  // 🔥 ÜRÜN SİLME
+  async function deleteProduct(id) {
+    const yes = confirm("❗ Ürünü silmek istediğine emin misin?");
+    if (!yes) return;
+
+    const { error } = await supabase
+      .from("products")
+      .delete()
+      .eq("id", id);
+
     if (error) {
-      console.error("Upload error:", error);
-      return null;
-    }
-    const { data } = supabase.storage.from("product-images").getPublicUrl(fileName);
-    return data?.publicUrl || null;
-  }
-
-  async function uploadMany(files) {
-    const arr = Array.from(files || []);
-    const urls = [];
-    for (const f of arr) {
-      // eslint-disable-next-line no-await-in-loop
-      const u = await uploadToBucket(f);
-      if (u) urls.push(u);
-    }
-    return urls;
-  }
-
-  // ---------------- Save ----------------
-  async function save(e) {
-    e.preventDefault();
-    try {
-      setLoading(true);
-
-      // 1) Ana görsel
-      let image_url = form.image_url || null;
-      if (form.image) {
-        const up = await uploadToBucket(form.image);
-        if (up) image_url = up;
-      }
-
-      // 2) Galeri (append)
-      let gallery = Array.isArray(form.gallery) ? [...form.gallery] : [];
-      if (form.gallery_files && form.gallery_files.length > 0) {
-        const ups = await uploadMany(form.gallery_files);
-        gallery = [...gallery, ...ups];
-      }
-
-      // 3) Payload
-     const payload = {
-  name: form.name,
-  price: toNum(form.price, 0),
-  old_price: form.old_price ? toNum(form.old_price, null) : null,
-  stock: toNum(form.stock, 0),
-  // ✅ Eğer kategori boşsa null kaydediyoruz (anasayfa ürünü demek)
-  category: form.category.trim() === "" ? null : form.category.trim(),
-  description: form.description || null,
-  image_url,
-  gallery: gallery.length ? gallery : null,
-  is_new: form.is_new || false,
-};
-
-
-      // 4) Insert / Update
-      if (editing) {
-        await supabase.from("products").update(payload).eq("id", editing);
-      } else {
-        await supabase.from("products").insert([payload]);
-      }
-
-      toast("✅ Ürün kaydedildi!", "success");
-      resetForm();
-      setShowForm(false);
-      setEditing(null);
-      await fetchProducts();
-    } catch (err) {
-      console.error(err);
-      toast("❌ Kayıt sırasında hata oluştu!", "error");
-    } finally {
-      setLoading(false);
-    }
-  }
-
-  function resetForm() {
-    setForm({
-      name: "",
-      price: "",
-      old_price: "",
-      stock: "",
-      category: "",
-      description: "",
-      image: null,
-      image_url: null,
-      gallery_files: [],
-      gallery: [],
-    });
-    setPreview(null);
-    setGalleryPreviews([]);
-  }
-
-  // ---------------- Remove ----------------
-  async function remove(id, image_url, gallery = []) {
-    if (!confirm("Ürünü silmek istiyor musun?")) return;
-
-    try {
-      // Best-effort storage cleanup:
-      const keys = [];
-      const tryPush = (url) => {
-        if (typeof url === "string" && url.includes("/product-images/")) {
-          const k = url.split("/product-images/")[1];
-          if (k) keys.push(k);
-        }
-      };
-      if (image_url) tryPush(image_url);
-      (gallery || []).forEach(tryPush);
-      if (keys.length) {
-        await supabase.storage.from("product-images").remove(keys);
-      }
-    } catch (e) {
-      console.warn("Storage cleanup warning:", e?.message);
+      alert("Silme sırasında hata oluştu!");
+      return;
     }
 
-    await supabase.from("products").delete().eq("id", id);
-    toast("🗑️ Ürün silindi!", "error");
-    fetchProducts();
+    window.dispatchEvent(new CustomEvent("toast", {
+      detail: { type: "success", text: "🗑 Ürün silindi!" }
+    }));
+
+    load();
   }
 
-  // ---------------- Filtered ----------------
-  const filtered = useMemo(() => {
-    const s = (search || "").toLowerCase();
-    return (products || []).filter((p) => {
-      const n = (p.name || "").toLowerCase();
-      const c = (p.category || "").toLowerCase();
-      return n.includes(s) || c.includes(s);
-    });
-  }, [products, search]);
+  // 🔥 DÜZENLEME MODALINI BAŞLAT
+  function editProduct(p) {
+    setEditData(p);  
+  }
 
-  // ---------------- UI ----------------
+
   return (
-    <div className="animate-slide-in bg-neutral-950 text-white rounded-2xl p-6 shadow-lg border border-neutral-800">
-      {/* Top bar */}
-      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3 mb-6">
-        <h1 className="text-xl font-bold text-yellow-400">Ürün Yönetimi</h1>
+    <div className="p-6 text-white">
 
-        <div className="flex gap-3">
-          <input
-            placeholder="Ara (ad / kategori)…"
-            className="px-3 py-2 text-sm bg-neutral-800 rounded-lg border border-neutral-700 focus:outline-none focus:ring-1 focus:ring-yellow-500"
-            onChange={(e) => setSearch(e.target.value)}
-          />
-          <button
-            onClick={() => {
-              const opening = !showForm;
-              setShowForm(opening);
-              if (opening) {
-                setEditing(null);
-                resetForm();
-              }
-            }}
-            className="px-4 py-2 bg-green-600 rounded-lg hover:bg-green-700"
-          >
-            {showForm ? "Kapat" : "Yeni Ürün"}
-          </button>
-        </div>
+      {/* BAŞLIK + BUTON */}
+      <div className="flex justify-between items-center">
+        <h1 className="text-2xl font-bold">Ürünler</h1>
+
+        <button
+          onClick={() => setOpen(true)}
+          className="px-4 py-2 bg-[#00ffbb30] border border-[#00ffbb70] rounded-xl text-[#00ffdd] hover:bg-[#00ffbb50]"
+        >
+          ➕ Yeni Ürün Ekle
+        </button>
       </div>
 
-      {/* Form */}
-      {showForm && (
-        <form
-          onSubmit={save}
-          className="bg-neutral-900 rounded-xl p-4 mb-6 grid grid-cols-2 gap-3 border border-neutral-700"
-        >
-          {/* Name */}
-          <input
-            className="bg-neutral-800 rounded p-2 border border-neutral-700 focus:ring-1 focus:ring-yellow-500"
-            placeholder="Ürün Adı"
-            value={form.name}
-            onChange={(e) => setForm((f) => ({ ...f, name: e.target.value }))}
-            required
-          />
+      {/* ÜRÜN LİSTESİ */}
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-6">
+        {products.map((p) => (
+          <div key={p.id} className="bg-[#111] border border-[#222] p-3 rounded-xl relative">
 
-          {/* Category */}
-          <input
-            className="bg-neutral-800 rounded p-2 border border-neutral-700 focus:ring-1 focus:ring-yellow-500"
-            placeholder="Kategori (Çanta / Cüzdan / E-Pin…)"
-            value={form.category}
-            onChange={(e) => setForm((f) => ({ ...f, category: e.target.value }))}
-          />
+          {/* 🔥 DÜZENLE / SİL / TELEGRAM */}
+<div className="absolute top-2 right-2 flex flex-col gap-2 z-20">
 
-          {/* Price */}
-          <input
-            className="bg-neutral-800 rounded p-2 border border-neutral-700 focus:ring-1 focus:ring-yellow-500"
-            placeholder="Fiyat (₺)"
-            type="number"
-            min="0"
-            value={form.price}
-            onChange={(e) => setForm((f) => ({ ...f, price: e.target.value }))}
-            required
-          />
+  {/* Düzenle */}
+  <button
+    onClick={() => editProduct(p)}
+    className="
+      w-9 h-9
+      flex items-center justify-center
+      rounded-lg
+      bg-blue-600/80 backdrop-blur 
+      border border-blue-300/50
+      text-white text-lg
+      shadow-[0_0_10px_rgba(0,120,255,0.5)]
+      hover:bg-blue-600 transition
+    "
+  >
+    ✏️
+  </button>
 
-          {/* Old Price */}
-          <input
-            className="bg-neutral-800 rounded p-2 border border-neutral-700 focus:ring-1 focus:ring-yellow-500"
-            placeholder="Eski Fiyat (₺)"
-            type="number"
-            min="0"
-            value={form.old_price}
-            onChange={(e) => setForm((f) => ({ ...f, old_price: e.target.value }))}
-          />
+  {/* Sil */}
+  <button
+    onClick={() => deleteProduct(p.id)}
+    className="
+      w-9 h-9
+      flex items-center justify-center
+      rounded-lg
+      bg-red-600/80 backdrop-blur
+      border border-red-300/50
+      text-white text-lg
+      shadow-[0_0_10px_rgba(255,0,0,0.5)]
+      hover:bg-red-600 transition
+    "
+  >
+    🗑
+  </button>
 
-          {/* Stock */}
-          <input
-            className="bg-neutral-800 rounded p-2 border border-neutral-700 focus:ring-1 focus:ring-yellow-500"
-            placeholder="Stok"
-            type="number"
-            min="0"
-            value={form.stock}
-            onChange={(e) => setForm((f) => ({ ...f, stock: e.target.value }))}
-            required
-          />
+ {/* Telegram */}
+<button
+  onClick={async () => {
+    await sendTelegramMessage(p);
 
-          {/* Main image file */}
-          <input
-            type="file"
-            accept="image/*"
-            className="bg-neutral-800 rounded p-2 border border-neutral-700 col-span-2"
-            onChange={(e) => {
-              const f = e.target.files?.[0] || null;
-              setForm((fm) => ({ ...fm, image: f }));
-              setPreview(f ? URL.createObjectURL(f) : null);
-            }}
-          />
+    window.dispatchEvent(new CustomEvent("toast", {
+      detail: {
+        type: "success",
+        text: "📤 Telegram mesajı gönderildi!"
+      }
+    }));
+  }}
+  className="
+    w-9 h-9
+    flex items-center justify-center
+    rounded-lg
+    bg-green-600/80 backdrop-blur
+    border border-green-300/50
+    text-white text-lg
+    shadow-[0_0_10px_rgba(0,255,100,0.5)]
+    hover:bg-green-600 transition
+  "
+>
+  📤
+</button>
 
-          {/* Main image preview */}
-          <div className="col-span-2 flex items-center gap-3">
-            <div className="w-[96px] h-[96px] rounded-lg overflow-hidden border border-neutral-700 bg-neutral-800">
-              <img
-                src={preview || resolveImage(form.image_url)}
-                alt="preview"
-                className="w-full h-full object-cover object-center"
-                loading="lazy"
-                decoding="async"
-                referrerPolicy="no-referrer"
-              />
-            </div>
-            <div className="text-xs text-neutral-400">
-              Ana görsel. (Dosya seçmezsen mevcut <strong>image_url</strong> korunur)
-            </div>
-          </div>
 
-          {/* Gallery multiple */}
-          <div className="col-span-2">
-            <label className="text-sm text-neutral-300 mb-1 block">
-              Galeri Görselleri (çoklu)
-            </label>
-            <input
-              type="file"
-              accept="image/*"
-              multiple
-              className="bg-neutral-800 rounded p-2 border border-neutral-700 w-full"
-              onChange={(e) => {
-                const fl = e.target.files ? Array.from(e.target.files) : [];
-                setForm((fm) => ({ ...fm, gallery_files: fl }));
-                setGalleryPreviews(fl.map((f) => URL.createObjectURL(f)));
-              }}
-            />
-
-            {(galleryPreviews.length > 0 || (form.gallery && form.gallery.length > 0)) && (
-              <div className="flex flex-wrap gap-2 mt-3">
-                {galleryPreviews.map((p, idx) => (
-                  <div
-                    key={`new-${idx}`}
-                    className="w-16 h-16 rounded-md overflow-hidden border border-neutral-700 bg-neutral-800"
-                  >
-                    <img
-                      src={p}
-                      className="w-full h-full object-cover object-center"
-                      loading="lazy"
-                      decoding="async"
-                    />
-                  </div>
-                ))}
-                {(form.gallery || []).map((u, idx) => (
-                  <div
-                    key={`old-${idx}`}
-                    className="w-16 h-16 rounded-md overflow-hidden border border-neutral-700 bg-neutral-800"
-                  >
-                    <img
-                      src={resolveImage(u)}
-                      className="w-full h-full object-cover object-center"
-                      loading="lazy"
-                      decoding="async"
-                    />
-                  </div>
-                ))}
-              </div>
-            )}
-
-            <p className="text-xs text-neutral-500 mt-1">
-              Yeni yüklediklerin mevcut galeriye <b>eklenir</b>. (Silme desteği istenirse ekleriz.)
-            </p>
-          </div>
-           
-           {/* ✅ Yeni Ürün Kutusu */}
-<div className="col-span-2 flex items-center gap-2">
-  <input
-    type="checkbox"
-    id="is_new"
-    checked={form.is_new || false}
-    onChange={(e) => setForm((f) => ({ ...f, is_new: e.target.checked }))}
-    className="w-4 h-4 accent-yellow-500"
-  />
-  <label htmlFor="is_new" className="text-sm text-yellow-400 select-none">
-    🆕 Yeni Ürün
-  </label>
 </div>
 
 
+            <img
+              src={p.main_img}
+              className="w-full h-32 object-cover rounded-lg"
+            />
+
+           <div className="mt-2">
+  <p className="font-semibold text-white text-sm line-clamp-1">
+    {p.title}
+  </p>
+
+  {/* 📌 Eğer indirim varsa göster */}
+  {p.old_price > p.price ? (
+    <div className="flex items-center gap-2 mt-1">
+
+      {/* Eski Fiyat */}
+      <span className="text-xs text-red-400 line-through">
+        {p.old_price}₺
+      </span>
+
+      {/* Yeni Fiyat */}
+      <span className="text-sm text-green-400 font-bold">
+        {p.price}₺
+      </span>
+
+      {/* % İNDİRİM */}
+      <span className="text-xs bg-green-600/30 text-green-300 px-2 py-[2px] rounded-md border border-green-500/40">
+        %{Math.round(((p.old_price - p.price) / p.old_price) * 100)}
+      </span>
+    </div>
+  ) : (
+    // İndirim yoksa sadece yeni fiyat
+    <p className="text-sm text-gray-300 mt-1">{p.price}₺</p>
+  )}
+</div>
 
 
-          {/* Description */}
-          <textarea
-            className="bg-neutral-800 rounded p-2 border border-neutral-700 col-span-2"
-            rows={3}
-            placeholder="Açıklama"
-            value={form.description}
-            onChange={(e) => setForm((f) => ({ ...f, description: e.target.value }))}
-          />
+          </div>
+        ))}
+      </div>
 
-          <button
-            className="bg-blue-600 hover:bg-blue-700 p-2 rounded col-span-2 font-semibold disabled:opacity-60"
-            disabled={loading}
-          >
-            {loading ? "Kaydediliyor..." : editing ? "Güncelle" : "Kaydet"}
-          </button>
-        </form>
+      {/* 🔥 YENİ ÜRÜN EKLE MODAL */}
+      {open && !editData && (
+        <AddProductModal
+          onClose={() => setOpen(false)}
+          onSuccess={() => {
+            setOpen(false);
+            load();
+          }}
+        />
       )}
 
-      {/* List */}
-      <div className="overflow-x-auto border border-neutral-800 rounded-xl">
-        <table className="w-full text-left text-sm">
-          <thead className="bg-neutral-900">
-            <tr className="border-b border-neutral-800 text-gray-400">
-              <th className="p-3">Görsel</th>
-              <th className="p-3">Ad</th>
-              <th className="p-3">Kategori</th>
-              <th className="p-3">Fiyat</th>
-              <th className="p-3">Eski</th>
-              <th className="p-3">%İnd.</th>
-              <th className="p-3">Stok</th>
-              <th className="p-3 text-center">İşlem</th>
-            </tr>
-          </thead>
+      {/* 🔥 ÜRÜN DÜZENLEME MODAL */}
+      {editData && (
+        <AddProductModal
+          initialData={editData}     // ← Düzenlenecek ürün
+          onClose={() => setEditData(null)}
+          onSuccess={() => {
+            setEditData(null);
+            load();
+          }}
+        />
+      )}
 
-          <tbody>
-            {filtered.map((p) => {
-              const rate = pct(p.old_price, p.price);
-              const b = stockBadge(p.stock);
-              const priceLabel = `₺${toNum(p.price, 0).toLocaleString("tr-TR")}`;
-              const oldLabel =
-                p.old_price ? `₺${toNum(p.old_price, 0).toLocaleString("tr-TR")}` : "-";
-
-              return (
-                <tr
-                  key={p.id}
-                  className="border-b border-neutral-800 hover:bg-neutral-900/50 transition"
-                >
-                  <td className="p-3">
-                    <div className="w-14 h-14 rounded-lg overflow-hidden border border-neutral-700 bg-neutral-800">
-                     <img
-                      src={
-                        p.image_url?.startsWith("http")
-                         ? p.image_url
-                          : `/products/${p.image_url?.replace(/^\/+/, "")}`
-                           }
-                             alt={p.name}
-                           className="w-full h-full object-cover object-center"
-                          loading="lazy"
-                          decoding="async"
-                          />
-
-
-                    </div>
-                  </td>
-
-                  <td className="p-3 font-medium">{p.name}</td>
-                  <td className="p-3">{p.category || "-"}</td>
-
-                  <td className="p-3">{priceLabel}</td>
-                  <td className="p-3">{oldLabel}</td>
-
-                  <td className="p-3">
-                    {rate > 0 ? (
-                      <span className="px-2 py-0.5 text-xs rounded bg-red-600/20 text-red-400 font-semibold">
-                        %{rate}
-                      </span>
-                    ) : (
-                      <span className="text-neutral-500">-</span>
-                    )}
-                  </td>
-
-                  <td className="p-3">
-                    <span className={`px-2 py-0.5 text-xs rounded ${b.cls}`}>{b.text}</span>
-                    <span className="text-neutral-300 ml-2">{toNum(p.stock, 0)}</span>
-                  </td>
-
-                  <td className="p-3">
-                    <div className="flex justify-center gap-4">
-                      <button
-                        onClick={() => {
-                          setEditing(p.id);
-                          setShowForm(true);
-                          setPreview(null);
-                          setGalleryPreviews([]);
-                          setForm({
-                            name: p.name || "",
-                            price: p.price ?? "",
-                            old_price: p.old_price ?? "",
-                            stock: p.stock ?? "",
-                            category: p.category || "",
-                            description: p.description || "",
-                            image: null,
-                            image_url: p.image_url || null,
-                            gallery_files: [],
-                            gallery: Array.isArray(p.gallery) ? p.gallery : [],
-                            is_new: p.is_new || false,
-                          });
-                        }}
-                        className="text-yellow-400 hover:text-yellow-500"
-                      >
-                        Düzenle
-                      </button>
-                          <button
-    onClick={() => sendTelegramMessage(p)}
-    className="text-blue-400 hover:text-blue-500"
-  >
-    Telegram’a Gönder 📩
-  </button>
-
-                      <button
-                        onClick={() => remove(p.id, p.image_url, p.gallery)}
-                        className="text-red-500 hover:text-red-600"
-                      >
-                        Sil 🗑️
-                      </button>
-                    </div>
-                  </td>
-                </tr>
-              );
-            })}
-
-            {filtered.length === 0 && (
-              <tr>
-                <td className="p-6 text-center text-neutral-400" colSpan={8}>
-                  Kriterlere uygun ürün bulunamadı.
-                </td>
-              </tr>
-            )}
-          </tbody>
-        </table>
-      </div>
     </div>
-  );
-}
-
-// -------------------------------------
-// Toast helper
-// -------------------------------------
-function toast(text, type = "info") {
-  window.dispatchEvent(
-    new CustomEvent("toast", {
-      detail: { type, text },
-    })
   );
 }

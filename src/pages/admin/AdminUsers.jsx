@@ -11,6 +11,9 @@ const TRY = (n) =>
 export default function AdminUsers() {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [search, setSearch] = useState("");
+const [filtered, setFiltered] = useState([]);
+
 
   useEffect(() => {
     (async () => {
@@ -27,6 +30,58 @@ export default function AdminUsers() {
       setLoading(false);
     })();
   }, []);
+
+  useEffect(() => {
+  async function calculateRealSpent() {
+    const updated = await Promise.all(
+      users.map(async (u) => {
+        const { data: orders } = await supabase
+          .from("orders")
+          .select("final_amount")
+          .eq("user_id", u.id);
+
+        const realSpent = (orders || []).reduce(
+          (sum, o) => sum + Number(o.final_amount || 0),
+          0
+        );
+
+        return {
+          ...u,
+          real_spent: realSpent,
+          real_points: Math.floor(realSpent),
+          real_rewards: Math.floor(realSpent / 20000),
+        };
+      })
+    );
+
+    setFiltered(updated);
+  }
+
+  if (users.length > 0) calculateRealSpent();
+}, [users]);
+
+
+  useEffect(() => {
+  const q = search.toLowerCase().trim();
+
+  if (!q) {
+    setFiltered(users);
+    return;
+  }
+
+  const f = users.filter((u) =>
+    (u.full_name || "").toLowerCase().includes(q) ||
+    (u.email || "").toLowerCase().includes(q) ||
+    (u.phone || "").toLowerCase().includes(q) ||
+    (u.address || "").toLowerCase().includes(q) ||
+    (u.role || "").toLowerCase().includes(q) ||
+    String(u.total_spent || "").includes(q) ||
+    String(u.points || "").includes(q)
+  );
+
+  setFiltered(f);
+}, [search, users]);
+
 
   if (loading)
     return (
@@ -81,6 +136,27 @@ async function handleDelete(id, name) {
           👥 Kullanıcı Bilgileri & Puan Takip
         </h1>
 
+        <input
+  type="text"
+  placeholder="🔍 Kullanıcı ara (ad, e-posta, telefon, adres...)"
+  value={search}
+  onChange={(e) => setSearch(e.target.value)}
+  className="
+    w-full mb-5 px-4 py-3 
+    rounded-xl 
+    bg-neutral-800 
+    border border-neutral-700 
+    focus:border-yellow-500 
+    focus:ring-2 focus:ring-yellow-500/40
+    outline-none 
+    transition-all
+    text-gray-200 
+    placeholder-gray-500
+    shadow-[0_0_20px_rgba(250,204,21,0.15)]
+  "
+/>
+
+
         {users.length === 0 ? (
           <p className="text-gray-400 text-center">
             Hiç kullanıcı bulunamadı.
@@ -109,7 +185,7 @@ async function handleDelete(id, name) {
               </thead>
 
               <tbody>
-                {users.map((u) => (
+              {filtered.map((u) => (
                   <tr
                     key={u.id}
                     className="border-b border-gray-800 hover:bg-white/5 transition-all"
@@ -133,13 +209,13 @@ async function handleDelete(id, name) {
                       {u.address || "Adres belirtilmedi"}
                     </td>
                     <td className="text-right px-2 text-green-400 font-semibold">
-                      {TRY(u.total_spent || 0)}
+                  {TRY(u.real_spent || 0)}
                     </td>
                     <td className="text-right px-2 text-yellow-400 font-semibold">
-                      {u.points || 0}
+                  {u.real_points || 0}
                     </td>
                     <td className="text-right px-2 text-blue-400">
-                      {u.rewards || 0} 🎁
+                  {u.real_rewards || 0} 🎁
                     </td>
                     <td className="text-right px-2 text-gray-400">
                       {u.role || "-"}

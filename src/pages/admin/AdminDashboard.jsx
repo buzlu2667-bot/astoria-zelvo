@@ -28,11 +28,20 @@ export default function AdminDashboard() {
       const since = new Date();
       since.setDate(since.getDate() - 30);
 
-      const { data: od } = await supabase
-        .from("orders")
-        .select("id,total_amount,created_at,status")
-        .gte("created_at", since.toISOString())
-        .order("created_at", { ascending: false });
+    const { data: odRaw } = await supabase
+  .from("orders")
+  .select("*")
+  .gte("created_at", since.toISOString());
+
+const od = (odRaw || []).map(o => ({
+  id: o.id,
+total: o.final_amount ?? o.total_amount ?? 0,
+  created_at: o.created_at ?? o.createdAt,
+  status: o.status ?? o.order_status ?? "unknown",
+}));
+
+setOrders(od);
+
 
       const { data: st } = await supabase
         .from("settings")
@@ -47,7 +56,7 @@ if (od?.length) {
   const grouped = {};
   od.forEach(o => {
     const day = new Date(o.created_at).toLocaleDateString("tr-TR");
-    grouped[day] = (grouped[day] || 0) + Number(o.total_amount || 0);
+  grouped[day] = (grouped[day] || 0) + Number(o.total || 0);
   });
 
   const chartArr = Object.entries(grouped).map(([date, total]) => ({
@@ -55,8 +64,9 @@ if (od?.length) {
     total,
   }));
 
-  setChartData(chartArr.reverse()); // Son gün sağda olsun
+  setChartData(chartArr.reverse());
 }
+
 
 
       if (st?.value) {
@@ -86,7 +96,7 @@ if (od?.length) {
   }, [maint, until]);
 
   const sums = useMemo(() => {
-    const total = orders.reduce((s, o) => s + Number(o.total_amount || 0), 0);
+   const total = orders.reduce((s, o) => s + Number(o.total || 0), 0);
     return {
       total,
       count: orders.length,

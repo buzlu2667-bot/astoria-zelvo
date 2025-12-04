@@ -18,8 +18,11 @@ export default function AdminLayout() {
         <NavItem to="/admin/products">Ürünler</NavItem>
         <NavItem to="/admin/coupons">Kuponlar</NavItem>
         <NavItem to="/admin/users">Kullanıcılar</NavItem>
-        <NavItem to="/admin/categories">Kategoriler</NavItem>
         <NavItem to="/admin/notifications">Bildirim Gönder</NavItem>
+        <NavItem to="/admin/messages">Mesajlar</NavItem>
+        <NavItem to="/admin/banner-settings">Banner Ayarları</NavItem>
+        <NavItem to="/admin/scroll-text">Kayan Yazı</NavItem>
+        <NavItem to="/admin/mail">Mail Gönder</NavItem>
       
 
       </aside>

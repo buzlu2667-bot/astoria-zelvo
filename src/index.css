@@ -2,6 +2,16 @@
 @tailwind components;
 @tailwind utilities;
 
+
+
+:root {
+  --card-bg: #1d1f37;
+  --card-border: #1e0a0a;
+  --card-shadow: rgba(0,0,0,0.4);
+  --card-text: #a7a4a4;
+}
+
+
 /* 🌑 Global Tema */
 body {
   @apply bg-black text-white font-sans antialiased transition-colors duration-300;
@@ -452,12 +462,7 @@ iframe[src*="livechat"] {
 .animate-fadeIn {
   animation: fadeIn 0.25s ease-out;
 }
-/* 📱 Sadece mobilde yuvarlak logoyu gizle */
-@media (max-width: 640px) {
-  .logo-circle {
-    display: none !important;
-  }
-}
+
 @media (max-width: 640px) {
   .header-icons {
     gap: 6px !important;
@@ -533,5 +538,204 @@ iframe[src*="livechat"] {
   }
 }
 @media (max-width: 640px) {   .order-image-box {     width: 75px;     height: 75px;   } }
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.animate-fadeIn {
+  animation: fadeIn 0.3s ease;
+}
+
+@keyframes scaleIn {
+  0% { transform: scale(0.8); opacity: 0; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+.animate-scaleIn {
+  animation: scaleIn 0.3s cubic-bezier(.25,1.2,.5,1);
+}
+/* tüm site sayfası ren palet */
+body {
+  background: linear-gradient(
+    135deg,
+    #0f0017 100%,
+    #060502 1000%,
+    #131108 100%,
+    #000000 100%
+  );
+  background-attachment: fixed;
+  background-size: cover;
+  background-repeat: no-repeat;
+  min-height: 100vh;
+}
+.maxi-card {
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  box-shadow: 0 0 15px var(--card-shadow);
+  color: var(--card-text);
+
+  border-radius: 20px;
+  padding: 20px;
+  transition: 0.25s;
+}
+
+.maxi-card:hover {
+  box-shadow: 0 0 25px var(--card-shadow);
+  transform: translateY(-3px);
+}
+/* 🔥 Checkout Form Input Style */
+.maxi-input {
+  background-color: #494857 !important;
+  border: 1px solid #1f1f1f !important;
+  color: #fff !important;
+  border-radius: 10px;
+  outline: none;
+
+  /* Premium focus */
+  transition: 0.25s ease;
+}
+
+.maxi-input:focus {
+  border-color: #facc15 !important; /* yellow-400 */
+  box-shadow: 0 0 12px rgba(250, 204, 21, 0.25);
+}
+.input-premium {
+  @apply bg-[#111] text-white border border-[#222] rounded-xl px-3 py-2
+  focus:border-[#00ffaa] focus:ring-0 outline-none transition;
+}
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.auto-scroll {
+  display: flex;
+  width: max-content;
+  animation: scroll 18s linear infinite;
+}
+
+@keyframes scroll {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+/* ⭐ Maximora — Modal açıksa LiveChat tamamen gizlensin */
+.modal-open iframe[src*="livechat"],
+.modal-open iframe[id*="livechat"],
+.modal-open div[id*="livechat"],
+.modal-open div[class*="livechat"],
+.modal-open .lcw-widget,
+.modal-open .lc-launcher,
+.modal-open .lc-button,
+.modal-open #lc-container,
+.modal-open #livechat-wrapper,
+.modal-open [id*="chat-widget"],
+.modal-open [class*="chat-widget"],
+.modal-open iframe {
+  pointer-events: none !important;
+  opacity: 0 !important;
+  visibility: hidden !important;
+  transform: scale(0) !important;
+  z-index: -999999 !important;
+}
+.maxi-card {
+  background: rgba(15, 15, 15, 0.65);
+  border: 1px solid rgba(255, 221, 80, 0.15);
+  backdrop-filter: blur(18px);
+  border-radius: 18px;
+  padding: 22px;
+  box-shadow: 0 0 25px rgba(255, 224, 80, 0.08);
+  transition: 0.25s ease;
+}
+.maxi-card:hover {
+  border-color: rgba(255, 224, 80, 0.35);
+  box-shadow: 0 0 45px rgba(255, 224, 80, 0.25);
+}
+.maxi-input {
+  background: rgba(10,10,10,0.7);
+  border: 1px solid rgba(255, 221, 80, 0.18);
+  border-radius: 12px;
+  color: #fff;
+}
+.maxi-input:focus {
+  border-color: #facc15;
+  box-shadow: 0 0 15px rgba(250, 204, 21, 0.4);
+}
+@keyframes pulseGlow {
+  0% {
+    box-shadow: 0 0 8px rgba(0,255,150,0.4);
+    opacity: 0.8;
+  }
+  50% {
+    box-shadow: 0 0 18px rgba(0,255,150,0.9);
+    opacity: 1;
+  }
+  100% {
+    box-shadow: 0 0 8px rgba(0,255,150,0.4);
+    opacity: 0.8;
+  }
+}
+
+.status-glow {
+  animation: pulseGlow 1.6s infinite ease-in-out;
+}
+/* 🔥 PREMIUM STATUS BADGE GLOW – Neon Effect */
+.status-glow {
+  animation: statusPulse 1.6s infinite ease-in-out;
+  box-shadow: 0 0 8px rgba(255, 230, 0, 0.4), 0 0 15px rgba(255, 230, 0, 0.2);
+}
+
+@keyframes statusPulse {
+  0% {
+    box-shadow: 0 0 4px rgba(255, 230, 0, 0.3),
+                0 0 10px rgba(255, 230, 0, 0.15);
+    transform: scale(1);
+  }
+  50% {
+    box-shadow: 0 0 10px rgba(255, 230, 0, 0.6),
+                0 0 20px rgba(255, 230, 0, 0.25);
+    transform: scale(1.03);
+  }
+  100% {
+    box-shadow: 0 0 4px rgba(255, 230, 0, 0.3),
+                0 0 10px rgba(255, 230, 0, 0.15);
+    transform: scale(1);
+  }
+}
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.hide-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+body.login-page {
+  background-image: url('/login-bg.jpg');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+}
+body.login-page {
+  background-image: url('/login-bg.jpg');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+}
+
 
 

@@ -1,64 +1,45 @@
-import { createContext, useContext, useEffect, useState } from "react";
+import { createContext, useContext, useState, useEffect } from "react";
 import { supabase } from "../lib/supabaseClient";
 
 const SessionContext = createContext();
 
 export const SessionProvider = ({ children }) => {
   const [session, setSession] = useState(null);
-  const [isRecovering, setIsRecovering] = useState(false);
-
-  // ✅ Çıkış fonksiyonu EKLENDİ
-  async function doSignOut() {
-    await supabase.auth.signOut();
-    setSession(null);
-    console.log("✅ SignOut Tamamlandı!");
-  }
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const init = async () => {
-      const { data } = await supabase.auth.getSession();
-      const current = data.session;
-      if (current?.type === "recovery") {
-        setIsRecovering(true);
-        setSession(null);
-      } else {
-        setSession(current);
-      }
-    };
-    init();
+    let mounted = true;
 
+    // 🔥 İlk session sadece 1 kez alınır
+    supabase.auth.getSession().then(({ data }) => {
+      if (!mounted) return;
+      setSession(data.session);
+      setLoading(false);
+    });
+
+    // 🔥 Auth event listener (tek stabil kaynak)
     const { data: listener } = supabase.auth.onAuthStateChange(
-      async (event, newSession) => {
-        switch (event) {
-          case "PASSWORD_RECOVERY":
-            setIsRecovering(true);
-            setSession(null);
-            break;
-
-          case "SIGNED_IN":
-            if (!isRecovering) setSession(newSession);
-            break;
-
-          case "SIGNED_OUT":
-            setIsRecovering(false);
-            setSession(null);
-            break;
-
-          default:
-            break;
-        }
+      (_event, newSession) => {
+        if (!mounted) return;
+        setSession(newSession); // tek güncelleme noktası
       }
     );
 
-    return () => listener.subscription.unsubscribe();
-  }, [isRecovering]);
+    return () => {
+      mounted = false;
+      listener.subscription.unsubscribe();
+    };
+  }, []);
 
   return (
     <SessionContext.Provider
       value={{
         session,
-        isRecovering,
-        signOut: doSignOut, // ✅ ARTIK BASINCA ÇALIŞIR
+        loading,
+        signOut: async () => {
+          await supabase.auth.signOut();
+          setSession(null);
+        },
       }}
     >
       {children}

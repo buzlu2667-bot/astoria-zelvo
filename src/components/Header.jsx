@@ -11,9 +11,17 @@ import { Link, useLocation } from "react-router-dom";
 import { useSession } from "../context/SessionContext";
 import { useCart } from "../context/CartContext";
 import { useFavorites } from "../context/FavoritesContext";
-import { Heart, ShoppingCart, User2, LogOut, PackageSearch, Menu, ShieldCheck, X } from "lucide-react";
+import { Heart, ShoppingCart, User2, LogOut, PackageSearch, Menu, ShieldCheck, X, MessageSquare } from "lucide-react";
 import { Truck } from "lucide-react";
 import { v4 as uuidv4 } from "uuid";
+import ScrollingText from "../components/ScrollingText";
+import AccountModal from "../components/AccountModal";
+import { UserPlus } from "lucide-react";
+import SearchBar from "../components/SearchBar";
+import { Search } from "lucide-react";
+import { ChevronRight } from "lucide-react";
+
+
 
 
 function useFavoriteCount() {
@@ -29,6 +37,11 @@ const initialReset = { email: "" };
 export default function Header() {
   const { session, isRecovering } = useSession();
   const { cart } = useCart();
+  const navigate = useNavigate();
+  // ⭐ Banner Settings
+const [headerBanner, setHeaderBanner] = useState(null);
+const [scrollText, setScrollText] = useState(null);
+
     const [clientId, setClientId] = useState("");
 
   useEffect(() => {
@@ -46,10 +59,11 @@ export default function Header() {
   
   const [menuOpen, setMenuOpen] = useState(false);
   const [notifications, setNotifications] = useState([]);
-  const [loginOpen, setLoginOpen] = useState(false);
-  const [signupOpen, setSignupOpen] = useState(false);
-  const [resetOpen, setResetOpen] = useState(false);
+  const [unreadCount, setUnreadCount] = useState(0);
+ 
   const [knightOpen, setKnightOpen] = useState(false);
+  const [searchOpen, setSearchOpen] = useState(false);
+  
  
 
 
@@ -57,12 +71,112 @@ export default function Header() {
 // ✅ Dinamik kategoriler (Supabase'den çek)
 const [categories, setCategories] = useState([]);
 
+const [accountModal, setAccountModal] = useState(false);
+
+
+
+
 useEffect(() => {
+  
+  if (accountModal) {
+    document.body.style.overflow = "hidden";
+  } else {
+    document.body.style.overflow = "auto";
+  }
+}, [accountModal]);
+
+useEffect(() => {
+  if (accountModal) {
+    document.body.classList.add("modal-open");
+  } else {
+    document.body.classList.remove("modal-open");
+  }
+}, [accountModal]);
+
+// ⭐ Banner verisini Supabase'den çek
+const loadHeaderBanner = async () => {
+  const { data } = await supabase
+    .from("banner_settings")
+    .select("*")
+    .eq("id", 1)
+    .single();
+
+  if (!data) return;
+
+  const now = new Date();
+  const start = data.start_date ? new Date(data.start_date) : null;
+  const end = data.end_date ? new Date(data.end_date) : null;
+
+  let show = data.is_active;
+
+  if (start && now < start) show = false;
+  if (end && now > end) show = false;
+
+  if (show) setHeaderBanner(data);
+};
+ // 🟦 Mesajları yükle
+async function loadUnreadMessages() {
+  const user = (await supabase.auth.getUser()).data.user;
+
+  
+  if (!user) return;
+
+ const { data, error } = await supabase
+  .from("messages")
+  .select("*")
+  .or(`is_global.eq.true,user_id.eq.${user.id}`)
+  .eq("is_read", false)
+  .eq("hidden_by_user", false);   // ⭐⭐ EKLENECEK SATIR
+
+  if (!error) setUnreadCount(data.length);
+  if (!error) {
+  setUnreadCount(data.length);
+
+ 
+}
+
+}
+
+// 🟦 Mesaj silinince unread count’u güncelle
+useEffect(() => {
+  function refresh() {
+    loadUnreadMessages();
+  }
+
+  window.addEventListener("refresh-unread", refresh);
+  return () => window.removeEventListener("refresh-unread", refresh);
+}, [session]);
+
+
+// 🟡 ⭐⭐ BURAYA EKLİYORSUN ⭐⭐
+async function loadScroll() {
+ 
+  const { data } = await supabase
+    .from("scroll_text")
+    .select("*")
+    .eq("id", 1)
+    .single();
+
+  setScrollText(data);
+}
+
+// 🟦 Session değişince unread mesajları yükle
+useEffect(() => {
+  if (session) loadUnreadMessages();
+}, [session]);
+
+// 🟦 İlk yüklemeler (banner, categories…)
+
+
+useEffect(() => {
+  loadHeaderBanner();
+   loadScroll(); 
   (async () => {
+     if (session) loadUnreadMessages();
     const { data, error } = await supabase
-      .from("categories")
+      .from("main_categories")
       .select("*")
-      .order("created_at", { ascending: true });
+     .order("sort_index", { ascending: true });
 
     if (error) console.error("❌ Kategoriler alınamadı:", error);
     else setCategories(data || []);
@@ -81,20 +195,19 @@ const [resetMsg, setResetMsg] = useState("");
 
 const [accountOpen, setAccountOpen] = useState(false);
 
-// 🟡 Hesabım menüsü dışına tıklayınca kapansın
-useEffect(() => {
-  function handleClickOutside(e) {
-    if (
-      !e.target.closest(".account-menu") &&
-      !e.target.closest(".account-button")
-    ) {
-      setAccountOpen(false);
-    }
-  }
 
-  document.addEventListener("mousedown", handleClickOutside);
-  return () => document.removeEventListener("mousedown", handleClickOutside);
-}, []);
+// 🟦 Realtime: Yeni mesaj gelince güncelle
+useEffect(() => {
+  const channel = supabase
+    .channel("realtime:messages")
+    .on("postgres_changes", { event: "INSERT", schema: "public", table: "messages" }, async (payload) => {
+      loadUnreadMessages();
+    })
+    .subscribe();
+
+  return () => supabase.removeChannel(channel);
+}, []); // ❗ BOŞ ARRAY
+
 
 
   const [orderCheckOpen, setOrderCheckOpen] = useState(false);
@@ -397,6 +510,38 @@ async function closeNotification() {
  
   return (
     <>
+
+    {/* 🔥 GLOBAL MOBIL ICON KÜÇÜLTÜCÜ */}
+    <style>
+      {`
+        @media (max-width: 640px) {
+          .header-icons svg {
+            width: 20px !important;
+            height: 20px !important;
+          }
+        }
+      `}
+    </style>
+
+    {scrollText && scrollText.active && (
+  <ScrollingText data={scrollText} />
+)}
+
+
+    {/* ⭐⭐⭐ GLOBAL ÜST BANNER */}
+{headerBanner && headerBanner.image_url && (
+  <div
+    style={{
+      width: "100%",
+      height: `${headerBanner.height_px}px`,
+      backgroundImage: `url(${headerBanner.image_url})`,
+      backgroundSize: "cover",
+      backgroundPosition: "center",
+    }}
+    className="cursor-pointer"
+  ></div>
+)}
+
 {/* ✅ Premium Modal Notification (Center Popup - Final Clean Version) */}
 {notificationsReady && notifications.length > 0 && !hideNotification && (
   <div className="fixed inset-0 bg-black/70 backdrop-blur-md z-[99999] flex items-center justify-center p-4">
@@ -404,6 +549,15 @@ async function closeNotification() {
       <h2 className="text-yellow-400 text-lg font-bold mb-3">
         🔔 {notifications[0]?.title || "Yeni Duyuru"}
       </h2>
+
+      {/* 📸 Bildirim Görseli (Varsa) */}
+{notifications[0]?.image_url && (
+  <img
+    src={notifications[0].image_url}
+    alt="notification-img"
+    className="w-full rounded-xl mb-4 shadow-[0_0_20px_rgba(255,215,0,0.3)]"
+  />
+)}
       <p className="text-gray-300 mb-5 leading-snug">
         {notifications[0]?.message || "Yeni bir bildirim var."}
       </p>
@@ -419,54 +573,44 @@ async function closeNotification() {
 )}
 
       {/* TOPBAR */}
-   <header className="bg-[#050505] text-white border-b border-yellow-500/20 shadow-[0_0_20px_rgba(255,215,0,0.08)] z-[60]">
+  <header className="bg-[#050505] text-white border-b border-yellow-500/20 shadow-[0_0_20px_rgba(255,215,0,0.08)] z-[999] relative">
 
   <div className="max-w-7xl mx-auto flex items-center justify-between px-3 sm:px-6 py-3">
 
           {/* Menu */}
-          <button
-            onClick={() => setMenuOpen(true)}
-            className="rounded-xl p-2 hover:bg-white/5 transition"
-            aria-label="Menü"
-          >
-            <Menu className="w-6 h-6" />
-          </button>
+         <button
+  onClick={() => setMenuOpen(true)}
+  className="
+    rounded-xl p-2 hover:bg-white/5 transition
+    md:mr-6   /* ⭐ Masaüstünde menüyü sağa 24px kaydırdık */
+  "
+  aria-label="Menü"
+>
+  <Menu className="w-6 h-6" />
+</button>
+
 
          
       {/* ✅ Maximora Logo (Blue + Gold Premium Edition) */}
-<Link to="/" className="flex items-center gap-4 group mobile-hide-logo">
+<Link to="/" className="flex items-center gap-4 group mr-auto">
  {/* ✅ Mavi + Altın Degrade Logo */}
 {/* ✅ Mavi + Altın Premium Logo (Net Harf Versiyonu) */}
-<div
+<img
+  src="/logo.png"
+  alt="Maximora Logo"
   className="
-    logo-circle
-    w-11 h-11 rounded-full 
-    bg-gradient-to-br from-blue-500 via-blue-400 to-yellow-400
-    flex items-center justify-center 
-    text-white font-extrabold text-lg
-    shadow-[0_0_25px_rgba(80,150,255,0.5)]
-    group-hover:shadow-[0_0_35px_rgba(255,215,0,0.7)]
-    group-hover:scale-110
+    w-11 h-11 object-contain 
+    drop-shadow-[0_0_12px_rgba(255,215,0,0.6)]
+    group-hover:scale-110 
     transition-all duration-300
   "
->
+/>
 
-  <span
-    className="
-      text-white 
-      drop-shadow-[0_0_6px_rgba(255,255,255,0.6)]
-      group-hover:text-blue-100
-      group-hover:drop-shadow-[0_0_10px_rgba(80,150,255,0.9)]
-      transition-all duration-500
-    "
-  >
-    M
-  </span>
-</div>
 
+  
 
   {/* Yazılar */}
-  <div className="leading-[1.1] flex flex-col">
+<div className="leading-[1.1] flex flex-col hidden sm:flex">
     {/* MAXIMORA */}
     <span
       className="
@@ -489,13 +633,37 @@ async function closeNotification() {
 
 
   {/* Right Nav — HESABIM DROPDOWN */}
-<div className="relative flex items-center gap-3 z-30 header-icons">
+<div className="relative flex items-center gap-7 z-30 header-icons ml-auto">
+
+
+
+{/* 🔍 MASAÜSTÜ SEARCH BAR */}
+<div className="hidden lg:flex items-center w-[610px] justify-center mx-8">
+  <SearchBar />
+</div>
+
+
+{/* 🔍 MOBIL MINI SEARCH BAR (SADECE <768px) */}
+<div className="flex lg:hidden items-center w-[220px] sm:w-[220px] mx-2">
+  <div className="flex items-center gap-2 bg-black/30 border border-white/10 rounded-full px-3 py-2 w-full">
+    <Search className="text-gray-300 w-4 h-4" />
+    <input
+      onFocus={() => setSearchOpen(true)}
+      placeholder="Ara..."
+      className="text-sm bg-transparent text-white placeholder-gray-400 outline-none w-full"
+    />
+  </div>
+</div>
+
+
+
+
 
 
   {/* ❤️ FAVORİLER */}
   <Link
     to="/favorites"
-    className="relative rounded-xl p-2 hover:bg-white/5 transition"
+   className="relative rounded-xl p-1 sm:p-2 hover:bg-white/5 transition"
   >
     <Heart className="w-6 h-6 text-pink-400" />
     {favCount > 0 && (
@@ -505,11 +673,43 @@ async function closeNotification() {
     )}
   </Link>
 
+  
+        
+       {/* 💬 Mesajlar */}
+<Link
+  to="/mesajlarim"
+  className="
+    relative rounded-xl p-1 sm:p-2 hover:bg-white/5 transition
+    hidden 2xl:flex
+  "
+>
+
+  <MessageSquare className="w-6 h-6 text-blue-400" />
+
+  {unreadCount > 0 && (
+    <span
+      className="
+        absolute -top-1.5 -right-1.5 
+        bg-blue-500 text-white text-[10px]
+        min-w-[18px] h-[18px]
+        flex items-center justify-center 
+        rounded-full font-bold shadow-lg
+      "
+    >
+      {unreadCount}
+    </span>
+  )}
+</Link>
+
+
+
+
+
   {/* 🛒 SEPET */}
-  <Link
-    to="/cart"
-    className="relative rounded-xl p-2 hover:bg-white/5 transition"
-  >
+ <Link
+  to="/cart"
+  className="relative rounded-xl p-1 sm:p-2 hover:bg-white/5 transition hidden 2xl:flex"
+>
     <ShoppingCart className="w-6 h-6 text-yellow-400" />
     {cart?.length > 0 && (
       <span className="absolute -top-1.5 -right-1.5 bg-yellow-500 text-black text-[10px] min-w-[18px] h-[18px] flex items-center justify-center rounded-full font-bold shadow-lg">
@@ -518,476 +718,260 @@ async function closeNotification() {
     )}
   </Link>
 
- {/* 👤 HESABIM BUTTON */}
+  {/* 🆕 KAYIT OL BUTONU (Sadece giriş yoksa görünür) */}
+{/* 🆕 MOBİLDE BUTON DEĞİL İKON GÖRÜNECEK */}
+{!session && (
+  <>
+    {/* DESKTOP: Kayıt Ol */}
+   <Link
+  to="/register"
+  className="
+    hidden lg:flex items-center gap-2
+    h-[40px] px-4 min-w-[110px]
+    rounded-xl
+    bg-blue-500/20 border border-blue-400/40
+    hover:bg-blue-500/30 transition
+  "
+>
+  <UserPlus className="w-5 h-5 text-blue-300" />
+  <span className="text-xs font-semibold text-blue-200 whitespace-nowrap">
+    Kayıt Ol
+  </span>
+</Link>
+
+
+    {/* MOBILE: Sadece ikon (UserPlus) */}
+   <Link
+  to="/register"
+  className="hidden"
+>
+
+      <UserPlus className="w-6 h-6 text-blue-300" />
+    </Link>
+  </>
+)}
+
+{/* 👤 HESABIM / GİRİŞ YAP */}
 <button
   onClick={() => {
-    setLoginOpen(false);
-    setSignupOpen(false);
-    setResetOpen(false);
-    setAccountOpen(!accountOpen);
+    if (!session) {
+      window.location.href = "/login";
+      return;
+    }
+    setAccountModal(true);
   }}
   className="
-    account-button
-    flex items-center gap-2 px-3 py-2 rounded-xl
-    bg-white/10 border border-white/10
+  account-button
+  hidden 2xl:flex
+  items-center gap-2
+    h-[32px] sm:h-[40px]
+    px-2 sm:px-3
+    rounded-xl bg-white/10 border border-white/10
     hover:bg-white/20 transition
   "
 >
+  {/* MOBILE: Sadece ikon */}
+<User2 className="sm:hidden w-5 h-5 text-yellow-400" />
 
-    <User2 className="w-5 h-5 text-yellow-400" />
+  {/* DESKTOP: Yazılı */}
+  <User2 className="hidden sm:block w-5 h-5 text-yellow-400" />
+ <span className="hidden sm:block text-xs font-semibold text-white whitespace-nowrap">
+  {session 
+    ? (session.user.user_metadata?.username 
+        ? session.user.user_metadata.username 
+        : session.user.email.split('@')[0])
+    : "Giriş Yap"}
+</span>
 
-    <div className="leading-tight text-left hidden sm:block">
-      <div className="text-[10px] text-gray-300">HESABIM</div>
-      <div className="text-xs font-bold">
-        {session ? session.user.email.split('@')[0].toUpperCase() : "Giriş Yap"}
-      </div>
-    </div>
-  </button>
-
-  {/* ⬇️ DROPDOWN */}
-  {accountOpen && (
-  <div
-    className="
-      account-menu
-      absolute right-0 top-full mt-2 w-56 
-      bg-[#111] border border-white/10 rounded-xl shadow-xl
-      z-[1500] animate-fadeIn
-    "
-  >
-
-      {session ? (
-        <>
-          <button
-            onClick={() => {
-              setAccountOpen(false);
-              go("/dashboard", true);
-            }}
-            className="w-full flex items-center gap-3 px-4 py-3 text-left hover:bg-white/10 text-sm"
-          >
-            <User2 className="w-5 h-5 text-purple-400" />
-            Profilim
-          </button>
-
-          <button
-            onClick={() => {
-              setAccountOpen(false);
-              go("/orders", true);
-            }}
-            className="w-full flex items-center gap-3 px-4 py-3 text-left hover:bg-white/10 text-sm"
-          >
-            <PackageSearch className="w-5 h-5 text-yellow-400" />
-            Siparişlerim
-          </button>
-             <button
-      onClick={() => setOrderCheckOpen(true)}
-      className="w-full flex items-center gap-3 px-4 py-3 text-left hover:bg-white/10 transition text-sm"
-    >
-      <PackageSearch className="w-5 h-5 text-blue-400" />
-      Sipariş Sorgula
-    </button>
-          <button
-            onClick={() => {
-              setAccountOpen(false);
-              go("/favorites", true);
-            }}
-            className="w-full flex items-center gap-3 px-4 py-3 text-left hover:bg-white/10 text-sm"
-          >
-            <Heart className="w-5 h-5 text-rose-400" />
-            Favorilerim
-          </button>
-
-          {isAdmin && (
-            <button
-              onClick={() => {
-                setAccountOpen(false);
-                window.location.href = "/admin";
-              }}
-              className="w-full flex items-center gap-3 px-4 py-3 text-left hover:bg-white/10 text-sm text-yellow-400 font-semibold"
-            >
-              <ShieldCheck className="w-5 h-5 text-yellow-400" />
-              Admin Paneli
-            </button>
-          )}
-
-          <button
-            onClick={async () => {
-              setAccountOpen(false);
-              await supabase.auth.signOut();
-              window.location.href = "/";
-            }}
-            className="w-full flex items-center gap-3 px-4 py-3 text-left hover:bg-red-500/10 text-sm text-red-300"
-          >
-            <LogOut className="w-5 h-5 text-red-400" />
-            Çıkış Yap
-          </button>
-        </>
-      ) : (
-        <>
-          <button
-            onClick={() => {
-              setAccountOpen(false);
-              setLoginOpen(true);
-            }}
-            className="w-full text-left px-4 py-3 hover:bg-white/10 text-sm"
-          >
-            Giriş Yap
-          </button>
-
-          <button
-            onClick={() => {
-              setAccountOpen(false);
-              setSignupOpen(true);
-            }}
-            className="w-full text-left px-4 py-3 hover:bg-white/10 text-sm"
-          >
-            Kayıt Ol
-          </button>
-        </>
-      )}
-    </div>
-  )}
+</button>
 </div>
 
-
-        </div>
+       </div>
       </header>
 
-      {/* LEFT DRAWER (Premium Glass) */}
-      {/* ✅ Sağ Login Drawer Overlay - dışa tıklayınca kapanır */}
-{loginOpen && (
-  <div
-    className="fixed inset-0 bg-black/40 backdrop-blur-sm z-[9998]"
-    onClick={() => setLoginOpen(false)}
-  ></div>
-)}
-{/* ✅ Menu Overlay (outside click closes menu) */}
+      
+
+
+
+   {/* ⭐⭐ ULTRA PREMIUM LEFT DRAWER — V12 ⭐⭐ */}
+
+{/* Overlay (arka plan blur + tıklayınca kapanır) */}
 {menuOpen && (
   <div
-    className="fixed inset-0 bg-black/40 backdrop-blur-sm z-[998]"
+    className="fixed inset-0 bg-black/40 backdrop-blur-sm z-[998] transition-opacity duration-300"
     onClick={() => setMenuOpen(false)}
   ></div>
 )}
 
-      <aside
-        className={`fixed top-0 left-0 h-full w-80 backdrop-blur-xl bg-[rgba(10,10,10,0.75)] border-r border-yellow-500/25 shadow-[0_0_40px_rgba(255,215,0,0.15)] transform transition-transform duration-300 z-[999] ${
-          menuOpen ? "translate-x-0" : "-translate-x-full"
-        }`}
-      >
-        <div className="flex justify-between items-center px-5 py-4 border-b border-white/10">
-          <h2 className="text-lg font-semibold text-yellow-400">Keşfet</h2>
-          <button onClick={() => setMenuOpen(false)} className="rounded-lg p-2 hover:bg-white/10 transition" aria-label="Kapat">
-            <X className="w-6 h-6" />
+<aside
+  className={`
+    fixed top-0 left-0 h-full w-[300px]
+    bg-[rgba(13,13,13,0.78)] backdrop-blur-2xl
+    border-r border-yellow-500/20
+    shadow-[0_0_50px_rgba(255,215,0,0.25)]
+    transition-transform duration-300 ease-[cubic-bezier(.4,0,.2,1)]
+    z-[99999]
+    ${menuOpen ? "translate-x-0" : "-translate-x-full"}
+  `}
+>
+
+  {/* Header */}
+  <div className="
+    flex justify-between items-center
+    px-5 py-4 
+    border-b border-yellow-500/20 
+    bg-black/20
+    shadow-[0_0_15px_rgba(255,215,0,0.05)]
+  ">
+    <h2 className="text-lg font-bold text-yellow-400 tracking-wide">
+      KEŞFET 🔥
+    </h2>
+
+    <button
+      onClick={() => setMenuOpen(false)}
+      className="
+        p-2 rounded-lg
+        hover:bg-white/10 
+        text-gray-300
+        transition-all
+      "
+    >
+      <X className="w-6 h-6" />
+    </button>
+  </div>
+
+  {/* Kullanıcı Kartı */}
+  <div className="
+    px-5 py-4 
+    border-b border-yellow-500/10 
+    bg-black/10
+  ">
+    {!session ? (
+      <div className="flex gap-3 items-center">
+        <User2 className="w-10 h-10 p-2 rounded-xl bg-white/5 text-yellow-300" />
+        <div>
+          <p className="text-white/80 text-sm">Giriş Yap / Kayıt Ol</p>
+          <button
+            onClick={() => (window.location.href = "/login")}
+            className="text-yellow-400 text-xs underline"
+          >
+            Hesabına giriş yap
           </button>
         </div>
-
-  
-
-        {/* ✅ Dinamik kategoriler */}
-<nav className="p-5 flex flex-col gap-3">
-  {categories.length === 0 ? (
-    <p className="text-gray-400 text-sm">Kategori bulunamadı.</p>
-  ) : (
-    categories.map((cat) => (
-      <CategoryLink
-        key={cat.id}
-        to={`/category/${encodeURIComponent(cat.slug)}`}
-        text={cat.name}
-        setMenuOpen={setMenuOpen}
-      />
-    ))
-  )}
-</nav>
-
-      </aside>
-{/* ✅ Premium Login Drawer */}
-<div
-  className={`fixed top-0 right-0 h-full w-96 bg-black/70 backdrop-blur-2xl border-l border-yellow-500/20
-  shadow-[0_0_45px_rgba(255,215,0,0.25)] transform transition-transform duration-300 z-[9999]
-  ${loginOpen ? "translate-x-0" : "translate-x-full"}`}
-  onClick={(e) => e.stopPropagation()} // ✅ Drawer içinde tıklayınca kapanmayı engeller
->
-  <div className="flex justify-between items-center px-6 py-5 border-b border-white/10">
-    <h2 className="text-lg font-bold text-yellow-400">Giriş Yap</h2>
-    <button
-      onClick={() => setLoginOpen(false)}
-      className="text-gray-300 hover:text-yellow-300 transition"
-    >
-      ✕
-    </button>
-  </div>
-
-  <form onSubmit={handleLogin} className="px-6 py-4 space-y-5">
-
-  
-    {/* Email */}
-    <div>
-      <label className="text-sm text-gray-400">E-posta</label>
-      <input
-        type="email"
-        value={login.email}
-        onChange={(v) => setLogin({ ...login, email: v.target.value })}
-        required
-        className="w-full p-3 rounded-lg bg-[#1b1b1b] border border-yellow-500/20 focus:border-yellow-400 focus:ring-2 focus:ring-yellow-400 outline-none"
-      />
-    </div>
-
-    {/* Parola */}
-<label className="text-sm text-gray-400">Şifre</label>
-<div className="relative">
-  <input
-    type={login.show ? "text" : "password"}
-    value={login.password}
-    onChange={(v) => setLogin({ ...login, password: v.target.value })}
-    required
-    className="w-full p-3 rounded-lg bg-[#1b1b1b] border border-yellow-500/20 focus:border-yellow-400 focus:ring-0"
-  />
-
-  <button
-  type="button"
-  onClick={() => setLogin(s => ({ ...s, show: !s.show }))}
-  className="absolute right-3 top-3 text-gray-300 hover:text-yellow-300 transition"
-  aria-label={login.show ? "Şifreyi gizle" : "Şifreyi göster"}
->
-  {/* ✅ TERSİNİ KOYDUK */}
-  {login.show ? (
-    /* Şifre görünüyorken => Eye (göz açık) */
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      viewBox="0 0 24 24"
-      className="w-5 h-5"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7-10-7-10-7z" />
-      <circle cx="12" cy="12" r="3" />
-    </svg>
-  ) : (
-    /* Şifre gizliyken => Çizgili göz */
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      viewBox="0 0 24 24"
-      className="w-5 h-5"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <path d="M3 3l18 18" />
-      <path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7-10-7-10-7z" />
-      <path d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0z" />
-    </svg>
-  )}
-</button>
-
-</div>
-
-
-    {/* Login Button */}
-    <button
-      type="submit"
-      className="w-full py-3 rounded-lg bg-gradient-to-r from-yellow-400 to-rose-400 text-black font-semibold hover:brightness-110 transition"
-    >
-      Giriş Yap
-    </button>
- {loginError && (
-      <p className="text-red-400 text-sm text-center">{loginError}</p>
-    )}
-
-    {/* Links */}
-    <div className="flex justify-between text-sm pt-1">
-      <button
-        type="button"
-        onClick={() => {
-          setLoginOpen(false);
-          setResetOpen(true);
-        }}
-        className="text-gray-400 hover:text-yellow-300 transition"
-      >
-        Şifremi Unuttum
-      </button>
-
-      <button
-        type="button"
-        onClick={() => {
-          setLoginOpen(false);
-          setSignupOpen(true);
-        }}
-        className="text-gray-400 hover:text-yellow-300 transition"
-      >
-        Kayıt Ol
-      </button>
-    </div>
-  </form>
-</div>
-{/* ✅ Signup Drawer */}
-{!loginOpen && signupOpen && (
-  <>
-    <div
-      className="fixed inset-0 bg-black/40 backdrop-blur-sm z-[9998]"
-      onClick={() => setSignupOpen(false)}
-    ></div>
-
-    <div
-      className={`fixed top-0 right-0 h-full w-96 bg-black/70 backdrop-blur-2xl border-l border-yellow-500/20
-      shadow-[0_0_45px_rgba(255,215,0,0.25)] transform transition-transform duration-300 z-[9999]`}
-      onClick={(e) => e.stopPropagation()}
-    >
-     <div className="flex items-center justify-between px-6 py-5 border-b border-white/10 relative">
-
-  {/* ✅ Geri Butonu */}
-  <button
-    onClick={() => {
-      setSignupOpen(false);
-      setLoginOpen(true);
-    }}
-    className="absolute left-6 text-gray-300 hover:text-yellow-300 transition"
-    aria-label="Geri"
-  >
-    <svg viewBox="0 0 24 24" className="w-6 h-6" fill="none" stroke="currentColor" strokeWidth="2">
-      <path d="M15 18l-6-6 6-6" strokeLinecap="round" strokeLinejoin="round"/>
-    </svg>
-  </button>
-
-  <h2 className="text-lg font-bold text-yellow-400 mx-auto">Kayıt Ol</h2>
-
-  {/* ✅ Premium X Butonu */}
-  <button
-    onClick={() => setSignupOpen(false)}
-    className="text-gray-300 hover:text-red-400 transition"
-    aria-label="Kapat"
-  >
-    <svg viewBox="0 0 24 24" className="w-6 h-6" fill="none" stroke="currentColor" strokeWidth="2">
-      <path d="M18 6L6 18" strokeLinecap="round" strokeLinejoin="round"/>
-      <path d="M6 6l12 12" strokeLinecap="round" strokeLinejoin="round"/>
-    </svg>
-  </button>
-
-</div>
-
-
-        
-      <form onSubmit={handleSignup} className="px-6 py-4 space-y-5">
-        <div>
-  
-    <input
-      type="text"
-      placeholder="Kullanıcı Adı"
-      required
-      value={signup.username}
-      onChange={(v) => setSignup({ ...signup, username: v.target.value })}
-      className="mt-1 w-full p-3 rounded-lg bg-[#1b1b1b] border border-yellow-500/20"
-    />
-  </div>
-  
-        <input type="email" placeholder="E-posta" required
-          value={signup.email}
-          onChange={(v) => setSignup({ ...signup, email: v.target.value })}
-          className="w-full p-3 rounded-lg bg-[#1b1b1b] border border-yellow-500/20 focus:ring-yellow-400"
-        />
-
-      
-<div className="relative">
-  <input
-    type={signup.show ? "text" : "password"}
-    placeholder="Şifre"
-    required
-    value={signup.password}
-    onChange={(v) => setSignup({ ...signup, password: v.target.value })}
-    className="w-full p-3 rounded-lg bg-[#1b1b1b] border border-yellow-500/20 focus:ring-0"
-  />
-
-  {/* ✅ Premium Göz */}
-  <button
-    type="button"
-    onClick={() => setSignup(s => ({ ...s, show: !s.show }))}
-    className="absolute right-3 top-3 text-gray-300 hover:text-yellow-300 transition"
-    aria-label={signup.show ? "Şifreyi gizle" : "Şifreyi göster"}
-  >
-    {signup.show ? (
-      // ✅ Şifre görünüyorsa => Açık göz
-      <svg viewBox="0 0 24 24" className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="2">
-        <path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7-10-7-10-7z" />
-        <circle cx="12" cy="12" r="3" />
-      </svg>
-    ) : (
-      // ✅ Şifre gizliyse => Çizgili göz
-      <svg viewBox="0 0 24 24" className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="2">
-        <path d="M3 3l18 18" />
-        <path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7-10-7-10-7z" />
-        <circle cx="12" cy="12" r="3" />
-      </svg>
-    )}
-  </button>
-</div>
-
-
-        {signupError && <p className="text-red-400 text-sm">{signupError}</p>}
-         {signupMsg && <p className="text-emerald-400 text-sm">{signupMsg}</p>}
-
-
-        <button className="w-full py-3 rounded-lg bg-gradient-to-r from-yellow-400 to-rose-400 text-black font-semibold">Kayıt Ol</button>
-      </form>
-    </div>
-  </>
-)}
-{/* ✅ Password Reset Drawer */}
-{!loginOpen && !signupOpen && resetOpen && (
-  <>
-    {/* Overlay */}
-    <div
-      className="fixed inset-0 bg-black/40 backdrop-blur-sm z-[9998]"
-      onClick={() => setResetOpen(false)}
-    ></div>
-
-    {/* Drawer */}
-    <div
-      className={`fixed top-0 right-0 h-full w-96 bg-black/70 backdrop-blur-2xl 
-      border-l border-yellow-500/20 shadow-[0_0_45px_rgba(255,215,0,0.25)]
-      transform transition-transform duration-300 z-[9999]
-      ${resetOpen ? "translate-x-0" : "translate-x-full"}`}
-      onClick={(e) => e.stopPropagation()}
-    >
-
-      <div className="flex justify-between items-center px-6 py-5 border-b border-white/10">
-        <h2 className="text-lg font-bold text-yellow-400">Şifre Sıfırla</h2>
-
-        <button
-          onClick={() => setResetOpen(false)}
-          className="text-gray-300 hover:text-yellow-300 transition"
-        >
-          ✕
-        </button>
       </div>
+    ) : (
+      <div className="flex gap-3 items-center">
+        <User2 className="w-10 h-10 p-2 rounded-xl bg-white/5 text-yellow-300" />
+        <div>
+          <p className="text-white/90 font-semibold">
+            {session.user.user_metadata?.username ||
+              session.user.email.split("@")[0]}
+          </p>
 
-      <form onSubmit={handleReset} className="px-6 py-4 space-y-5">
-        <input
-          type="email"
-          placeholder="E-posta adresin"
-          required
-          value={reset.email}
-          onChange={(v) => setReset({ email: v.target.value })}
-          className="w-full p-3 rounded-lg bg-[#1b1b1b] border border-yellow-500/20 focus:ring-yellow-400"
-        />
+          <button
+            onClick={() => setAccountModal(true)}
+            className="text-yellow-400 text-xs underline"
+          >
+            Hesabım
+          </button>
+        </div>
+      </div>
+    )}
+  </div>
 
-        {resetError && (
-          <p className="text-red-400 text-sm">{resetError}</p>
-        )}
+  {/* Kategoriler */}
+  <nav
+    className="
+      p-4 flex flex-col gap-3 
+      overflow-y-auto 
+      max-h-[65vh]
+      custom-scroll
+    "
+  >
+    {categories.length === 0 ? (
+      <p className="text-gray-400 text-sm">Kategori bulunamadı.</p>
+    ) : (
+      categories.map(cat => (
+        <button
+          key={cat.id}
+          onClick={() => {
+            setMenuOpen(false);
+            setTimeout(() => navigate(`/category/${cat.slug}`), 250);
+          }}
+          className="
+            w-full flex items-center justify-between
+            bg-white/5 hover:bg-white/10
+            px-4 py-3
+            rounded-lg
+            border border-white/10
+            transition-all duration-200
+            hover:translate-x-1
+            group
+          "
+        >
+          <span className="text-white text-sm font-medium flex items-center gap-2">
+            <span
+              className="
+                w-2 h-2 rounded-full bg-yellow-400
+                shadow-[0_0_8px_#facc15]
+              "
+            ></span>
+            {cat.title}
+          </span>
 
-        {resetMsg && (
-          <p className="text-emerald-400 text-sm">{resetMsg}</p>
-        )}
-
-        <button className="w-full py-3 rounded-lg bg-gradient-to-r from-yellow-400 to-rose-400 text-black font-semibold">
-          Sıfırlama Bağlantısını Gönder
+          <ChevronRight
+            className="
+              w-4 h-4 text-gray-400 
+              group-hover:text-yellow-400 
+              transition
+            "
+          />
         </button>
-      </form>
-    </div>
-  </>
-)}
+      ))
+    )}
+  </nav>
+
+ {/* Footer */}
+<div
+  className="
+    absolute left-0 w-full px-4 
+    pb-6   /* 🔥 Sepeti yukarı alır */
+    bottom-10 /* 🔥 10px değil, 40px yukarı çıkarır */
+  "
+>
+  <button
+    onClick={() => (window.location.href = "/cart")}
+    className="
+      flex items-center gap-3 w-full
+      bg-yellow-500/20 
+      border border-yellow-500/40
+      rounded-xl px-4 py-3
+      hover:bg-yellow-500/30 transition
+      shadow-[0_0_12px_rgba(255,215,0,0.25)]
+    "
+  >
+    <ShoppingCart className="w-5 h-5 text-yellow-300" />
+    <span className="text-sm text-yellow-300 font-semibold">
+      Sepetim ({cart?.length || 0})
+    </span>
+  </button>
+</div>
+
+
+</aside>
+
+{/* Scrollbar style */}
+<style>
+  {`
+    .custom-scroll::-webkit-scrollbar { width: 6px; }
+    .custom-scroll::-webkit-scrollbar-thumb {
+      background: rgba(255, 204, 0, 0.4);
+      border-radius: 10px;
+    }
+  `}
+</style>
+
+
 
 {/* ✅ Sipariş Sorgulama Modali */}
 {orderCheckOpen && (
@@ -1067,10 +1051,137 @@ async function closeNotification() {
     </div>
   </div>
 )}
+{/* 🔍 FULLSCREEN SEARCH MODAL */}
+{searchOpen && (
+  <div className="fixed inset-0 bg-black/80 backdrop-blur-xl z-[99999] p-6">
+    
+    {/* Kapat */}
+    <button
+      onClick={() => setSearchOpen(false)}
+      className="text-white text-right mb-3 w-full"
+    >
+      <X size={32} />
+    </button>
 
+    {/* Search Bar */}
+    <div className="max-w-2xl mx-auto mt-4">
+      <SearchBar />
+    </div>
+  </div>
+)}
+
+{/* 📱 MOBİL ALT BAR — HER ZAMAN GÖRÜNÜR */}
+<div
+  className="
+    fixed bottom-0 left-0 w-full 
+    bg-black/80 backdrop-blur-xl
+    border-t border-white/10
+    flex justify-center gap-10 items-center 
+    py-2 z-[99999]
+    2xl:hidden
+  "
+>
+
+  {/* Giriş */}
+  {!session && (
+    <button
+      onClick={() => (window.location.href = '/login')}
+      className="flex flex-col items-center text-white"
+    >
+      <User2 className="w-6 h-6 text-yellow-400" />
+      <span className="text-[10px] mt-1">Giriş</span>
+    </button>
+  )}
+
+  {/* Kayıt Ol */}
+  {!session && (
+    <button
+      onClick={() => (window.location.href = '/register')}
+      className="flex flex-col items-center text-white"
+    >
+      <UserPlus className="w-6 h-6 text-blue-400" />
+      <span className="text-[10px] mt-1">Kayıt Ol</span>
+    </button>
+  )}
+
+  {/* 👤 Hesabım (SADECE login olunca görünür) */}
+  {session && (
+    <button
+      onClick={() => setAccountModal(true)}
+      className="flex flex-col items-center text-white"
+    >
+      <User2 className="w-6 h-6 text-yellow-400" />
+     <span className="text-[10px] mt-1">
+  {session.user.user_metadata?.username 
+    ? session.user.user_metadata.username 
+    : session.user.email.split('@')[0]}
+</span>
+
+    </button>
+  )}
+
+  {/* Mesajlar */}
+  <button
+    onClick={() => (window.location.href = '/mesajlarim')}
+    className="flex flex-col items-center text-white relative"
+  >
+    <MessageSquare className="w-6 h-6 text-blue-400" />
+
+    {unreadCount > 0 && (
+      <span
+        className="
+          absolute -top-1 -right-3 bg-blue-500 text-white 
+          text-[10px] min-w-[16px] h-[16px]
+          flex items-center justify-center rounded-full font-bold
+        "
+      >
+        {unreadCount}
+      </span>
+    )}
+
+    <span className="text-[10px] mt-1">Mesajlar</span>
+  </button>
+
+  {/* Sepet */}
+  <button
+    onClick={() => (window.location.href = '/cart')}
+    className="flex flex-col items-center text-white relative"
+  >
+    <ShoppingCart className="w-6 h-6 text-yellow-300" />
+
+    {cart?.length > 0 && (
+      <span
+        className="
+          absolute -top-1 -right-3 bg-yellow-500 text-black 
+          text-[10px] min-w-[16px] h-[16px]
+          flex items-center justify-center rounded-full font-bold
+        "
+      >
+        {cart.length}
+      </span>
+    )}
+
+    <span className="text-[10px] mt-1">Sepet</span>
+  </button>
+
+</div>
+
+
+
+
+
+<AccountModal
+  open={accountModal}
+  onClose={() => setAccountModal(false)}
+   onOrderCheck={() => setOrderCheckOpen(true)}
+  session={session}
+  isAdmin={isAdmin}
+ unreadCount={unreadCount}
+/>
 
 
     </>
+    
   );
 }
 /* --- tiny components --- */
@@ -1125,42 +1236,4 @@ function CategoryLink({ to, text, soon, setMenuOpen }) {
 }
 
 
-
-function Drawer({ open, onClose, title, children }) {
-  return (
-    <div className={`fixed top-0 right-0 h-full w-96 bg-[#111]/95 backdrop-blur-xl text-white shadow-[0_0_40px_rgba(0,0,0,0.5)] transform transition-transform duration-300 z-[9999] ${open ? "translate-x-0" : "translate-x-full"}`}>
-      <div className="flex justify-between items-center px-4 py-3 border-b border-white/10">
-        <h2 className="text-lg font-semibold text-yellow-400">{title}</h2>
-        <button onClick={onClose} className="rounded-lg p-2 hover:bg-white/10">✕</button>
-      </div>
-      <div className="p-6">{children}</div>
-    </div>
-  );
-}
-
-function Input({ onChange, ...props }) {
-  return (
-    <input
-      {...props}
-      onChange={(e) => onChange?.(e?.target?.value ?? "")}
-      className="w-full p-2 rounded bg-gray-800 border border-gray-700 focus:ring-2 focus:ring-yellow-400 outline-none"
-    />
-  );
-}
-function PasswordInput({ value, onChange, show, setShow, ...props }) {
-  return (
-    <div className="relative">
-      <input
-        {...props}
-        type={show ? "text" : "password"}
-        value={value}
-        onChange={(e) => onChange?.(e.target.value)}
-        className="w-full p-2 rounded bg-gray-800 border border-gray-700 focus:ring-2 focus:ring-yellow-400 outline-none"
-      />
-      <button type="button" onClick={() => setShow?.(!show)} className="absolute right-3 top-2 text-gray-400 hover:text-yellow-300">
-        {show ? "🙈" : "👁️"}
-      </button>
-    </div>
-  );
-  
-}
+ 

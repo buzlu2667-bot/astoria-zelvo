@@ -1,267 +1,372 @@
-import { useEffect, useState, useMemo } from "react";
+import { useEffect, useState } from "react";
 import { supabase } from "../lib/supabaseClient";
 import ProductCard from "../components/ProductCard";
-import QuickViewModal from "../components/QuickViewModal";
-import { useParams } from "react-router-dom";
 import { Swiper, SwiperSlide } from "swiper/react";
-import { Autoplay, Pagination, Navigation } from "swiper/modules";
+import { Autoplay, Pagination } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/pagination";
-import "swiper/css/navigation";
+import { Flame, TrendingUp, Sparkles } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+
+
+// ⚡ Slider yüksekliği buradan ayarlanabilir
+const SLIDER_HEIGHT = "70vh"; 
 
 export default function Home() {
-  const [products, setProducts] = useState([]);
+  const navigate = useNavigate();
+  const [newProducts, setNew] = useState([]);
+  const [popularProducts, setPopular] = useState([]);
+  const [featuredProducts, setFeatured] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [quickViewProduct, setQuickViewProduct] = useState(null);
-  const { name: category } = useParams();
 
-  // ✅ Ürünleri çek
+  const [categories, setCategories] = useState([]);
+  
+
+ async function loadData() {
+  setLoading(true);
+
+
+
+  try {
+    // 🔥 Tüm ürünleri tek seferde çekelim
+    const { data: all, error } = await supabase
+      .from("products")
+      .select("*")
+      .order("created_at", { ascending: false });
+
+    if (error) throw error;
+
+    // 🔥 Filtrelemeleri frontend’de yapıyoruz
+    const n = all.filter((x) => x.is_new);
+    const p = all.filter((x) => x.is_popular);
+    const f = all.filter((x) => x.is_featured);
+
+    setNew(n);
+    setPopular(p);
+    setFeatured(f);
+
+  } catch (err) {
+    console.error("LOAD DATA ERROR:", err);
+  }
+
+  setLoading(false);
+}
+
+
   useEffect(() => {
-    const fetchProducts = async () => {
-      setLoading(true);
-      const { data } = await supabase
-        .from("products")
-        .select("*")
-        .is("category", null)
-        .order("id", { ascending: false });
-      setProducts(data || []);
-      setLoading(false);
-    };
-    fetchProducts();
+    loadData();
   }, []);
 
-  // ✅ Filtreleme
-  const filteredProducts = useMemo(() => {
-    if (!category) return products;
-    return products.filter(
-      (p) => p.category?.toLowerCase() === category.toLowerCase()
-    );
-  }, [category, products]);
-
-  // ✅ Slider foto listesi
-  const slides = [
-    
-    { src: "/hero/slide1.jpg", text: "" },
-    { src: "/hero/slide2.jpg", text: "" },
-    { src: "/hero/slide3.jpg", text: "" },
-    { src: "/hero/slide4.jpg", text: "Premium Çanta Koleksiyonu" },
-    { src: "/hero/slide5.jpg", text: "Tarzını Göster!" },
-    { src: "/hero/slide6.jpg", text: "" },
-    { src: "/hero/slide7.jpg", text: "" },
-    { src: "/hero/slide8.jpg", text: "" },
-    { src: "/hero/slide9.jpg", text: "" },
-    { src: "/hero/slide10.jpg", text: "" },
-    { src: "/hero/slide11.jpg", text: "" },
-    { src: "/hero/slide12.jpg", text: "" },
-    { src: "/hero/slide13.jpg", text: "" },
-    
-  ];
-
-  // ✅ Mobil algılayıcı (gerçek zamanlı)
-  const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
-
-    // ✅ Sayfa açıldığında veya yenilenince yukarı kaydır
-  useEffect(() => {
-    const timeout = setTimeout(() => {
-      window.scrollTo({
-        top: 0,
-        left: 0,
-        behavior: "smooth", // istersen "auto" yap
-      });
-    }, 400); // slider ve görseller render bitsin diye küçük gecikme
-
-    return () => clearTimeout(timeout);
-  }, []); // sadece ilk render’da çalışır
+ 
 
 
-  useEffect(() => {
-    const handleResize = () => {
-      setIsMobile(window.innerWidth <= 768);
-    };
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
-  }, []);
+ function chooseSlideImage(s) {
+  const w = window.innerWidth;
+  const h = window.innerHeight;
+  const ratio = w / h;
+
+  const isMobile = w < 768;
+
+  // 🍏 iPad & tablet (en doğru aralık)
+  const isTablet =
+    w >= 768 &&
+    w <= 1366 &&
+    ratio > 0.72 &&
+    ratio < 1.45;
+
+  if (isMobile) return s.mobile;
+  if (isTablet) return s.tablet;
+  return s.desktop;
+}
+
+
+
+// ⭐ DİNAMİK KATEGORİLER
+
+
+useEffect(() => {
+  async function loadCats() {
+    const { data } = await supabase
+      .from("main_categories")
+      .select("*")
+      .order("sort_index", { ascending: true });
+
+    setCategories(data || []);
+  }
+  loadCats();
+}, []);
+
+
+
+const slides = [
+  { 
+    desktop: "/hero/slide1.jpg",
+    tablet: "/hero/slide1-tablet.jpg",   // 🔥 YENİ
+    mobile: "/hero/slide1-mobil.jpg",
+    url: "/category/kadın/canta"
+  },
+  { 
+    desktop: "/hero/slide2.jpg",
+    tablet: "/hero/slide2-tablet.jpg",
+    mobile: "/hero/slide2-mobil.jpg",
+    url: null
+  },
+  { 
+    desktop: "/hero/slide3.jpg",
+    tablet: "/hero/slide3-tablet.jpg",
+    mobile: "/hero/slide3-mobil.jpg",
+    url: null
+  },
+  {
+    desktop: "/hero/slide4.jpg",
+    tablet: "/hero/slide4-tablet.jpg",
+    mobile: "/hero/slide4-mobil.jpg",
+  },
+  {
+    desktop: "/hero/slide5.jpg",
+    tablet: "/hero/slide5-tablet.jpg",
+    mobile: "/hero/slide5-mobil.jpg",
+    url: "/category/kadın/canta",
+  },
+   {
+    desktop: "/hero/slide6.jpg",
+    tablet: "/hero/slide6-tablet.jpg",
+    mobile: "/hero/slide6-mobil.jpg",
+    url: "/category/kadın/canta",
+  },
+];
+
+
+
 
   return (
-    <div className="min-h-screen bg-black text-white">
-      {/* ✅ HERO SLIDER */}
-     <section className="relative w-full overflow-hidden mb-4 mt-0 sm:mt-0 !pt-0 !translate-y-0">
+    <div className="min-h-screen text-white">
 
-        <div
-  className="w-full aspect-[16/9] sm:aspect-auto"
-  style={{
-   height: isMobile ? "calc(100vh - 100px)" : "90vh",
-    objectPosition: isMobile ? "center top" : "center",
-    marginTop: isMobile ? "-60px" : "-40px", // ✅ artık tüm slider bloğu yukarı kayıyor
-  }}
+      
+
+     {/* ⭐ TÜM CİHAZLARDA KAYDIRMALI KATEGORİ BAR */}
+<div
+  className="
+    w-full flex gap-3 px-4 py-2
+    bg-black/40 backdrop-blur-md
+    border-b border-white/10
+    text-xs
+    z-[50]
+    relative
+    overflow-x-auto
+    whitespace-nowrap
+    no-scrollbar
+    cursor-grab
+  "
+>
+
+  <button
+    onClick={() => navigate('/category/Katagoriler')}
+    className="px-4 py-1.5 bg-black/60 text-yellow-300 rounded-xl shadow"
+  >
+    Kadın Aksesuar
+  </button>
+
+  <button
+    onClick={() => navigate('/category/petshop')}
+    className="px-4 py-1.5 bg-black/60 text-yellow-300 rounded-xl shadow"
+  >
+    Petshop
+  </button>
+
+  {/* İstediğin kadar ekleyebilirsin */}
+</div>
 
 
-        >
-          <Swiper
-            key={isMobile ? "mobile" : "desktop"} // ✅ Cache reset fix
-            modules={[Autoplay, Pagination, Navigation]}
-            autoplay={{ delay: 4000, disableOnInteraction: false }}
-            loop={true}
-            pagination={{ clickable: true }}
-            navigation={{
-              nextEl: ".custom-next",
-              prevEl: ".custom-prev",
-            }}
-            className="w-full h-full"
-          >
-            {slides.map((slide, i) => {
-              const imageSrc = isMobile
-                ? slide.src.replace(".jpg", "-mobile.jpg")
-                : slide.src;
-              const finalSrc = `${imageSrc}?v=${Date.now()}`; // ✅ Cache kırıcı
-              return (
-                <SwiperSlide key={i}>
-                  <div className="relative w-full h-full">
-                    <img
-                      src={finalSrc}
-                      alt={`slide-${i}`}
-                      className="w-full h-full object-cover object-center sm:object-top"
-                      draggable="false"
-                    />
 
-                    {slide.text && (
-                      <div className="absolute inset-0 flex items-center justify-center">
-                        <h2
-                          className="text-3xl sm:text-4xl md:text-5xl font-extrabold 
-                          text-transparent bg-clip-text bg-gradient-to-b from-yellow-300 to-yellow-500 
-                          drop-shadow-[0_0_15px_rgba(255,215,0,0.8)] animate-fadeUp"
-                        >
-                          {slide.text}
-                        </h2>
-                      </div>
-                    )}
-                  </div>
-                </SwiperSlide>
-              );
-            })}
-          </Swiper>
-        </div>
+      <section
+        className="w-full relative"
+        style={{ height: SLIDER_HEIGHT }}
+      >
+        
+      <Swiper
+  modules={[Autoplay, Pagination]}
+  autoplay={{ delay: 3500 }}
+  loop={true}
+  pagination={{ clickable: true }}
+  className="w-full h-full"
+>
+  {slides.map((s, i) => (
+    <SwiperSlide key={i}>
+      <div
+        onClick={() => s.url && navigate(s.url)}
+        className={`
+          w-full h-full cursor-pointer
+        `}
+      >
+       <img
+  src={chooseSlideImage(s)}
+  className="w-full h-full object-cover rounded-b-2xl shadow-xl"
+  draggable="false"
+/>
 
-        {/* ✅ Navigation Okları */}
-        <button className="custom-prev absolute left-3 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-white flex items-center justify-center z-20">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            viewBox="0 0 28 24"
-            fill="none"
-            stroke="#ff5c5c"
-            strokeWidth="1.3"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            className="w-[18px] h-[18px]"
-          >
-            <line x1="23" y1="12" x2="4" y2="12" />
-            <polyline points="11 19 4 12 11 5" />
-          </svg>
-        </button>
 
-        <button className="custom-next absolute right-3 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-white flex items-center justify-center z-20">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            viewBox="0 0 28 24"
-            fill="none"
-            stroke="#ff5c5c"
-            strokeWidth="1.3"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            className="w-[18px] h-[18px]"
-          >
-            <line x1="5" y1="12" x2="24" y2="12" />
-            <polyline points="17 5 24 12 17 19" />
-          </svg>
-        </button>
+      </div>
+    </SwiperSlide>
+  ))}
+</Swiper>
 
-        {/* ✅ Styles */}
-        <style>
-          {`
-            .swiper-pagination-bullet {
-              background: rgba(255, 215, 0, 0.6) !important;
-              width: 8px !important;
-              height: 8px !important;
-              margin: 0 4px !important;
-              opacity: 1 !important;
-            }
-            .swiper-pagination-bullet-active {
-              background: #ffd700 !important;
-              transform: scale(1.15);
-            }
-            @keyframes fadeUp {
-              0% { opacity: 0; transform: translateY(25px); filter: blur(5px); }
-              100% { opacity: 1; transform: translateY(0); filter: blur(0); }
-            }
-            .animate-fadeUp {
-              animation: fadeUp 1s ease-out both;
-            }
-            @media (max-width: 767px) {
-              .custom-prev, .custom-next { display: none !important; }
-            }
-          `}
-        </style>
+
+    
       </section>
+{/* ⭐ SLIDER ALTINA NEON YAZI */}
+<div className="w-full text-center mt-0 mb-0 relative z-[50]">
+  <h1
+    className="
+      text-xl md:text-2xl font-bold tracking-wide
+      bg-gradient-to-r from-[#00ffcc] to-[#00d4ff]
+      text-transparent bg-clip-text
+      drop-shadow-[0_0_12px_rgba(0,255,200,0.7)]
+      animate-pulse
+    "
+  >
+   2500 TL üzeri kargo bedava
+  </h1>
+</div>
 
-      {/* ✅ ALT YAZI */}
-      <div className="relative overflow-hidden mt-0 mb-0">
+      {/* 🔥 ALT BÖLÜM ARKAPLAN BEYAZ! */}
+   <div className="
+  backdrop-blur-xl 
+  bg-black/20 
+  text-white
+  rounded-t-[40px]
+  mt-[-40px] 
+  pt-10 pb-20
+  shadow-[0_0_40px_rgba(0,0,0,0.4)]
+">
 
 
-        <div className="marquee">
-          <div className="marquee__inner">
-            • Alışveriş Yaptıkça Kazan 20 000 Puan! • Her 20 000 Puanda Hediyeni Kap • Müşteri Panelinden Hediye Barını Gör • Tarzını Göster • Kaliteli Ürün • Güvenli Ödeme • İade ve Değişim •
-          </div>
-        </div>
-        <style>
-          {`
-            .marquee {
-              overflow: hidden;
-              white-space: nowrap;
-              width: 100%;
-              color: #ffbfbf;
-              font-size: 12px;
-              letter-spacing: 0.25em;
-              text-transform: uppercase;
-              text-shadow: 0 0 3px rgba(255,192,192,0.25);
-            }
-            .marquee__inner {
-              display: inline-block;
-              padding-left: 100%;
-              animation: move 25s linear infinite;
-            }
-            @keyframes move {
-              0% { transform: translateX(0); }
-              100% { transform: translateX(-100%); }
-            }
-          `}
-        </style>
+        {/* 🟡 ÖNE ÇIKAN */}
+        <SectionWhite
+          title=" Öne Çıkan Ürünler"
+          products={featuredProducts}
+          loading={loading}
+        />
+
+        {/* 🔵 POPÜLER */}
+        <SectionWhite
+          title=" Popüler Ürünler"
+          products={popularProducts}
+          loading={loading}
+        />
+
+        {/* 🟢 YENİ GELENLER */}
+        <SectionWhite
+          title="Yeni Gelenler"
+          products={newProducts}
+          loading={loading}
+        />
+
+      </div>
+    </div>
+  );
+}
+
+
+/* ----------------------------- COMPONENT ----------------------------- */
+
+function SectionWhite({ title, products, loading }) {
+
+  // Başlığa göre ikon seç
+  const getIcon = () => {
+    if (title.includes("Öne")) {
+      return (
+        <Flame
+          className="
+            w-7 h-7 text-orange-400 
+            drop-shadow-[0_0_10px_rgba(255,150,0,0.8)]
+          "
+        />
+      );
+    }
+
+    if (title.includes("Popüler")) {
+      return (
+        <TrendingUp
+          className="
+            w-7 h-7 text-blue-400 
+            drop-shadow-[0_0_10px_rgba(0,120,255,0.8)]
+          "
+        />
+      );
+    }
+
+    if (title.includes("Yeni")) {
+      return (
+        <Sparkles
+          className="
+            w-7 h-7 text-green-400 
+            drop-shadow-[0_0_10px_rgba(0,255,150,0.8)]
+          "
+        />
+      );
+    }
+
+    return null;
+  };
+
+  return (
+    <section className="max-w-7xl mx-auto px-4 py-10">
+
+      {/* Başlık */}
+      <div className="flex items-center gap-3 mb-8">
+        {getIcon()}
+        <h2
+          className="
+            text-3xl font-extrabold
+            bg-gradient-to-r from-yellow-300 to-yellow-600
+            text-transparent bg-clip-text
+            drop-shadow-[0_0_18px_rgba(255,200,0,0.45)]
+          "
+        >
+          {title}
+        </h2>
       </div>
 
-      {/* ✅ ÜRÜNLER */}
-      <main className="max-w-7xl mx-auto px-6 pb-10">
-        {loading ? (
-          <p className="text-gray-500 text-center">Yükleniyor...</p>
-        ) : filteredProducts.length === 0 ? (
-          <p className="text-center text-gray-400">
-            Bu kategoride ürün bulunamadı.
-          </p>
-        ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-            {filteredProducts.map((product) => (
-              <ProductCard
-                key={product.id}
-                product={product}
-                openModal={setQuickViewProduct}
-              />
-            ))}
-          </div>
-        )}
-      </main>
+      {/* Durumlar */}
+      {loading ? (
+        <p className="text-gray-500">Yükleniyor...</p>
+      ) : products.length === 0 ? (
+        <p className="text-gray-500">Henüz ürün yok.</p>
+      ) : (
+        <div className="relative">
 
-      <QuickViewModal
-        product={quickViewProduct}
-        closeModal={() => setQuickViewProduct(null)}
-      />
+          {/* 🔥 TÜM CİHAZLARDA KAYAN ÜRÜN LİSTESİ */}
+      <div
+  className={`
+    flex gap-4 pb-4
+    overflow-x-auto overflow-y-hidden
+    whitespace-nowrap
+    ${window.innerWidth < 768 ? "no-scrollbar" : "scrollbar-thin"}
+  `}
+  style={{ scrollBehavior: "smooth" }}
+>
+  {products.map((p, i) => (
+    <div 
+      key={p.id}
+      className="shrink-0 min-w-[280px]"
+    >
+      <ProductCard product={p} />
+
+      {i === 0 && (
+        <span className="ml-3 text-yellow-400 text-3xl animate-pulse">
+          ➜
+        </span>
+      )}
     </div>
+  ))}
+</div>
+
+
+
+        </div>
+      )}
+
+    </section>
   );
 }

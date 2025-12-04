@@ -89,9 +89,61 @@ export default function Dashboard() {
   run();
 }, [navigate]);
 
+// 🔥 Sekme değişip geri dönünce Dashboard yeniden veri çeksin
+useEffect(() => {
+  const reloadDashboard = async () => {
+    console.log("FOCUS/VISIBILITY → Dashboard yeniden yükleniyor...");
+
+    try {
+      const { data } = await supabase.auth.getUser();
+      if (!data?.user) return;
+
+      setUser(data.user);
+
+      // Profil tekrar
+      const { data: profile } = await supabase
+        .from("profiles")
+        .select("username")
+        .eq("id", data.user.id)
+        .single();
+
+      if (profile?.username) {
+        setUser((prev) => ({
+          ...prev,
+          profile_username: profile.username,
+        }));
+      }
+
+      // Siparişleri tekrar çek
+      const { data: ordersData } = await supabase
+        .from("orders")
+        .select("*")
+        .eq("user_id", data.user.id);
+
+      setOrders(ordersData || []);
+    } catch (e) {
+      console.error("Dashboard reload error:", e);
+    }
+  };
+
+  const onFocus = () => reloadDashboard();
+  const onVisible = () => {
+    if (!document.hidden) reloadDashboard();
+  };
+
+  window.addEventListener("focus", onFocus);
+  document.addEventListener("visibilitychange", onVisible);
+
+  return () => {
+    window.removeEventListener("focus", onFocus);
+    document.removeEventListener("visibilitychange", onVisible);
+  };
+}, []);
+
+
 
   const totalSpent = useMemo(() => {
-    return orders.reduce((sum, o) => sum + (Number(o.total_amount) || 0), 0);
+    return orders.reduce((sum, o) => sum + (Number(o.final_amount ?? o.total_amount ?? 0) || 0), 0);
   }, [orders]);
 
   const points = Math.max(0, Math.floor(totalSpent));
@@ -102,10 +154,10 @@ export default function Dashboard() {
   const remaining = Math.max(0, (tier + 1) * STEP - points);
 
   return (
-    <div className="min-h-screen bg-black text-white">
+   <div className="min-h-screen text-white">
 
      <div className="py-5 px-6 flex justify-between items-center border-b border-yellow-500/20">
-  <h1 className="text-xl font-bold">🧍‍♀️ Müşteri Paneli</h1>
+  <h1 className="text-xl font-bold"> Müşteri Paneli</h1>
 
   <div className="flex flex-col text-right leading-tight">
     <span className="text-yellow-300 font-semibold">{user?.email}</span>

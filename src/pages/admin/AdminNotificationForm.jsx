@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { supabase } from "../../lib/supabaseClient";
 
@@ -7,16 +6,15 @@ export default function AdminNotificationForm() {
   const [message, setMessage] = useState("");
   const [level, setLevel] = useState("info");
   const [linkUrl, setLinkUrl] = useState("");
-  const [duration, setDuration] = useState("none"); // ⏱️ yeni: süre
   const [loading, setLoading] = useState(false);
   const [notifications, setNotifications] = useState([]);
-  const [expiresAt, setExpiresAt] = useState(""); // 🔥 manuel bitiş zamanı
-
+  const [expiresAt, setExpiresAt] = useState("");
+  const [imageFile, setImageFile] = useState(null);
 
   async function fetchNotifications() {
     const { data, error } = await supabase
       .from("notifications")
-      .select("id, title, message, is_active, created_at, expires_at")
+      .select("id, title, message, is_active, created_at, expires_at, image_url")
       .order("created_at", { ascending: false });
 
     if (!error) setNotifications(data || []);
@@ -27,44 +25,75 @@ export default function AdminNotificationForm() {
     fetchNotifications();
   }, []);
 
+  // -----------------------------------------------------
+  // ✅ DOĞRU VE TEK SENDNOTIFICATION FONKSİYONU
+  // -----------------------------------------------------
   const sendNotification = async () => {
     if (!title || !message) {
       alert("Başlık ve mesaj boş olamaz!");
       return;
     }
 
-   // ⏱️ Süre seçimine göre expires_at hesapla
-const now = new Date();
-const expires = expiresAt ? new Date(expiresAt).toISOString() : null;
-
-
     setLoading(true);
+
+    let uploadedUrl = null;
+
+    // 📸 Görsel varsa önce Storage'a yükle
+    if (imageFile) {
+      const fileExt = imageFile.name.split(".").pop();
+      const fileName = `notif_${Date.now()}.${fileExt}`;
+
+      const { error: uploadError } = await supabase.storage
+        .from("notification-images")
+        .upload(fileName, imageFile);
+
+      if (uploadError) {
+        alert("❌ Görsel yüklenemedi!");
+        console.log(uploadError);
+        setLoading(false);
+        return;
+      }
+
+      // 📌 Public URL al
+      const { data: publicUrlData } = supabase.storage
+        .from("notification-images")
+        .getPublicUrl(fileName);
+
+      uploadedUrl = publicUrlData.publicUrl;
+    }
+
+    const now = new Date();
+    const expires = expiresAt ? new Date(expiresAt).toISOString() : null;
+
+    // 📤 DB'ye kaydet
     const { error } = await supabase.from("notifications").insert([
       {
         title,
         message,
         level,
         link_url: linkUrl || null,
+        image_url: uploadedUrl, // ← görsel burada
         is_active: true,
         starts_at: now.toISOString(),
-expires_at: expires, // 🔥 artık senin seçtiğin tarih kaydediliyor
-
+        expires_at: expires,
       },
     ]);
+
     setLoading(false);
 
     if (error) {
-      console.error(error);
       alert("❌ Bildirim gönderilemedi!");
-    } else {
-      alert("✅ Bildirim gönderildi!");
-      setTitle("");
-      setMessage("");
-      setLinkUrl("");
-      setLevel("info");
-      setDuration("none");
-      fetchNotifications();
+      console.log(error);
+      return;
     }
+
+    alert("✅ Bildirim gönderildi!");
+    setTitle("");
+    setMessage("");
+    setLinkUrl("");
+    setImageFile(null);
+
+    fetchNotifications();
   };
 
   async function toggleNotification(id, active) {
@@ -75,25 +104,25 @@ expires_at: expires, // 🔥 artık senin seçtiğin tarih kaydediliyor
 
     if (error) alert("❌ Güncellenemedi: " + error.message);
     else {
-      alert(active ? "✅ Bildirim açıldı!" : "🔕 Bildirim kapatıldı!");
+      alert(active ? "✅ Bildirim açıldı!" : "🔕 Kapatıldı!");
       fetchNotifications();
     }
   }
-  // 🗑️ Bildirim Silme Fonksiyonu
-async function deleteNotification(id) {
-  if (!confirm("⚠️ Bu bildirimi kalıcı olarak silmek istiyor musun?")) return;
 
-  const { error } = await supabase
-    .from("notifications")
-    .delete()
-    .eq("id", id);
+  async function deleteNotification(id) {
+    if (!confirm("⚠️ Kalıcı olarak silinsin mi?")) return;
 
-  if (error) alert("❌ Silinemedi: " + error.message);
-  else {
-    alert("🗑️ Bildirim silindi!");
-    fetchNotifications(); // listeyi yeniler
+    const { error } = await supabase
+      .from("notifications")
+      .delete()
+      .eq("id", id);
+
+    if (error) alert("❌ Silinemedi!");
+    else {
+      alert("🗑️ Silindi!");
+      fetchNotifications();
+    }
   }
-}
 
   return (
     <div className="bg-neutral-900 border border-yellow-700/40 rounded-xl p-5 max-w-3xl mx-auto mt-6 shadow-lg">
@@ -101,15 +130,14 @@ async function deleteNotification(id) {
         🔔 Bildirim Gönder (Admin)
       </h2>
 
-      {/* 🔧 Yeni Bildirim Formu */}
       <div className="space-y-3 mb-6">
         <div>
           <label className="block text-gray-300 text-sm mb-1">Başlık</label>
           <input
             value={title}
             onChange={(e) => setTitle(e.target.value)}
-            placeholder="Örn: Yeni İndirim!"
-            className="w-full p-2 rounded bg-neutral-800 border border-neutral-700 focus:ring-2 focus:ring-yellow-500 outline-none"
+            className="w-full p-2 rounded bg-neutral-800 border border-neutral-700"
+            placeholder="Örn: Yeni Kampanya!"
           />
         </div>
 
@@ -118,8 +146,8 @@ async function deleteNotification(id) {
           <textarea
             value={message}
             onChange={(e) => setMessage(e.target.value)}
-            placeholder="Mesaj içeriğini buraya yaz..."
-            className="w-full p-2 rounded bg-neutral-800 border border-neutral-700 h-24 resize-none focus:ring-2 focus:ring-yellow-500 outline-none"
+            className="w-full p-2 rounded bg-neutral-800 border border-neutral-700 h-24"
+            placeholder="Mesaj gir..."
           />
         </div>
 
@@ -129,103 +157,60 @@ async function deleteNotification(id) {
             <select
               value={level}
               onChange={(e) => setLevel(e.target.value)}
-              className="w-full p-2 rounded bg-neutral-800 border border-neutral-700 text-gray-200"
+              className="w-full p-2 rounded bg-neutral-800 border border-neutral-700"
             >
               <option value="info">Bilgilendirme</option>
-              <option value="sale">İndirim / Kampanya</option>
+              <option value="sale">Kampanya</option>
               <option value="coupon">Kupon</option>
               <option value="warning">Uyarı</option>
             </select>
           </div>
 
-         {/* ⏰ Bitiş Tarihi ve Saati */}
-<div>
-  <label className="block text-gray-300 text-sm mb-1">Bitiş Tarihi / Saati</label>
-  <input
-    type="datetime-local"
-    value={expiresAt}
-    onChange={(e) => setExpiresAt(e.target.value)}
-    className="w-full p-2 rounded bg-neutral-800 border border-neutral-700 text-gray-200"
-  />
-  <p className="text-xs text-gray-500 mt-1">
-    Boş bırakırsan süresiz olur (örnek: 2025-11-08 22:15)
-  </p>
-</div>
+          <div>
+            <label className="block text-gray-300 text-sm mb-1">
+              Bitiş Tarihi / Saati
+            </label>
+            <input
+              type="datetime-local"
+              value={expiresAt}
+              onChange={(e) => setExpiresAt(e.target.value)}
+              className="w-full p-2 rounded bg-neutral-800 border border-neutral-700"
+            />
+          </div>
+        </div>
 
+        {/* 📸 Görsel Seç */}
+        <div>
+          <label className="block text-gray-300 text-sm mb-1">
+            Görsel (opsiyonel)
+          </label>
+          <input
+            type="file"
+            accept="image/*"
+            onChange={(e) => setImageFile(e.target.files[0])}
+            className="w-full p-2 rounded bg-neutral-800 border border-neutral-700"
+          />
         </div>
 
         <div>
-          <label className="block text-gray-300 text-sm mb-1">Bağlantı (opsiyonel)</label>
+          <label className="block text-gray-300 text-sm mb-1">
+            Bağlantı (opsiyonel)
+          </label>
           <input
             value={linkUrl}
             onChange={(e) => setLinkUrl(e.target.value)}
+            className="w-full p-2 rounded bg-neutral-800 border border-neutral-700"
             placeholder="/kampanya"
-            className="w-full p-2 rounded bg-neutral-800 border border-neutral-700 focus:ring-2 focus:ring-yellow-500 outline-none"
           />
         </div>
 
         <button
-          onClick={sendNotification}
           disabled={loading}
-          className={`w-full py-2 mt-3 font-semibold rounded-lg transition ${
-            loading
-              ? "bg-gray-600 cursor-not-allowed"
-              : "bg-gradient-to-r from-yellow-600 to-red-700 hover:opacity-90"
-          }`}
+          onClick={sendNotification}
+          className="w-full py-2 mt-2 bg-yellow-600 hover:bg-yellow-700 rounded-lg font-semibold"
         >
           {loading ? "Gönderiliyor..." : "Bildirimi Gönder"}
         </button>
-      </div>
-
-      {/* 📋 Bildirim Listesi */}
-      <h3 className="text-lg font-bold text-yellow-300 mb-2 border-t border-yellow-500/20 pt-4">
-        Mevcut Bildirimler
-      </h3>
-      <div className="space-y-2 max-h-96 overflow-y-auto pr-2">
-        {notifications.length === 0 ? (
-          <p className="text-gray-400 text-sm">Henüz bildirim yok.</p>
-        ) : (
-          notifications.map((n) => (
-            <div
-              key={n.id}
-              className={`flex items-center justify-between bg-neutral-800 border ${
-                n.is_active
-                  ? "border-green-600/40"
-                  : "border-red-600/40 opacity-60"
-              } rounded-lg p-3`}
-            >
-              <div>
-                <p className="font-semibold text-yellow-400">{n.title}</p>
-                <p className="text-gray-300 text-sm">{n.message}</p>
-                {n.expires_at && (
-                  <p className="text-xs text-amber-400 mt-1">
-                    ⏰ Bitiş:{" "}
-                    {new Date(n.expires_at).toLocaleString("tr-TR")}
-                  </p>
-                )}
-              </div>
-              {/* 🗑️ Silme Butonu */}
-<button
-  onClick={() => deleteNotification(n.id)}
-  className="mr-2 px-2 py-1 rounded bg-gray-700 hover:bg-red-700 text-white text-xs font-semibold transition"
-  title="Kalıcı olarak sil"
->
-  ✖
-</button>
-
-              <button
-                onClick={() => toggleNotification(n.id, !n.is_active)}
-                className={`px-3 py-1 rounded text-sm font-semibold transition ${
-                  n.is_active
-                    ? "bg-red-600 hover:bg-red-700"
-                    : "bg-green-600 hover:bg-green-700"
-                }`}
-              >
-                {n.is_active ? "Kapat 🔕" : "Aç 🔔"}
-              </button>
-            </div>
-          ))
-        )}
       </div>
     </div>
   );

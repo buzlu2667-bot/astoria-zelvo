@@ -29,10 +29,11 @@ export default function OrderDetail() {
         .eq("user_id", user.id)
         .single();
 
-      const { data: it } = await supabase
-        .from("order_items")
-        .select("*, products:product_id(image_url,name,sub_category)")
-        .eq("order_id", id);
+    const { data: it } = await supabase
+  .from("order_items")
+  .select("*")
+  .eq("order_id", id);
+
 
       setOrder(o);
       setItems(it || []);
@@ -49,8 +50,8 @@ export default function OrderDetail() {
   const status = STATUS[order.status] || STATUS.pending;
 
   return (
-    <div className="min-h-screen px-4 py-8 bg-black text-white">
-      <div className="max-w-3xl mx-auto bg-neutral-900 p-6 rounded-xl shadow-xl border border-gray-700">
+  <div className="min-h-screen text-white">
+     <div className="max-w-3xl mx-auto maxi-card p-6">
         {/* Header */}
         <div className="flex justify-between items-center mb-3">
           <h1 className="text-2xl font-bold">Sipariş #{order.id}</h1>
@@ -82,90 +83,164 @@ export default function OrderDetail() {
 
         {/* Ürünler */}
         <h3 className="font-semibold mb-3 text-lg">Ürünler</h3>
-        <div className="space-y-3">
-          {items.map((i) => {
-            const p = i.products || {};
+      <div className="space-y-4">
+  {items.map((i) => {
+const p = i.products || {};
 
-            // 🎨 Görsel fallback (Knight, Valorant, vb.)
-            const imgSrc =
-              p.image_url?.startsWith?.("http")
-                ? p.image_url
-                : p.image_url
-                ? `/products/${p.image_url}`
-                : p.name?.toLowerCase()?.includes("knight")
-                ? "/products/knight3.png"
-                : p.name?.toLowerCase()?.includes("valorant")
-                ? "/products/valorant3.png"
-                : p.name?.toLowerCase()?.includes("pubg")
-                ? "/products/pubg3.png"
-                : p.name?.toLowerCase()?.includes("steam")
-                ? "/products/steam3.png"
-                : "/products/default.png";
+const imgSrc =
+  i.image_url?.startsWith("http")
+    ? i.image_url
+    : i.image_url
+    ? `${import.meta.env.VITE_SUPABASE_URL}/storage/v1/object/public/products/${i.image_url}`
+    : "/products/default.png";
 
-            return (
-              <div
-                key={i.id}
-                className="flex flex-col sm:flex-row items-center sm:items-stretch gap-3 bg-neutral-800 p-3 rounded-lg"
-              >
-                {/* 🖼️ Görsel */}
-               <div className="order-detail-image-box">
-  <img src={imgSrc} alt={p.name} />
+
+    return (
+   <div
+  key={i.id}
+  className="
+    bg-[#0e0e0e]
+    border border-[#1b1b1b]
+    rounded-2xl
+    p-4
+    flex flex-col sm:flex-row
+    gap-4
+    hover:border-[#00ffcc80]
+    hover:shadow-[0_0_18px_rgba(0,255,200,0.25)]
+    transition-all duration-300
+  "
+>
+  {/* 🖼️ Görsel Kutusu */}
+  <div
+    className="
+      w-full h-52 
+      sm:w-40 sm:h-40 
+      rounded-xl 
+      overflow-hidden 
+      flex items-center justify-center 
+      bg-black
+    "
+  >
+    <img
+      src={imgSrc}
+      alt={p?.name || i.product_name}
+      className="w-full h-full object-cover transition duration-700 hover:scale-110"
+    />
+  </div>
+
+  {/* 📌 Bilgiler */}
+  <div className="flex-1 flex flex-col justify-between">
+    <div>
+      <p className="font-semibold text-yellow-300 text-base leading-tight">
+        {p?.name || i.product_name}
+      </p>
+
+      <p className="text-gray-400 text-sm mt-1">
+        Miktar:{" "}
+        <span className="text-gray-200 font-medium">×{i.quantity}</span>
+      </p>
+    </div>
+
+    <p className="text-gray-400 text-sm mt-1">
+  Renk:{" "}
+  <span className="text-yellow-300 font-medium">
+    {i.color || "Belirtilmedi"}
+  </span>
+</p>
+
+
+    <p className="text-green-400 font-extrabold text-xl mt-3 drop-shadow-[0_0_6px_rgba(0,255,150,0.4)]">
+      {TRY(i.unit_price)}
+    </p>
+  </div>
+</div>
+
+    );
+  })}
+</div>
+
+{/* 🟡 PREMIUM ÜRÜN AÇIKLAMASI */}
+{items.length > 0 && items[0]?.products?.description && (
+ <div className="mt-6 maxi-card p-5">
+
+    
+    <h2 className="text-xl font-bold text-yellow-400 mb-3 flex items-center gap-2">
+       Ürün Açıklaması
+    </h2>
+
+    <p className="text-gray-300 leading-relaxed whitespace-pre-line">
+      {items[0].products.description}
+    </p>
+
+  </div>
+)}
+
+
+
+
+{/* 🟣 TESLİMAT ADRESİ */}
+<div className="mt-8 bg-black/30 border border-yellow-500/20 rounded-2xl p-5 shadow-[0_0_25px_rgba(255,200,0,0.15)]">
+  <h2 className="text-lg font-bold text-yellow-400 mb-2">Teslimat Adresi</h2>
+  <p className="text-gray-300 whitespace-pre-line">
+    {order.address || "Adres belirtilmedi"}
+  </p>
 </div>
 
 
-                {/* Bilgiler */}
-                <div className="flex-1">
-                  <p className="font-medium text-yellow-300">
-                    {p.name || i.product_name}
-                  </p>
-                  <p className="text-gray-400 text-sm">× {i.quantity}</p>
-                  <p className="font-bold text-green-400 mt-1">
-                    {TRY(Number(i.unit_price))}
-                  </p>
 
-                 
-                </div>
-              </div>
-            );
-          })}
-        </div>
 
-        {/* Adres */}
-        <div className="mt-6 text-sm">
-          <p className="text-gray-400 mb-1">Teslimat Adresi:</p>
-          <p className="bg-black/30 p-3 rounded-lg text-gray-200">
-            {order.address || "Adres belirtilmedi"}
-          </p>
-        </div>
+{/* 📝 SİPARİŞ NOTU */}
+{order.note && (
+  <div className="mt-8 bg-black/30 border border-yellow-500/20 rounded-2xl p-5 shadow-[0_0_25px_rgba(255,200,0,0.15)]">
+    <h2 className="text-lg font-bold text-yellow-400 mb-2">Sipariş Notu</h2>
+    <p className="text-gray-300 whitespace-pre-line">{order.note}</p>
+  </div>
+)}
 
-        {/* Not */}
-        {order.note && (
-          <div className="mt-4 text-sm">
-            <p className="text-gray-400 mb-1">Sipariş Notu:</p>
-            <p className="bg-black/30 p-3 rounded-lg text-gray-200">
-              {order.note}
-            </p>
-          </div>
-        )}
+{/* 🟢 TOPLAM TUTAR KARTI */}
+<div className="
+  mt-8 
+  bg-black/30 
+  border border-green-500/30 
+  rounded-2xl 
+  p-5 
+  shadow-[0_0_25px_rgba(0,255,150,0.25)]
+">
+  <h2 className="text-lg font-bold text-green-300 mb-2">
+    Toplam Tutar
+  </h2>
 
-        {/* ✅ Toplam Fiyat Bölümü */}
-        <div className="mt-6 text-right space-y-1">
-          {order.discount_amount > 0 && (
-            <p className="text-sm text-blue-400 font-semibold">
-              Kupon: {order.coupon} — İndirim: -{TRY(order.discount_amount)}
-            </p>
-          )}
+  <p className="text-gray-200 text-xl font-extrabold">
+    {TRY(order.final_amount ?? order.total_amount)}
+  </p>
+</div>
 
-          <p className="text-2xl font-bold text-green-400">
-            Toplam: {TRY(order.final_amount ?? order.total_amount)}
-          </p>
 
-          {order.discount_amount > 0 && (
-            <p className="text-sm text-gray-500 line-through">
-              {TRY(order.total_amount)}
-            </p>
-          )}
-        </div>
+       {/* 💜 KUPON BİLGİSİ KARTI */}
+{order.discount_amount > 0 && (
+  <div className="mt-6 bg-black/30 border border-purple-700/40 rounded-2xl p-5 
+      shadow-[0_0_25px_rgba(120,0,180,0.25)]">
+    
+    <h2 className="text-lg font-bold text-purple-300 mb-2 flex items-center gap-2">
+      🎟 Kupon Bilgisi
+    </h2>
+
+    <div className="text-gray-300 space-y-1">
+      <p>
+        <span className="font-semibold text-purple-300">Kupon Kodu:</span>{" "}
+        {order.coupon}
+      </p>
+
+      <p>
+        <span className="font-semibold text-emerald-300">İndirim:</span>{" "}
+        -{TRY(order.discount_amount)}
+      </p>
+    </div>
+  </div>
+)}
+
+
+      
 
         {/* Back */}
         <div className="mt-8 flex justify-end">

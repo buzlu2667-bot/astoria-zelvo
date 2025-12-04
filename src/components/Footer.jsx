@@ -1,6 +1,15 @@
-// ✅ Premium Footer — Black Icon Version
-import { FaInstagram, FaFacebookF, FaTiktok, FaTelegramPlane, FaWhatsapp } from "react-icons/fa";
+// ⭐ MAXIMORA — Premium Neon Footer (SENİN FOOTER + TASARIM TAM BİRLEŞTİRİLMİŞ)
+// Tüm linkler, tüm iconlar, tüm modallar ÇALIŞIR.
+
+import {
+  FaInstagram,
+  FaFacebookF,
+  FaTiktok,
+  FaTelegramPlane,
+  FaWhatsapp,
+} from "react-icons/fa";
 import { useState } from "react";
+
 import PrivacyDrawer from "./PrivacyDrawer";
 import ReturnDrawer from "./ReturnDrawer";
 import KvkkDrawer from "./KvkkDrawer";
@@ -14,10 +23,14 @@ const shippingIcons = [
 ];
 
 const paymentIcons = [
-  { name: "Visa", src: "/footer/pay-visa.png" },
-  { name: "Mastercard", src: "/footer/pay-mastercard.png" },
-  { name: "Troy", src: "/footer/pay-troy.png" },
+  "/footer/pay-visa.png",
+  "/footer/pay-mastercard.png",
+  "/footer/pay-troy.png",
+  
+  "/footer/pay-shopier.png",
+
 ];
+
 
 export default function Footer() {
   const [privacyOpen, setPrivacyOpen] = useState(false);
@@ -26,143 +39,176 @@ export default function Footer() {
 
   return (
     <>
-      <footer className="bg-black border-t border-neutral-800 text-gray-400 pt-14 pb-10 mt-20">
-        <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-3 items-center px-6 gap-y-10 md:gap-10 text-center md:text-left">
+      <footer className="relative mt-24">
 
-          {/* ✅ Kargo Firmaları */}
-          <div className="text-left">
-            <h3 className="font-bold text-white mb-3 text-lg"></h3>
-            <div className="flex flex-wrap justify-center md:justify-start gap-5">
-              {shippingIcons.map((item) => (
-                <img
-                  key={item.name}
-                  src={item.src}
-                  alt={item.name}
-                  className="h-8 opacity-80 hover:opacity-100 transition"
-                />
-              ))}
+        {/* === ARKA NEON GLOW === */}
+        <div className="absolute inset-0 bg-gradient-to-b 
+          from-[#003730]/40 via-[#002b26]/70 to-black 
+          shadow-[0_0_200px_90px_rgba(0,255,200,0.25)_inset]
+        "></div>
+
+        {/* === ANA BLOK === */}
+        <div className="relative max-w-[1500px] mx-auto px-8 py-20 text-gray-300">
+
+        
+
+          {/* === ÜST 3 BLOK (SENDEKİ KARGO – SOSYAL – BANKA) === */}
+          <div className="grid grid-cols-1 md:grid-cols-3 items-center gap-y-10 text-center md:text-left">
+
+            {/* 🟦 Kargo Firmaları */}
+            <div className="flex flex-col items-center md:items-start">
+              <div className="flex flex-wrap justify-center md:justify-start gap-5">
+                {shippingIcons.map((item) => (
+                  <img
+                    key={item.name}
+                    src={item.src}
+                    alt={item.name}
+                    className="h-10 opacity-80 hover:opacity-100 transition drop-shadow-[0_0_10px_#00fff7]"
+                  />
+                ))}
+              </div>
             </div>
-          </div>
 
-          {/* ✅ Sosyal Medya */}
-          <div className="text-center">
-            <h3 className="font-bold text-white mb-3 text-lg"></h3>
-            <div className="flex justify-center gap-6 text-2xl">
-              <FaInstagram className="text-gray-400 hover:text-white transition" />
-              <FaFacebookF className="text-gray-400 hover:text-white transition" />
-              <FaTiktok className="text-gray-400 hover:text-white transition" />
+           {/* 🟦 Sosyal Medya */}
+<div className="flex justify-center gap-6 text-3xl">
+  {[
+    { icon: <FaInstagram />, color: "#ff007a", href: null },
+    { icon: <FaFacebookF />, color: "#006eff", href: null },
+    { icon: <FaTiktok />, color: "#ff0033", href: null },
+    { icon: <FaTelegramPlane />, color: "#00aaff", href: "https://t.me/maximoraofficial" },
+    { icon: <FaWhatsapp />, color: "#00ff55", href: "https://wa.me/905384657526" },
+  ].map((s, i) =>
+    s.href ? (
+      // 🔵 Tıklanabilir ikon
+      <a
+        key={i}
+        href={s.href}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="w-12 h-12 flex items-center justify-center rounded-xl bg-black"
+        style={{
+          border: `2px solid ${s.color}`,
+          boxShadow: `0 0 15px ${s.color}80`,
+          color: s.color,
+        }}
+      >
+        {s.icon}
+      </a>
+    ) : (
+      // 🔴 Tıklanamaz ikon
+      <div
+        key={i}
+        className="w-12 h-12 flex items-center justify-center rounded-xl bg-black cursor-default"
+        style={{
+          border: `2px solid ${s.color}`,
+          boxShadow: `0 0 15px ${s.color}80`,
+          color: s.color,
+        }}
+      >
+        {s.icon}
+      </div>
+    )
+  )}
+</div>
 
-              {/* 🔗 Telegram */}
-              <a
-                href="https://t.me/maximoraofficial"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-blue-400 hover:text-blue-300 transition drop-shadow-[0_0_6px_#0088cc] hover:drop-shadow-[0_0_12px_#33ccff]"
-              >
-                <FaTelegramPlane />
-              </a>
-
-              {/* 🔗 WhatsApp */}
-              <a
-                href="https://wa.me/905384657526"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-green-400 hover:text-green-300 transition drop-shadow-[0_0_6px_#00ff88] hover:drop-shadow-[0_0_12px_#00ff88]"
-              >
-                <FaWhatsapp />
-              </a>
-            </div>
-          </div>
-
-          {/* ✅ Güvenli Ödeme */}
-          <div className="text-right">
-            <h3 className="font-bold text-white mb-3 text-lg"></h3>
+            {/* 🟦 Ödeme Logoları (SENDE VARDI) */}
             <div className="flex flex-wrap justify-center md:justify-end gap-5">
-              {paymentIcons.map((item) => (
+              {paymentIcons.map((src, i) => (
                 <img
-                  key={item.name}
-                  src={item.src}
-                  alt={item.name}
-                  className="h-8 opacity-80 hover:opacity-100 transition"
+                  key={i}
+                  src={src}
+                  className="h-10 opacity-80 hover:opacity-100 transition"
                 />
               ))}
             </div>
 
-          
-          </div>
-        </div>
-
-        {/* ✅ Alt Bilgi */}
-        <div className="mt-10 text-center border-t border-neutral-800 pt-6">
-          <div className="flex justify-center items-center gap-8 text-xs mb-3 flex-wrap">
-
-            {/* 🛡️ Güvenli Alışveriş */}
-            <div className="flex items-center gap-1 text-yellow-400 text-xs">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                className="w-4 h-4"
-              >
-                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
-                <path d="M9 12l2 2 4-4" />
-              </svg>
-              <span className="font-light text-[10px] tracking-wide text-yellow-400 drop-shadow-[0_0_12px_rgba(255,215,0,0.9)] brightness-125">
-                   GÜVENLİ ALIŞVERİŞ
-                    </span>
-                    
-                  </div>
-
-            {/* KVKK */}
-            <span
-              onClick={() => setKvkkOpen(true)}
-              className="hover:text-yellow-400 cursor-pointer transition"
-            >
-              KVKK
-            </span>
-
-            {/* Gizlilik Politikası */}
-            <span
-              onClick={() => setPrivacyOpen(true)}
-              className="hover:text-yellow-400 cursor-pointer transition"
-            >
-              Gizlilik Politikası
-            </span>
-
-            {/* İade Koşulları */}
-            <span
-              onClick={() => setReturnOpen(true)}
-              className="hover:text-yellow-400 cursor-pointer transition"
-            >
-              İade Koşulları
-            </span>
           </div>
 
-          {/* ✅ İletişim Satırı */}
-          <p className="text-xs mb-2 text-gray-400">
-            İletişim:{" "}
-            <a
-              href="mailto:destek@maximorashop.com"
-              className="text-yellow-400 hover:underline hover:text-yellow-300 transition"
-            >
-              destek@maximorashop.com
-            </a>
-          </p>
+          {/* === ALT KURUMSAL BLOK === */}
+          <div className="mt-16 grid grid-cols-1 md:grid-cols-4 gap-14">
 
-          <p className="text-xs text-gray-500">
+            {/* MAXIMORA */}
+            <div>
+              <h2 className="text-4xl font-extrabold text-[#4afff9] drop-shadow-[0_0_15px_#00fff588]">
+                MAXIMORA
+              </h2>
+              <p className="mt-4 text-gray-400 leading-6">
+                Premium dijital ürün & Petshop Ürünleri & oyun içi alışveriş.
+                Güvenli altyapı – anlık teslimat – %100 müşteri memnuniyeti.
+              </p>
+              <div className="w-24 h-[3px] mt-5 bg-[#4afff9] shadow-[0_0_18px_#00fff5] rounded-full"></div>
+            </div>
+
+            {/* Kurumsal */}
+            <div>
+              <h3 className="text-xl font-semibold mb-4 text-[#9fffee] drop-shadow-[0_0_10px_#00ffbf]">
+                Kurumsal
+              </h3>
+
+              <div className="flex flex-col gap-3 text-sm">
+                <span onClick={() => setKvkkOpen(true)} className="cursor-pointer hover:text-[#4afff9]">KVKK</span>
+                <span onClick={() => setPrivacyOpen(true)} className="cursor-pointer hover:text-[#4afff9]">Gizlilik Politikası</span>
+                <span onClick={() => setReturnOpen(true)} className="cursor-pointer hover:text-[#4afff9]">Hizmet Sözleşmesi</span>
+              </div>
+            </div>
+
+            {/* Müşteri */}
+            <div>
+              <h3 className="text-xl font-semibold mb-4 text-[#9fffee] drop-shadow-[0_0_10px_#00ffbf]">
+                Müşteri
+              </h3>
+
+              <div className="flex flex-col gap-3 text-sm">
+                 <a href="/dashboard" className="hover:text-[#4afff9]">Profilim</a>
+                <a href="/orders" className="hover:text-[#4afff9]">Siparişlerim</a>
+                <a href="/favorites" className="hover:text-[#4afff9]">Favorilerim</a>
+                <a href="/destek" className="hover:text-[#4afff9]">Destek Merkezi</a>
+              </div>
+            </div>
+
+            {/* İletişim */}
+            <div>
+              <h3 className="text-xl font-semibold mb-4 text-[#9fffee] drop-shadow-[0_0_10px_#00ffbf]">
+                İletişim
+              </h3>
+
+              <div className="bg-black/50 border border-[#00ffb085] p-4 rounded-xl shadow-[0_0_20px_#00ffb090]">
+                <p>
+                  Mail:{" "}
+                  <a
+                    href="mailto:destek@maximoraepin.com"
+                    className="text-[#4afff9] hover:underline"
+                  >
+                    destek@maximorashop.com
+                  </a>
+                </p>
+
+                <p className="mt-1">
+                  Destek: <span className="text-[#00ff88]">7/24 Aktif</span>
+                </p>
+              </div>
+            </div>
+
+          </div>
+
+          {/* 🛡️ GÜVENLİ ALIŞVERİŞ */}
+          <div className="flex justify-center items-center gap-2 mt-10 text-yellow-400 text-sm">
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="2">
+              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+              <path d="M9 12l2 2 4-4" />
+            </svg>
+            <span className="drop-shadow-[0_0_12px_#ffee88]">GÜVENLİ ALIŞVERİŞ</span>
+          </div>
+
+          {/* COPYRIGHT */}
+          <p className="text-center text-gray-500 text-xs mt-4">
             © 2025 MAXIMORA — Tüm Hakları Saklıdır.
           </p>
+
         </div>
-      
-
-
       </footer>
 
-      {/* ✅ Premium Drawer (Modal) */}
+      {/* === MODALS === */}
       <PrivacyDrawer open={privacyOpen} onClose={() => setPrivacyOpen(false)} />
       <ReturnDrawer open={returnOpen} onClose={() => setReturnOpen(false)} />
       <KvkkDrawer open={kvkkOpen} onClose={() => setKvkkOpen(false)} />

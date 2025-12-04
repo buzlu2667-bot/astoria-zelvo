@@ -7,23 +7,25 @@ export default function ProductCard({ product }) {
   const { addFav, removeFav, isFav } = useFavorites();
   const [favorites, setFavorites] = useState([]);
 
-  // ✅ Görsel ön yükleme
-  useEffect(() => {
-    if (!product?.image_url) return;
-    const preload = new Image();
-    preload.src = product.image_url;
-  }, [product.image_url]);
+  // -------------------------------
+  // IMAGE
+  // -------------------------------
+  const imageSrc =
+    product.main_img ||
+    (Array.isArray(product.gallery) ? product.gallery[0] : null) ||
+    "/products/default.png";
 
-  const imageSrc = product.image_url?.startsWith("http")
-    ? product.image_url
-    : `/products/${product.image_url}`;
-
+  // -------------------------------
+  // PRICES
+  // -------------------------------
   const price = Number(product.price ?? 0);
   const old = Number(product.old_price ?? 0);
-  const hasDiscount = old > 0 && old > price;
+  const hasDiscount = old > price;
   const discount = hasDiscount ? Math.round(((old - price) / old) * 100) : 0;
 
-  // ✅ Favori durumu
+  // -------------------------------
+  // FAVORITES
+  // -------------------------------
   useEffect(() => {
     if (isFav(product.id)) {
       setFavorites((prev) => [...prev, product.id]);
@@ -33,122 +35,217 @@ export default function ProductCard({ product }) {
   return (
     <div
       onClick={() => navigate(`/product/${product.id}`)}
-     className="cursor-pointer bg-neutral-950 rounded-2xl p-5 border border-neutral-800 hover:border-yellow-500 hover:scale-[1.02] transition-all duration-300 relative w-full max-w-[360px] mx-auto"
+      className="
+        cursor-pointer 
+        bg-[#0e0e0e] 
+        rounded-2xl 
+        border border-[#1b1b1b]
+        hover:border-[#00ffcc80]
+        transition-all duration-300
+        hover:shadow-[0_0_18px_rgba(0,255,200,0.25)]
+        p-3
+        flex flex-col
+      "
     >
-      <div className="relative w-full h-[380px] sm:h-[420px] md:h-[480px] bg-black overflow-hidden rounded-2xl mb-5 flex items-center justify-center shadow-lg hover:shadow-yellow-400/10 transition-shadow">
+      {/* ------------------ IMAGE BOX ------------------ */}
+      <div
+        className="
+          relative 
+          w-full 
+          h-[240px]
+          rounded-xl 
+          overflow-hidden 
+          bg-black
+          group
+        "
+      >
 
-        {/* 🔻 İndirim Etiketi */}
-        {discount > 0 && (
-          <span className="absolute top-2 left-2 z-10 bg-red-600 text-white text-xs px-2 py-1 rounded-md shadow-md">
-            %{discount} İndirim
-          </span>
-        )}
-
-        {/* 🌟 Yeni Ürün Rozeti */}
+        {/* 🔥 Yeni Ürün Etiketi */}
         {product.is_new && (
-          <span
-            className="absolute top-[38px] left-2 z-10 inline-flex items-center gap-1.5 
-              bg-gradient-to-r from-yellow-400/20 via-amber-500/10 to-yellow-400/20
-              border border-yellow-400/60 text-yellow-300 text-[12px] font-semibold 
-              px-3 py-[3px] rounded-md shadow-[0_0_15px_rgba(255,220,0,0.4)] 
-              backdrop-blur-sm tracking-wide animate-glow"
+          <div
+            className="
+              absolute top-3 left-3 z-20
+              bg-[#00ffcc] text-black 
+              text-xs font-bold px-2 py-[2px]
+              rounded-md shadow-[0_0_10px_#00ffaa]
+            "
           >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="12"
-              height="12"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-              strokeWidth="2"
-              className="drop-shadow-[0_0_6px_rgba(255,255,200,0.8)]"
-            >
-              <path d="M12 2L13.09 8.26L19 9.27L14.5 13.14L15.82 19.02L12 16L8.18 19.02L9.5 13.14L5 9.27L10.91 8.26L12 2Z" />
-            </svg>
             Yeni
-          </span>
+          </div>
         )}
 
-        {/* 🖼️ Ürün Görseli */}
+      
+
+        {/* ÜRÜN FOTO */}
         <img
           src={imageSrc}
-          alt={product.name}
           draggable="false"
-          className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
-          style={{
-            aspectRatio: "3/4",
-            objectPosition: "top center",
-            filter: "brightness(1) contrast(1) saturate(1)",
-            imageRendering: "auto",
-            transform: "translateZ(0)",
-            backfaceVisibility: "hidden",
-          }}
+          className="
+            w-full h-full object-cover 
+            transition duration-700 
+            group-hover:scale-110 
+            group-hover:brightness-110
+          "
         />
 
-        {/* 🔍 İncele Butonu */}
-        <button
-          onClick={(e) => {
-            e.stopPropagation();
-            navigate(`/product/${product.id}`);
-          }}
-          className="absolute inset-0 flex items-center justify-center bg-black/60 opacity-0 hover:opacity-100 transition-opacity duration-300 text-white text-sm font-semibold"
+        {/* 🔍 İncele Overlay */}
+        <div
+          className="
+            absolute inset-0 
+            flex items-center justify-center 
+            bg-black/50 
+            opacity-0 group-hover:opacity-100 
+            text-white text-sm 
+            transition-all duration-300
+          "
         >
-          ✨🔎 İncele
-        </button>
+          🔍 İncele
+        </div>
 
         {/* ❤️ Favori Butonu */}
-        <button
-          onClick={(e) => {
-            e.stopPropagation();
-            const alreadyFav = favorites.includes(product.id);
-            if (alreadyFav) {
-              setFavorites(favorites.filter((id) => id !== product.id));
-              removeFav(product.id);
-              window.dispatchEvent(
-                new CustomEvent("toast", {
-                  detail: { type: "danger", text: "❌ Favorilerden çıkarıldı" },
-                })
-              );
-            } else {
-              setFavorites([...favorites, product.id]);
-              addFav(product);
-              window.dispatchEvent(
-                new CustomEvent("toast", {
-                  detail: { type: "success", text: "❤️ Favorilere eklendi!" },
-                })
-              );
-            }
-          }}
-          className="absolute top-3 right-3 z-20 cursor-pointer bg-black/70 backdrop-blur-md w-9 h-9 rounded-full flex items-center justify-center hover:scale-125 transition"
-        >
-          {favorites.includes(product.id) ? "❤️" : "🤍"}
+       <button
+  onClick={(e) => {
+    e.stopPropagation();
+
+  const favObj = {
+  id: product.id,
+
+  // 🔥 BURASI EN ÖNEMLİ SATIR
+  title: product.title || product.name || "Ürün",
+
+  name: product.title || product.name || "Ürün",
+
+  price: Number(product.price ?? 0),
+  old_price: Number(product.old_price ?? 0),
+
+  stock: Number(product.stock ?? 0),
+
+  image_url:
+    product.image_url ||
+    product.main_img ||
+    product.img_url ||
+    (Array.isArray(product.gallery) ? product.gallery[0] : null) ||
+    "/products/default.png",
+
+  gallery: product.gallery || []
+};
+
+
+    console.log("Favoriye eklenen obje:", favObj);
+
+    if (isFav(product.id)) {
+      removeFav(product.id);
+
+      window.dispatchEvent(
+        new CustomEvent("toast", {
+          detail: { type: "warning", text: "Favorilerden çıkarıldı!" },
+        })
+      );
+    } else {
+      addFav(favObj);
+
+      window.dispatchEvent(
+        new CustomEvent("toast", {
+          detail: { type: "success", text: "Favorilere eklendi!" },
+        })
+      );
+    }
+  }}
+  className="
+    absolute top-3 right-3 z-30
+    bg-black/40 backdrop-blur-xl
+    w-10 h-10 rounded-full
+    flex items-center justify-center
+    border border-white/10
+    transition-all
+    hover:border-pink-400
+  "
+>
+
+          <svg
+            xmlns='http://www.w3.org/2000/svg'
+            viewBox='0 0 24 24'
+            className={`
+              w-6 h-6 transition
+              ${
+                isFav(product.id)
+                  ? "fill-pink-500 drop-shadow-[0_0_6px_rgba(255,80,150,1)]"
+                  : "fill-transparent stroke-pink-300"
+              }
+            `}
+          >
+            <path d='M12 21s-6-4.3-9-8.2C-1 7.7 3 2.4 8 4.2c2 .8 3 2.3 4 3.8 1-1.5 2-3 4-3.8C21 2 25 7.7 21 12.8C18 16.7 12 21 12 21z' />
+          </svg>
         </button>
       </div>
 
-      <p className="font-semibold text-lg truncate mt-2">{product.name}</p>
+      {/* ------------------ TITLE ------------------ */}
+      <p className="text-white font-semibold text-[15px] truncate mt-3">
+        {product.title}
+      </p>
 
-      {/* ✅ Stok Durumu */}
-      {product.stock <= 0 ? (
-        <p className="text-red-500 text-sm font-bold">Tükendi ❌</p>
-      ) : product.stock < 10 ? (
-        <p className="text-amber-400 text-sm font-bold">Az Kaldı ⚠️</p>
-      ) : (
-        <p className="text-green-500 text-sm font-bold">Stokta ✅</p>
-      )}
+      {/* ------------------ STOK ------------------ */}
+      <div className="text-[13px] mt-1">
+        {product.stock <= 0 ? (
+          <span className="text-red-500 font-semibold">Tükendi ❌</span>
+        ) : product.stock < 10 ? (
+          <span className="text-yellow-400 font-semibold">Az Kaldı ⚠️</span>
+        ) : (
+          <span className="text-green-500 font-semibold">Stokta ✔</span>
+        )}
+      </div>
 
-      {/* 💰 Fiyat */}
-      {hasDiscount ? (
-        <p className="text-yellow-400 font-bold">
-          <span className="text-gray-400 line-through text-sm mr-2">
-            ₺{old.toLocaleString("tr-TR")}
-          </span>
-          ₺{price.toLocaleString("tr-TR")}
-        </p>
-      ) : (
-        <p className="text-yellow-400 font-bold text-lg tracking-wide mt-1">
-          ₺{price.toLocaleString("tr-TR")}
-        </p>
-      )}
+     
+     {/* ------------------ FİYAT BLOĞU ------------------ */}
+<div
+  className="
+    mt-3
+    flex items-center gap-3
+    bg-black/40
+    border border-yellow-500/30
+    rounded-xl
+    px-3 py-2
+    shadow-[0_0_15px_rgba(255,200,0,0.15)]
+  "
+>
+
+  {/* YÜZDE ETİKETİ */}
+  {hasDiscount && (
+    <span
+      className="
+        bg-red-700/60 text-red-200
+        font-bold text-xs
+        px-2 py-[2px]
+        rounded-lg
+        border border-red-500/40
+        shadow-[0_0_8px_rgba(255,0,0,0.4)]
+      "
+    >
+      %{discount}
+    </span>
+  )}
+
+  {/* ESKİ FİYAT */}
+  {hasDiscount && (
+    <span className="text-gray-400 line-through text-sm font-semibold">
+      ₺{old.toLocaleString("tr-TR")}
+    </span>
+  )}
+
+  {/* YENİ FİYAT */}
+  <span
+    className="
+      text-yellow-300 
+      font-extrabold 
+      text-lg
+      drop-shadow-[0_0_6px_rgba(255,220,0,0.4)]
+    "
+  >
+    ₺{price.toLocaleString("tr-TR")}
+  </span>
+</div>
+
     </div>
   );
+  
 }
