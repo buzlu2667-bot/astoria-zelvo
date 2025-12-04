@@ -133,8 +133,8 @@ export default function Footer() {
                 MAXIMORA
               </h2>
               <p className="mt-4 text-gray-400 leading-6">
-                Premium dijital ürün & Petshop Ürünleri & oyun içi alışveriş.
-                Güvenli altyapı – anlık teslimat – %100 müşteri memnuniyeti.
+              Premium çanta & Premium dijital ürün & Petshop Ürünleri & oyun içi alışveriş.
+                Güvenli altyapı – anlık teslimat – Hızlı kargo -%100 müşteri memnuniyeti.
               </p>
               <div className="w-24 h-[3px] mt-5 bg-[#4afff9] shadow-[0_0_18px_#00fff5] rounded-full"></div>
             </div>
