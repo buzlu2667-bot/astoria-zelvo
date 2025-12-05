@@ -149,12 +149,12 @@ Siparişiniz özenle hazırlanıyor. Güvenli ödeme, hızlı teslimat ve premiu
   }
 
   return (
-  <div className="bg-neutral-900 text-white rounded-2xl p-6 shadow-[0_0_30px_rgba(255,215,0,0.05)]">
-      <h1 className="text-3xl font-extrabold mb-6 
-        bg-gradient-to-r from-yellow-400 via-amber-300 to-yellow-600 
-        bg-clip-text text-transparent animate-pulse flex items-center gap-2">
-        📦 Sipariş Yönetimi
-      </h1>
+<div className="bg-white text-gray-900 rounded-xl p-6 border border-gray-200 shadow-sm">
+
+     <h1 className="text-3xl font-bold mb-6 text-gray-900">
+  📦 Sipariş Yönetimi
+</h1>
+
 
 
       {orders.length === 0 ? (
@@ -174,14 +174,9 @@ const discount = o.discount_amount ?? 0;
           return (
             <div
   key={o.id}
-  className="relative border border-yellow-600/20 
-  bg-gradient-to-br from-[#0b0b0b] via-[#111] to-[#181818]
-  rounded-2xl p-5 mb-5 shadow-[0_0_20px_rgba(255,215,0,0.05)]
-  hover:shadow-[0_0_40px_rgba(255,215,0,0.25)] transition-all duration-300 group overflow-hidden"
+  className="bg-white border border-gray-200 rounded-xl p-5 mb-5 shadow-sm hover:shadow-md transition"
 >
-  {/* Işık efekti */}
- <div className="absolute inset-0 bg-gradient-to-r from-yellow-500/10 to-transparent 
-    opacity-0 group-hover:opacity-30 blur-xl transition-all duration-500 pointer-events-none"></div>
+ 
 
 
               <header className="flex justify-between items-start gap-3">
@@ -190,10 +185,10 @@ const discount = o.discount_amount ?? 0;
                   <p className="text-gray-400 text-xs">
                     {new Date(o.created_at).toLocaleString("tr-TR")}
                   </p>
-                  <p className="text-xs mt-1 text-gray-300">
+                 <p className="text-xs mt-1 text-gray-700">
                     <b>Ad:</b> {o.full_name || "-"} — <b>Tel:</b> {o.phone || "-"}
                   </p>
-                  <p className="text-xs text-gray-300">
+               <p className="text-xs text-gray-700">
                     <b>Adres:</b> {o.address || "Belirtilmedi"}
                   </p>
                   {discount > 0 && o.coupon && (
@@ -204,7 +199,7 @@ const discount = o.discount_amount ?? 0;
 
 
                   {o.note && (
-                    <p className="text-xs text-gray-400 mt-1 italic">
+                <p className="text-xs text-gray-600 mt-1 italic">
                       “{o.note}”
                     </p>
                   )}
@@ -219,7 +214,7 @@ const discount = o.discount_amount ?? 0;
 )}
 
 {/* ✅ Final Tutar */}
-<p className="text-lg font-bold text-yellow-300">
+<p className="text-lg font-bold text-gray-900">
   {TRY.format(total)}
 </p>
 
@@ -234,8 +229,7 @@ const discount = o.discount_amount ?? 0;
                   {o.status === "pending" || o.status === "awaiting_payment" ? (
                     <button
   onClick={() => approve(o.id)}
-  className="mt-2 bg-gradient-to-r from-yellow-500 to-amber-400 hover:opacity-90
-  text-black px-3 py-1.5 rounded-lg text-sm font-semibold shadow-[0_0_10px_rgba(255,215,0,0.3)] transition-all"
+ className="mt-2 bg-green-600 hover:bg-green-700 text-white px-3 py-1.5 rounded-lg text-sm font-semibold"
 >
 
                       ✅ Ödeme Onayla
@@ -244,7 +238,7 @@ const discount = o.discount_amount ?? 0;
                     <select
                       value={o.status}
                       onChange={(e) => updateStatus(o.id, e.target.value)}
-                      className="mt-2 bg-neutral-700 px-2 py-1 rounded text-xs"
+                     className="mt-2 bg-white border border-gray-300 rounded-lg px-2 py-1 text-sm text-gray-800"
                     >
                       {Object.keys(STATUS).map(k => (
                         <option key={k} value={k}>{STATUS[k]}</option>
@@ -256,12 +250,12 @@ const discount = o.discount_amount ?? 0;
                     onClick={() => remove(o.id)}
                     className="block text-red-500 hover:text-red-400 text-xs mt-2"
                   >
-                    🗑️ Sil
+                     Sil
                   </button>
                 </div>
               </header>
 
-             <ul className="mt-3 text-xs text-gray-300 ml-2 space-y-1 border-t border-yellow-700/20 pt-2">
+            <ul className="mt-3 text-sm text-gray-700 ml-2 space-y-1 border-t border-gray-200 pt-2">
   {(items[o.id] || []).map((it) => {
     let info = null;
     try {
@@ -276,8 +270,8 @@ const discount = o.discount_amount ?? 0;
         {TRY.format(it.unit_price || it.price)}
 
        {it.color && (
-  <p className="ml-6 mt-1 text-yellow-400 text-xs">
-    Renk: <span className="text-gray-300">{it.color}</span>
+<p className="ml-6 mt-1 text-gray-600 text-xs">
+    Renk: <span className="text-gray-700">{it.color}</span>
   </p>
 )}
 

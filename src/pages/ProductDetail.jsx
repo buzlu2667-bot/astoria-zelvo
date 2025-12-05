@@ -3,9 +3,11 @@ import { useParams, Link } from "react-router-dom";
 import { supabase } from "../lib/supabaseClient";
 import { useCart } from "../context/CartContext";
 import { useFavorites } from "../context/FavoritesContext";
-import { Heart, ZoomIn } from "lucide-react";
+import { Heart, ZoomIn, ChevronLeft, ChevronRight } from "lucide-react";
+import { useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { useSession } from "../context/SessionContext";
+
 
 const TRY = (n) =>
   Number(n || 0).toLocaleString("tr-TR", {
@@ -45,6 +47,14 @@ export default function ProductDetail() {
   const [mainImage, setMainImage] = useState("");
   const [zoomOpen, setZoomOpen] = useState(false);
   const [images, setImages] = useState([]);
+const autoScrollRef = useRef(null);
+  const relatedRef = useRef(null);
+
+const scrollLeftRelated = () =>
+  relatedRef.current?.scrollBy({ left: -300, behavior: "smooth" });
+
+const scrollRightRelated = () =>
+  relatedRef.current?.scrollBy({ left: 300, behavior: "smooth" });
 
   // Sayfa açılınca yukarı çık
   useEffect(() => {
@@ -78,7 +88,7 @@ export default function ProductDetail() {
         .select("*")
         .eq("main_id", data.main_id)
         .neq("id", id)
-        .limit(10);
+        .limit(50);
 
       setRelated(relatedProducts || []);
 
@@ -118,6 +128,9 @@ export default function ProductDetail() {
 
     return () => (alive = false);
   }, [id]);
+
+
+  
 
   // Görseller
   useEffect(() => {
@@ -486,45 +499,98 @@ export default function ProductDetail() {
           </div>
         </div>
 
-        {/* BENZER ÜRÜNLER */}
-        {related.length > 0 && (
-          <div className="mt-16">
-            <h2 className="text-2xl font-bold text-gray-900 text-center mb-6">
-              Benzer Ürünler
-            </h2>
+       
 
-            <div className="flex gap-4 overflow-x-auto no-scrollbar px-2 pb-4">
-              {related.map((item, i) => {
-                const imageUrl =
-                  item.main_img ||
-                  item.img_url ||
-                  item.gallery?.[0] ||
-                  "/placeholder.png";
+        
 
-                return (
-                  <Link
-                    key={i}
-                    to={`/product/${item.id}`}
-                    className="flex-shrink-0 w-[150px] sm:w-[180px] bg-white border border-gray-200 rounded-xl shadow-sm hover:shadow-md transition"
-                  >
-                    <img
-                      src={imageUrl}
-                      className="w-full h-[160px] object-cover rounded-t-xl"
-                    />
-                    <div className="p-3 text-center">
-                      <p className="text-sm font-semibold text-gray-700 truncate">
-                        {item.title}
-                      </p>
-                      <p className="text-orange-500 font-bold text-sm mt-1">
-                        {TRY(item.price)}
-                      </p>
-                    </div>
-                  </Link>
-                );
-              })}
+    {/* BENZER ÜRÜNLER */}
+{related.length > 0 && (
+  <div className="mt-16">
+    <h2 className="text-2xl font-bold text-gray-900 text-center mb-6">
+      Benzer Ürünler
+    </h2>
+
+    {/* Masaüstü Oklar */}
+    <div className="hidden lg:block relative w-full mb-4">
+      <button
+        onClick={scrollLeftRelated}
+        className="absolute left-0 top-1/2 -translate-y-1/2
+        w-10 h-10 rounded-full bg-white border border-gray-300 shadow
+        flex items-center justify-center hover:bg-gray-100 transition z-20"
+      >
+        <ChevronLeft className="w-5 h-5 text-gray-700" />
+      </button>
+
+      <button
+        onClick={scrollRightRelated}
+        className="absolute right-0 top-1/2 -translate-y-1/2
+        w-10 h-10 rounded-full bg-white border border-gray-300 shadow
+        flex items-center justify-center hover:bg-gray-100 transition z-20"
+      >
+        <ChevronRight className="w-5 h-5 text-gray-700" />
+      </button>
+    </div>
+
+    {/* SCROLL ALANI — TEK DIV!!! */}
+    <div
+      ref={relatedRef}
+      className="flex gap-4 overflow-x-auto no-scrollbar px-2 pb-4 scroll-smooth"
+    >
+      {related.map((item, i) => {
+        const imageUrl =
+          item.main_img ||
+          item.img_url ||
+          item.gallery?.[0] ||
+          "/placeholder.png";
+
+        const hasDiscount = item.old_price > item.price;
+        const discountRate = hasDiscount
+          ? Math.round(((item.old_price - item.price) / item.old_price) * 100)
+          : 0;
+
+        return (
+          <Link
+            key={i}
+            to={`/product/${item.id}`}
+            className="flex-shrink-0 w-[150px] sm:w-[180px] bg-white border border-gray-200 rounded-xl shadow-sm hover:shadow-md transition"
+          >
+            <div className="relative">
+              {hasDiscount && (
+                <span className="absolute top-2 left-2 bg-red-500 text-white text-xs font-bold px-2 py-1 rounded-full shadow">
+                  %{discountRate} İndirim
+                </span>
+              )}
+
+              <img
+                src={imageUrl}
+                className="w-full h-[160px] object-cover rounded-t-xl"
+              />
             </div>
-          </div>
-        )}
+
+            <div className="p-3 text-center">
+              <p className="text-sm font-semibold text-gray-700 truncate">
+                {item.title}
+              </p>
+
+              <div className="mt-1">
+                {hasDiscount && (
+                  <span className="text-gray-400 line-through text-xs mr-1">
+                    {TRY(item.old_price)}
+                  </span>
+                )}
+
+                <span className="text-orange-500 font-bold text-sm">
+                  {TRY(item.price)}
+                </span>
+              </div>
+            </div>
+          </Link>
+        );
+      })}
+    </div>
+  </div>
+)}
+
 
         {/* GERİ DÖN */}
         <div className="mt-10 text-center">
