@@ -1,5 +1,4 @@
-// ⭐ MAXIMORA — Premium Neon Footer (SENİN FOOTER + TASARIM TAM BİRLEŞTİRİLMİŞ)
-// Tüm linkler, tüm iconlar, tüm modallar ÇALIŞIR.
+// ⭐ MAXIMORA — Premium Neon Footer (DRAWER'SIZ — SAYFA YÖNLENDİRME)
 
 import {
   FaInstagram,
@@ -8,11 +7,6 @@ import {
   FaTelegramPlane,
   FaWhatsapp,
 } from "react-icons/fa";
-import { useState } from "react";
-
-import PrivacyDrawer from "./PrivacyDrawer";
-import ReturnDrawer from "./ReturnDrawer";
-import KvkkDrawer from "./KvkkDrawer";
 
 const shippingIcons = [
   { name: "Yurtiçi", src: "/footer/shipping-yurtici.png" },
@@ -26,17 +20,10 @@ const paymentIcons = [
   "/footer/pay-visa.png",
   "/footer/pay-mastercard.png",
   "/footer/pay-troy.png",
-  
   "/footer/pay-shopier.png",
-
 ];
 
-
 export default function Footer() {
-  const [privacyOpen, setPrivacyOpen] = useState(false);
-  const [returnOpen, setReturnOpen] = useState(false);
-  const [kvkkOpen, setKvkkOpen] = useState(false);
-
   return (
     <>
       <footer className="relative mt-24">
@@ -50,12 +37,10 @@ export default function Footer() {
         {/* === ANA BLOK === */}
         <div className="relative max-w-[1500px] mx-auto px-8 py-20 text-gray-300">
 
-        
-
-          {/* === ÜST 3 BLOK (SENDEKİ KARGO – SOSYAL – BANKA) === */}
+          {/* === ÜST BLOKLAR === */}
           <div className="grid grid-cols-1 md:grid-cols-3 items-center gap-y-10 text-center md:text-left">
 
-            {/* 🟦 Kargo Firmaları */}
+            {/* Kargo Firmaları */}
             <div className="flex flex-col items-center md:items-start">
               <div className="flex flex-wrap justify-center md:justify-start gap-5">
                 {shippingIcons.map((item) => (
@@ -69,62 +54,56 @@ export default function Footer() {
               </div>
             </div>
 
-           {/* 🟦 Sosyal Medya */}
-<div className="flex justify-center gap-6 text-3xl">
-  {[
-    { icon: <FaInstagram />, color: "#ff007a", href: null },
-    { icon: <FaFacebookF />, color: "#006eff", href: null },
-    { icon: <FaTiktok />, color: "#ff0033", href: null },
-    { icon: <FaTelegramPlane />, color: "#00aaff", href: "https://t.me/maximoraofficial" },
-    { icon: <FaWhatsapp />, color: "#00ff55", href: "https://wa.me/905384657526" },
-  ].map((s, i) =>
-    s.href ? (
-      // 🔵 Tıklanabilir ikon
-      <a
-        key={i}
-        href={s.href}
-        target="_blank"
-        rel="noopener noreferrer"
-        className="w-12 h-12 flex items-center justify-center rounded-xl bg-black"
-        style={{
-          border: `2px solid ${s.color}`,
-          boxShadow: `0 0 15px ${s.color}80`,
-          color: s.color,
-        }}
-      >
-        {s.icon}
-      </a>
-    ) : (
-      // 🔴 Tıklanamaz ikon
-      <div
-        key={i}
-        className="w-12 h-12 flex items-center justify-center rounded-xl bg-black cursor-default"
-        style={{
-          border: `2px solid ${s.color}`,
-          boxShadow: `0 0 15px ${s.color}80`,
-          color: s.color,
-        }}
-      >
-        {s.icon}
-      </div>
-    )
-  )}
-</div>
+            {/* Sosyal Medya */}
+            <div className="flex justify-center gap-6 text-3xl">
+              {[
+                { icon: <FaInstagram />, color: "#ff007a", href: null },
+                { icon: <FaFacebookF />, color: "#006eff", href: null },
+                { icon: <FaTiktok />,  color: "#ff0033", href: null },
+                { icon: <FaTelegramPlane />, color: "#00aaff", href: "https://t.me/maximoraofficial" },
+                { icon: <FaWhatsapp />, color: "#00ff55", href: "https://wa.me/905384657526" },
+              ].map((s, i) =>
+                s.href ? (
+                  <a
+                    key={i}
+                    href={s.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="w-12 h-12 flex items-center justify-center rounded-xl bg-black"
+                    style={{
+                      border: `2px solid ${s.color}`,
+                      boxShadow: `0 0 15px ${s.color}80`,
+                      color: s.color,
+                    }}
+                  >
+                    {s.icon}
+                  </a>
+                ) : (
+                  <div
+                    key={i}
+                    className="w-12 h-12 flex items-center justify-center rounded-xl bg-black cursor-default"
+                    style={{
+                      border: `2px solid ${s.color}`,
+                      boxShadow: `0 0 15px ${s.color}80`,
+                      color: s.color,
+                    }}
+                  >
+                    {s.icon}
+                  </div>
+                )
+              )}
+            </div>
 
-            {/* 🟦 Ödeme Logoları (SENDE VARDI) */}
+            {/* Ödeme Logoları */}
             <div className="flex flex-wrap justify-center md:justify-end gap-5">
               {paymentIcons.map((src, i) => (
-                <img
-                  key={i}
-                  src={src}
-                  className="h-10 opacity-80 hover:opacity-100 transition"
-                />
+                <img key={i} src={src} className="h-10 opacity-80 hover:opacity-100 transition" />
               ))}
             </div>
 
           </div>
 
-          {/* === ALT KURUMSAL BLOK === */}
+          {/* === ALT BLOK === */}
           <div className="mt-16 grid grid-cols-1 md:grid-cols-4 gap-14">
 
             {/* MAXIMORA */}
@@ -133,8 +112,8 @@ export default function Footer() {
                 MAXIMORA
               </h2>
               <p className="mt-4 text-gray-400 leading-6">
-              Premium çanta & Premium dijital ürün & Petshop Ürünleri & oyun içi alışveriş.
-                Güvenli altyapı – anlık teslimat – Hızlı kargo -%100 müşteri memnuniyeti.
+                Premium çanta & dijital ürün & petshop ürünleri & oyun içi alışveriş. 
+                Güvenli altyapı – anlık teslimat – hızlı kargo – %100 müşteri memnuniyeti.
               </p>
               <div className="w-24 h-[3px] mt-5 bg-[#4afff9] shadow-[0_0_18px_#00fff5] rounded-full"></div>
             </div>
@@ -146,9 +125,9 @@ export default function Footer() {
               </h3>
 
               <div className="flex flex-col gap-3 text-sm">
-                <span onClick={() => setKvkkOpen(true)} className="cursor-pointer hover:text-[#4afff9]">KVKK</span>
-                <span onClick={() => setPrivacyOpen(true)} className="cursor-pointer hover:text-[#4afff9]">Gizlilik Politikası</span>
-                <span onClick={() => setReturnOpen(true)} className="cursor-pointer hover:text-[#4afff9]">Hizmet Sözleşmesi</span>
+                <a href="/kvkk" className="hover:text-[#4afff9]">KVKK</a>
+                <a href="/gizlilik-politikasi" className="hover:text-[#4afff9]">Gizlilik Politikası</a>
+                <a href="/iade-kosullari" className="hover:text-[#4afff9]">İade Koşulları</a>
               </div>
             </div>
 
@@ -159,10 +138,9 @@ export default function Footer() {
               </h3>
 
               <div className="flex flex-col gap-3 text-sm">
-                 <a href="/dashboard" className="hover:text-[#4afff9]">Profilim</a>
+                <a href="/dashboard" className="hover:text-[#4afff9]">Profilim</a>
                 <a href="/orders" className="hover:text-[#4afff9]">Siparişlerim</a>
                 <a href="/favorites" className="hover:text-[#4afff9]">Favorilerim</a>
-                
               </div>
             </div>
 
@@ -176,7 +154,7 @@ export default function Footer() {
                 <p>
                   Mail:{" "}
                   <a
-                    href="mailto:destek@maximoraepin.com"
+                    href="mailto:destek@maximorashop.com"
                     className="text-[#4afff9] hover:underline"
                   >
                     destek@maximorashop.com
@@ -191,7 +169,7 @@ export default function Footer() {
 
           </div>
 
-          {/* 🛡️ GÜVENLİ ALIŞVERİŞ */}
+          {/* Güvenli Alışveriş */}
           <div className="flex justify-center items-center gap-2 mt-10 text-yellow-400 text-sm">
             <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="2">
               <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
@@ -200,18 +178,12 @@ export default function Footer() {
             <span className="drop-shadow-[0_0_12px_#ffee88]">GÜVENLİ ALIŞVERİŞ</span>
           </div>
 
-          {/* COPYRIGHT */}
           <p className="text-center text-gray-500 text-xs mt-4">
             © 2025 MAXIMORA — Tüm Hakları Saklıdır.
           </p>
 
         </div>
       </footer>
-
-      {/* === MODALS === */}
-      <PrivacyDrawer open={privacyOpen} onClose={() => setPrivacyOpen(false)} />
-      <ReturnDrawer open={returnOpen} onClose={() => setReturnOpen(false)} />
-      <KvkkDrawer open={kvkkOpen} onClose={() => setKvkkOpen(false)} />
     </>
   );
 }

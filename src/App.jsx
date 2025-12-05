@@ -1,4 +1,5 @@
 // ✅ src/App.jsx — FULL + Maintenance Bypass Version
+import ToastContainer from "./components/ToastContainer";
 import ScrollTopButton from "./components/ScrollTopButton";
 import ScrollToTop from "./components/ScrollToTop";
 import ProductDetail from "./pages/ProductDetail";
@@ -8,6 +9,9 @@ import { useEffect, useState } from "react";
 import LoginPage from "./pages/LoginPage";
 import RegisterPage from "./pages/RegisterPage";
 import Messages from "./pages/Messages";
+import KvkkPage from "./pages/KvkkPage";
+import PrivacyPage from "./pages/PrivacyPage";
+import ReturnPolicyPage from "./pages/ReturnPolicyPage";
 
 import Header from "./components/Header";
 import Footer from "./components/Footer";
@@ -115,7 +119,8 @@ export default function App() {
   return (
     <>
       <Header />
-      <Toast />
+      <ToastContainer />
+  
       <HashRedirector />
       <ScrollToTop />
 
@@ -134,6 +139,9 @@ export default function App() {
         <Route path="/mesajlarim" element={<Messages />} />
         <Route path="/category/:mainSlug" element={<CategoryMain />} />
         <Route path="/category/:mainSlug/:subSlug" element={<CategorySub />} />
+        <Route path="/kvkk" element={<KvkkPage />} />
+          <Route path="/gizlilik-politikasi" element={<PrivacyPage />} />
+         <Route path="/iade-kosullari" element={<ReturnPolicyPage />} />
 
         {/* Admin Panel */}
         <Route
@@ -160,10 +168,7 @@ export default function App() {
       <Footer />
       <ScrollTopButton />
 
-      {/* 🔥 GLOBAL TOAST LAYER */}
-      <div className="fixed top-4 right-4 z-[999999] pointer-events-none">
-        <div id="toast-root"></div>
-      </div>
+    
     </>
   );
 }

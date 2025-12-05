@@ -5,14 +5,14 @@ export default function ScrollTopButton() {
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
   const [showButton, setShowButton] = useState(false);
 
-  // ✅ Scroll dinleme
+  // Scroll
   useEffect(() => {
     const handleScroll = () => setShowButton(window.scrollY > 250);
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  // ✅ Resize dinleme
+  // Resize
   useEffect(() => {
     const handleResize = () => setIsMobile(window.innerWidth <= 768);
     window.addEventListener("resize", handleResize);
@@ -24,29 +24,27 @@ export default function ScrollTopButton() {
   return (
     <button
       onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
-    className={`fixed bottom-20 right-6 z-[99999] transition-all duration-300 shadow-lg
-
-      ${isMobile
-        ? "w-11 h-11 rounded-full bg-gradient-to-r from-yellow-400 to-yellow-600 flex items-center justify-center hover:scale-110"
-        : "px-5 py-3 rounded-full bg-gradient-to-r from-yellow-400 to-yellow-600 text-black font-semibold text-sm tracking-wide hover:scale-105"
-      }
-      ${showButton ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"}
-      `}
       title="Yukarı Çık"
+      className={`fixed bottom-20 right-6 z-[99999]
+        transition-all duration-300 shadow-lg border border-gray-300
+        bg-white text-gray-800
+
+        ${isMobile
+          ? "w-11 h-11 rounded-full flex items-center justify-center hover:scale-110"
+          : "px-5 py-3 rounded-full flex items-center justify-center gap-2 hover:scale-105"
+        }
+
+        ${showButton ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"}
+      `}
     >
       {isMobile ? (
-        <ArrowUp className="w-5 h-5 text-black" />
+        <ArrowUp className="w-5 h-5 text-gray-800" />
       ) : (
-        <div className="flex items-center gap-2 text-black">
-          <ArrowUp className="w-4 h-4" />
-          <span>Yukarı Çık</span>
-        </div>
+        <>
+          <ArrowUp className="w-4 h-4 text-gray-800" />
+          <span className="font-semibold text-sm">Yukarı Çık</span>
+        </>
       )}
-
-      {/* ✨ Işıltı Efekti */}
-      <span
-        className="absolute inset-0 rounded-full blur-md opacity-40 bg-gradient-to-r from-yellow-300 to-yellow-600 animate-pulse -z-10"
-      ></span>
     </button>
   );
 }

@@ -559,10 +559,10 @@ iframe[src*="livechat"] {
 body {
   background: linear-gradient(
     135deg,
-    #140917 100%,
-    #060502 1000%,
-    #131108 100%,
-    #000000 100%
+    #ffffff 100%,
+    #ffffff 1000%,
+    #ffffff 100%,
+    #ffffff 100%
   );
   background-attachment: fixed;
   background-size: cover;

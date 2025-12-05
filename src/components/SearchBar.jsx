@@ -9,7 +9,7 @@ export default function SearchBar({ small = false }) {
   const [loading, setLoading] = useState(false);
 
   // -----------------------------
-  //  🔍 Debounce
+  // 🔍 Debounce
   // -----------------------------
   useEffect(() => {
     const d = setTimeout(() => {
@@ -20,224 +20,179 @@ export default function SearchBar({ small = false }) {
   }, [q]);
 
   // ============================================================
-  // 🔥 ÜRÜN + KATEGORİ + ALT KATEGORİ + SERVER ARAMASI
+  // 🔥 SEARCH
   // ============================================================
   async function searchAll() {
     setLoading(true);
 
-    // ÜRÜNLER
-   const { data: products } = await supabase
-  .from("products")
-  .select("id, title, price, old_price, main_img, gallery")
-  .ilike("title", `%${q}%`)
-  .limit(20);
+    const { data: products } = await supabase
+      .from("products")
+      .select("id, title, price, old_price, main_img, gallery")
+      .ilike("title", `%${q}%`)
+      .limit(20);
 
-
-    // MAIN CATEGORIES
     const { data: mains } = await supabase
       .from("main_categories")
       .select("id, title, slug")
       .ilike("title", `%${q}%`);
 
-    // SUB CATEGORIES
     const { data: subs } = await supabase
       .from("sub_categories")
       .select("id, title, slug, main_id")
       .ilike("title", `%${q}%`);
 
-    // SERVER CATEGORIES
     const { data: servers } = await supabase
       .from("server_categories")
       .select("id, title, slug, sub_id")
       .ilike("title", `%${q}%`);
 
-    // ⭐ MAIN → sadece kategori göster
-    const finalMain = (mains || []).map((c) => ({
-      type: "main",
-      title: c.title,
-      mainSlug: c.slug,
-    }));
+    const final = [];
 
-    // ⭐ SUB → hem kendi slug hem parent slug ile
-    const finalSub = (subs || []).map((c) => ({
-      type: "sub",
-      title: c.title,
-      subSlug: c.slug,
-      mainSlug: mains.find((m) => m.id === c.main_id)?.slug,
-    }));
+    (products || []).forEach((p) => final.push({ type: "product", ...p }));
 
-    // ⭐ SERVER → 3. seviye kategori
-    const finalServer = (servers || []).map((c) => {
-      const parentSub = subs.find((s) => s.id === c.sub_id);
-      return {
+    (mains || []).forEach((m) =>
+      final.push({ type: "main", title: m.title, mainSlug: m.slug })
+    );
+
+    (subs || []).forEach((s) =>
+      final.push({
+        type: "sub",
+        title: s.title,
+        subSlug: s.slug,
+        mainSlug: mains.find((m) => m.id === s.main_id)?.slug,
+      })
+    );
+
+    (servers || []).forEach((c) => {
+      const parent = subs.find((s) => s.id === c.sub_id);
+      final.push({
         type: "server",
         title: c.title,
         serverSlug: c.slug,
-        subSlug: parentSub?.slug,
-        mainSlug: mains.find((m) => m.id === parentSub?.main_id)?.slug,
-      };
+        subSlug: parent?.slug,
+        mainSlug: mains.find((m) => m.id === parent?.main_id)?.slug,
+      });
     });
 
-    // ⭐ ÜRÜNLER
-    const finalProducts = (products || []).map((p) => ({
-      type: "product",
-      ...p,
-    }));
-
-    setResults([
-      ...finalSub,
-      ...finalServer,
-      ...finalProducts,
-      ...finalMain, // en alta atıyorum ki confuse olmasın
-    ]);
-
+    setResults(final);
     setLoading(false);
   }
 
-  // ============================================================
-  // 🔥 TIKLANINCA DOĞRU YERE GİT
-  // ============================================================
   function go(item) {
     switch (item.type) {
       case "product":
         return (window.location.href = `/product/${item.id}`);
-
       case "sub":
         return (window.location.href = `/category/${item.mainSlug}/${item.subSlug}`);
-
       case "server":
         return (window.location.href = `/category/${item.mainSlug}/${item.subSlug}/${item.serverSlug}`);
-
       case "main":
         return (window.location.href = `/category/${item.mainSlug}`);
-
-      default:
-        return;
     }
   }
 
   // ============================================================
-  // 🔥 RENDER
+  //  🔥 RENDER — TRENDYOL BEYAZ
   // ============================================================
   return (
-    <div className="relative w-full max-w-xl mx-auto">
+  <div className="relative w-full max-w-xl mx-auto
+  md:max-w-xl
+  px-2
+">
+
       {/* INPUT */}
-     <div
+    <div
   className={`
     flex items-center gap-2 
-    bg-black/40 backdrop-blur-md 
-    border border-white/10 
-    rounded-xl
-    ${small 
-      ? "px-3 py-1.5 text-sm w-full min-w-[140px]" 
-      : "px-4 py-2"
-    }
+    bg-white 
+    border border-gray-300 
+    rounded-xl shadow-sm
+    ${small ? "px-3 py-1.5 text-sm" : "px-4 py-3"}
+    md:py-2
   `}
 >
 
+        <Search className="text-gray-500" size={20} />
 
-        <Search className="text-gray-300" size={20} />
-      <input
-  value={q}
-  onChange={(e) => setQ(e.target.value)}
-  placeholder={small ? "Ara..." : "Aramak istediğin ürünü yaz..."}
-  className={`
-    flex-1 bg-transparent outline-none text-white 
-    ${small ? "placeholder-gray-500 text-xs" : "placeholder-gray-400"}
-  `}
-/>
+        <input
+          value={q}
+          onChange={(e) => setQ(e.target.value)}
+          placeholder={small ? "Ara..." : "Aramak istediğin ürünü yaz..."}
+         className={`
+    flex-1 bg-transparent outline-none text-gray-800
+    text-base md:text-sm
+    ${small ? "placeholder-gray-400 text-sm" : "placeholder-gray-500 text-base md:text-sm"}
+`}
 
+        />
 
         {q.length > 0 && (
           <X
             onClick={() => setQ("")}
-            className="cursor-pointer text-gray-300 hover:text-white"
+            className="cursor-pointer text-gray-500 hover:text-[#f27a1a]"
           />
         )}
       </div>
 
       {/* RESULTS */}
       {results.length > 0 && (
-     <div
-  className={`
-    absolute mt-2 z-[999999] 
-    bg-[#0d0d0d] border border-[#222]
-    rounded-xl shadow-xl 
-    max-h-[300px] overflow-y-auto
-
-    ${small 
-      ? "left-1/2 -translate-x-1/2 w-[95vw]" 
-      : "left-0 right-0"
-    }
-  `}
->
-
-
+        <div
+          className={`
+            absolute mt-2 z-[999999] 
+            bg-white border border-gray-300
+            rounded-xl shadow-lg 
+            max-h-[300px] overflow-y-auto
+            left-0 right-0
+          `}
+        >
           {results.map((r, i) => (
             <div
               key={i}
               onClick={() => go(r)}
-              className="
-                flex items-center gap-3 p-3 
-                hover:bg-white/10 transition border-b border-white/5
-                cursor-pointer
-              "
+              className="flex items-center gap-3 p-3 hover:bg-gray-100 cursor-pointer border-b border-gray-100"
             >
               {/* ÜRÜN */}
-        {r.type === "product" ? (
-  <div className="flex items-center gap-3 w-full">
+              {r.type === "product" ? (
+                <div className="flex items-center gap-3 w-full">
 
-    {/* FOTO */}
-    <img
-      src={r.main_img || r.gallery?.[0]}
-      className="w-12 h-12 rounded-lg object-cover border border-white/10 shadow-[0_0_8px_rgba(0,0,0,0.4)]"
-    />
+                  <img
+                    src={r.main_img || r.gallery?.[0]}
+                    className="w-12 h-12 rounded-lg object-cover border"
+                  />
 
-    <div className="flex flex-col flex-1">
+                  <div className="flex flex-col flex-1">
+                    <span className="text-gray-900 text-sm font-medium truncate">
+                      {r.title}
+                    </span>
 
-      {/* BAŞLIK */}
-      <span className="text-white text-sm font-semibold truncate">
-        {r.title}
-      </span>
+                    <div className="flex items-center gap-2 mt-0.5">
 
-      {/* FİYAT BLOĞU */}
-      <div className="flex items-center gap-2 mt-0.5">
+                      {/* İNDİRİM */}
+                      {r.old_price > r.price && (
+                        <span className="text-red-600 text-xs font-bold">
+                          %{Math.round(((r.old_price - r.price) / r.old_price) * 100)}
+                        </span>
+                      )}
 
-        {/* % İNDİRİM */}
-        {r.old_price > r.price && (
-          <span
-            className="
-              text-red-300 text-[11px] font-bold
-              bg-red-800/40 border border-red-500/40
-              px-1.5 py-[1px] rounded-md
-            "
-          >
-            %{Math.round(((r.old_price - r.price) / r.old_price) * 100)}
-          </span>
-        )}
+                      {/* ESKİ FİYAT */}
+                      {r.old_price > r.price && (
+                        <span className="text-gray-400 text-xs line-through">
+                          ₺{r.old_price.toLocaleString("tr-TR")}
+                        </span>
+                      )}
 
-        {/* ESKİ FİYAT */}
-        {r.old_price > r.price && (
-          <span className="text-gray-400 text-[11px] line-through">
-            ₺{Number(r.old_price).toLocaleString("tr-TR")}
-          </span>
-        )}
-
-        {/* YENİ FİYAT */}
-        <span className="text-yellow-300 text-[13px] font-extrabold drop-shadow-[0_0_4px_rgba(255,220,0,0.4)]">
-          ₺{Number(r.price).toLocaleString("tr-TR")}
-        </span>
-
-      </div>
-
-    </div>
-  </div>
-) : (
-
-                // ⭐ MODERN KATEGORİ SATIRI
-                <div className="flex items-center gap-2 text-blue-300 text-sm font-semibold">
-                  <FolderSearch size={18} className="text-blue-400 opacity-80" />
-                  {r.title} (Kategori)
+                      {/* YENİ FİYAT */}
+                      <span className="text-[#f27a1a] text-sm font-bold">
+                        ₺{r.price.toLocaleString("tr-TR")}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              ) : (
+                // KATEGORİ
+                <div className="flex items-center gap-2 text-gray-800 text-sm">
+                  <FolderSearch size={18} className="text-[#f27a1a]" />
+                  {r.title}
                 </div>
               )}
             </div>
@@ -247,14 +202,7 @@ export default function SearchBar({ small = false }) {
 
       {/* NO RESULT */}
       {q.length > 0 && !loading && results.length === 0 && (
-        <div
-          className="
-            absolute left-0 right-0 mt-2 
-            bg-[#0d0d0d] border border-[#222] 
-            rounded-xl shadow-xl p-3 text-center
-            text-gray-400 text-sm z-[999999]
-          "
-        >
+        <div className="absolute left-0 right-0 mt-2 bg-white border border-gray-300 rounded-xl shadow-lg p-3 text-center text-gray-500 text-sm">
           Sonuç bulunamadı
         </div>
       )}

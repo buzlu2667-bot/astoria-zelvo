@@ -3,7 +3,7 @@ import { supabase } from "../lib/supabaseClient";
 import { useNavigate } from "react-router-dom";
 import { useFavorites } from "../context/FavoritesContext";
 
-// ₺ format
+// ₺ Format
 const TRY = new Intl.NumberFormat("tr-TR", {
   style: "currency",
   currency: "TRY",
@@ -22,26 +22,26 @@ function LoyaltyBar({ points }) {
 
   return (
     <>
-      <div className="flex justify-between text-sm mb-1 opacity-75">
+      <div className="flex justify-between text-sm mb-1 text-gray-600">
         <span>🎁 Hediye Seviyesi</span>
         <span>{inTier.toLocaleString("tr-TR")} / 20.000</span>
       </div>
 
-      <div className="w-full h-3 bg-gray-800 rounded-full overflow-hidden">
+      <div className="w-full h-3 bg-gray-200 rounded-full overflow-hidden">
         <div
-          className="h-full bg-gradient-to-r from-yellow-400 via-amber-400 to-rose-500 transition-all"
+          className="h-full bg-gradient-to-r from-[#f27a1a] to-yellow-400 transition-all"
           style={{ width: `${pct}%` }}
         />
       </div>
 
-      <p className="mt-2 text-xs opacity-70">
+      <p className="mt-2 text-xs text-gray-500">
         {remaining === 0 ? (
-          <span className="text-emerald-400 font-semibold">
+          <span className="text-green-600 font-semibold">
             🎉 Yeni ödül kazandın!
           </span>
         ) : (
-          <>Bir sonraki ödül için{" "}
-            <span className="text-yellow-300 font-semibold">
+          <>Sonraki ödül için{" "}
+            <span className="text-[#f27a1a] font-semibold">
               {remaining.toLocaleString("tr-TR")} puan
             </span>{" "}
             kaldı.</>
@@ -51,56 +51,21 @@ function LoyaltyBar({ points }) {
   );
 }
 
+// MAIN COMPONENT
 export default function Dashboard() {
   const [user, setUser] = useState(null);
   const [orders, setOrders] = useState([]);
   const navigate = useNavigate();
   const { favorites } = useFavorites?.() || { favorites: [] };
 
- useEffect(() => {
-  async function run() {
-    const { data } = await supabase.auth.getUser();
-    if (!data?.user) return navigate("/", { replace: true });
-
-    // 1) AUTH USER
-    setUser(data.user);
-
-    // 2) PROFIL USERNAME ÇEK
-    const { data: profile } = await supabase
-      .from("profiles")
-      .select("username")
-      .eq("id", data.user.id)
-      .single();
-
-    if (profile?.username) {
-      setUser((prev) => ({
-        ...prev,
-        profile_username: profile.username, // 🔥 username artık burada
-      }));
-    }
-
-    const { data: ordersData } = await supabase
-      .from("orders")
-      .select("*")
-      .eq("user_id", data.user.id);
-
-    setOrders(ordersData || []);
-  }
-  run();
-}, [navigate]);
-
-// 🔥 Sekme değişip geri dönünce Dashboard yeniden veri çeksin
-useEffect(() => {
-  const reloadDashboard = async () => {
-    console.log("FOCUS/VISIBILITY → Dashboard yeniden yükleniyor...");
-
-    try {
+  // USER + PROFILE LOAD
+  useEffect(() => {
+    async function run() {
       const { data } = await supabase.auth.getUser();
-      if (!data?.user) return;
+      if (!data?.user) return navigate("/", { replace: true });
 
       setUser(data.user);
 
-      // Profil tekrar
       const { data: profile } = await supabase
         .from("profiles")
         .select("username")
@@ -114,135 +79,105 @@ useEffect(() => {
         }));
       }
 
-      // Siparişleri tekrar çek
       const { data: ordersData } = await supabase
         .from("orders")
         .select("*")
         .eq("user_id", data.user.id);
 
       setOrders(ordersData || []);
-    } catch (e) {
-      console.error("Dashboard reload error:", e);
     }
-  };
+    run();
+  }, [navigate]);
 
-  const onFocus = () => reloadDashboard();
-  const onVisible = () => {
-    if (!document.hidden) reloadDashboard();
-  };
-
-  window.addEventListener("focus", onFocus);
-  document.addEventListener("visibilitychange", onVisible);
-
-  return () => {
-    window.removeEventListener("focus", onFocus);
-    document.removeEventListener("visibilitychange", onVisible);
-  };
-}, []);
-
-
-
+  // Toplam harcama
   const totalSpent = useMemo(() => {
-    return orders.reduce((sum, o) => sum + (Number(o.final_amount ?? o.total_amount ?? 0) || 0), 0);
+    return orders.reduce(
+      (sum, o) => sum + (Number(o.final_amount ?? o.total_amount ?? 0) || 0),
+      0
+    );
   }, [orders]);
 
   const points = Math.max(0, Math.floor(totalSpent));
   const favCount = Array.isArray(favorites) ? favorites.length : 0;
-
   const STEP = 20000;
   const tier = Math.floor(points / STEP);
   const remaining = Math.max(0, (tier + 1) * STEP - points);
 
   return (
-   <div className="min-h-screen text-white">
+    <div className="min-h-screen bg-[#fafafa] p-4 md:p-8">
+      {/* HEADER */}
+      <div className="max-w-4xl mx-auto bg-white rounded-2xl p-6 shadow-sm border border-gray-200 flex justify-between items-center">
+        <div>
+          <h1 className="text-2xl font-bold text-gray-800">Müşteri Paneli</h1>
+          <p className="text-gray-500 text-sm mt-1">{user?.email}</p>
 
-     <div className="py-5 px-6 flex justify-between items-center border-b border-yellow-500/20">
-  <h1 className="text-xl font-bold"> Müşteri Paneli</h1>
-
-  <div className="flex flex-col text-right leading-tight">
-    <span className="text-yellow-300 font-semibold">{user?.email}</span>
-
- {user?.profile_username && (
-  <span
-    className="
-      block text-[14px] font-bold 
-      text-red-400 
-      drop-shadow-[0_0_6px_rgba(255,0,0,0.6)]
-    "
-  >
-    @{user.profile_username}
-  </span>
-)}
-
-  </div>
-</div>
-
-
-      <div className="max-w-4xl mx-auto p-8 mt-10 bg-[#0d0d0d] rounded-2xl border border-yellow-400/20 shadow-xl">
-
-        {/* Stats */}
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 text-center mb-6">
-          <StatCard label="Harcama" value={TRY.format(totalSpent)} />
-          <StatCard label="Puan" value={points.toLocaleString("tr-TR")} />
-          <StatCard label="Sipariş" value={orders.length} />
-          <StatCard label="Favori" value={favCount} />
+          {user?.profile_username && (
+            <p className="text-sm mt-1 text-[#f27a1a] font-semibold">
+              @{user.profile_username}
+            </p>
+          )}
         </div>
 
-        {/* Sadakat */}
+        <div className="text-right">
+          <p className="text-gray-500 text-sm">Harcama</p>
+          <p className="text-xl font-bold text-gray-800">
+            {TRY.format(totalSpent)}
+          </p>
+        </div>
+      </div>
+
+      {/* PANEL */}
+      <div className="max-w-4xl mx-auto mt-8 bg-white rounded-2xl border border-gray-200 p-6 shadow-sm">
+        {/* Stats Row */}
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 text-center mb-6">
+          <StatCard label="Sipariş" value={orders.length} />
+          <StatCard label="Favori" value={favCount} />
+          <StatCard label="Puan" value={points.toLocaleString("tr-TR")} />
+          <StatCard label="Hediye" value={tier} />
+        </div>
+
+        {/* Loyalty */}
         <LoyaltyBar points={points} />
 
-        {/* 🏆 Ödül Bilgisi */}
-        <div className="mt-6 bg-[#151515] border border-yellow-500/30 rounded-xl p-4 flex items-center justify-between shadow-lg">
-          <div className="flex items-center gap-3">
-            <span className="text-3xl">🏆</span>
-            <div>
-              <p className="text-sm opacity-70">Kazanılan Hediye</p>
-              <p className="text-lg font-bold">{tier} adet</p>
-            </div>
+        {/* Ödül Kartı */}
+        <div className="mt-6 bg-gray-50 border border-gray-300 rounded-xl p-4 flex justify-between items-center">
+          <div>
+            <p className="text-sm text-gray-600">Kazanılan Hediye</p>
+            <p className="text-xl font-bold text-gray-800">{tier} adet</p>
           </div>
 
           <div className="text-right">
             {remaining === 0 ? (
-              <p className="text-emerald-400 font-semibold">🎉 Yeni ödül kazandın!</p>
+              <p className="text-green-600 font-semibold">
+                🎉 Yeni ödül kazandın!
+              </p>
             ) : (
               <>
-                <p className="text-xs opacity-60">Bir sonraki ödül:</p>
-                <p className="font-bold text-yellow-300">
+                <p className="text-xs text-gray-500">Sonraki ödül:</p>
+                <p className="text-lg font-bold text-[#f27a1a]">
                   {remaining.toLocaleString("tr-TR")} puan
                 </p>
               </>
             )}
           </div>
         </div>
-
       </div>
     </div>
   );
 }
 
-/* Küçük kart */
+// Stat Box
 function StatCard({ label, value }) {
   return (
-    <div className="bg-[#111] border border-gray-700 rounded-xl py-4 shadow flex flex-col items-center">
-      {/* label (TEK KEZ) */}
-      <div className="text-xs opacity-60">{label}</div>
+    <div className="bg-white border border-gray-300 rounded-xl py-4 shadow-sm flex flex-col items-center">
+      <span className="text-xs text-gray-500">{label}</span>
 
-      {/* Değer: esneyen, taşmayan, ortalı pill */}
-      <div className="mt-2 w-full flex justify-center">
-  <span
-    className="
-      inline-block px-3 py-1 bg-black border border-yellow-500/30 rounded-lg 
-      font-bold tabular-nums text-sm sm:text-base md:text-lg 
-      max-w-[100px] sm:max-w-none 
-      text-center truncate
-    "
-    title={String(value)}
-  >
-    {value}
-  </span>
-</div>
-
+      <span
+        className="mt-2 px-3 py-1 bg-gray-100 border border-gray-300 rounded-lg font-bold text-gray-800 text-base"
+        title={String(value)}
+      >
+        {value}
+      </span>
     </div>
   );
 }
-

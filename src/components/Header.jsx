@@ -523,6 +523,27 @@ async function closeNotification() {
       `}
     </style>
 
+    <style>
+{`
+  @media (max-width: 380px) {
+    .header-mobile-top {
+      flex-direction: column !important;
+      align-items: stretch !important;
+      gap: 6px !important;
+    }
+
+    .header-mobile-top .logo-block {
+      margin-right: auto !important;
+    }
+
+    .header-mobile-top .search-block {
+      width: 100% !important;
+    }
+  }
+`}
+</style>
+
+
     {scrollText && scrollText.active && (
   <ScrollingText data={scrollText} />
 )}
@@ -573,87 +594,103 @@ async function closeNotification() {
 )}
 
       {/* TOPBAR */}
-  <header className="bg-[#050505] text-white border-b border-yellow-500/20 shadow-[0_0_20px_rgba(255,215,0,0.08)] z-[999] relative">
-
-  <div className="max-w-7xl mx-auto flex items-center justify-between px-3 sm:px-6 py-3">
-
-          {/* Menu */}
-         <button
-  onClick={() => setMenuOpen(true)}
-  className="
-    rounded-xl p-2 hover:bg-white/5 transition
-    md:mr-6   /* ⭐ Masaüstünde menüyü sağa 24px kaydırdık */
-  "
-  aria-label="Menü"
->
-  <Menu className="w-6 h-6" />
-</button>
+ <header className="bg-white text-gray-800 border-b border-gray-200 shadow-sm z-[999] relative">
 
 
-         
-      {/* ✅ Maximora Logo (Blue + Gold Premium Edition) */}
-<Link to="/" className="flex items-center gap-4 group mr-auto">
- {/* ✅ Mavi + Altın Degrade Logo */}
-{/* ✅ Mavi + Altın Premium Logo (Net Harf Versiyonu) */}
-<img
-  src="/logo.png"
-  alt="Maximora Logo"
-  className="
-    w-11 h-11 object-contain 
-    drop-shadow-[0_0_12px_rgba(255,215,0,0.6)]
-    group-hover:scale-110 
-    transition-all duration-300
-  "
-/>
+<div className="max-w-7xl mx-auto flex items-center justify-between px-3 sm:px-6 py-3">
+
+      {/* 🔥 SOLA YASLANAN BLOK */}
+<div className="flex items-center gap-3 md:absolute md:left-4 md:top-1/2 md:-translate-y-1/2 header-mobile-top">
 
 
-  
+  {/* Menu */}
+  <button
+    onClick={() => setMenuOpen(true)}
+    className="
+      rounded-xl p-2 hover:bg-white/5 transition
+    "
+    aria-label="Menü"
+  >
+    <Menu className="w-6 h-6" />
+  </button>
+
+  {/* Logo + Yazılar */}
+ {/* Logo + Yazılar */}
+<Link to="/" className="logo-block flex items-center gap-4 group z-[50] relative shrink-0">
+
+
+
+
+  {/* Logo */}
+  <img
+    src="/logo.png"
+    alt="Maximora Logo"
+    className="
+      w-14 h-14
+      sm:w-11 sm:h-11
+      object-contain 
+      drop-shadow-[0_0_12px_rgba(255,215,0,0.6)]
+      group-hover:scale-110 
+      transition-all duration-300
+    "
+  />
 
   {/* Yazılar */}
-<div className="leading-[1.1] flex flex-col hidden sm:flex">
-    {/* MAXIMORA */}
-    <span
-      className="
-        text-xl font-extrabold tracking-wide 
-        bg-gradient-to-r from-white to-white
-        bg-clip-text text-transparent 
-        transition-all duration-500
-        group-hover:bg-gradient-to-r group-hover:from-blue-500 group-hover:to-yellow-400
-      "
-    >
-      MAXIMORA
-    </span>
+  <div className="leading-[1.1] flex flex-col hidden sm:flex">
+
+    <div className="relative">
+      {/* OUTLINE */}
+      <span className="absolute inset-0 text-blue-900 font-extrabold tracking-wide text-xl opacity-60 pointer-events-none">
+        MAXIMORA
+      </span>
+
+      {/* MAIN COLOR */}
+      <span className="relative text-[#f27a1a] font-extrabold tracking-wide text-xl">
+        MAXIMORA
+      </span>
+    </div>
 
     {/* Alt yazı */}
     <span className="text-[10px] tracking-[0.3em] text-blue-400 uppercase group-hover:text-yellow-400 transition">
       Lifestyle & Tech Store
     </span>
+
   </div>
+
 </Link>
+
+</div>
 
 
   {/* Right Nav — HESABIM DROPDOWN */}
-<div className="relative flex items-center gap-7 z-30 header-icons ml-auto">
+<div className="flex items-center gap-7 header-icons ml-auto shrink-0 z-[20]">
+
 
 
 
 {/* 🔍 MASAÜSTÜ SEARCH BAR */}
-<div className="hidden lg:flex items-center w-[610px] justify-center mx-8">
+<div className="hidden lg:flex items-center w-[555px] justify-center mx-auto">
   <SearchBar />
 </div>
 
 
 {/* 🔍 MOBIL MINI SEARCH BAR (SADECE <768px) */}
-<div className="flex lg:hidden items-center w-[220px] sm:w-[220px] mx-2">
-  <div className="flex items-center gap-2 bg-black/30 border border-white/10 rounded-full px-3 py-2 w-full">
-    <Search className="text-gray-300 w-4 h-4" />
+<div className="search-block flex lg:hidden items-center w-[220px] sm:w-[220px] mx-2">
+  <div
+    className="flex items-center gap-2 bg-white border border-gray-300 rounded-full px-3 py-2 w-full"
+    onClick={() => setSearchOpen(true)}   // ⬅️ BURAYA ALDIK
+  >
+    <Search className="text-gray-500 w-4 h-4" />
+
     <input
-      onFocus={() => setSearchOpen(true)}
       placeholder="Ara..."
-      className="text-sm bg-transparent text-white placeholder-gray-400 outline-none w-full"
+      readOnly                // ⬅️ iOS bug fix
+      className="text-sm bg-transparent text-gray-700 placeholder-gray-500 outline-none w-full"
     />
   </div>
 </div>
+
+
 
 
 
@@ -665,7 +702,7 @@ async function closeNotification() {
     to="/favorites"
    className="relative rounded-xl p-1 sm:p-2 hover:bg-white/5 transition"
   >
-    <Heart className="w-6 h-6 text-pink-400" />
+   <Heart className="w-6 h-6 text-gray-700" />
     {favCount > 0 && (
       <span className="absolute -top-1.5 -right-1.5 bg-pink-500 text-white text-[10px] min-w-[18px] h-[18px] flex items-center justify-center rounded-full font-bold shadow-lg">
         {favCount}
@@ -710,7 +747,7 @@ async function closeNotification() {
   to="/cart"
   className="relative rounded-xl p-1 sm:p-2 hover:bg-white/5 transition hidden 2xl:flex"
 >
-    <ShoppingCart className="w-6 h-6 text-yellow-400" />
+ <ShoppingCart className="w-6 h-6 text-[#f27a1a]" />
     {cart?.length > 0 && (
       <span className="absolute -top-1.5 -right-1.5 bg-yellow-500 text-black text-[10px] min-w-[18px] h-[18px] flex items-center justify-center rounded-full font-bold shadow-lg">
         {cart.length}
@@ -723,21 +760,25 @@ async function closeNotification() {
 {!session && (
   <>
     {/* DESKTOP: Kayıt Ol */}
-   <Link
+   {/* 🆕 KAYIT OL — TRENDYOL STİLİ */}
+<Link
   to="/register"
   className="
-    hidden lg:flex items-center gap-2
-    h-[40px] px-4 min-w-[110px]
+    hidden 2xl:flex items-center gap-2
+    px-3 py-2
     rounded-xl
-    bg-blue-500/20 border border-blue-400/40
-    hover:bg-blue-500/30 transition
+    border border-gray-200
+    hover:bg-gray-100
+    transition
   "
 >
-  <UserPlus className="w-5 h-5 text-blue-300" />
-  <span className="text-xs font-semibold text-blue-200 whitespace-nowrap">
+  <UserPlus className="w-5 h-5 text-gray-700" />
+
+  <span className="text-sm font-medium text-gray-700">
     Kayıt Ol
   </span>
 </Link>
+
 
 
     {/* MOBILE: Sadece ikon (UserPlus) */}
@@ -752,6 +793,7 @@ async function closeNotification() {
 )}
 
 {/* 👤 HESABIM / GİRİŞ YAP */}
+{/* 👤 Giriş Yap / Hesabım BUTONU — TRENDYOL STİLİ */}
 <button
   onClick={() => {
     if (!session) {
@@ -761,29 +803,32 @@ async function closeNotification() {
     setAccountModal(true);
   }}
   className="
-  account-button
-  hidden 2xl:flex
-  items-center gap-2
-    h-[32px] sm:h-[40px]
-    px-2 sm:px-3
-    rounded-xl bg-white/10 border border-white/10
-    hover:bg-white/20 transition
+    hidden 2xl:flex items-center gap-2
+    px-3 py-2
+    rounded-xl
+    border border-gray-200
+    hover:bg-gray-100
+    transition
   "
 >
-  {/* MOBILE: Sadece ikon */}
-<User2 className="sm:hidden w-5 h-5 text-yellow-400" />
+  <User2 className="w-5 h-5 text-gray-700" />
 
-  {/* DESKTOP: Yazılı */}
-  <User2 className="hidden sm:block w-5 h-5 text-yellow-400" />
- <span className="hidden sm:block text-xs font-semibold text-white whitespace-nowrap">
-  {session 
-    ? (session.user.user_metadata?.username 
-        ? session.user.user_metadata.username 
-        : session.user.email.split('@')[0])
-    : "Giriş Yap"}
-</span>
-
+  {!session ? (
+    <span className="text-sm font-medium text-gray-700">
+      Giriş Yap
+    </span>
+  ) : (
+    <div className="flex flex-col leading-tight text-left">
+      <span className="text-sm font-semibold text-gray-800">Hesabım</span>
+      <span className="text-[11px] text-gray-500 max-w-[90px] truncate">
+        {session.user.user_metadata?.username ||
+          session.user.email.split("@")[0]}
+      </span>
+    </div>
+  )}
 </button>
+
+
 </div>
 
        </div>
@@ -796,9 +841,11 @@ async function closeNotification() {
    {/* ⭐⭐ ULTRA PREMIUM LEFT DRAWER — V12 ⭐⭐ */}
 
 {/* Overlay (arka plan blur + tıklayınca kapanır) */}
+{/* ⭐⭐⭐ TRENDYOL LEFT DRAWER — CLEAN WHITE THEME ⭐⭐⭐ */}
+
 {menuOpen && (
   <div
-    className="fixed inset-0 bg-black/40 backdrop-blur-sm z-[998] transition-opacity duration-300"
+    className="fixed inset-0 bg-black/40 z-[998]"
     onClick={() => setMenuOpen(false)}
   ></div>
 )}
@@ -806,71 +853,54 @@ async function closeNotification() {
 <aside
   className={`
     fixed top-0 left-0 h-full w-[300px]
-    bg-[rgba(13,13,13,0.78)] backdrop-blur-2xl
-    border-r border-yellow-500/20
-    shadow-[0_0_50px_rgba(255,215,0,0.25)]
-    transition-transform duration-300 ease-[cubic-bezier(.4,0,.2,1)]
+    bg-white text-gray-800
+    shadow-[0_0_30px_rgba(0,0,0,0.15)]
+    transition-transform duration-300 
     z-[99999]
     ${menuOpen ? "translate-x-0" : "-translate-x-full"}
   `}
 >
-
-  {/* Header */}
-  <div className="
-    flex justify-between items-center
-    px-5 py-4 
-    border-b border-yellow-500/20 
-    bg-black/20
-    shadow-[0_0_15px_rgba(255,215,0,0.05)]
-  ">
-    <h2 className="text-lg font-bold text-yellow-400 tracking-wide">
-      KEŞFET 🔥
-    </h2>
+  {/* HEADER */}
+  <div className="flex justify-between items-center px-4 py-4 border-b border-gray-200">
+    <h2 className="text-lg font-semibold text-gray-800">Menü</h2>
 
     <button
       onClick={() => setMenuOpen(false)}
-      className="
-        p-2 rounded-lg
-        hover:bg-white/10 
-        text-gray-300
-        transition-all
-      "
+      className="p-2 rounded-md hover:bg-gray-100"
     >
-      <X className="w-6 h-6" />
+      <X className="w-6 h-6 text-gray-700" />
     </button>
   </div>
 
-  {/* Kullanıcı Kartı */}
-  <div className="
-    px-5 py-4 
-    border-b border-yellow-500/10 
-    bg-black/10
-  ">
+  {/* USER CARD */}
+  <div className="px-4 py-4 border-b border-gray-200">
     {!session ? (
       <div className="flex gap-3 items-center">
-        <User2 className="w-10 h-10 p-2 rounded-xl bg-white/5 text-yellow-300" />
+        <User2 className="w-10 h-10 p-2 rounded-full bg-gray-100 text-gray-700" />
         <div>
-          <p className="text-white/80 text-sm">Giriş Yap / Kayıt Ol</p>
+          <p className="text-sm font-medium text-gray-800">Giriş Yap / Kayıt Ol</p>
+
           <button
             onClick={() => (window.location.href = "/login")}
-            className="text-yellow-400 text-xs underline"
+            className="text-[#f27a1a] text-xs font-semibold"
           >
-            Hesabına giriş yap
+            Giriş Yap
           </button>
         </div>
       </div>
     ) : (
       <div className="flex gap-3 items-center">
-        <User2 className="w-10 h-10 p-2 rounded-xl bg-white/5 text-yellow-300" />
+        <User2 className="w-10 h-10 p-2 rounded-full bg-gray-100 text-[#f27a1a]" />
+
         <div>
-          <p className="text-white/90 font-semibold">
+          <p className="font-semibold text-gray-900">
             {session.user.user_metadata?.username ||
               session.user.email.split("@")[0]}
           </p>
 
           <button
             onClick={() => setAccountModal(true)}
-            className="text-yellow-400 text-xs underline"
+            className="text-[#f27a1a] text-xs font-semibold"
           >
             Hesabım
           </button>
@@ -879,19 +909,12 @@ async function closeNotification() {
     )}
   </div>
 
-  {/* Kategoriler */}
-  <nav
-    className="
-      p-4 flex flex-col gap-3 
-      overflow-y-auto 
-      max-h-[65vh]
-      custom-scroll
-    "
-  >
+  {/* KATEGORİLER */}
+  <nav className="p-4 flex flex-col gap-2 overflow-y-auto max-h-[65vh]">
     {categories.length === 0 ? (
-      <p className="text-gray-400 text-sm">Kategori bulunamadı.</p>
+      <p className="text-gray-500 text-sm">Kategori bulunamadı.</p>
     ) : (
-      categories.map(cat => (
+      categories.map((cat) => (
         <button
           key={cat.id}
           onClick={() => {
@@ -899,66 +922,42 @@ async function closeNotification() {
             setTimeout(() => navigate(`/category/${cat.slug}`), 250);
           }}
           className="
-            w-full flex items-center justify-between
-            bg-white/5 hover:bg-white/10
+            w-full flex justify-between items-center
             px-4 py-3
-            rounded-lg
-            border border-white/10
-            transition-all duration-200
-            hover:translate-x-1
-            group
+            rounded-lg 
+            border border-gray-200 
+            bg-white
+            hover:bg-gray-50
+            transition
           "
         >
-          <span className="text-white text-sm font-medium flex items-center gap-2">
-            <span
-              className="
-                w-2 h-2 rounded-full bg-yellow-400
-                shadow-[0_0_8px_#facc15]
-              "
-            ></span>
-            {cat.title}
-          </span>
+          <span className="font-medium text-gray-800">{cat.title}</span>
 
-          <ChevronRight
-            className="
-              w-4 h-4 text-gray-400 
-              group-hover:text-yellow-400 
-              transition
-            "
-          />
+          <ChevronRight className="text-gray-400 w-4 h-4" />
         </button>
       ))
     )}
   </nav>
 
- {/* Footer */}
-<div
-  className="
-    absolute left-0 w-full px-4 
-    pb-6   /* 🔥 Sepeti yukarı alır */
-    bottom-10 /* 🔥 10px değil, 40px yukarı çıkarır */
-  "
->
-  <button
-    onClick={() => (window.location.href = "/cart")}
-    className="
-      flex items-center gap-3 w-full
-      bg-yellow-500/20 
-      border border-yellow-500/40
-      rounded-xl px-4 py-3
-      hover:bg-yellow-500/30 transition
-      shadow-[0_0_12px_rgba(255,215,0,0.25)]
-    "
-  >
-    <ShoppingCart className="w-5 h-5 text-yellow-300" />
-    <span className="text-sm text-yellow-300 font-semibold">
+  {/* SEPET BUTONU */}
+  <div className="absolute bottom-4 left-0 w-full px-4">
+    <button
+      onClick={() => (window.location.href = "/cart")}
+      className="
+        flex items-center gap-3 w-full
+        px-4 py-3
+        rounded-lg
+        bg-[#f27a1a]/10
+        border border-[#f27a1a]/30
+        text-[#f27a1a] font-semibold
+      "
+    >
+      <ShoppingCart className="w-5 h-5" />
       Sepetim ({cart?.length || 0})
-    </span>
-  </button>
-</div>
-
-
+    </button>
+  </div>
 </aside>
+
 
 {/* Scrollbar style */}
 <style>
@@ -1070,63 +1069,62 @@ async function closeNotification() {
   </div>
 )}
 
-{/* 📱 MOBİL ALT BAR — HER ZAMAN GÖRÜNÜR */}
+{/* 📱 MOBİL ALT BAR — COMPACT PRO VERSION */}
 <div
-  className="
+  className={`
     fixed bottom-0 left-0 w-full 
     bg-black/80 backdrop-blur-xl
     border-t border-white/10
     flex justify-center gap-10 items-center 
     py-2 z-[99999]
     2xl:hidden
-  "
+    ${menuOpen ? "hidden" : ""}
+  `}
 >
 
-  {/* Giriş */}
+
+  {/* 🔥 GİRİŞ YAP (SADECE login yoksa) */}
   {!session && (
     <button
       onClick={() => (window.location.href = '/login')}
       className="flex flex-col items-center text-white"
     >
-      <User2 className="w-6 h-6 text-yellow-400" />
+      <User2 className="w-6 h-6 text-gray-300" />
       <span className="text-[10px] mt-1">Giriş</span>
     </button>
   )}
 
-  {/* Kayıt Ol */}
+  {/* 🔥 KAYIT OL (SADECE login yoksa) */}
   {!session && (
     <button
       onClick={() => (window.location.href = '/register')}
       className="flex flex-col items-center text-white"
     >
-      <UserPlus className="w-6 h-6 text-blue-400" />
+      <UserPlus className="w-6 h-6 text-blue-300" />
       <span className="text-[10px] mt-1">Kayıt Ol</span>
     </button>
   )}
 
-  {/* 👤 Hesabım (SADECE login olunca görünür) */}
+  {/* 🔥 HESABIM (SADECE login varsa) */}
   {session && (
     <button
       onClick={() => setAccountModal(true)}
       className="flex flex-col items-center text-white"
     >
-      <User2 className="w-6 h-6 text-yellow-400" />
-     <span className="text-[10px] mt-1">
-  {session.user.user_metadata?.username 
-    ? session.user.user_metadata.username 
-    : session.user.email.split('@')[0]}
-</span>
-
+      <User2 className="w-6 h-6 text-yellow-300" />
+      <span className="text-[10px] mt-1">
+        {session.user.user_metadata?.username ||
+          session.user.email.split('@')[0]}
+      </span>
     </button>
   )}
 
-  {/* Mesajlar */}
+  {/* MESAJLAR */}
   <button
     onClick={() => (window.location.href = '/mesajlarim')}
     className="flex flex-col items-center text-white relative"
   >
     <MessageSquare className="w-6 h-6 text-blue-400" />
-
     {unreadCount > 0 && (
       <span
         className="
@@ -1138,17 +1136,15 @@ async function closeNotification() {
         {unreadCount}
       </span>
     )}
-
-    <span className="text-[10px] mt-1">Mesajlar</span>
+    <span className="text-[10px] mt-1">Mesaj</span>
   </button>
 
-  {/* Sepet */}
+  {/* SEPET */}
   <button
     onClick={() => (window.location.href = '/cart')}
     className="flex flex-col items-center text-white relative"
   >
     <ShoppingCart className="w-6 h-6 text-yellow-300" />
-
     {cart?.length > 0 && (
       <span
         className="
@@ -1160,11 +1156,10 @@ async function closeNotification() {
         {cart.length}
       </span>
     )}
-
     <span className="text-[10px] mt-1">Sepet</span>
   </button>
-
 </div>
+
 
 
 

@@ -12,30 +12,24 @@ export default function CategoryMain() {
     load();
   }, [mainSlug]);
 
-
-
   async function load() {
     setLoading(true);
 
     try {
-      // Ana kategori
-      const { data: mainCat, error: mainErr } = await supabase
+      const { data: mainCat } = await supabase
         .from("main_categories")
         .select("*")
         .eq("slug", mainSlug)
         .maybeSingle();
 
-      if (mainErr) throw mainErr;
       setMain(mainCat);
 
-      // Alt kategoriler
       if (mainCat) {
-        const { data: subData, error: subErr } = await supabase
+        const { data: subData } = await supabase
           .from("sub_categories")
           .select("*")
           .eq("main_id", mainCat.id);
 
-        if (subErr) throw subErr;
         setSubs(subData || []);
       }
     } catch (e) {
@@ -62,44 +56,42 @@ export default function CategoryMain() {
     );
 
   return (
-    <div className="p-6 text-white">
-      <h1 className="text-3xl font-bold capitalize">{main?.title}</h1>
+    <div className="p-6">
+      <h1 className="text-3xl font-bold mb-4 text-gray-800">{main?.title}</h1>
 
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mt-6">
+      {/* 🔥 YENİ TRENDYOL TİPİ DİKEY KART TASARIMI */}
+      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-6 mt-6">
         {subs.map((s) => (
           <Link
             key={s.id}
             to={`/category/${mainSlug}/${s.slug}`}
             className="
-              group rounded-2xl overflow-hidden
-              bg-white/5 backdrop-blur-xl 
-              border border-white/10 
-              hover:border-[#00ffaa]/40
-              hover:shadow-[0_0_25px_rgba(0,255,170,0.4)]
-              transition-all duration-300
+              bg-white rounded-2xl shadow-md border border-gray-200 
+              hover:shadow-xl hover:-translate-y-1 transition-all duration-300 
+              overflow-hidden
             "
           >
-            <div className="w-full h-40 overflow-hidden rounded-xl">
+            <div className="w-full h-48 bg-gray-100 overflow-hidden">
               <img
                 src={`/category/${s.slug}.png`}
                 onError={(e) => (e.target.style.opacity = 0)}
                 className="
                   w-full h-full object-cover 
-                  group-hover:scale-110 
-                  transition-all duration-500
+                  transition duration-500 
+                  hover:scale-110
                 "
               />
             </div>
 
-            <h3
-              className="
-                text-center text-lg font-bold mt-3 mb-2
-                text-white group-hover:text-[#00ffaa] 
-                transition
-              "
-            >
-              {s.title}
-            </h3>
+            <div className="p-4 text-center">
+              <h3 className="text-gray-900 font-semibold text-sm sm:text-base truncate">
+                {s.title}
+              </h3>
+
+              <span className="text-[#f27a1a] font-bold text-sm block mt-1">
+                Kategoriyi İncele →
+              </span>
+            </div>
           </Link>
         ))}
       </div>
