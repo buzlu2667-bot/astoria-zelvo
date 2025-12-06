@@ -23,6 +23,8 @@ export default function AdminLayout() {
         <NavItem to="/admin/banner-settings">Banner Ayarları</NavItem>
         <NavItem to="/admin/scroll-text">Kayan Yazı</NavItem>
         <NavItem to="/admin/mail">Mail Gönder</NavItem>
+        <NavItem to="/admin/profit">Kâr Yönetimi</NavItem>
+        <NavItem to="/admin/sales">Satış Raporu</NavItem>
       
 
       </aside>

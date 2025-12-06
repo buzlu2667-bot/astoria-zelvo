@@ -40,6 +40,8 @@ import AdminBannerSettings from "./pages/admin/AdminBannerSettings";
 import AdminScrollText from "./pages/admin/AdminScrollText";
 import AdminSendMessage from "./pages/admin/AdminSendMessage";
 import AdminMail from "./pages/admin/AdminMail";
+import AdminProfit from "./pages/admin/AdminProfit";
+import AdminSales from "./pages/admin/AdminSales";
 
 import MaintenancePage from "./pages/MaintenancePage";
 import { supabase } from "./lib/supabaseClient";
@@ -162,6 +164,8 @@ export default function App() {
           <Route path="scroll-text" element={<AdminScrollText />} />
           <Route path="/admin/messages" element={<AdminSendMessage />} />
           <Route path="/admin/mail" element={<AdminMail />} />
+          <Route path="profit" element={<AdminProfit />} />
+          <Route path="/admin/sales" element={<AdminSales />} />
         </Route>
       </Routes>
 

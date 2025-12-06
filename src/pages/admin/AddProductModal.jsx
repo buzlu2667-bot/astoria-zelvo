@@ -20,6 +20,7 @@ useEffect(() => {
       description: initialData.description || "",
       price: initialData.price || "",
       old_price: initialData.old_price || "",
+       cost_price: initialData.cost_price || "", 
       stock: initialData.stock || "",
       main_id: initialData.main_id || "",
       sub_id: initialData.sub_id || "",
@@ -42,12 +43,13 @@ useEffect(() => {
   title: "",
   description: "",
   price: "",
-  old_price: "",     // ⭐ EKLENDİ
+  old_price: "", 
+ cost_price: "",   
   stock: "",
   main_id: "",
   sub_id: "",
   server_id: "",
-  is_new: false,      // ⭐ EKLENDİ
+  is_new: false,     
   is_popular: false,
 is_featured: false,
  specs: "",
@@ -148,6 +150,7 @@ if (initialData) {
       description: form.description,
       price: Number(form.price),
       old_price: form.old_price ? Number(form.old_price) : null,
+        cost_price: form.cost_price ? Number(form.cost_price) : 0, 
       stock: Number(form.stock || 0),
       main_id: form.main_id || null,
       sub_id: form.sub_id || null,
@@ -187,7 +190,7 @@ stock: Number(form.stock || 0),
 main_id: form.main_id || null,
 sub_id: form.sub_id || null,
 server_id: form.server_id || null,
-
+  old_price: form.old_price ? Number(form.old_price) : null,
 
 is_new: form.is_new,   // ⭐ EKLENDİ
 
@@ -308,6 +311,16 @@ gallery: galleryUrls,
             value={form.price}
             onChange={(e) => setForm({ ...form, price: e.target.value })}
           />
+
+          {/* Maliyet (Cost Price) */}
+<input
+  type="number"
+  placeholder="Maliyet ₺"
+  className="input-premium"
+  value={form.cost_price}
+  onChange={(e) => setForm({ ...form, cost_price: e.target.value })}
+/>
+
 
           {/* Stock */}
           <input
