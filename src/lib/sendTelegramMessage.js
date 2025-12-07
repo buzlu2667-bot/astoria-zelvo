@@ -36,8 +36,8 @@ export async function sendTelegramMessage(product) {
   imageUrl = encodeURI(imageUrl + `?t=${Date.now()}`);
 
   // 💎 MODERN + GOLD + PREMIUM CAPTION
-  const caption = `
-<b>😎YENİ ÜRÜNN 💚 MAXIMORA LUXURY DROP 💚✨</b>
+ const caption = `
+😎🔥 <b>YENİ ÜRÜNN! MAXIMORA LUXURY DROP</b> 🔥
 ━━━━━━━━━━━━━━━━━━
 
 <b>${title}</b>
@@ -45,19 +45,19 @@ export async function sendTelegramMessage(product) {
 💰 <b>${price.toLocaleString("tr-TR")} ₺</b>  
 ${oldPrice > price ? `❌ <s>${oldPrice.toLocaleString("tr-TR")} ₺</s>` : ""}
 
-${discountText ? discountText : ""}
+${discountText ? "⚡ " + discountText + " ⚡" : ""}
 
 ${stockLabel}
 
 ━━━━━━━━━━━━━━━━━━
-🕞<a href="${productUrl}">Ürünü İncele</a>
+🛍️ <a href="${productUrl}">Ürünü İncele</a>
 ━━━━━━━━━━━━━━━━━━
 
-<b>♉️ Premium • Şıklık • Zarafet • Kalite ♉️</b>
+<b>💛 Premium • Şıklık • Zarafet • Kalite 💛</b>
 <i>“Tarzını lüksle buluştur.”</i>
 
 #Maximora #LuxuryDrop #Fashion #Exclusive
-  `.trim();
+`.trim();
 
   try {
     // FOTO YÜKLEME
