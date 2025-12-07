@@ -596,11 +596,48 @@ async function closeNotification() {
       {/* TOPBAR */}
  <header className="bg-white text-gray-800 border-b border-gray-200 shadow-sm z-[999] relative">
 
+  {/* ⭐ MOBİL ÜST BAR — SADECE <lg */}
+<div className="flex lg:hidden w-full px-3 py-2 items-center gap-3">
+
+  {/* Menü */}
+  <button
+    onClick={() => setMenuOpen(true)}
+    className="p-2 rounded-lg hover:bg-gray-100"
+  >
+    <Menu className="w-6 h-6 text-gray-800" />
+  </button>
+
+  {/* Logo */}
+  <Link to="/" className="shrink-0">
+    <img src="/logo.png" className="w-10 h-10" />
+  </Link>
+
+  {/* Arama */}
+  <div onClick={() => setSearchOpen(true)} className="flex-1">
+    <div className="flex items-center bg-white border border-gray-300 rounded-full px-3 py-2">
+      <Search className="text-gray-500 w-4 h-4" />
+      <span className="text-sm text-gray-600 ml-1">Ara...</span>
+    </div>
+  </div>
+
+  {/* Favori */}
+  <Link to="/favorites" className="relative">
+    <Heart className="w-6 h-6 text-gray-700" />
+    {favCount > 0 && (
+      <span className="absolute -top-1 -right-1 bg-pink-500 text-white text-[10px] w-4 h-4 flex items-center justify-center rounded-full">
+        {favCount}
+      </span>
+    )}
+  </Link>
+</div>
+
+
 
 <div className="max-w-7xl mx-auto flex items-center justify-between px-3 sm:px-6 py-3">
 
       {/* 🔥 SOLA YASLANAN BLOK */}
-<div className="flex items-center gap-3 md:absolute md:left-4 md:top-1/2 md:-translate-y-1/2 header-mobile-top">
+<div className="hidden lg:flex items-center gap-3 md:absolute md:left-4 md:top-1/2 md:-translate-y-1/2 header-mobile-top">
+
 
 
   {/* Menu */}
@@ -673,42 +710,25 @@ async function closeNotification() {
 <div className="flex items-center gap-7 header-icons ml-auto shrink-0 z-[20]">
 
 
-
-
 {/* 🔍 MASAÜSTÜ SEARCH BAR */}
-<div className="hidden lg:flex items-center w-[555px] justify-center mx-auto">
+<div className="
+  hidden lg:flex items-center 
+  w-[380px] xl:w-[480px] 2xl:w-[555px]
+  justify-center mx-auto
+">
   <SearchBar />
 </div>
-
-
-{/* 🔍 MOBIL MINI SEARCH BAR (SADECE <768px) */}
-<div className="search-block flex lg:hidden items-center w-[220px] sm:w-[220px] mx-2">
-  <div
-    className="flex items-center gap-2 bg-white border border-gray-300 rounded-full px-3 py-2 w-full"
-    onClick={() => setSearchOpen(true)}   // ⬅️ BURAYA ALDIK
-  >
-    <Search className="text-gray-500 w-4 h-4" />
-
-    <input
-      placeholder="Ara..."
-      readOnly                // ⬅️ iOS bug fix
-      className="text-sm bg-transparent text-gray-700 placeholder-gray-500 outline-none w-full"
-    />
-  </div>
-</div>
-
-
-
 
 
 
 
 
   {/* ❤️ FAVORİLER */}
-  <Link
-    to="/favorites"
-   className="relative rounded-xl p-1 sm:p-2 hover:bg-white/5 transition"
-  >
+ <Link
+  to="/favorites"
+className="relative rounded-xl p-1 sm:p-2 hover:bg-white/5 transition hidden lg:flex"
+>
+
    <Heart className="w-6 h-6 text-gray-700" />
     {favCount > 0 && (
       <span className="absolute -top-1.5 -right-1.5 bg-pink-500 text-white text-[10px] min-w-[18px] h-[18px] flex items-center justify-center rounded-full font-bold shadow-lg">
@@ -842,12 +862,7 @@ async function closeNotification() {
       </header>
 
       
-
-
-
-   {/* ⭐⭐ ULTRA PREMIUM LEFT DRAWER — V12 ⭐⭐ */}
-
-{/* Overlay (arka plan blur + tıklayınca kapanır) */}
+ 
 {/* ⭐⭐⭐ TRENDYOL LEFT DRAWER — CLEAN WHITE THEME ⭐⭐⭐ */}
 
 {menuOpen && (
