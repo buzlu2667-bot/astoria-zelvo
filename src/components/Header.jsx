@@ -616,24 +616,31 @@ async function closeNotification() {
 
   {/* Logo + Yazılar */}
  {/* Logo + Yazılar */}
-<Link to="/" className="logo-block flex items-center gap-4 group z-[50] relative shrink-0">
+<Link
+  to="/"
+  className="
+    logo-block flex items-center gap-3 
+    z-[50] relative shrink-0
+    w-[120px]    /* 🔥 LOGO BLOĞU SABİT GÇŞLİK */
+  "
+>
 
 
 
 
   {/* Logo */}
-  <img
-    src="/logo.png"
-    alt="Maximora Logo"
-    className="
-      w-14 h-14
-      sm:w-11 sm:h-11
-      object-contain 
-      drop-shadow-[0_0_12px_rgba(255,215,0,0.6)]
-      group-hover:scale-110 
-      transition-all duration-300
-    "
-  />
+ <img
+  src="/logo.png"
+  alt="Maximora Logo"
+  className="
+    w-12 h-12
+    sm:w-10 sm:h-10
+    object-contain
+    drop-shadow-[0_0_12px_rgba(255,215,0,0.6)]
+    transition-all duration-300
+  "
+/>
+
 
   {/* Yazılar */}
   <div className="leading-[1.1] flex flex-col hidden sm:flex">
@@ -1229,6 +1236,24 @@ function CategoryLink({ to, text, soon, setMenuOpen }) {
     </a>
   );
 }
+<style>
+{`
+  @media (max-width: 480px) {
+    .logo-block {
+      margin-right: auto !important;
+    }
+
+    .search-block {
+      flex: 1 !important;
+      max-width: 100% !important;
+    }
+
+    header .header-mobile-top {
+      gap: 4px !important;
+    }
+  }
+`}
+</style>
 
 
  
