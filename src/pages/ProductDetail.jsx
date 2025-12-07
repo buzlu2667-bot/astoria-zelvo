@@ -82,6 +82,8 @@ const scrollRightRelated = () =>
       setP(data);
       setLoading(false);
 
+      
+
       // Benzer ürünler yükle
       const { data: relatedProducts } = await supabase
         .from("products")
@@ -143,6 +145,29 @@ const scrollRightRelated = () =>
     setImages(imgs);
     setMainImage(imgs[0] || "");
   }, [p]);
+
+  // ⭐ SON İNCELENENLER — localStorage'a kaydet
+useEffect(() => {
+  if (!p) return;
+
+  let viewed = JSON.parse(localStorage.getItem("recent_views") || "[]");
+
+  viewed = viewed.filter((x) => x.id !== p.id);
+
+  viewed.unshift({
+    id: p.id,
+    title: p.title,
+    main_img: p.main_img,
+    price: Number(p.price) || 0,
+    old_price: Number(p.old_price) || 0,
+  });
+
+  viewed = viewed.slice(0, 10);
+
+  localStorage.setItem("recent_views", JSON.stringify(viewed));
+}, [p]);
+
+
 
   const stockBadge = useMemo(() => {
     if (!p) return STATUS.out;

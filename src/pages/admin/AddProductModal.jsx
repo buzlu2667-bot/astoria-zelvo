@@ -52,6 +52,7 @@ useEffect(() => {
   is_new: false,     
   is_popular: false,
 is_featured: false,
+ is_suggested: false, 
  specs: "",
  colors: "",
 
@@ -158,6 +159,7 @@ if (initialData) {
       is_new: form.is_new,
       is_popular: form.is_popular,
       is_featured: form.is_featured,
+      is_suggested: form.is_suggested,
       specs: form.specs,
        colors: form.colors,
       // fotoğraflar sadece yeni seçildiyse güncellenecek
@@ -196,6 +198,7 @@ is_new: form.is_new,   // ⭐ EKLENDİ
 
 is_popular: form.is_popular,
 is_featured: form.is_featured,
+is_suggested: form.is_suggested,
 
 
 main_img: mainUrl,
@@ -292,6 +295,17 @@ gallery: galleryUrls,
   </label>
 
 </div>
+
+{/* İlginizi Çekebilir */}
+<label className="flex items-center gap-2 mt-2 text-white">
+  <input
+    type="checkbox"
+    checked={form.is_suggested}
+    onChange={(e) => setForm({ ...form, is_suggested: e.target.checked })}
+  />
+  <span>🎯 İlginizi Çekebilir</span>
+</label>
+
 
 {/* Yeni ürün etiketi */}
 <div className="flex items-center gap-2 text-white">
