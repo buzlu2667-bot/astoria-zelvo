@@ -100,7 +100,7 @@ export default function Messages() {
   }
 
   return (
-    <div className="min-h-screen max-w-3xl mx-auto p-6 text-gray-800">
+   <div className="min-h-screen max-w-3xl mx-auto px-6 pt-[90px] pb-6 text-gray-800">
 
       {/* Başlık */}
     <h1 className="text-3xl font-extrabold mb-6 tracking-wide flex items-center gap-2 text-gray-900">
