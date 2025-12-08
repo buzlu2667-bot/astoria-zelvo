@@ -124,7 +124,7 @@ export default function App() {
       <Header />
     <ScrollRestore /> 
       <ToastContainer />
-  
+  <ScrollTopButton />
       <HashRedirector />
    
       <Routes>
