@@ -1,7 +1,6 @@
 // ✅ src/App.jsx — FULL + Maintenance Bypass Version
 import ToastContainer from "./components/ToastContainer";
 import ScrollTopButton from "./components/ScrollTopButton";
-import ScrollToTop from "./components/ScrollToTop";
 import ProductDetail from "./pages/ProductDetail";
 import Favorites from "./pages/Favorites";
 import { Routes, Route, useNavigate } from "react-router-dom";
@@ -12,6 +11,7 @@ import Messages from "./pages/Messages";
 import KvkkPage from "./pages/KvkkPage";
 import PrivacyPage from "./pages/PrivacyPage";
 import ReturnPolicyPage from "./pages/ReturnPolicyPage";
+import ScrollRestore from "./utils/ScrollRestore";
 
 import Header from "./components/Header";
 import Footer from "./components/Footer";
@@ -122,11 +122,11 @@ export default function App() {
   return (
     <>
       <Header />
+    <ScrollRestore /> 
       <ToastContainer />
   
       <HashRedirector />
-      <ScrollToTop />
-
+   
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/favorites" element={<Favorites />} />
@@ -172,7 +172,7 @@ export default function App() {
       </Routes>
 
       <Footer />
-      <ScrollTopButton />
+  
 
     
     </>

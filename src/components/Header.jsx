@@ -594,7 +594,13 @@ async function closeNotification() {
 )}
 
       {/* TOPBAR */}
- <header className="bg-white text-gray-800 border-b border-gray-200 shadow-sm z-[999] relative">
+<header className="
+  bg-white text-gray-800 border-b border-gray-200 shadow-sm
+  z-[9999]
+  fixed top-0 left-0 w-full
+  backdrop-blur-md
+">
+
 
   {/* ⭐ MOBİL ÜST BAR — SADECE <lg */}
 <div className="flex lg:hidden w-full px-3 py-2 items-center gap-3">
@@ -718,9 +724,6 @@ async function closeNotification() {
 ">
   <SearchBar />
 </div>
-
-
-
 
 
   {/* ❤️ FAVORİLER */}

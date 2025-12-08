@@ -6,7 +6,7 @@ import { Autoplay, Pagination } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/pagination";
 import { useNavigate } from "react-router-dom";
-import useScrollRestoration from "../hooks/useScrollRestoration";
+
 import {
   Flame,
   Sparkles,
@@ -30,10 +30,10 @@ const ICONS = {
 
 
 
+
 const SLIDER_HEIGHT = "70vh";
 
 export default function Home() {
-
 
  const navigate = useNavigate();
  const [newProducts, setNew] = useState([]);
@@ -95,31 +95,8 @@ useEffect(() => {
   const [categories, setCategories] = useState([]);
   const [recent, setRecent] = useState([]);
   const [suggested, setSuggested] = useState([]);
-  const [pageReady, setPageReady] = useState(false);
-
-  const { restoreScroll } = useScrollRestoration("scroll-home");
 
 
- useEffect(() => {
-  if (!pageReady) return;
-
-  const saved = sessionStorage.getItem("scroll-home");
-  if (!saved) return;
-
-  const pos = parseInt(saved, 10);
-  const isMobile = window.innerWidth < 768;
-
-  if (isMobile) {
-    // 🔥 Mobil restore: EN FAZLA 400px
-    window.scrollTo({
-      top: Math.min(pos, 400),
-      behavior: "instant"
-    });
-  } else {
-    // 🔥 Masaüstü restore: tam
-    restoreScroll();
-  }
-}, [pageReady]);
 
 
 const campaignRef = useRef(null);
@@ -194,17 +171,8 @@ const campaignRight = () =>
     }
     loadCats();
   }, []);
-useEffect(() => {
-  if (
-    !loading &&
-    (featuredProducts.length > 0 ||
-      popularProducts.length > 0 ||
-      campaignsFull.length > 0 ||
-      deal !== null)
-  ) {
-    setPageReady(true);
-  }
-}, [loading, featuredProducts, popularProducts, campaignsFull, deal]);
+
+
 
 
   const slides = [

@@ -56,13 +56,7 @@ const scrollLeftRelated = () =>
 const scrollRightRelated = () =>
   relatedRef.current?.scrollBy({ left: 300, behavior: "smooth" });
 
-  // Sayfa açılınca yukarı çık
-  useEffect(() => {
-    const timeout = setTimeout(() => {
-      window.scrollTo({ top: 0, behavior: "smooth" });
-    }, 300);
-    return () => clearTimeout(timeout);
-  }, [id]);
+  
 
   // Ürün + yorumları yükle
   useEffect(() => {
