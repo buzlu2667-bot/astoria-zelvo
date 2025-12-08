@@ -100,8 +100,23 @@ useEffect(() => {
   const { restoreScroll } = useScrollRestoration("scroll-home");
 
 
-  useEffect(() => {
-  if (pageReady) {
+ useEffect(() => {
+  if (!pageReady) return;
+
+  const saved = sessionStorage.getItem("scroll-home");
+  if (!saved) return;
+
+  const pos = parseInt(saved, 10);
+  const isMobile = window.innerWidth < 768;
+
+  if (isMobile) {
+    // 🔥 Mobil restore: EN FAZLA 400px
+    window.scrollTo({
+      top: Math.min(pos, 400),
+      behavior: "instant"
+    });
+  } else {
+    // 🔥 Masaüstü restore: tam
     restoreScroll();
   }
 }, [pageReady]);
