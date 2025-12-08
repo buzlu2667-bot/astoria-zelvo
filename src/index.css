@@ -750,9 +750,6 @@ body.login-page {
 html {
   scroll-behavior: auto !important;
 }
-body {
-  padding-top: 70px; /* header yüksekliğine göre ayarla */
-}
 
 
 

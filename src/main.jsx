@@ -7,6 +7,7 @@ import App from "./App.jsx";
 import { SessionProvider } from "./context/SessionContext.jsx";
 import { CartProvider } from "./context/CartContext.jsx";
 import { FavoritesProvider } from "./context/FavoritesContext.jsx";
+import ScrollFixProvider from "./utils/ScrollFixProvider";
 
 
 
@@ -39,6 +40,7 @@ document.addEventListener("visibilitychange", () => {
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <BrowserRouter>
+   <ScrollFixProvider />
     <SessionProvider>
       <CartProvider>
         <FavoritesProvider>

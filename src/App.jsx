@@ -11,8 +11,6 @@ import Messages from "./pages/Messages";
 import KvkkPage from "./pages/KvkkPage";
 import PrivacyPage from "./pages/PrivacyPage";
 import ReturnPolicyPage from "./pages/ReturnPolicyPage";
-import ScrollRestore from "./utils/ScrollRestore";
-
 import Header from "./components/Header";
 import Footer from "./components/Footer";
 import Toast from "./components/Toast";
@@ -60,6 +58,8 @@ function HashRedirector() {
 }
 
 export default function App() {
+
+
   const [maint, setMaint] = useState(null);
   const [isAdmin, setIsAdmin] = useState(false);
   const [bypass, setBypass] = useState(false);
@@ -105,6 +105,9 @@ export default function App() {
     checkAdmin();
   }, []);
 
+
+
+  
   // 🔥 Admin + URL bypass, bakım modunu geçer
   const maintenanceBypassed = isAdmin || bypass;
 
@@ -122,7 +125,7 @@ export default function App() {
   return (
     <>
       <Header />
-    <ScrollRestore /> 
+   
       <ToastContainer />
   <ScrollTopButton />
       <HashRedirector />
