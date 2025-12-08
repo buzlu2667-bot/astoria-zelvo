@@ -747,6 +747,9 @@ body.login-page {
     max-width: 300px !important;
   }
 }
+html {
+  scroll-behavior: auto !important;
+}
 
 
 

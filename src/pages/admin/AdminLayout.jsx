@@ -45,7 +45,7 @@ export default function AdminLayout() {
         <h2 className="text-lg font-bold mb-3 tracking-wide bg-gradient-to-r from-yellow-400 to-amber-200 bg-clip-text text-transparent">
           MAXIMORA ADMIN
         </h2>
-
+        <NavItem to="/admin/home-settings" setOpen={setOpen}>Home Ayarları</NavItem>
         <NavItem to="/admin" setOpen={setOpen}>Dashboard</NavItem>
         <NavItem to="/admin/orders" setOpen={setOpen}>Siparişler</NavItem>
         <NavItem to="/admin/products" setOpen={setOpen}>Ürünler</NavItem>
