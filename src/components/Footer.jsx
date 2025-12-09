@@ -128,6 +128,7 @@ export default function Footer() {
                 <a href="/kvkk" className="hover:text-[#4afff9]">KVKK</a>
                 <a href="/gizlilik-politikasi" className="hover:text-[#4afff9]">Gizlilik Politikası</a>
                 <a href="/iade-kosullari" className="hover:text-[#4afff9]">İade Koşulları</a>
+                 <a href="/delete-data" className="hover:text-[#4afff9]">Veri Silme (Hesap Silme)</a>
               </div>
             </div>
 

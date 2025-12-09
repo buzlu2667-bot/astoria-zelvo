@@ -4,6 +4,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { Eye, EyeOff } from "lucide-react";
 import ForgotPasswordModal from "../components/ForgotPasswordModal";
 import googleLogo from "../assets/google.png";
+import facebookLogo from "../assets/facebook.png";
 
 export default function LoginPage() {
   const nav = useNavigate();
@@ -63,6 +64,22 @@ export default function LoginPage() {
     });
   }
 
+
+    async function facebookLogin() {
+  window.dispatchEvent(
+    new CustomEvent("toast", {
+      detail: { type: "info", text: "Facebook yönlendiriliyor..." },
+    })
+  );
+
+  await supabase.auth.signInWithOAuth({
+    provider: "facebook",
+    options: {
+      redirectTo: window.location.origin,
+    },
+  });
+}
+
   return (
     <div className="min-h-screen bg-[#f5f5f5] flex items-center justify-center px-4">
 
@@ -83,11 +100,28 @@ export default function LoginPage() {
             transition font-semibold text-gray-800
           "
         >
-          <img src={googleLogo} className="w-5 h-5" />
+      <img src={googleLogo} className="w-5 h-5" />
           <span className="text-gray-800 font-medium">
             Google ile Devam Et
           </span>
         </button>
+
+      <button
+  onClick={facebookLogin}
+  className="
+    w-full flex items-center justify-center gap-3 
+    py-3 border border-gray-300 rounded-xl 
+    bg-blue-600 text-white shadow-sm hover:bg-blue-700 
+    transition font-semibold mt-3
+  "
+>
+  <img src={facebookLogo} className="w-5 h-5" />
+  <span className="font-medium">
+    Facebook ile Devam Et
+  </span>
+</button>
+
+
 
         {/* OR Line */}
         <div className="my-6 flex items-center gap-4">
