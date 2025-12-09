@@ -57,7 +57,7 @@ export default function AdminScrollText() {
   }
 
   return (
-    <div className="p-6">
+   <div className="p-6 mt-24">
       <h1 className="text-2xl font-bold text-yellow-400 mb-6">
         📝 Kayan Yazı Ayarları
       </h1>

@@ -125,7 +125,7 @@ export default function AdminSales() {
   }
 
   return (
-    <div className="p-6 text-white">
+     <div className="p-6 text-white mt-24">
       <h1 className="text-3xl font-bold mb-6 flex items-center gap-2">
         <DollarSign size={32} className="text-yellow-400" />
         Satış Yönetimi

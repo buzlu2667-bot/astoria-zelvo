@@ -58,7 +58,7 @@ export default function AdminSendMessage() {
   }
 
   return (
-    <div className="max-w-2xl mx-auto p-8 text-white">
+ <div className="max-w-2xl mx-auto p-8 text-white mt-24">
 
       {/* HEADER */}
       <h1 className="text-3xl font-extrabold mb-6 tracking-wide bg-gradient-to-r from-yellow-400 to-amber-300 bg-clip-text text-transparent drop-shadow-[0_0_10px_rgba(255,215,0,0.5)] flex items-center gap-3">

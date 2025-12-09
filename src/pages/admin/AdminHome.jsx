@@ -166,7 +166,7 @@ export default function AdminHome() {
   // 🔥 RETURN — SAYFA
   // -------------------------------------------------------------
   return (
-    <div className="p-6 text-white">
+   <div className="p-6 text-white mt-24">
 
       {/* ---------------------⭐ HAFTANIN FIRSATI --------------------- */}
       <h2 className="text-2xl font-bold mb-4">🔥 Haftanın Fırsatı</h2>

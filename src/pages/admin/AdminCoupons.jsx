@@ -92,7 +92,8 @@ export default function AdminCoupons() {
   }
 
   return (
-    <div className="text-white space-y-6">
+   <div className="text-white space-y-6 mt-24">
+
       <h1 className="text-2xl font-bold text-yellow-400">🎟 Kupon Yönetimi</h1>
 
       {/* ✅ Kupon Formu */}

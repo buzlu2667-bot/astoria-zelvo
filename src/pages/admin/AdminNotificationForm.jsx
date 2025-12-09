@@ -125,7 +125,7 @@ export default function AdminNotificationForm() {
   }
 
   return (
-    <div className="bg-neutral-900 border border-yellow-700/40 rounded-xl p-5 max-w-3xl mx-auto mt-6 shadow-lg">
+  <div className="bg-neutral-900 border border-yellow-700/40 rounded-xl p-5 max-w-3xl mx-auto mt-24 shadow-lg">
       <h2 className="text-xl font-bold text-yellow-400 mb-4 text-center">
         🔔 Bildirim Gönder (Admin)
       </h2>

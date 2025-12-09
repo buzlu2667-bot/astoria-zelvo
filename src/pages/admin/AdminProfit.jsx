@@ -154,13 +154,32 @@ function exportPDF(title, items, totalProfitValue) {
 
   w.document.close();
 }
+async function deleteItem(itemId) {
+  if (!confirm("Bu ürünü silmek istiyor musun?")) return;
+
+  // order_items tablosundan siliyoruz
+  const { error } = await supabase
+    .from("order_items")
+    .delete()
+    .eq("id", itemId);
+
+  if (error) {
+    alert("Silinemedi!");
+    return;
+  }
+
+  alert("Ürün başarıyla silindi!");
+
+  // yeniden yükle
+  load();
+}
 
 
   // ---------------------------------------------------------
   // 🔥 UI
   // ---------------------------------------------------------
   return (
-    <div className="p-6 text-white">
+    <div className="p-6 text-white mt-24">
 
       <h1 className="text-3xl font-bold mb-6 flex items-center gap-2">
         <DollarSign size={32} className="text-green-400" />

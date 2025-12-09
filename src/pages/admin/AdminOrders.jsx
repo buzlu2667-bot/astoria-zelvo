@@ -149,7 +149,7 @@ Siparişiniz özenle hazırlanıyor. Güvenli ödeme, hızlı teslimat ve premiu
   }
 
   return (
-<div className="bg-white text-gray-900 rounded-xl p-6 border border-gray-200 shadow-sm">
+<div className="bg-white text-gray-900 rounded-xl p-6 border border-gray-200 shadow-sm mt-24">
 
      <h1 className="text-3xl font-bold mb-6 text-gray-900">
   📦 Sipariş Yönetimi

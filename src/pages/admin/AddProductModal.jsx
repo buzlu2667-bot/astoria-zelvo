@@ -218,7 +218,12 @@ gallery: galleryUrls,
   }
 
   return (
-    <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex justify-center items-center">
+   <div className="
+  fixed inset-0 bg-black/60 backdrop-blur-sm z-50 
+  flex justify-center items-start 
+  pt-[100px]            /* ⭐ MODALI AŞAĞI İTİYOR   */
+">
+
 <div className="
   w-[95%] max-w-[700px]
   max-h-[90vh]               /* ⭐ MAX YÜKSEKLİK */

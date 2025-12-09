@@ -128,7 +128,7 @@ if (od?.length) {
   if (loading) return <div className="text-white">Yükleniyor…</div>;
 
   return (
-    <div className="space-y-6 text-white">
+       <div className="space-y-6 text-white mt-24">
       <h1 className="text-3xl font-extrabold bg-gradient-to-r from-yellow-400 via-amber-300 to-yellow-600 bg-clip-text text-transparent animate-pulse">
   ⚙️ Admin Dashboard
 </h1>

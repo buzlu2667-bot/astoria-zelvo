@@ -9,7 +9,8 @@ export default function AdminLayout() {
     <div className="min-h-screen bg-[#0a0a0a] text-gray-100 flex">
 
       {/* 🌟 Mobil Üst Bar */}
-      <div className="lg:hidden flex items-center justify-between px-4 py-3 border-b border-yellow-600/20 bg-[#0f0f0f] fixed top-0 left-0 right-0 z-50">
+     <div className="lg:hidden flex items-center justify-between px-4 py-3 border-b border-yellow-600/20 bg-[#0f0f0f] fixed top-[70px] left-0 right-0 z-50">
+
         <h2 className="text-lg font-bold bg-gradient-to-r from-yellow-400 to-amber-200 text-transparent bg-clip-text">
           MAXIMORA ADMIN
         </h2>
@@ -23,17 +24,18 @@ export default function AdminLayout() {
       </div>
 
       {/* 🌟 Sidebar */}
-      <aside
-        className={`
-          w-60 bg-gradient-to-b from-[#0f0f0f] via-[#111] to-[#0a0a0a]
-          border-r border-yellow-600/20 p-5 flex flex-col gap-4 
-          shadow-[0_0_25px_rgba(255,215,0,0.05)]
-          fixed top-0 bottom-0 z-50
-          transition-transform duration-300
-          lg:relative lg:translate-x-0 
-          ${open ? "translate-x-0" : "-translate-x-full lg:translate-x-0"}
-        `}
-      >
+     <aside
+  className={`
+    w-60 bg-gradient-to-b from-[#0f0f0f] via-[#111] to-[#0a0a0a]
+    border-r border-yellow-600/20 p-5 flex flex-col gap-4 
+    shadow-[0_0_25px_rgba(255,215,0,0.05)]
+    fixed top-[70px] bottom-0 z-50
+    transition-transform duration-300
+    lg:relative lg:translate-x-0 
+    ${open ? "translate-x-0" : "-translate-x-full lg:translate-x-0"}
+  `}
+>
+
         {/* Mobile close button */}
         <button
           onClick={() => setOpen(false)}

@@ -50,7 +50,7 @@ export default function AdminMail() {
 
 
   return (
-    <div className="p-6 text-white">
+   <div className="p-6 text-white mt-24">
       <h1 className="text-2xl font-bold mb-4">📧 Admin Mail Paneli</h1>
 
       <div className="bg-black/40 p-4 rounded-xl border border-yellow-500/20">

@@ -49,7 +49,7 @@ export default function AdminProducts() {
 
 
   return (
-    <div className="p-6 text-white">
+   <div className="p-6 text-white mt-24">
 
       {/* BAŞLIK + BUTON */}
       <div className="flex justify-between items-center">
