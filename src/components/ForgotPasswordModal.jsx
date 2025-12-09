@@ -1,79 +1,80 @@
 import { useState } from "react";
 import { supabase } from "../lib/supabaseClient";
+import { X, Lock } from "lucide-react";
 
 export default function ForgotPasswordModal({ open, onClose }) {
   const [email, setEmail] = useState("");
-  const [msg, setMsg] = useState("");
-  const [err, setErr] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [sent, setSent] = useState(false);
 
   if (!open) return null;
 
-  async function sendReset() {
-    setMsg("");
-    setErr("");
+  const sendLink = async () => {
+    if (!email.trim()) return;
 
+    setLoading(true);
     const { error } = await supabase.auth.resetPasswordForEmail(email, {
-      redirectTo: `${window.location.origin}/reset-password`,
+      redirectTo: window.location.origin + "/reset-password",
     });
+    setLoading(false);
 
-    if (error) return setErr("❌ E-posta bulunamadı veya geçersiz.");
-
-    setMsg("✔️ Şifre sıfırlama bağlantısı gönderildi!");
-  }
+    if (!error) setSent(true);
+  };
 
   return (
-    <div
-      className="fixed inset-0 z-[9999] flex items-center justify-center"
-      style={{ backdropFilter: "blur(8px)" }}
-    >
-      {/* Background */}
-      <div
-        className="absolute inset-0 bg-black/60"
-        onClick={onClose}
-      />
+    <div className="fixed inset-0 bg-black/30 backdrop-blur-sm flex justify-center items-center z-50">
 
-      {/* Modal */}
-      <div className="
-        relative bg-black/40 backdrop-blur-xl
-        border border-yellow-500/30
-        shadow-[0_0_40px_rgba(255,215,0,0.25)]
-        w-[90%] max-w-md p-8 rounded-2xl z-[10000]
-        animate-fadeIn
-      ">
-        <h2 className="text-2xl font-bold text-yellow-400 text-center mb-6">
-          🔐 Şifre Sıfırla
-        </h2>
+      <div className="bg-white w-[420px] rounded-2xl shadow-xl border border-gray-200 p-8 relative">
 
-        <input
-          type="email"
-          placeholder="E-posta adresi"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          className="w-full p-3 rounded-lg bg-black/40 border border-white/10 text-white mb-4"
-        />
-
-        {err && <p className="text-red-400 mb-3">{err}</p>}
-        {msg && <p className="text-green-400 mb-3">{msg}</p>}
-
+        {/* Kapat */}
         <button
-          onClick={sendReset}
-          className="w-full py-3 mt-2 rounded-lg 
-            bg-gradient-to-r from-yellow-400 to-rose-400 
-            text-black font-bold hover:brightness-110 transition"
+          onClick={onClose}
+          className="absolute right-4 top-4 text-gray-400 hover:text-gray-600"
         >
-          Bağlantı Gönder
+          <X size={20} />
         </button>
-      </div>
 
-      <style>{`
-        @keyframes fadeIn {
-          from { opacity:0; transform:scale(0.95); }
-          to { opacity:1; transform:scale(1); }
-        }
-        .animate-fadeIn {
-          animation: fadeIn .3s ease-out;
-        }
-      `}</style>
+        {/* Başlık */}
+        <div className="flex flex-col items-center mb-6">
+          <Lock size={32} className="text-orange-500 mb-2" />
+          <h2 className="text-2xl font-bold text-gray-800">Şifre Sıfırla</h2>
+          <p className="text-gray-500 text-sm mt-1">
+            E-posta adresine sıfırlama bağlantısı gönderilecektir.
+          </p>
+        </div>
+
+        {!sent ? (
+          <>
+            <input
+              type="email"
+              placeholder="E-posta adresi"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              className="
+                w-full p-3 rounded-xl border border-gray-300 
+                bg-white text-gray-800 placeholder-gray-400
+                focus:outline-none focus:border-orange-500
+              "
+            />
+
+            <button
+              onClick={sendLink}
+              disabled={loading}
+              className="
+                w-full py-3 mt-4 rounded-xl text-white font-semibold
+                bg-orange-500 hover:bg-orange-600 transition
+                disabled:opacity-50
+              "
+            >
+              {loading ? "Gönderiliyor..." : "Bağlantı Gönder"}
+            </button>
+          </>
+        ) : (
+          <div className="text-center text-green-600 font-medium">
+            ✔ Sıfırlama bağlantısı e-postana gönderildi!
+          </div>
+        )}
+      </div>
     </div>
   );
 }

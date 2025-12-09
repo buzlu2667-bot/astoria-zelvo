@@ -41,6 +41,26 @@ export default function Header() {
   // ⭐ Banner Settings
 const [headerBanner, setHeaderBanner] = useState(null);
 const [scrollText, setScrollText] = useState(null);
+const [profile, setProfile] = useState(null);
+
+useEffect(() => {
+  async function loadProfile() {
+    if (!session?.user) {
+      setProfile(null);
+      return;
+    }
+
+    const { data } = await supabase
+      .from("profiles")
+      .select("full_name")
+      .eq("id", session.user.id)
+      .maybeSingle();
+
+    setProfile(data);
+  }
+
+  loadProfile();
+}, [session]);
 
     const [clientId, setClientId] = useState("");
 
@@ -851,8 +871,10 @@ className="relative rounded-xl p-1 sm:p-2 hover:bg-white/5 transition hidden lg:
     <div className="flex flex-col leading-tight text-left">
       <span className="text-sm font-semibold text-gray-800">Hesabım</span>
       <span className="text-[11px] text-gray-500 max-w-[90px] truncate">
-        {session.user.user_metadata?.username ||
-          session.user.email.split("@")[0]}
+    {profile?.full_name || session.user.email.split("@")[0]}
+
+
+
       </span>
     </div>
   )}
@@ -919,8 +941,11 @@ className="relative rounded-xl p-1 sm:p-2 hover:bg-white/5 transition hidden lg:
 
         <div>
           <p className="font-semibold text-gray-900">
-            {session.user.user_metadata?.username ||
-              session.user.email.split("@")[0]}
+            
+       {profile?.full_name || session.user.email.split("@")[0]}
+
+
+
           </p>
 
           <button
@@ -1138,8 +1163,9 @@ className="relative rounded-xl p-1 sm:p-2 hover:bg-white/5 transition hidden lg:
     >
       <User2 className="w-6 h-6 text-yellow-300" />
       <span className="text-[10px] mt-1">
-        {session.user.user_metadata?.username ||
-          session.user.email.split('@')[0]}
+   {profile?.full_name || session.user.email.split("@")[0]}
+
+
       </span>
     </button>
   )}

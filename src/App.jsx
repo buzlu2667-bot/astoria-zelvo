@@ -14,6 +14,8 @@ import ReturnPolicyPage from "./pages/ReturnPolicyPage";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
 import Toast from "./components/Toast";
+import Callback from "./pages/auth/Callback";
+import AuthCallback from "./pages/AuthCallback"; 
 
 import CategoryMain from "./pages/CategoryMain";
 import CategorySub from "./pages/CategorySub";
@@ -148,6 +150,9 @@ export default function App() {
         <Route path="/kvkk" element={<KvkkPage />} />
           <Route path="/gizlilik-politikasi" element={<PrivacyPage />} />
          <Route path="/iade-kosullari" element={<ReturnPolicyPage />} />
+         <Route path="/auth/callback" element={<Callback />} />
+           <Route path="/auth/v1/callback" element={<AuthCallback />} />
+
 
         {/* Admin Panel */}
         <Route

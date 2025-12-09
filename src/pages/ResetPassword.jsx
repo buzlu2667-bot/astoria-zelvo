@@ -15,15 +15,16 @@ export default function ResetPassword() {
         const hash = window.location.hash;
         const query = new URLSearchParams(window.location.search);
 
-        // hem eski (#) hem yeni (code) formatı destekle
-        if (hash.includes("type=recovery") || query.get("access_token") || query.get("code")) {
-          console.log("🔗 Şifre sıfırlama bağlantısı doğrulandı");
+        if (
+          hash.includes("type=recovery") ||
+          query.get("access_token") ||
+          query.get("code")
+        ) {
           setLoading(false);
         } else {
           setErrorMsg("Geçersiz veya süresi dolmuş bağlantı.");
         }
       } catch (err) {
-        console.error("Bağlantı kontrol hatası:", err);
         setErrorMsg("Bağlantı doğrulanamadı.");
       } finally {
         setLoading(false);
@@ -45,7 +46,6 @@ export default function ResetPassword() {
       const { error } = await supabase.auth.updateUser({ password });
       if (error) throw error;
 
-      console.log("✅ Şifre başarıyla değiştirildi");
       setSuccess(true);
 
       setTimeout(async () => {
@@ -54,33 +54,36 @@ export default function ResetPassword() {
         navigate("/signin", { replace: true });
       }, 1500);
     } catch (err) {
-      console.error("Şifre sıfırlama hatası:", err);
       setErrorMsg("Şifre güncellenemedi, lütfen tekrar deneyin.");
     }
   };
 
+  /* -------------------- LOADING -------------------- */
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-black text-yellow-400">
-        <p className="animate-pulse">Bağlantı kontrol ediliyor...</p>
+      <div className="min-h-screen flex items-center justify-center bg-[#f5f5f5]">
+        <p className="text-gray-600 animate-pulse">Bağlantı kontrol ediliyor...</p>
       </div>
     );
   }
 
+  /* -------------------- ERROR -------------------- */
   if (errorMsg && !success) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-black text-red-500">
-        <div className="bg-zinc-900 p-6 rounded-xl border border-red-700 shadow-lg w-[360px] text-center">
-          <p>{errorMsg}</p>
+      <div className="min-h-screen flex items-center justify-center bg-[#fafafa]">
+        <div className="bg-white p-6 rounded-xl border border-red-300 shadow-lg w-[360px] text-center">
+          <p className="text-red-500 font-medium">{errorMsg}</p>
         </div>
       </div>
     );
   }
 
+  /* -------------------- FORM -------------------- */
   return (
-    <div className="min-h-screen flex items-center justify-center bg-black text-yellow-400">
-      <div className="bg-zinc-900 p-8 rounded-xl border border-yellow-600 shadow-[0_0_25px_rgba(255,200,0,0.25)] w-[360px] text-center">
-        <h2 className="text-2xl font-bold mb-6">🔐 Yeni Şifre Belirle</h2>
+    <div className="min-h-screen flex items-center justify-center bg-[#fafafa] px-4">
+      <div className="bg-white p-8 rounded-xl border border-gray-200 shadow-lg w-[380px] text-center">
+
+        <h2 className="text-2xl font-bold text-gray-800 mb-6">Yeni Şifre Belirle</h2>
 
         {!success ? (
           <form onSubmit={handleReset}>
@@ -89,12 +92,26 @@ export default function ResetPassword() {
               placeholder="Yeni şifre"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="w-full p-3 mb-3 rounded bg-zinc-800 text-white border border-yellow-700 focus:outline-none focus:ring-2 focus:ring-yellow-500"
+              className="
+                w-full p-3 mb-3 rounded-xl 
+                border border-gray-300 
+                bg-white text-gray-800 
+                placeholder-gray-400
+                focus:outline-none focus:border-orange-500
+              "
             />
-            {errorMsg && <p className="text-red-500 text-sm mb-2">{errorMsg}</p>}
+
+            {errorMsg && (
+              <p className="text-red-500 text-sm mb-2">{errorMsg}</p>
+            )}
+
             <button
               type="submit"
-              className="w-full py-3 bg-gradient-to-r from-yellow-600 to-orange-600 rounded-lg text-black font-semibold hover:scale-105 transition-transform"
+              className="
+                w-full py-3 mt-2 bg-orange-500 text-white 
+                rounded-xl font-semibold 
+                hover:bg-orange-600 transition
+              "
             >
               Şifreyi Güncelle
             </button>
@@ -102,15 +119,24 @@ export default function ResetPassword() {
         ) : (
           <>
             <div className="w-12 h-12 mx-auto border-4 border-green-500 rounded-full border-t-transparent animate-spin-slow" />
-            <p className="text-green-400 font-semibold mt-4">Şifre değiştirildi 🎉</p>
-            <p className="text-gray-400 text-sm mt-1">Giriş ekranına yönlendiriliyorsun…</p>
+            <p className="text-green-600 font-semibold mt-4">
+              Şifre başarıyla değiştirildi 🎉
+            </p>
+            <p className="text-gray-500 text-sm mt-1">
+              Giriş ekranına yönlendiriliyorsun…
+            </p>
           </>
         )}
       </div>
 
       <style>{`
-        @keyframes spin-slow { 0%{transform:rotate(0)} 100%{transform:rotate(360deg)} }
-        .animate-spin-slow { animation: spin-slow 2s linear infinite; }
+        @keyframes spin-slow { 
+          0% { transform: rotate(0deg) } 
+          100% { transform: rotate(360deg) } 
+        }
+        .animate-spin-slow { 
+          animation: spin-slow 1.8s linear infinite; 
+        }
       `}</style>
     </div>
   );
