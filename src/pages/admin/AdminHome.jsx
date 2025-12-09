@@ -5,6 +5,13 @@ import { supabase } from "../../lib/supabaseClient";
 export default function AdminHome() {
   const [products, setProducts] = useState([]);
 
+  const [search, setSearch] = useState("");
+
+  const filteredProducts = products.filter(p =>
+  p.title.toLowerCase().includes(search.toLowerCase())
+);
+
+
   // -------------------------
   // ⭐ 1) HAFTANIN FIRSATI
   // -------------------------
@@ -177,16 +184,27 @@ export default function AdminHome() {
       <div className="bg-[#111] p-4 rounded-lg shadow mb-10 border border-gray-700">
 
         <label className="font-semibold">Ürün Seç</label>
-        <select
-          className={inputClass}
-          value={hfProduct}
-          onChange={(e) => setHfProduct(e.target.value)}
-        >
-          <option value="">Seçiniz</option>
-          {products.map((p) => (
-            <option key={p.id} value={p.id}>{p.title}</option>
-          ))}
-        </select>
+       {/* 🔍 ÜRÜN ARAMA */}
+<input
+  type="text"
+  placeholder="Ürün ara..."
+  className={inputClass}
+  value={search}
+  onChange={(e) => setSearch(e.target.value)}
+/>
+
+<select
+  className={inputClass}
+  value={hfProduct}
+  onChange={(e) => setHfProduct(e.target.value)}
+>
+  <option value="">Seçiniz</option>
+
+  {filteredProducts.map((p) => (
+    <option key={p.id} value={p.id}>{p.title}</option>
+  ))}
+</select>
+
 
         <label className="block font-semibold mt-4">İndirim (%)</label>
         <input
@@ -266,15 +284,25 @@ export default function AdminHome() {
 />
 
             <label className="block font-semibold mt-3">Ürün ekle</label>
-            <select
-              className={inputClass}
-              onChange={(e) => addProductToCampaign(c.id, e.target.value)}
-            >
-              <option value="">Seçiniz</option>
-              {products.map((p) => (
-                <option key={p.id} value={p.id}>{p.title}</option>
-              ))}
-            </select>
+          {/* 🔍 ÜRÜN ARAMA */}
+<input
+  type="text"
+  placeholder="Ürün ara..."
+  className={inputClass}
+  value={search}
+  onChange={(e) => setSearch(e.target.value)}
+/>
+
+<select
+  className={inputClass}
+  onChange={(e) => addProductToCampaign(c.id, e.target.value)}
+>
+  <option value="">Seçiniz</option>
+
+  {filteredProducts.map((p) => (
+    <option key={p.id} value={p.id}>{p.title}</option>
+  ))}
+</select>
 
             <label className="block font-semibold mt-3">Aktif mi?</label>
 <select
