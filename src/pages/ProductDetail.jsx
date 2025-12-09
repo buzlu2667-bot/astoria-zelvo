@@ -375,9 +375,7 @@ useEffect(() => {
               </button>
             </div>
 
-            <p className="mt-3 text-sm text-gray-500 text-center">
-              Sipariş verirken renk seçimini açıklamaya yazmayı unutmayın.
-            </p>
+           
 
             {/* SEKME ALANI */}
             <div className="mt-10 border border-gray-300 rounded-xl">
