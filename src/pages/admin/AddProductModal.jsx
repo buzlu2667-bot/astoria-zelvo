@@ -199,7 +199,8 @@ is_new: form.is_new,   // ⭐ EKLENDİ
 is_popular: form.is_popular,
 is_featured: form.is_featured,
 is_suggested: form.is_suggested,
-
+colors: form.colors,
+  specs: form.specs,
 
 main_img: mainUrl,
 gallery: galleryUrls,
