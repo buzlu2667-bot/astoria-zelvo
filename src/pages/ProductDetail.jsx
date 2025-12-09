@@ -214,7 +214,7 @@ useEffect(() => {
     );
 
   return (
-    <div className="min-h-screen bg-white text-gray-900">
+     <div className="min-h-screen bg-white text-gray-900 pt-[80px]">
       <div className="w-full mx-auto px-4 sm:px-6 md:px-10 py-10">
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
