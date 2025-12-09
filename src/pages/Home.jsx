@@ -70,10 +70,12 @@ async function loadCampaignsFull() {
   const final = [];
 
   for (const c of cams) {
-    const { data: items } = await supabase
-      .from("home_campaign_products")
-      .select("*, products(*)")
-      .eq("campaign_id", c.id);
+   const { data: items } = await supabase
+  .from("home_campaign_products")
+  .select("*, products(*)")
+  .eq("campaign_id", c.id)
+  .order("id", { ascending: false });
+      
 
     final.push({
       ...c,

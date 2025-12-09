@@ -31,9 +31,11 @@ export default function AdminHome() {
   // ÜRÜNLERİ ÇEK
   // -------------------------------------
   async function loadProducts() {
-    const { data } = await supabase
-      .from("products")
-      .select("id, title, main_img");
+   const { data } = await supabase
+  .from("products")
+  .select("id, title, main_img")
+  .order("id", { ascending: false });  // 🔥 EN YENİ EN ÜSTTE
+
 
     setProducts(data || []);
   }
@@ -93,9 +95,10 @@ export default function AdminHome() {
 
     for (const c of cList) {
       const { data } = await supabase
-        .from("home_campaign_products")
-        .select("*, products(*)")
-        .eq("campaign_id", c.id);
+       .from("home_campaign_products")
+.select("*, products(*)")
+.eq("campaign_id", c.id)
+.order("id", { ascending: false });
 
       map[c.id] = data || [];
     }
