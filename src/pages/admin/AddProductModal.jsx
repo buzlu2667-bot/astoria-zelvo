@@ -2,6 +2,16 @@ import { useEffect, useState } from "react";
 import { supabase } from "../../lib/supabaseClient";
 import { X, Upload, Images, ImagePlus, Loader } from "lucide-react";
 
+
+// ⚡ Türkçe – emoji – boşluk temizleyici
+function sanitizeFilename(name) {
+  return name
+    .normalize("NFD")                 // ç, ğ, ö → c, g, o
+    .replace(/[\u0300-\u036f]/g, "")  // aksanları sil
+    .replace(/[^a-zA-Z0-9.\-_]/g, "_"); // boşluk, emoji, Türkçe karakterleri _ yap
+}
+
+
 export default function AddProductModal({ onClose, onSuccess, initialData }) {
   
   const [load, setLoad] = useState(false);
@@ -123,19 +133,21 @@ if (!form.title || !form.price) {
     // Ana foto
     let mainUrl = null;
     if (mainImg) {
-      mainUrl = await uploadFile(
-        mainImg,
-        `main/${Date.now()}-${mainImg.name}`
-      );
+     mainUrl = await uploadFile(
+  mainImg,
+  `main/${Date.now()}-${sanitizeFilename(mainImg.name)}`
+);
+
     }
 
     // Galeri
     let galleryUrls = [];
     for (const g of gallery) {
-      const url = await uploadFile(
-        g,
-        `gallery/${Date.now()}-${g.name}`
-      );
+    const url = await uploadFile(
+  g,
+  `gallery/${Date.now()}-${sanitizeFilename(g.name)}`
+);
+
       galleryUrls.push(url);
     }
 
