@@ -3,7 +3,7 @@ import { supabase } from "../lib/supabaseClient";
 import { Link } from "react-router-dom";
 import { Eye, EyeOff } from "lucide-react";
 import googleLogo from "../assets/google.png";
-import facebookLogo from "../assets/facebook.png";
+
 
 export default function RegisterPage() {
   function translateError(msg) {
@@ -74,16 +74,6 @@ export default function RegisterPage() {
   }
 
 
-  async function facebookLogin() {
-  await supabase.auth.signInWithOAuth({
-    provider: "facebook",
-    options: {
-      redirectTo: window.location.origin,
-    },
-  });
-}
-
-
   return (
     <div className="min-h-screen bg-[#f5f5f5] flex items-center justify-center px-4 py-10">
 
@@ -110,17 +100,6 @@ export default function RegisterPage() {
             <img src={googleLogo} className="w-5 h-5" />
             Google ile Devam Et
           </button>
-
-         <button
-  onClick={facebookLogin}
-  className="w-full mt-3 flex items-center justify-center gap-3 py-3 border border-gray-300 rounded-xl bg-blue-600 text-white shadow-sm hover:bg-blue-700 transition font-semibold"
->
-  <img src={facebookLogo} className="w-5 h-5" />
-  Facebook ile Devam Et
-</button>
-
-
-    
 
           {/* OR LINE */}
           <div className="my-6 flex items-center gap-4">
