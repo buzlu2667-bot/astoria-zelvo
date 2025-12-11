@@ -870,8 +870,8 @@ className="relative rounded-xl p-1 sm:p-2 hover:bg-white/5 transition hidden lg:
   ) : (
     <div className="flex flex-col leading-tight text-left">
       <span className="text-sm font-semibold text-gray-800">Hesabım</span>
-      <span className="text-[11px] text-gray-500 max-w-[90px] truncate">
-    {profile?.full_name || session.user.email.split("@")[0]}
+  <span className="text-xs font-semibold text-gray-800 max-w-[110px] truncate tracking-wide">
+  {profile?.full_name || session.user.email.split("@")[0]}
 
 
 
@@ -1162,8 +1162,8 @@ className="relative rounded-xl p-1 sm:p-2 hover:bg-white/5 transition hidden lg:
       className="flex flex-col items-center text-white"
     >
       <User2 className="w-6 h-6 text-yellow-300" />
-      <span className="text-[10px] mt-1">
-   {profile?.full_name || session.user.email.split("@")[0]}
+     <span className="text-[11px] mt-1 font-medium max-w-[70px] truncate leading-tight">
+  {profile?.full_name || session.user.email.split("@")[0]}
 
 
       </span>
