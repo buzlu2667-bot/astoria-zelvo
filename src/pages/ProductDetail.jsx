@@ -301,8 +301,7 @@ useEffect(() => {
     )}
   </div>
 
-  {/* --- MOBİL SLIDER (KAYDIRMALI) --- */}
-  {/* --- MOBİL SWIPE SLIDER (scroll YOK!) --- */}
+ {/* --- MOBİL SWIPE SLIDER (scroll YOK, zoom VAR!) --- */}
 <div
   className="lg:hidden w-full relative"
   onTouchStart={(e) => {
@@ -332,24 +331,10 @@ useEffect(() => {
     src={mainImage}
     className="w-full h-auto object-contain rounded-xl"
     style={{ aspectRatio: "3/4" }}
+    onClick={() => setZoomOpen(true)}   // ⭐⭐⭐ ZOOM BURADA ÇALIŞIR!
   />
 </div>
 
-
-  {/* MOBİL DOTS */}
-  {images.length > 1 && (
-    <div className="lg:hidden flex justify-center gap-2 mt-3">
-      {images.map((_, i) => (
-        <div
-          key={i}
-          className={`
-            h-2 rounded-full transition-all 
-            ${i === activeIndex ? "w-6 bg-black" : "w-2 bg-gray-300"}
-          `}
-        />
-      ))}
-    </div>
-  )}
 
   {/* ALT KÜÇÜK THUMBNAILS (MASAÜSTÜ) */}
   {images.length > 1 && (
@@ -371,6 +356,20 @@ useEffect(() => {
     </div>
   )}
 </div>
+{/* MOBİL DOTS */}
+{images.length > 1 && (
+  <div className="flex justify-center gap-2 mt-3 lg:hidden">
+    {images.map((_, i) => (
+      <div
+        key={i}
+        className={`
+          h-2 rounded-full transition-all
+          ${i === activeIndex ? "w-6 bg-black" : "w-2 bg-gray-300"}
+        `}
+      />
+    ))}
+  </div>
+)}
 
 
           {/* ÜRÜN BİLGİLERİ */}
