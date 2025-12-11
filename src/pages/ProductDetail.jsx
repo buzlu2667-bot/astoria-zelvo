@@ -309,19 +309,20 @@ useEffect(() => {
                 <p className="text-gray-700 font-semibold mb-2">Renk Seçin:</p>
 
                 <div className="flex gap-2 flex-wrap">
-                  {parsedColors.map((c, i) => (
-                    <button
-                      key={i}
-                      onClick={() => setSelectedColor(c)}
-                      className={`px-4 py-2 rounded-lg text-sm border ${
-                        selectedColor === c
-                          ? "bg-orange-500 text-white border-orange-500"
-                          : "bg-gray-100 text-gray-700 border-gray-300 hover:bg-gray-200"
-                      }`}
-                    >
-                      {c}
-                    </button>
-                  ))}
+                 {parsedColors.map((c, i) => (
+  <button
+    key={i}
+    onClick={() => setSelectedColor(c)}
+    className={`px-4 py-2 rounded-lg text-sm border ${
+      selectedColor === c
+        ? "bg-orange-500 text-white border-orange-500"
+        : "bg-gray-100 text-gray-700 border-gray-300 hover:bg-gray-200"
+    }`}
+  >
+    {c.charAt(0).toUpperCase() + c.slice(1)}
+  </button>
+))}
+
                 </div>
               </div>
             )}
