@@ -4,11 +4,25 @@ import { ShoppingCart } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import ProductCardCart from "../components/ProductCardCart";
+import { ChevronLeft, ChevronRight } from "lucide-react";
+import { supabase } from "../lib/supabaseClient"; // Eğer yoksa ekle
+import { useRef } from "react";
+
 
 export default function Cart() {
   const { cart, inc, dec, removeFromCart, total, clearCart } = useCart();
   const { session } = useSession();
   const nav = useNavigate();
+
+   // ⭐ İLGİNİZİ ÇEKEBİLİR STATE
+  const [suggested, setSuggested] = useState([]);
+  const suggestedRef = useRef(null);
+
+  const suggestedLeft = () =>
+    suggestedRef.current?.scrollBy({ left: -350, behavior: "smooth" });
+
+  const suggestedRight = () =>
+    suggestedRef.current?.scrollBy({ left: 350, behavior: "smooth" });
 
   // Login kontrol → Satın al
   const handleOrder = () => {
@@ -24,6 +38,20 @@ export default function Cart() {
     }
     nav("/checkout");
   };
+
+  // ⭐ İLGİNİZİ ÇEKEBİLİR ürünleri yükle
+useEffect(() => {
+  async function loadSuggested() {
+    const { data } = await supabase
+      .from("products")
+      .select("*")
+      .eq("is_suggested", true)
+      .order("created_at", { ascending: false });
+
+    setSuggested(data || []);
+  }
+  loadSuggested();
+}, []);
 
   /* 🟡 BOŞ SEPET */
  if (!cart || cart.length === 0)
@@ -47,12 +75,20 @@ export default function Cart() {
 
 
   return (
-    <div className="min-h-screen bg-[#f6f6f6] p-4 md:p-6">
-      {/* BAŞLIK */}
-      <h2 className="text-2xl font-bold mb-6 flex items-center gap-2 text-gray-800">
-        <ShoppingCart className="w-7 h-7 text-[#f27a1a]" />
-        Sepetim
-      </h2>
+    <div className="min-h-screen bg-[#f6f6f6] p-4 md:p-6 mt-24 md:mt-32">
+     {/* ⭐ SEPET BAŞLIK BLOĞU */}
+<div className="bg-white p-4 md:p-6 rounded-2xl shadow-sm border border-gray-200 mb-6">
+  <div className="flex items-center gap-3">
+    <ShoppingCart className="w-8 h-8 text-[#f27a1a]" />
+    
+    <div>
+      <h2 className="text-2xl font-bold text-gray-800">Sepetim</h2>
+      <p className="text-gray-500 text-sm mt-1">
+        Eklediğiniz ürünlerin detaylarını aşağıdan düzenleyebilirsiniz.
+      </p>
+    </div>
+  </div>
+</div>
 
       {/* 2 SÜTUN: Sol ürünler / Sağ özet */}
       <div className="flex flex-col lg:flex-row gap-6">
@@ -77,14 +113,14 @@ export default function Cart() {
         </div>
 
         {/* SAĞ TARAF — SİPARİŞ ÖZETİ */}
-     <div className="hidden lg:block w-full lg:w-[350px] shrink-0">
-          <div className="bg-white border border-gray-200 rounded-2xl p-6 shadow-sm sticky top-4">
+    <div className="hidden lg:block w-full lg:w-[480px] shrink-0">
+       <div className="bg-white border border-gray-200 rounded-2xl p-8 shadow-sm sticky top-4">
             <h3 className="text-xl font-bold text-gray-800 mb-4">
               Sipariş Özeti
             </h3>
 
             {/* Toplam */}
-            <div className="flex justify-between text-gray-700 font-medium border-b pb-2">
+       <div className="flex justify-between text-gray-700 font-semibold text-lg border-b pb-4">
               <span>Sepet Toplamı</span>
               <span className="font-bold text-gray-900">
                 ₺{total.toLocaleString("tr-TR")}
@@ -159,6 +195,78 @@ export default function Cart() {
   </div>
 
 </div>
+
+{/* ⭐⭐⭐ İLGİNİZİ ÇEKEBİLİR — HOME İLE AYNI ⭐⭐⭐ */}
+{suggested.length > 0 && (
+  <div className="max-w-7xl mx-auto px-2 md:px-6 mt-20 mb-24">
+    <h2 className="text-2xl font-bold text-gray-900 mb-4">İlginizi Çekebilir</h2>
+
+    <div className="relative">
+
+      <button
+        onClick={suggestedLeft}
+        className="hidden md:flex absolute left-0 top-1/2 -translate-y-1/2
+        w-10 h-10 rounded-full bg-white border border-gray-300
+        items-center justify-center hover:bg-gray-100 transition z-20"
+      >
+        <ChevronLeft className="w-5 h-5 text-gray-700" />
+      </button>
+
+      <button
+        onClick={suggestedRight}
+        className="hidden md:flex absolute right-0 top-1/2 -translate-y-1/2
+        w-10 h-10 rounded-full bg-white border border-gray-300
+        items-center justify-center hover:bg-gray-100 transition z-20"
+      >
+        <ChevronRight className="w-5 h-5 text-gray-700" />
+      </button>
+
+      <div
+        ref={suggestedRef}
+        className="flex gap-4 pb-4 overflow-x-auto whitespace-nowrap scroll-smooth no-scrollbar"
+      >
+        {suggested.map((item) => (
+          <div
+            key={item.id}
+            onClick={() => nav(`/product/${item.id}`)}
+            className="shrink-0 w-[180px] sm:w-[220px]
+            bg-white border border-gray-200 rounded-xl shadow-sm hover:shadow-md
+            transition cursor-pointer"
+          >
+            <img
+              src={item.main_img}
+              className="w-full h-[160px] object-cover rounded-t-xl"
+            />
+
+            <div className="p-2">
+              <p className="text-sm font-semibold text-gray-700 truncate">
+                {item.title}
+              </p>
+
+              {item.old_price && item.old_price > item.price && (
+                <div className="flex items-center gap-2">
+                  <span className="text-gray-400 line-through text-xs">
+                    {item.old_price.toLocaleString("tr-TR")} ₺
+                  </span>
+
+                  <span className="bg-red-500 text-white text-xs font-bold px-2 py-0.5 rounded-full">
+                    %{Math.round(((item.old_price - item.price) / item.old_price) * 100)}
+                  </span>
+                </div>
+              )}
+
+              <p className="text-orange-500 font-bold text-sm mt-1">
+                {item.price.toLocaleString("tr-TR")} ₺
+              </p>
+            </div>
+          </div>
+        ))}
+      </div>
+
+    </div>
+  </div>
+)}
+
 
     </div>
   );

@@ -49,7 +49,7 @@ export default function Favorites() {
 
   /* ----------- LİSTE ----------- */
   return (
-    <div className="max-w-7xl mx-auto px-5 py-10 bg-white">
+  <div className="max-w-7xl mx-auto px-5 py-10 bg-white mt-24 md:mt-32">
      <h1 className="text-3xl font-bold mb-8 text-gray-800 flex items-center gap-2">
   <Heart className="w-7 h-7 text-red-500 fill-red-500 drop-shadow-[0_0_8px_rgba(255,0,0,0.4)]" />
   Favorilerim

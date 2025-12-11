@@ -341,14 +341,23 @@ function Summary({ cart, total, coupon, setCoupon, discount, applyCoupon, TRY })
     <div className="bg-white rounded-xl border border-gray-200 p-6 shadow-sm h-fit hidden md:block">
       <h3 className="text-lg font-bold mb-3 text-[#444]">Sipariş Özeti</h3>
 
-      <div className="space-y-2">
-        {cart.map((it) => (
-          <div key={it.id} className="flex justify-between text-sm py-2 border-b border-gray-200">
-            <span>{it.name} × {it.quantity}</span>
-            <span>{TRY((it.price || 0) * (it.quantity || 1))}</span>
-          </div>
-        ))}
-      </div>
+     <div className="space-y-2">
+  {cart.map((it) => (
+    <div
+      key={it.id}
+      className="flex justify-between items-center text-sm py-3 
+                 border-b border-gray-300 text-gray-800 font-medium"
+    >
+      <span className="text-gray-800">
+        {it.title || it.name || it.product_name} × {it.quantity}
+      </span>
+
+      <span className="text-gray-900 font-semibold">
+        {TRY((it.price || 0) * (it.quantity || 1))}
+      </span>
+    </div>
+  ))}
+</div>
 
       <div className="mt-4 flex justify-between text-sm font-semibold text-[#333]">
         <span>Toplam</span> <span>{TRY(total)}</span>
