@@ -38,7 +38,6 @@ useEffect(() => {
       is_new: initialData.is_new || false,
       is_popular: initialData.is_popular || false,
       is_featured: initialData.is_featured || false,
-      specs: initialData.specs || "", 
        colors: initialData.colors || "" 
     });
 
@@ -63,7 +62,6 @@ useEffect(() => {
   is_popular: false,
 is_featured: false,
  is_suggested: false, 
- specs: "",
  colors: "",
 
 });
@@ -172,7 +170,6 @@ if (initialData) {
       is_popular: form.is_popular,
       is_featured: form.is_featured,
       is_suggested: form.is_suggested,
-      specs: form.specs,
        colors: form.colors,
       // fotoğraflar sadece yeni seçildiyse güncellenecek
       ...(mainImg && { main_img: mainUrl }),
@@ -424,13 +421,7 @@ gallery: galleryUrls,
   onChange={(e) => setForm({ ...form, colors: e.target.value })}
 />
 
-{/* ⭐ ÜRÜN ÖZELLİKLERİ */}
-<textarea
-  placeholder="Ürün Özellikleri (madde madde yazabilirsiniz)"
-  className="input-premium w-full mt-4 h-28 resize-none"
-  value={form.specs}
-  onChange={(e) => setForm({ ...form, specs: e.target.value })}
-/>
+
 
         {/* ANA FOTO */}
         <div className="mt-4">

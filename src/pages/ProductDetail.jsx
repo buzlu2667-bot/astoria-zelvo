@@ -9,6 +9,20 @@ import { useNavigate } from "react-router-dom";
 import { useSession } from "../context/SessionContext";
 
 
+function formatName(name) {
+  if (!name) return "Kullanıcı";
+
+  const parts = name.trim().split(" ");
+  if (parts.length === 1) return parts[0];
+
+  const first = parts[0];
+  const last = parts[parts.length - 1][0] + ".";
+
+  return `${first} ${last}`; // Örnek: Burak A.
+}
+
+
+
 const TRY = (n) =>
   Number(n || 0).toLocaleString("tr-TR", {
     style: "currency",
@@ -30,8 +44,12 @@ const STATUS = {
   },
 };
 
+
+
+
 export default function ProductDetail() {
   const { id } = useParams();
+   const [descOpen, setDescOpen] = useState(false);
   const { addToCart } = useCart();
   const { addFav, removeFav, isFav } = useFavorites();
   const navigate = useNavigate();
@@ -41,7 +59,22 @@ export default function ProductDetail() {
   const [loading, setLoading] = useState(true);
   const [tab, setTab] = useState("desc");
   const [reviews, setReviews] = useState([]);
+
+// ⭐ YORUM SAYFALAMA
+const [currentPage, setCurrentPage] = useState(1);
+const reviewsPerPage = 5;
+
+const indexOfLastReview = currentPage * reviewsPerPage;
+const indexOfFirstReview = indexOfLastReview - reviewsPerPage;
+
+const currentReviews = reviews.slice(indexOfFirstReview, indexOfLastReview);
+
+const totalPages = Math.ceil(reviews.length / reviewsPerPage);
+
+
   const [related, setRelated] = useState([]);
+
+  const [activeIndex, setActiveIndex] = useState(0);
 
   const [newReview, setNewReview] = useState({ name: "", text: "", rating: 5 });
   const [mainImage, setMainImage] = useState("");
@@ -219,44 +252,113 @@ useEffect(() => {
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
 
-          {/* GÖRSELLER */}
-          <div className="bg-white border border-gray-200 rounded-2xl p-4 shadow-sm">
-            <div
-              className="w-full bg-white rounded-xl border border-gray-200 overflow-hidden flex items-center justify-center cursor-zoom-in"
-              onClick={() => setZoomOpen(true)}
-            >
-              {mainImage ? (
-                <img
-                  src={mainImage}
-                  alt={p.title}
-                  className="w-full h-auto object-contain"
-                  style={{ aspectRatio: "3/4" }}
-                />
-              ) : (
-                <div className="text-gray-500">Görsel bulunamadı</div>
-              )}
+         {/* GÖRSELLER */}
+<div className="bg-white border border-gray-200 rounded-2xl p-4 shadow-sm">
 
-              <ZoomIn className="absolute bottom-3 right-3 text-gray-400 w-6 h-6" />
-            </div>
+  {/* --- MASAÜSTÜ BÜYÜK GÖRSEL + OKLAR --- */}
+  <div className="hidden lg:flex items-center justify-center relative">
+    {/* Sol ok */}
+    {images.length > 1 && (
+      <button
+        onClick={() => {
+          const newIndex = activeIndex === 0 ? images.length - 1 : activeIndex - 1;
+          setActiveIndex(newIndex);
+          setMainImage(images[newIndex]);
+        }}
+        className="absolute left-3 bg-white/90 hover:bg-white border px-2 py-2 rounded-full shadow"
+      >
+        <ChevronLeft className="w-6 h-6 text-gray-700" />
+      </button>
+    )}
 
-            {images.length > 1 && (
-              <div className="mt-4 grid grid-cols-4 sm:grid-cols-5 gap-3">
-                {images.map((src, i) => (
-                  <div
-                    key={i}
-                    onClick={() => setMainImage(src)}
-                    className={`border rounded-lg overflow-hidden cursor-pointer ${
-                      mainImage === src
-                        ? "border-orange-500"
-                        : "border-gray-300 hover:border-gray-400"
-                    }`}
-                  >
-                    <img src={src} alt="" className="object-cover w-full h-full" />
-                  </div>
-                ))}
-              </div>
-            )}
-          </div>
+    {/* Büyük görsel */}
+    <div
+      className="cursor-zoom-in"
+      onClick={() => setZoomOpen(true)}
+    >
+      <img
+        src={mainImage}
+        alt={p.title}
+        className="w-full h-auto object-contain rounded-xl"
+        style={{ aspectRatio: "3/4" }}
+      />
+    </div>
+
+    {/* Sağ ok */}
+    {images.length > 1 && (
+      <button
+        onClick={() => {
+          const newIndex = activeIndex === images.length - 1 ? 0 : activeIndex + 1;
+          setActiveIndex(newIndex);
+          setMainImage(images[newIndex]);
+        }}
+        className="absolute right-3 bg-white/90 hover:bg-white border px-2 py-2 rounded-full shadow"
+      >
+        <ChevronRight className="w-6 h-6 text-gray-700" />
+      </button>
+    )}
+  </div>
+
+  {/* --- MOBİL SLIDER (KAYDIRMALI) --- */}
+  <div
+    className="lg:hidden flex overflow-x-auto snap-x snap-mandatory no-scrollbar"
+    ref={autoScrollRef}
+    onScroll={(e) => {
+      const scrollX = e.target.scrollLeft;
+      const width = e.target.clientWidth;
+      const index = Math.round(scrollX / width);
+
+      setActiveIndex(index);
+      if (images[index]) setMainImage(images[index]);
+    }}
+  >
+    {images.map((src, i) => (
+      <img
+        key={i}
+        src={src}
+        className="w-full h-auto object-contain shrink-0 snap-center"
+        style={{ aspectRatio: "3/4" }}
+        onClick={() => setZoomOpen(true)}
+      />
+    ))}
+  </div>
+
+  {/* MOBİL DOTS */}
+  {images.length > 1 && (
+    <div className="lg:hidden flex justify-center gap-2 mt-3">
+      {images.map((_, i) => (
+        <div
+          key={i}
+          className={`
+            h-2 rounded-full transition-all 
+            ${i === activeIndex ? "w-6 bg-black" : "w-2 bg-gray-300"}
+          `}
+        />
+      ))}
+    </div>
+  )}
+
+  {/* ALT KÜÇÜK THUMBNAILS (MASAÜSTÜ) */}
+  {images.length > 1 && (
+    <div className="hidden lg:grid grid-cols-5 gap-3 mt-4">
+      {images.map((src, i) => (
+        <div
+          key={i}
+          onClick={() => {
+            setMainImage(src);
+            setActiveIndex(i);
+          }}
+          className={`border rounded-lg overflow-hidden cursor-pointer ${
+            activeIndex === i ? "border-orange-500" : "border-gray-300"
+          }`}
+        >
+          <img src={src} className="object-cover w-full h-full" />
+        </div>
+      ))}
+    </div>
+  )}
+</div>
+
 
           {/* ÜRÜN BİLGİLERİ */}
           <div>
@@ -378,138 +480,222 @@ useEffect(() => {
 
            
 
-            {/* SEKME ALANI */}
-            <div className="mt-10 border border-gray-300 rounded-xl">
-              <div className="flex gap-6 px-4 py-3 border-b border-gray-300">
-                <button
-                  onClick={() => setTab("desc")}
-                  className={`pb-2 ${
-                    tab === "desc"
-                      ? "border-b-2 border-orange-500 text-orange-600"
-                      : "text-gray-500"
-                  }`}
-                >
-                  Açıklama
-                </button>
+        {/* SEKME ALANI */}
+<div className="mt-10 border border-gray-300 rounded-xl">
 
-                <button
-                  onClick={() => setTab("specs")}
-                  className={`pb-2 ${
-                    tab === "specs"
-                      ? "border-b-2 border-orange-500 text-orange-600"
-                      : "text-gray-500"
-                  }`}
-                >
-                  Ürün Özellikleri
-                </button>
+  {/* SEKME BUTONLARI */}
+  <div className="flex gap-6 px-4 py-3 border-b border-gray-300">
+    <button
+      onClick={() => setTab("desc")}
+      className={`pb-2 ${
+        tab === "desc"
+          ? "border-b-2 border-orange-500 text-orange-600"
+          : "text-gray-500"
+      }`}
+    >
+      Açıklama
+    </button>
 
-                <button
-                  onClick={() => setTab("reviews")}
-                  className={`pb-2 ${
-                    tab === "reviews"
-                      ? "border-b-2 border-orange-500 text-orange-600"
-                      : "text-gray-500"
-                  }`}
-                >
-                  Yorumlar ({reviews.length})
-                </button>
+    <button
+      onClick={() => setTab("reviews")}
+      className={`pb-2 ${
+        tab === "reviews"
+          ? "border-b-2 border-orange-500 text-orange-600"
+          : "text-gray-500"
+      }`}
+    >
+      Yorumlar ({reviews.length})
+    </button>
+  </div>
+
+  {/* İÇERİKLER */}
+  <div className="p-4 text-gray-700">
+
+    {/* ⭐ AÇIKLAMA SECTION — AÇILIR KAPANIR */}
+    {tab === "desc" && (
+      <div className="border border-gray-300 rounded-lg">
+
+        {/* Başlık */}
+        <button
+          onClick={() => setDescOpen(!descOpen)}
+          className="w-full flex items-center justify-between px-4 py-3 bg-gray-100 text-gray-900 font-semibold"
+        >
+          <span>Ürün Açıklaması</span>
+          <span className="text-xl">{descOpen ? "−" : "+"}</span>
+        </button>
+
+      {/* Açılan İçerik */}
+{descOpen && (
+  <div className="px-4 py-3 text-gray-700 bg-white border-t border-gray-300">
+    <p className="whitespace-pre-line">
+      {p.description || "Açıklama mevcut değil."}
+    </p>
+  </div>
+)}
+
+      </div>
+    )}
+
+    {/* ⭐ YORUMLAR */}
+    {tab === "reviews" && (
+      <div>
+        {reviews.length === 0 ? (
+          <p className="text-gray-500">
+            Bu ürün için henüz yorum yapılmamış.
+          </p>
+        ) : (
+          currentReviews.map((r) => (
+            <div
+              key={r.id}
+              className="bg-gray-100 border border-gray-300 rounded-lg p-3 mb-3"
+            >
+              <div className="flex justify-between">
+                <p className="font-semibold">{r.name}</p>
+                <p className="text-orange-500">
+                  {"★".repeat(r.rating)}
+                  {"☆".repeat(5 - r.rating)}
+                </p>
               </div>
 
-              {/* İçerikler */}
-              <div className="p-4 text-gray-700">
-                {tab === "desc" && (
-                  <p>{p.description || "Açıklama mevcut değil."}</p>
-                )}
+              <p className="text-gray-700 mt-1">{r.text}</p>
+              <p className="text-gray-400 text-xs mt-1">
+                {new Date(r.created_at).toLocaleDateString("tr-TR")}
+              </p>
+            </div>
+          ))
+        )}
 
-                {tab === "specs" && (
-                  <p className="whitespace-pre-line">
-                    {p.specs || "Özellik bilgisi eklenmemiş."}
-                  </p>
-                )}
 
-                {tab === "reviews" && (
-                  <div>
-                    {/* Yorumlar */}
-                    {reviews.length === 0 ? (
-                      <p className="text-gray-500">
-                        Bu ürün için henüz yorum yapılmamış.
-                      </p>
-                    ) : (
-                      reviews.map((r) => (
-                        <div
-                          key={r.id}
-                          className="bg-gray-100 border border-gray-300 rounded-lg p-3 mb-3"
-                        >
-                          <div className="flex justify-between">
-                            <p className="font-semibold">{r.name}</p>
-                            <p className="text-orange-500">
-                              {"★".repeat(r.rating)}
-                              {"☆".repeat(5 - r.rating)}
-                            </p>
-                          </div>
+                    {/* SAYFALAMA (PAGINATION) */}
+{totalPages > 1 && (
+  <div className="flex items-center justify-center gap-3 mt-6">
 
-                          <p className="text-gray-700 mt-1">{r.text}</p>
-                          <p className="text-gray-400 text-xs mt-1">
-                            {new Date(r.created_at).toLocaleDateString("tr-TR")}
-                          </p>
-                        </div>
-                      ))
-                    )}
+    {/* Sol ok */}
+    <button
+      disabled={currentPage === 1}
+      onClick={() => setCurrentPage(currentPage - 1)}
+      className={`px-3 py-1 rounded border ${
+        currentPage === 1
+          ? "text-gray-400 border-gray-300 cursor-not-allowed"
+          : "text-gray-700 border-gray-400 hover:bg-gray-200"
+      }`}
+    >
+      ←
+    </button>
+
+    {/* Sayfa numaraları */}
+    {[...Array(totalPages)].map((_, i) => (
+      <button
+        key={i}
+        onClick={() => setCurrentPage(i + 1)}
+        className={`px-3 py-1 rounded border ${
+          currentPage === i + 1
+            ? "bg-orange-500 text-white border-orange-500"
+            : "text-gray-700 border-gray-400 hover:bg-gray-200"
+        }`}
+      >
+        {i + 1}
+      </button>
+    ))}
+
+    {/* Sağ ok */}
+    <button
+      disabled={currentPage === totalPages}
+      onClick={() => setCurrentPage(currentPage + 1)}
+      className={`px-3 py-1 rounded border ${
+        currentPage === totalPages
+          ? "text-gray-400 border-gray-300 cursor-not-allowed"
+          : "text-gray-700 border-gray-400 hover:bg-gray-200"
+      }`}
+    >
+      →
+    </button>
+  </div>
+)}
+
 
                     {/* Yorum Ekle */}
-                    <div className="bg-gray-100 border border-gray-300 p-4 rounded-lg mt-4">
-                      <h3 className="font-semibold mb-2">Yorum Yap</h3>
+                   <div className="bg-gray-100 border border-gray-300 p-4 rounded-lg mt-4">
+  <h3 className="font-semibold mb-3 text-lg">Yorum Yap</h3>
 
-                      <input
-                        type="text"
-                        value={newReview.name}
-                        placeholder="Adınız"
-                        onChange={(e) =>
-                          setNewReview({ ...newReview, name: e.target.value })
-                        }
-                        className="w-full border border-gray-300 rounded-lg px-3 py-2 mb-2"
-                      />
+  {/* PUAN SEÇİMİ */}
+  <div className="flex gap-1 mb-3">
+    {[1,2,3,4,5].map((n) => (
+      <span
+        key={n}
+        onClick={() => setNewReview({ ...newReview, rating: n })}
+        className={`text-2xl cursor-pointer ${
+          n <= newReview.rating ? "text-orange-500" : "text-gray-300"
+        }`}
+      >
+        ★
+      </span>
+    ))}
+  </div>
 
-                      <textarea
-                        rows="3"
-                        placeholder="Yorumunuz"
-                        value={newReview.text}
-                        onChange={(e) =>
-                          setNewReview({ ...newReview, text: e.target.value })
-                        }
-                        className="w-full border border-gray-300 rounded-lg px-3 py-2 mb-2"
-                      />
+  {/* YORUM */}
+  <textarea
+    rows="3"
+    placeholder="Yorumunuz…"
+    value={newReview.text}
+    onChange={(e) => setNewReview({ ...newReview, text: e.target.value })}
+    className="w-full border border-gray-300 rounded-lg px-3 py-2 mb-3"
+  />
 
-                      <button
-                        onClick={async () => {
-                          const { error } = await supabase
-                            .from("comments")
-                            .insert([
-                              {
-                                product_id: Number(id),
-                                name: newReview.name,
-                                text: newReview.text,
-                                rating: newReview.rating,
-                              },
-                            ]);
+  <button
+  onClick={async () => {
+  if (!session) {
+    return window.dispatchEvent(
+      new CustomEvent("toast", {
+        detail: { type: "error", text: "Giriş yapmanız gerekiyor!" },
+      })
+    );
+  }
 
-                          if (!error) {
-                            setNewReview({ name: "", text: "", rating: 5 });
-                            window.dispatchEvent(
-                              new CustomEvent("toast", {
-                                detail: {
-                                  type: "success",
-                                  text: "Yorum eklendi!",
-                                },
-                              })
-                            );
-                          }
-                        }}
-                        className="w-full bg-orange-500 hover:bg-orange-600 text-white font-semibold py-2 rounded-lg"
-                      >
-                        Gönder
-                      </button>
-                    </div>
+  if (!newReview.text.trim()) {
+    return window.dispatchEvent(
+      new CustomEvent("toast", {
+        detail: { type: "error", text: "Lütfen yorum yazınız." },
+      })
+    );
+  }
+
+  // Profilden isim çek
+  const { data: prof } = await supabase
+    .from("profiles")
+    .select("full_name")
+    .eq("id", session.user.id)
+    .single();
+
+  const displayName = formatName(prof?.full_name);
+
+  const { error } = await supabase.from("comments").insert([
+    {
+      product_id: id,
+      user_id: session.user.id,
+      name: displayName, // Burak A.
+      text: newReview.text,
+      rating: newReview.rating,
+    },
+  ]);
+
+  if (!error) {
+    setNewReview({ name: "", text: "", rating: 5 });
+
+    window.dispatchEvent(
+      new CustomEvent("toast", {
+        detail: { type: "success", text: "Yorum eklendi!" },
+      })
+    );
+  }
+}}
+
+    className="w-full bg-orange-500 hover:bg-orange-600 text-white font-semibold py-2 rounded-lg"
+  >
+    Gönder
+  </button>
+</div>
+
                   </div>
                 )}
               </div>

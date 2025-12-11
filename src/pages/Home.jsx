@@ -38,6 +38,7 @@ export default function Home() {
  const navigate = useNavigate();
  const [newProducts, setNew] = useState([]);
   const [popularProducts, setPopular] = useState([]);
+const [activeIndex, setActiveIndex] = useState(0);
   // ⭐ Haftanın Fırsatı
 const [deal, setDeal] = useState(null);
 
@@ -216,12 +217,13 @@ const campaignRight = () =>
         style={{ height: SLIDER_HEIGHT }}
       >
         <Swiper
-          modules={[Autoplay, Pagination]}
-          autoplay={{ delay: 3500 }}
-          loop={true}
-          pagination={{ clickable: true }}
-          className="w-full h-full"
-        >
+  modules={[Autoplay]}
+  autoplay={{ delay: 3500 }}
+  loop={true}
+  onSlideChange={(swiper) => setActiveIndex(swiper.realIndex)}
+  className="w-full h-full"
+>
+
           {slides.map((s, i) => (
             <SwiperSlide key={i}>
               <div
@@ -237,6 +239,19 @@ const campaignRight = () =>
             </SwiperSlide>
           ))}
         </Swiper>
+
+          {/* ⭐ CUSTOM DOTS */}
+  <div className="absolute bottom-5 left-0 right-0 flex justify-center gap-2 z-50">
+    {slides.map((_, i) => (
+      <div
+        key={i}
+        className={`
+          h-2 rounded-full transition-all 
+          ${i === activeIndex ? "w-6 bg-black" : "w-2 bg-gray-300"}
+        `}
+      />
+    ))}
+  </div>
       </section>
 
       {/* ⭐ Slider alt yazı — sade */}
