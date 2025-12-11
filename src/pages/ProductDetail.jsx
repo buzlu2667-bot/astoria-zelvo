@@ -59,6 +59,7 @@ export default function ProductDetail() {
   const [loading, setLoading] = useState(true);
   const [tab, setTab] = useState("desc");
   const [reviews, setReviews] = useState([]);
+  
 
 // ⭐ YORUM SAYFALAMA
 const [currentPage, setCurrentPage] = useState(1);
@@ -71,7 +72,8 @@ const currentReviews = reviews.slice(indexOfFirstReview, indexOfLastReview);
 
 const totalPages = Math.ceil(reviews.length / reviewsPerPage);
 
-
+const touchStartX = useRef(0);
+const touchEndX = useRef(0);
   const [related, setRelated] = useState([]);
 
   const [activeIndex, setActiveIndex] = useState(0);
@@ -300,28 +302,39 @@ useEffect(() => {
   </div>
 
   {/* --- MOBİL SLIDER (KAYDIRMALI) --- */}
-  <div
-    className="lg:hidden flex overflow-x-auto snap-x snap-mandatory no-scrollbar"
-    ref={autoScrollRef}
-    onScroll={(e) => {
-      const scrollX = e.target.scrollLeft;
-      const width = e.target.clientWidth;
-      const index = Math.round(scrollX / width);
+  {/* --- MOBİL SWIPE SLIDER (scroll YOK!) --- */}
+<div
+  className="lg:hidden w-full relative"
+  onTouchStart={(e) => {
+    touchStartX.current = e.touches[0].clientX;
+  }}
+  onTouchEnd={(e) => {
+    touchEndX.current = e.changedTouches[0].clientX;
 
-      setActiveIndex(index);
-      if (images[index]) setMainImage(images[index]);
-    }}
-  >
-    {images.map((src, i) => (
-      <img
-        key={i}
-        src={src}
-        className="w-full h-auto object-contain shrink-0 snap-center"
-        style={{ aspectRatio: "3/4" }}
-        onClick={() => setZoomOpen(true)}
-      />
-    ))}
-  </div>
+    const diff = touchStartX.current - touchEndX.current;
+
+    // Sağdan sola kaydırdı ➜ Sonraki resim
+    if (diff > 40) {
+      const next = activeIndex === images.length - 1 ? 0 : activeIndex + 1;
+      setActiveIndex(next);
+      setMainImage(images[next]);
+    }
+
+    // Soldan sağa kaydırdı ➜ Önceki resim
+    if (diff < -40) {
+      const prev = activeIndex === 0 ? images.length - 1 : activeIndex - 1;
+      setActiveIndex(prev);
+      setMainImage(images[prev]);
+    }
+  }}
+>
+  <img
+    src={mainImage}
+    className="w-full h-auto object-contain rounded-xl"
+    style={{ aspectRatio: "3/4" }}
+  />
+</div>
+
 
   {/* MOBİL DOTS */}
   {images.length > 1 && (
