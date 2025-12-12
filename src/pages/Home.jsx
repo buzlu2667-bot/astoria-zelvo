@@ -42,7 +42,7 @@ export default function Home() {
   const [popularProducts, setPopular] = useState([]);
 const [activeIndex, setActiveIndex] = useState(0);
 const [homeCats, setHomeCats] = useState([]);
-
+const [pageLoading, setPageLoading] = useState(true);
   // ⭐ Haftanın Fırsatı
 const [deal, setDeal] = useState(null);
 
@@ -59,7 +59,13 @@ useEffect(() => {
   loadDeal();
 }, []);
 
-
+useEffect(() => {
+  Promise.all([
+    loadDeal(),
+    loadCampaignsFull(),
+    loadData(),
+  ]).finally(() => setPageLoading(false));
+}, []);
 
 
 // ⭐ TRENDYOL Çok Ürünlü Kampanya
