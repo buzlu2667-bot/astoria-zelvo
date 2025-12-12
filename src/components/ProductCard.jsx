@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useFavorites } from "../context/FavoritesContext";
-
+import { Hourglass } from "lucide-react";
 export default function ProductCard({ product }) {
   const navigate = useNavigate();
   const { addFav, removeFav, isFav } = useFavorites();
@@ -47,7 +47,14 @@ export default function ProductCard({ product }) {
       "
     >
       {/* ------------------ IMAGE BOX ------------------ */}
-      <div className="relative w-full h-[210px] rounded-lg overflow-hidden bg-gray-100">
+     <div className="
+  relative w-full
+  h-[210px]
+  md:h-[240px]
+  lg:h-[260px]
+  rounded-lg overflow-hidden bg-white
+">
+
 
         {/* Yeni Ürün Etiketi */}
         {product.is_new && (
@@ -59,11 +66,15 @@ export default function ProductCard({ product }) {
       
 
         {/* ÜRÜN FOTO */}
-        <img
-          src={imageSrc}
-          draggable="false"
-          className="w-full h-full object-cover"
-        />
+      <img
+  src={imageSrc || "/products/default.png"}
+  loading="lazy"
+  decoding="async"
+  draggable="false"
+  onError={(e) => (e.currentTarget.src = "/products/default.png")}
+className="w-full h-full object-contain"
+/>
+
 
         {/* ❤️ Favori */}
         <button
@@ -135,41 +146,85 @@ export default function ProductCard({ product }) {
         {product.title}
       </p>
 
-      {/* ------------------ STOK ------------------ */}
-      <div className="text-[13px] mt-1">
-        {product.stock <= 0 ? (
-          <span className="text-red-500 font-semibold">Tükendi</span>
-        ) : product.stock < 10 ? (
-          <span className="text-yellow-600 font-semibold">Az Kaldı</span>
-        ) : (
-          <span className="text-green-600 font-semibold">Stokta</span>
-        )}
-      </div>
+      {/* STOK */}
+<div className="mt-1">
+  {Number(product.stock ?? 0) <= 0 ? (
+    <span className="
+      inline-flex items-center gap-1
+      text-[12px] font-bold
+      text-red-600
+      bg-red-50
+      px-2 py-[2px]
+      rounded-md
+      border border-red-200
+    ">
+      Tükendi
+    </span>
+  ) : Number(product.stock) < 10 ? (
+    <span className="
+      inline-flex items-center gap-1
+      text-[12px] font-semibold
+      text-orange-700
+      bg-orange-50
+      px-2 py-[2px]
+      rounded-md
+      border border-orange-200
+    ">
+      <Hourglass className="w-3.5 h-3.5 animate-hourglass" />
+      Son Adetler
+    </span>
+  ) : (
+    <span className="
+      inline-flex items-center gap-1
+      text-[12px] font-medium
+      text-emerald-700
+      bg-emerald-50
+      px-2 py-[2px]
+      rounded-md
+      border border-emerald-200
+    ">
+      Stokta
+    </span>
+  )}
+</div>
+
 
     
      {/* ------------------ FİYAT BLOĞU (YAN YANA ETİKETLİ) ------------------ */}
-<div className="mt-3 flex items-center gap-2">
+{/* FİYAT */}
+<div className="mt-3 flex flex-col gap-1">
 
-  {/* Eski Fiyat */}
-  {hasDiscount && (
-    <span className="text-gray-400 line-through text-sm">
-      ₺{old.toLocaleString("tr-TR")}
-    </span>
-  )}
+  {/* ÜST SATIR: İNDİRİM + ESKİ FİYAT */}
+  <div className="flex items-center gap-2 min-h-[24px]">
+    {hasDiscount ? (
+      <>
+        <span className="
+          text-xs
+          bg-red-100
+          text-red-600
+          px-2 py-[2px]
+          rounded-lg
+          font-bold
+        ">
+          %{discount}
+        </span>
 
-  {/* Yeni Fiyat */}
-  <span className="text-gray-900 font-bold text-lg">
+        <span className="text-gray-400 line-through text-sm">
+          ₺{old.toLocaleString("tr-TR")}
+        </span>
+      </>
+    ) : (
+      <span className="opacity-0">placeholder</span>
+    )}
+  </div>
+
+  {/* ALT SATIR: YENİ FİYAT (ANA ODAK) */}
+  <span className="text-gray-900 font-extrabold text-xl leading-tight">
     ₺{price.toLocaleString("tr-TR")}
   </span>
 
-  {/* % Etiketi - FİYAT YANINA ALINDI */}
-  {hasDiscount && (
-    <span className="bg-red-600 text-white text-xs font-semibold px-2 py-[2px] rounded-md">
-      %{discount}
-    </span>
-  )}
-
 </div>
+
 
     </div>
   );

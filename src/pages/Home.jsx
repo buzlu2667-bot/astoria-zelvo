@@ -6,7 +6,7 @@ import { Autoplay, Pagination } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/pagination";
 import { useNavigate } from "react-router-dom";
-
+import ProductCardVertical from "../components/ProductCardVertical";
 
 import {
   Flame,
@@ -481,47 +481,20 @@ const activeCat = homeCats.find((c) => c.slug === openCat);
               pb-4
             "
           >
-            {c.items.map((item) => (
-              <div
-                key={item.id}
-                onClick={() => navigate(`/product/${item.products.id}`)}
-                className="
-                  shrink-0 min-w-[55%] sm:min-w-[220px] max-w-[260px]
-                  bg-white rounded-xl shadow cursor-pointer
-                "
-              >
-                <img
-                  src={item.products.main_img}
-                  className="w-full h-48 object-cover rounded-t-xl"
-                />
+           {c.items.map((item) => (
+  <div
+  key={item.id}
+  className="
+    shrink-0
+    w-[160px]        /* 📱 mobil = ince uzun */
+    sm:w-[240px]     /* 🖥️ pc */
+  "
+>
+  <ProductCardVertical p={item.products} />
+</div>
 
-                <div className="p-3">
-                  <p className="font-semibold text-gray-800 truncate">
-                    {item.products.title}
-                  </p>
+))}
 
-                  {item.products.old_price > item.products.price && (
-                    <div className="flex gap-2 items-center">
-                      <span className="text-gray-400 line-through text-sm">
-                        {item.products.old_price.toLocaleString("tr-TR")} ₺
-                      </span>
-
-                      <span className="bg-red-500 text-white text-xs px-2 py-0.5 rounded-full">
-                        %{Math.round(
-                          ((item.products.old_price - item.products.price) /
-                            item.products.old_price) *
-                            100
-                        )}
-                      </span>
-                    </div>
-                  )}
-
-                  <p className="text-orange-500 font-bold text-lg">
-                    {item.products.price.toLocaleString("tr-TR")} ₺
-                  </p>
-                </div>
-              </div>
-            ))}
           </div>
         </div>
       </div>
@@ -566,42 +539,20 @@ const activeCat = homeCats.find((c) => c.slug === openCat);
         ref={recentRef}
         className="flex gap-4 pb-4 overflow-x-auto whitespace-nowrap scroll-smooth no-scrollbar"
       >
-        {recent.map((item) => (
-          <div
-            key={item.id}
-            className="shrink-0 w-[150px] sm:w-[200px] 
-            bg-white border border-gray-200 rounded-xl shadow-sm 
-            hover:shadow-md transition cursor-pointer"
-            onClick={() => navigate(`/product/${item.id}`)}
-          >
-            <img
-              src={item.main_img}
-              className="w-full h-[150px] object-cover rounded-t-xl"
-            />
+      {recent.map((item) => (
+ <div
+  key={item.id}
+  className="
+    shrink-0
+    w-[160px]        /* 📱 mobil = ince uzun */
+    sm:w-[240px]     /* 🖥️ pc = kategori kartı */
+  "
+>
+  <ProductCardVertical p={item} />
+</div>
 
-            <div className="p-2">
-              <p className="text-sm font-semibold text-gray-700 truncate">
-                {item.title}
-              </p>
+))}
 
-              {item.old_price && item.old_price > item.price && (
-                <div className="flex items-center gap-2">
-                  <span className="text-gray-400 line-through text-xs">
-                    {item.old_price.toLocaleString("tr-TR")} ₺
-                  </span>
-
-                  <span className="bg-red-500 text-white text-xs font-bold px-2 py-0.5 rounded-full">
-                    %{Math.round(((item.old_price - item.price) / item.old_price) * 100)}
-                  </span>
-                </div>
-              )}
-
-              <p className="text-orange-500 font-bold text-sm mt-1">
-                {item.price.toLocaleString("tr-TR")} ₺
-              </p>
-            </div>
-          </div>
-        ))}
       </div>
     </div>
   </div>
@@ -643,43 +594,20 @@ const activeCat = homeCats.find((c) => c.slug === openCat);
         ref={suggestedRef}
         className="flex gap-4 pb-4 overflow-x-auto whitespace-nowrap scroll-smooth no-scrollbar"
       >
-        {suggested.map((item) => (
-          <div
-            key={item.id}
-            className="shrink-0 w-[150px] sm:w-[200px] bg-white border 
-                    border-gray-200 rounded-xl shadow-sm hover:shadow-md 
-                    transition cursor-pointer"
-            onClick={() => navigate(`/product/${item.id}`)}
-          >
-            <img
-              src={item.main_img}
-              className="w-full h-[150px] object-cover rounded-t-xl"
-            />
+       {suggested.map((item) => (
+  <div
+  key={item.id}
+  className="
+    shrink-0
+    w-[160px]        /* 📱 mobil = ince uzun */
+    sm:w-[240px]     /* 🖥️ pc */
+  "
+>
+  <ProductCardVertical p={item} />
+</div>
 
-            <div className="p-2">
-              <p className="text-sm font-semibold text-gray-700 truncate">
-                {item.title}
-              </p>
+))}
 
-              {/* İndirim etiketi */}
-              {item.old_price && item.old_price > item.price && (
-                <div className="flex items-center gap-2">
-                  <span className="text-gray-400 line-through text-xs">
-                    {item.old_price.toLocaleString("tr-TR")} ₺
-                  </span>
-
-                  <span className="bg-red-500 text-white text-xs font-bold px-2 py-0.5 rounded-full">
-                    %{Math.round(((item.old_price - item.price) / item.old_price) * 100)}
-                  </span>
-                </div>
-              )}
-
-              <p className="text-orange-500 font-bold text-sm mt-1">
-                {item.price.toLocaleString("tr-TR")} ₺
-              </p>
-            </div>
-          </div>
-        ))}
       </div>
 
     </div>

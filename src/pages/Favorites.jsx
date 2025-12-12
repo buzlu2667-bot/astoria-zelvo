@@ -3,7 +3,7 @@ import { useFavorites } from "../context/FavoritesContext";
 import { useCart } from "../context/CartContext";
 import { ShoppingCart, Trash2, Heart } from "lucide-react";
 import { supabase } from "../lib/supabaseClient";
-
+import { Hourglass } from "lucide-react";
 const TRY = (n) =>
   Number(n || 0).toLocaleString("tr-TR", {
     style: "currency",
@@ -94,16 +94,47 @@ export default function Favorites() {
                 {p.title || p.name}
               </p>
 
-              {/* STOK */}
-              <p className="text-xs mt-1 font-medium">
-                {Number(p.stock) <= 0 ? (
-                  <span className="text-red-500">Tükendi ❌</span>
-                ) : Number(p.stock) < 10 ? (
-                  <span className="text-orange-500">Az Kaldı ⚠️</span>
-                ) : (
-                  <span className="text-green-600">Stokta ✔</span>
-                )}
-              </p>
+            {/* STOK */}
+<div className="mt-1">
+  {p.stock <= 0 ? (
+    <span className="
+      inline-flex items-center gap-1
+      text-[12px] font-bold
+      text-red-600
+      bg-red-50
+      px-2 py-[2px]
+      rounded-md
+      border border-red-200
+    ">
+      Tükendi
+    </span>
+  ) : p.stock < 10 ? (
+    <span className="
+      inline-flex items-center gap-1
+      text-[12px] font-semibold
+      text-orange-700
+      bg-orange-50
+      px-2 py-[2px]
+      rounded-md
+      border border-orange-200
+    ">
+<Hourglass className="w-3.5 h-3.5 animate-hourglass" />
+      Son Adetler
+    </span>
+  ) : (
+    <span className="
+      inline-flex items-center gap-1
+      text-[12px] font-medium
+      text-emerald-700
+      bg-emerald-50
+      px-2 py-[2px]
+      rounded-md
+      border border-emerald-200
+    ">
+      Stokta
+    </span>
+  )}
+</div>
 
               {/* FİYAT */}
               <div className="mt-3">

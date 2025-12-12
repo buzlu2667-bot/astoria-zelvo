@@ -7,7 +7,7 @@ import ProductCardCart from "../components/ProductCardCart";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { supabase } from "../lib/supabaseClient"; // Eğer yoksa ekle
 import { useRef } from "react";
-
+import ProductCardVertical from "../components/ProductCardVertical";
 
 export default function Cart() {
   const { cart, inc, dec, removeFromCart, total, clearCart } = useCart();
@@ -225,42 +225,22 @@ useEffect(() => {
         ref={suggestedRef}
         className="flex gap-4 pb-4 overflow-x-auto whitespace-nowrap scroll-smooth no-scrollbar"
       >
-        {suggested.map((item) => (
-          <div
-            key={item.id}
-            onClick={() => nav(`/product/${item.id}`)}
-            className="shrink-0 w-[180px] sm:w-[220px]
-            bg-white border border-gray-200 rounded-xl shadow-sm hover:shadow-md
-            transition cursor-pointer"
-          >
-            <img
-              src={item.main_img}
-              className="w-full h-[160px] object-cover rounded-t-xl"
-            />
+      {suggested.map((item) => (
+  <div
+    key={item.id}
+    className="
+      shrink-0
+      w-[160px]        /* 📱 mobil = ince uzun */
+      sm:w-[220px]     /* 🖥️ desktop */
+    "
+  >
+    <ProductCardVertical
+      p={item}
+      hideCartButton   /* 👈 birazdan anlatıcam */
+    />
+  </div>
+))}
 
-            <div className="p-2">
-              <p className="text-sm font-semibold text-gray-700 truncate">
-                {item.title}
-              </p>
-
-              {item.old_price && item.old_price > item.price && (
-                <div className="flex items-center gap-2">
-                  <span className="text-gray-400 line-through text-xs">
-                    {item.old_price.toLocaleString("tr-TR")} ₺
-                  </span>
-
-                  <span className="bg-red-500 text-white text-xs font-bold px-2 py-0.5 rounded-full">
-                    %{Math.round(((item.old_price - item.price) / item.old_price) * 100)}
-                  </span>
-                </div>
-              )}
-
-              <p className="text-orange-500 font-bold text-sm mt-1">
-                {item.price.toLocaleString("tr-TR")} ₺
-              </p>
-            </div>
-          </div>
-        ))}
       </div>
 
     </div>

@@ -1,5 +1,5 @@
 import { Minus, Plus, Trash2 } from "lucide-react";
-
+import { Hourglass } from "lucide-react";
 export default function ProductCardCart({ item, inc, dec, remove }) {
   const price = Number(item.price ?? 0);
   const old = Number(item.old_price ?? 0);
@@ -65,16 +65,49 @@ export default function ProductCardCart({ item, inc, dec, remove }) {
         {item.title || item.name}
       </p>
 
-      {/* STOK */}
-      <div className="text-[13px] mt-1">
-        {item.stock <= 0 ? (
-          <span className="text-red-500 font-semibold">Tükendi</span>
-        ) : item.stock < 10 ? (
-          <span className="text-yellow-600 font-semibold">Az Kaldı</span>
-        ) : (
-          <span className="text-green-600 font-semibold">Stokta</span>
-        )}
-      </div>
+   {/* STOK */}
+<div className="mt-1">
+  {item.stock <= 0 ? (
+    <span className="
+      inline-flex items-center gap-1
+      text-[12px] font-bold
+      text-red-600
+      bg-red-50
+      px-2 py-[2px]
+      rounded-md
+      border border-red-200
+    ">
+      Tükendi
+    </span>
+  ) : item.stock < 10 ? (
+    <span className="
+      inline-flex items-center gap-1
+      text-[12px] font-semibold
+      text-orange-700
+      bg-orange-50
+      px-2 py-[2px]
+      rounded-md
+      border border-orange-200
+    ">
+      <Hourglass className="w-3.5 h-3.5 animate-hourglass" />
+      Son Adetler
+    </span>
+  ) : (
+    <span className="
+      inline-flex items-center gap-1
+      text-[12px] font-medium
+      text-emerald-700
+      bg-emerald-50
+      px-2 py-[2px]
+      rounded-md
+      border border-emerald-200
+    ">
+      Stokta
+    </span>
+  )}
+</div>
+
+
 
       {/* FİYAT — ÜRÜN KARTIYLA AYNI */}
       <div className="mt-3 flex items-center gap-2">

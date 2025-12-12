@@ -750,6 +750,41 @@ body.login-page {
 html {
   scroll-behavior: auto !important;
 }
+/* 🖥️ DESKTOP IMAGE SHARP KILLER */
+@media (min-width: 1024px) {
+  .product-img {
+    filter: blur(0.15px) !important;
+    transform: translateZ(0);
+  }
+}
+@keyframes hourglass-sway {
+  0%   { transform: rotate(0deg); }
+  25%  { transform: rotate(10deg); }
+  50%  { transform: rotate(0deg); }
+  75%  { transform: rotate(-10deg); }
+  100% { transform: rotate(0deg); }
+}
+
+.animate-hourglass {
+  display: inline-block;        /* 🔥 EN ÖNEMLİ SATIR */
+  transform-origin: center;     /* 🔥 */
+  animation: hourglass-sway 1.4s ease-in-out infinite;
+}
+@keyframes title-scroll {
+  0% {
+    transform: translateX(0%);
+  }
+  10% {
+    transform: translateX(0%);
+  }
+  100% {
+    transform: translateX(-100%);
+  }
+}
+
+.animate-title-scroll {
+  animation: title-scroll 8s linear infinite;
+}
 
 
 

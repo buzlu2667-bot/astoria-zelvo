@@ -7,7 +7,7 @@ import { Heart, ZoomIn, ChevronLeft, ChevronRight } from "lucide-react";
 import { useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { useSession } from "../context/SessionContext";
-
+import ProductCardVertical from "../components/ProductCardVertical";
 
 function formatName(name) {
   if (!name) return "Kullanıcı";
@@ -57,6 +57,7 @@ export default function ProductDetail() {
 
   const [p, setP] = useState(null);
   const [loading, setLoading] = useState(true);
+  const hasReloadedRef = useRef(false);
   const [tab, setTab] = useState("desc");
   const [reviews, setReviews] = useState([]);
   
@@ -146,11 +147,6 @@ const scrollRightRelated = () =>
         )
         .subscribe();
 
-      window.addEventListener("focus", () => window.location.reload());
-      document.addEventListener("visibilitychange", () =>
-        !document.hidden && window.location.reload()
-      );
-
       return () => {
         alive = false;
         supabase.removeChannel(sub);
@@ -161,7 +157,23 @@ const scrollRightRelated = () =>
   }, [id]);
 
 
-  
+  useEffect(() => {
+  const handleVisibility = () => {
+    if (
+      document.visibilityState === "visible" &&
+      !hasReloadedRef.current &&
+      !p && // ürün hala yoksa
+      !loading // zaten yüklenmiyorsa
+    ) {
+      hasReloadedRef.current = true;
+      window.location.reload();
+    }
+  };
+
+  document.addEventListener("visibilitychange", handleVisibility);
+  return () => document.removeEventListener("visibilitychange", handleVisibility);
+}, [p, loading]);
+
 
   // Görseller
   useEffect(() => {
@@ -445,19 +457,22 @@ useEffect(() => {
             <div className="mt-6 flex flex-col sm:flex-row gap-3">
               {/* SEPETE EKLE */}
               <button
-                onClick={() => {
-                  addToCart({
-                    ...p,
-                    selectedColor,
-                    image_url: p.main_img || p.gallery?.[0],
-                  });
+               onClick={async () => {
+  const existed = await addToCart({
+    ...p,
+    selectedColor,
+    image_url: p.main_img || p.gallery?.[0],
+  });
 
-                  window.dispatchEvent(
-                    new CustomEvent("toast", {
-                      detail: { type: "success", text: "Sepete eklendi!" },
-                    })
-                  );
-                }}
+  window.dispatchEvent(
+    new CustomEvent("toast", {
+      detail: existed
+        ? { type: "info", text: "Ürün adedi artırıldı!" }
+        : { type: "success", text: "Sepete eklendi!" },
+    })
+  );
+}}
+
                 className="w-full sm:flex-1 bg-orange-500 hover:bg-orange-600 text-white font-semibold py-3 rounded-lg"
               >
                 Sepete Ekle
@@ -752,57 +767,15 @@ useEffect(() => {
       ref={relatedRef}
       className="flex gap-4 overflow-x-auto no-scrollbar px-2 pb-4 scroll-smooth"
     >
-      {related.map((item, i) => {
-        const imageUrl =
-          item.main_img ||
-          item.img_url ||
-          item.gallery?.[0] ||
-          "/placeholder.png";
+   {related.map((item) => (
+  <div key={item.id} className="flex-shrink-0 w-[160px] sm:w-[200px]">
+    <ProductCardVertical
+      p={item}
+      hideCartButton={true}   // 🔥 DETAYDAYIZ, SEPET BUTONU OLMASIN
+    />
+  </div>
+))}
 
-        const hasDiscount = item.old_price > item.price;
-        const discountRate = hasDiscount
-          ? Math.round(((item.old_price - item.price) / item.old_price) * 100)
-          : 0;
-
-        return (
-          <Link
-            key={i}
-            to={`/product/${item.id}`}
-            className="flex-shrink-0 w-[150px] sm:w-[180px] bg-white border border-gray-200 rounded-xl shadow-sm hover:shadow-md transition"
-          >
-            <div className="relative">
-              {hasDiscount && (
-                <span className="absolute top-2 left-2 bg-red-500 text-white text-xs font-bold px-2 py-1 rounded-full shadow">
-                  %{discountRate} İndirim
-                </span>
-              )}
-
-              <img
-                src={imageUrl}
-                className="w-full h-[160px] object-cover rounded-t-xl"
-              />
-            </div>
-
-            <div className="p-3 text-center">
-              <p className="text-sm font-semibold text-gray-700 truncate">
-                {item.title}
-              </p>
-
-              <div className="mt-1">
-                {hasDiscount && (
-                  <span className="text-gray-400 line-through text-xs mr-1">
-                    {TRY(item.old_price)}
-                  </span>
-                )}
-
-                <span className="text-orange-500 font-bold text-sm">
-                  {TRY(item.price)}
-                </span>
-              </div>
-            </div>
-          </Link>
-        );
-      })}
     </div>
   </div>
 )}

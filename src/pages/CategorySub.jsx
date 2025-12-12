@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { supabase } from "../lib/supabaseClient";
-import ProductCard from "../components/ProductCard";
+import ProductCardVertical from "../components/ProductCardVertical";
 
 export default function CategorySub() {
   const { mainSlug, subSlug } = useParams();
@@ -76,9 +76,9 @@ export default function CategorySub() {
 
       {/* ÜRÜNLER */}
       {products.length > 0 ? (
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-7">
+     <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-5">
           {products.map((p) => (
-            <ProductCard key={p.id} product={p} />
+      <ProductCardVertical key={p.id} p={p} />
           ))}
         </div>
       ) : (

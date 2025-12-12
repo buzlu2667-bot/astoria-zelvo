@@ -189,7 +189,7 @@ if (!user) {
 
   localStorage.setItem("elitemart_cart", JSON.stringify(updated));
   setCart(updated);
-  return;
+ return !!exist;
 }
 
 
@@ -226,6 +226,7 @@ if (!user) {
   }
 
   await loadDBCart(user.id);
+  return !!exist;
 };
 
   // ---------------------------------------------------------
