@@ -234,35 +234,52 @@ const activeCat = homeCats.find((c) => c.slug === openCat);
   onClick={() =>
     setOpenCat(openCat === "Katagoriler" ? null : "Katagoriler")
   }
-  className={`flex items-center gap-2 px-5 py-2.5 rounded-full font-semibold border
-    ${openCat === "Katagoriler"
-      ? "bg-black text-white border-black"
-      : "bg-gray-50 text-gray-800 border-gray-200 hover:bg-gray-100"}
+  className={`
+    flex items-center gap-1.5
+    px-3 py-1.5 text-sm
+    sm:px-5 sm:py-2.5 sm:text-base
+    rounded-full font-semibold border transition
+    ${
+      openCat === "Katagoriler"
+        ? "bg-black text-white border-black"
+        : "bg-gray-50 text-gray-800 border-gray-200 hover:bg-gray-100"
+    }
   `}
 >
   Kadın Aksesuar
   <ChevronDown
-    className={`w-4 h-4 transition ${openCat === "Katagoriler" ? "rotate-180" : ""}`}
+    className={`w-3.5 h-3.5 sm:w-4 sm:h-4 transition ${
+      openCat === "Katagoriler" ? "rotate-180" : ""
+    }`}
   />
 </button>
 
 
 
 
+
     {/* ================= Petshop ================= */}
-    <button
+   <button
   onClick={() =>
     setOpenCat(openCat === "petshop" ? null : "petshop")
   }
-  className={`flex items-center gap-2 px-5 py-2.5 rounded-full font-semibold border
-    ${openCat === "petshop"
-      ? "bg-black text-white border-black"
-      : "bg-gray-50 text-gray-800 border-gray-200 hover:bg-gray-100"}
+  className={`
+    flex items-center gap-1.5
+    px-3 py-1.5 text-sm
+    sm:px-5 sm:py-2.5 sm:text-base
+    rounded-full font-semibold border transition
+    ${
+      openCat === "petshop"
+        ? "bg-black text-white border-black"
+        : "bg-gray-50 text-gray-800 border-gray-200 hover:bg-gray-100"
+    }
   `}
 >
   Petshop
   <ChevronDown
-    className={`w-4 h-4 transition ${openCat === "petshop" ? "rotate-180" : ""}`}
+    className={`w-3.5 h-3.5 sm:w-4 sm:h-4 transition ${
+      openCat === "petshop" ? "rotate-180" : ""
+    }`}
   />
 </button>
 
