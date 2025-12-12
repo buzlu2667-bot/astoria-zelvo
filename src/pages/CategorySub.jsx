@@ -68,7 +68,7 @@ export default function CategorySub() {
     );
 
   return (
-    <div className="max-w-7xl mx-auto px-4 py-10 text-white">
+  <div className="max-w-7xl mx-auto px-4 pt-[110px] pb-10 text-white">
       {/* BAŞLIK */}
       <h1 className="text-3xl font-bold mb-6 text-yellow-400">
         {subCat?.title}

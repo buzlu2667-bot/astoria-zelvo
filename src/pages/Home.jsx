@@ -7,6 +7,7 @@ import "swiper/css";
 import "swiper/css/pagination";
 import { useNavigate } from "react-router-dom";
 
+
 import {
   Flame,
   Sparkles,
@@ -16,7 +17,8 @@ import {
   ShoppingBag,
   ChevronLeft,
   ChevronRight,
-  FlameKindling
+  FlameKindling,
+  ChevronDown
 } from "lucide-react";
 
 const ICONS = {
@@ -39,6 +41,8 @@ export default function Home() {
  const [newProducts, setNew] = useState([]);
   const [popularProducts, setPopular] = useState([]);
 const [activeIndex, setActiveIndex] = useState(0);
+const [homeCats, setHomeCats] = useState([]);
+
   // ⭐ Haftanın Fırsatı
 const [deal, setDeal] = useState(null);
 
@@ -99,6 +103,7 @@ useEffect(() => {
   const [recent, setRecent] = useState([]);
   const [suggested, setSuggested] = useState([]);
 
+const [openCat, setOpenCat] = useState(null);
 
 
 
@@ -150,6 +155,7 @@ const campaignRight = () =>
 }, []);
 
 
+
   function chooseSlideImage(s) {
     const w = window.innerWidth;
     const h = window.innerHeight;
@@ -164,16 +170,28 @@ const campaignRight = () =>
   }
 
   useEffect(() => {
-    async function loadCats() {
-      const { data } = await supabase
-        .from("main_categories")
-        .select("*")
-        .order("sort_index", { ascending: true });
+  async function loadHomeCats() {
+    const { data: mains } = await supabase
+      .from("main_categories")
+      .select("id, title, slug")
+      .order("title");
 
-      setCategories(data || []);
-    }
-    loadCats();
-  }, []);
+    const { data: subs } = await supabase
+      .from("sub_categories")
+      .select("id, title, slug, main_id");
+
+    const merged = mains.map((m) => ({
+      ...m,
+      subs: subs.filter((s) => s.main_id === m.id),
+    }));
+
+    setHomeCats(merged);
+  }
+
+  loadHomeCats();
+}, []);
+
+
 
 
 
@@ -186,30 +204,99 @@ const campaignRight = () =>
     { desktop: "/hero/slide5.jpg", tablet: "/hero/slide5-tablet.jpg", mobile: "/hero/slide5-mobil.jpg", url: "/category/kadın/canta" },
     { desktop: "/hero/slide6.jpg", tablet: "/hero/slide6-tablet.jpg", mobile: "/hero/slide6-mobil.jpg", url: "/category/petshop/mama" },
   ];
+const activeCat = homeCats.find((c) => c.slug === openCat);
 
   return (
     <div className="min-h-screen bg-white text-gray-900">
+{/* ⭐ HOME KATEGORİ BAR — MODERN FINAL */}
+<div className="w-full px-6 py-4 mt-[80px] bg-white border-b border-gray-200">
 
-      {/* ⭐ KATEGORİ BAR — SADE */}
-      <div className="
-        w-full flex gap-3 px-4 py-3
-        bg-white border-b border-gray-200
-        overflow-x-auto whitespace-nowrap no-scrollbar
-      ">
-        <button
-          onClick={() => navigate('/category/Katagoriler')}
-          className="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200"
-        >
-          Kadın Aksesuar
-        </button>
+  {/* ÜST KATEGORİLER */}
+ <div
+  className="
+    flex gap-3
+    overflow-x-auto
+    whitespace-nowrap
+    no-scrollbar
+    sm:overflow-visible
+  "
+>
 
+
+   {/* ================= Kadın Aksesuar ================= */}
+<button
+  onClick={() =>
+    setOpenCat(openCat === "Katagoriler" ? null : "Katagoriler")
+  }
+  className={`flex items-center gap-2 px-5 py-2.5 rounded-full font-semibold border
+    ${openCat === "Katagoriler"
+      ? "bg-black text-white border-black"
+      : "bg-gray-50 text-gray-800 border-gray-200 hover:bg-gray-100"}
+  `}
+>
+  Kadın Aksesuar
+  <ChevronDown
+    className={`w-4 h-4 transition ${openCat === "Katagoriler" ? "rotate-180" : ""}`}
+  />
+</button>
+
+
+
+
+    {/* ================= Petshop ================= */}
+    <button
+  onClick={() =>
+    setOpenCat(openCat === "petshop" ? null : "petshop")
+  }
+  className={`flex items-center gap-2 px-5 py-2.5 rounded-full font-semibold border
+    ${openCat === "petshop"
+      ? "bg-black text-white border-black"
+      : "bg-gray-50 text-gray-800 border-gray-200 hover:bg-gray-100"}
+  `}
+>
+  Petshop
+  <ChevronDown
+    className={`w-4 h-4 transition ${openCat === "petshop" ? "rotate-180" : ""}`}
+  />
+</button>
+
+  </div>
+
+  {/* ⬇️ ALT KATEGORİLER — MODERN LİSTE */}
+  {openCat && activeCat && (
+  <div className="mt-4 bg-gray-50 rounded-xl border p-4">
+    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
+      {activeCat.subs.map((s) => (
         <button
-          onClick={() => navigate('/category/petshop')}
-          className="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200"
+          key={s.id}
+          onClick={() => {
+            setOpenCat(null);
+            navigate(`/category/${activeCat.slug}/${s.slug}`);
+          }}
+          className="
+            group w-full text-left
+            px-4 py-3 rounded-xl
+            bg-white border border-gray-200
+            hover:border-black hover:shadow-md
+            transition-all duration-200
+            flex items-center justify-between
+          "
         >
-          Petshop
+          <span className="text-sm font-medium text-gray-800">
+            {s.title}
+          </span>
+          <ChevronRight className="w-4 h-4 text-gray-400 group-hover:text-black transition" />
         </button>
-      </div>
+      ))}
+    </div>
+  </div>
+)}
+
+</div>
+
+
+
+
 
       {/* 🚨 SLIDER BLOĞUNA DOKUNMADIM — 1 satır bile değişmedi */}
       <section

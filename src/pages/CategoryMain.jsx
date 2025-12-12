@@ -56,8 +56,11 @@ export default function CategoryMain() {
     );
 
   return (
-    <div className="p-6">
-      <h1 className="text-3xl font-bold mb-4 text-gray-800">{main?.title}</h1>
+  <div className="px-6 pt-[110px] pb-6">
+   <h1 className="text-3xl font-bold mb-4 text-gray-800">
+  {main?.title} Kategorileri
+</h1>
+
 
       {/* 🔥 YENİ TRENDYOL TİPİ DİKEY KART TASARIMI */}
       <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-6 mt-6">
