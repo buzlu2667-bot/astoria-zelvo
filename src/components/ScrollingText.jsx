@@ -1,51 +1,51 @@
-// 📄 src/components/ScrollingText.jsx
 import { useEffect, useRef } from "react";
 
 export default function ScrollingText({ data }) {
   const textRef = useRef(null);
   const containerRef = useRef(null);
 
-  useEffect(() => {
-    if (!textRef.current || !containerRef.current) return;
+ useEffect(() => {
+  if (!textRef.current || !containerRef.current) return;
 
-    let pos = containerRef.current.offsetWidth;
-    const speed = data.speed || 1;
-    let rafId;
+  let x = containerRef.current.offsetWidth; // ✅ sağdan başlasın
+  let rafId;
+  let lastTime = performance.now();
 
-    function loop() {
-      pos -= speed;
-      textRef.current.style.transform = `translateX(${pos}px)`;
+  const speed = Number(data.speed) || 1; // panel hızı aynen
 
-      if (pos < -textRef.current.offsetWidth) {
-        pos = containerRef.current.offsetWidth;
-      }
-      rafId = requestAnimationFrame(loop);
+  const animate = (now) => {
+    const delta = now - lastTime;
+    lastTime = now;
+
+    x -= speed * (delta / 16.67); // ✅ SAĞDAN SOLA AKIŞ
+
+    const textWidth = textRef.current.offsetWidth;
+    const containerWidth = containerRef.current.offsetWidth;
+
+    // ✅ tamamen soldan çıktıysa, sağa geri al
+    if (x < -textWidth) {
+      x = containerWidth;
     }
 
-    loop();
-    return () => cancelAnimationFrame(rafId);
-  }, [data]);
+    textRef.current.style.transform = `translateX(${x}px)`;
+    rafId = requestAnimationFrame(animate);
+  };
+
+  rafId = requestAnimationFrame(animate);
+  return () => cancelAnimationFrame(rafId);
+}, [data.speed]);
 
   return (
     <div
       ref={containerRef}
+      className="scrolling-text-wrapper"
       style={{
         backgroundColor: data.bg_color || "#000",
         color: data.text_color || "#fff",
         height: `${data.height_px || 40}px`,
-        position: "fixed",          // 🔥 EN KRİTİK
-        top: 0,                      // 🔥 HEADER ÜSTÜ
-        left: 0,
-        width: "100%",
-        zIndex: 10001,               // 🔥 HEADER'DAN YÜKSEK
       }}
-      className="flex items-center overflow-hidden border-b border-white/10"
     >
-      <span
-        ref={textRef}
-        className="px-10 font-medium whitespace-nowrap"
-        style={{ fontSize: "14px" }}
-      >
+      <span ref={textRef} className="scrolling-text">
         {data.text}
       </span>
     </div>

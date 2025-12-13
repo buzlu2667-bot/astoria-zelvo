@@ -788,5 +788,25 @@ html {
 .main-wrapper {
   padding-top: var(--header-offset);
 }
+.scrolling-text-wrapper {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  z-index: 10001;
+  pointer-events: none;
+  will-change: transform;
+}
+
+.scrolling-text {
+  white-space: nowrap;
+  padding-left: 20px;
+  font-size: 14px;
+  line-height: 1;
+  will-change: transform;
+}
 
 
