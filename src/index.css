@@ -785,6 +785,8 @@ html {
 .animate-title-scroll {
   animation: title-scroll 8s linear infinite;
 }
-
+.main-wrapper {
+  padding-top: var(--header-offset);
+}
 
 

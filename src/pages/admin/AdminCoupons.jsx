@@ -85,11 +85,21 @@ export default function AdminCoupons() {
     });
   }
 
-  async function remove(id) {
-    if (!confirm("Kuponu silmek istiyor musun?")) return;
-    await supabase.from("coupons").delete().eq("id", id);
-    fetchCoupons();
+ async function remove(id) {
+  if (!confirm("Kuponu silmek istiyor musun?")) return;
+
+  const res = await supabase.from("coupons").delete().eq("id", id);
+
+  console.log("DELETE RESULT:", res);
+
+  if (res.error) {
+    alert("Silinemedi: " + res.error.message);
+    return;
   }
+
+  fetchCoupons();
+}
+
 
   return (
    <div className="text-white space-y-6 mt-24">

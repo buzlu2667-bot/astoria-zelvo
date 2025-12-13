@@ -10,6 +10,7 @@ export default function ScrollingText({ data }) {
 
     let pos = containerRef.current.offsetWidth;
     const speed = data.speed || 1;
+    let rafId;
 
     function loop() {
       pos -= speed;
@@ -18,21 +19,27 @@ export default function ScrollingText({ data }) {
       if (pos < -textRef.current.offsetWidth) {
         pos = containerRef.current.offsetWidth;
       }
-      requestAnimationFrame(loop);
+      rafId = requestAnimationFrame(loop);
     }
 
     loop();
+    return () => cancelAnimationFrame(rafId);
   }, [data]);
 
   return (
     <div
       ref={containerRef}
       style={{
-        background: data.bg_color,
-        color: data.text_color,
-        height: `${data.height_px}px`,
+        backgroundColor: data.bg_color || "#000",
+        color: data.text_color || "#fff",
+        height: `${data.height_px || 40}px`,
+        position: "fixed",          // 🔥 EN KRİTİK
+        top: 0,                      // 🔥 HEADER ÜSTÜ
+        left: 0,
+        width: "100%",
+        zIndex: 10001,               // 🔥 HEADER'DAN YÜKSEK
       }}
-      className="flex items-center w-full overflow-hidden border-b border-white/10"
+      className="flex items-center overflow-hidden border-b border-white/10"
     >
       <span
         ref={textRef}

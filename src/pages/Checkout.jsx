@@ -116,6 +116,29 @@ Sepet İndirimi: ${order.cart_discount_amount || 0} TL
 Ödeme: ${pay}
 `);
 
+// 🔥 KUPON KULLANIM SAYISI + PASİFLEŞTİRME
+if (coupon && discount > 0) {
+  const { data: c } = await supabase
+    .from("coupons")
+    .select("id, used_count, usage_limit")
+    .eq("code", coupon)
+    .single();
+
+  if (c) {
+    const newUsedCount = (c.used_count || 0) + 1;
+
+    await supabase
+      .from("coupons")
+      .update({
+        used_count: newUsedCount,
+        is_active:
+          c.usage_limit !== null
+            ? newUsedCount < c.usage_limit
+            : true,
+      })
+      .eq("id", c.id);
+  }
+}
 
 
       setTimeout(() => nav("/orders"), 500);
@@ -188,29 +211,43 @@ ${cartDiscount > 0 ? `<b>Sepet İndirimi:</b> ₺${cartDiscount}<br/>` : ""}
 
 
   // Kupon
-  const applyCoupon = async () => {
-    const code = coupon.trim().toUpperCase();
-    if (!code)
-      return toastError("❌ Kupon kodu boş!");
+ const applyCoupon = async () => {
+  const code = coupon.trim().toUpperCase();
+  if (!code) return toastError("❌ Kupon kodu boş!");
 
-    const { data: c } = await supabase
-      .from("coupons")
-      .select("*")
-      .eq("code", code)
-      .maybeSingle();
+  const { data: c } = await supabase
+    .from("coupons")
+    .select("*")
+    .eq("code", code)
+    .maybeSingle();
 
-    if (!c) return toastError("❌ Geçersiz kupon!");
-    if (!c.is_active) return toastError("⛔ Kupon pasif!");
+  if (!c) return toastError("❌ Geçersiz kupon!");
 
-    if (total < c.min_amount)
-      return toastError(`🔽 Minimum tutar: ${TRY(c.min_amount)}`);
+  // 🔥 KULLANIM LİMİTİ DOLMUŞ MU?
+  if (
+    c.usage_limit !== null &&
+    c.used_count !== null &&
+    c.used_count >= c.usage_limit
+  ) {
+    return toastError("🚫 Bu kuponun kullanım hakkı dolmuştur.");
+  }
 
-    const d = c.type === "%" ? (total * c.value) / 100 : c.value;
-    const finalDiscount = Math.min(d, total);
-    setDiscount(finalDiscount);
+  // 🔒 MANUEL PASİF
+  if (!c.is_active) {
+    return toastError("⛔ Bu kupon şu anda aktif değil.");
+  }
 
-    toastSuccess(`🎉 Kupon uygulandı!`);
-  };
+  if (total < (c.min_amount || 0)) {
+    return toastError(`🔽 Minimum sepet tutarı: ${TRY(c.min_amount)}`);
+  }
+
+  const d = c.type === "%" ? (total * c.value) / 100 : c.value;
+  const finalDiscount = Math.min(d, total);
+
+  setDiscount(finalDiscount);
+  toastSuccess("🎉 Kupon başarıyla uygulandı!");
+};
+
 
   const toastSuccess = (text) =>
     window.dispatchEvent(

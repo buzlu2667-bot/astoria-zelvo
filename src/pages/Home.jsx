@@ -215,7 +215,7 @@ const activeCat = homeCats.find((c) => c.slug === openCat);
   return (
     <div className="min-h-screen bg-white text-gray-900">
 {/* ⭐ HOME KATEGORİ BAR — MODERN FINAL */}
-<div className="w-full px-6 py-4 mt-[80px] bg-white border-b border-gray-200">
+<div className="w-full px-6 py-1 bg-white border-b border-gray-200 mt-3">
 
   {/* ÜST KATEGORİLER */}
  <div

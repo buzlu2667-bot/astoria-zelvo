@@ -129,6 +129,15 @@ export default function App() {
   return (
     <>
       <Header />
+        {/* 🔥 SABİT HEADER OFFSET BURADA */}
+
+<main className="main-wrapper transition-all duration-200">
+
+
+    <ToastContainer />
+    <ScrollTopButton />
+    <HashRedirector />
+
    
       <ToastContainer />
   <ScrollTopButton />
@@ -185,7 +194,7 @@ export default function App() {
 
       <Footer />
   
-
+  </main>
     
     </>
   );

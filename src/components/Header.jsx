@@ -41,6 +41,36 @@ export default function Header() {
   // ⭐ Banner Settings
 const [headerBanner, setHeaderBanner] = useState(null);
 const [scrollText, setScrollText] = useState(null);
+
+// ✅ HEADER + BANNER + KAYAN YAZI TOPLAM YÜKSEKLİĞİNİ HESAPLA
+useEffect(() => {
+  const offset =
+    (scrollText?.active
+      ? scrollText.height_px
+      : headerBanner?.height_px || 0) +
+    72; // header yüksekliği (sabit)
+
+  document.documentElement.style.setProperty(
+    "--header-offset",
+    `${offset}px`
+  );
+}, [scrollText, headerBanner]);
+
+
+// ⭐ Scroll Text varsa body'e class ekle / kaldır
+useEffect(() => {
+  if (scrollText?.active) {
+    document.body.classList.add("has-scroll-text");
+  } else {
+    document.body.classList.remove("has-scroll-text");
+  }
+
+  // cleanup (component unmount olursa)
+  return () => {
+    document.body.classList.remove("has-scroll-text");
+  };
+}, [scrollText]);
+
 const [profile, setProfile] = useState(null);
 
 useEffect(() => {
@@ -564,24 +594,28 @@ async function closeNotification() {
 </style>
 
 
-    {scrollText && scrollText.active && (
-  <ScrollingText data={scrollText} />
-)}
+ {/* 🔥 TOP SLOT (Kayan Yazı / Banner AYNI KONUM) */}
+<div
+  className="fixed top-0 left-0 w-full z-[10000]"
+  style={{
+    height: scrollText?.active
+      ? `${scrollText.height_px}px`
+      : headerBanner?.height_px
+      ? `${headerBanner.height_px}px`
+      : "0px",
+  }}
+>
+  {scrollText?.active ? (
+    <ScrollingText data={scrollText} />
+  ) : headerBanner?.image_url ? (
+    <img
+      src={headerBanner.image_url}
+      alt="Top Banner"
+      className="w-full h-full object-cover"
+    />
+  ) : null}
+</div>
 
-
-    {/* ⭐⭐⭐ GLOBAL ÜST BANNER */}
-{headerBanner && headerBanner.image_url && (
-  <div
-    style={{
-      width: "100%",
-      height: `${headerBanner.height_px}px`,
-      backgroundImage: `url(${headerBanner.image_url})`,
-      backgroundSize: "cover",
-      backgroundPosition: "center",
-    }}
-    className="cursor-pointer"
-  ></div>
-)}
 
 {/* ✅ Premium Modal Notification (Center Popup - Final Clean Version) */}
 {notificationsReady && notifications.length > 0 && !hideNotification && (
@@ -614,12 +648,23 @@ async function closeNotification() {
 )}
 
       {/* TOPBAR */}
-<header className="
-  bg-white text-gray-800 border-b border-gray-200 shadow-sm
-  z-[9999]
-  fixed top-0 left-0 w-full
-  backdrop-blur-md
-">
+<header
+  className="
+    bg-white text-gray-800 border-b border-gray-200 shadow-sm
+    z-[9999]
+    fixed left-0 w-full
+    backdrop-blur-md
+  "
+  style={{
+  top: `${
+  scrollText?.active
+    ? scrollText.height_px
+    : headerBanner?.height_px || 0
+}px`,
+
+  }}
+>
+
 
 
   {/* ⭐ MOBİL ÜST BAR — SADECE <lg */}
