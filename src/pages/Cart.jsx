@@ -95,7 +95,7 @@ useEffect(() => {
 
 
   return (
-    <div className="min-h-screen bg-[#f6f6f6] p-4 md:p-6 mt-24 md:mt-32">
+   <div className="min-h-screen bg-[#f6f6f6] p-4 md:p-6">
      {/* ⭐ SEPET BAŞLIK BLOĞU */}
 <div className="bg-white p-4 md:p-6 rounded-2xl shadow-sm border border-gray-200 mb-6">
   <div className="flex items-center gap-3">
