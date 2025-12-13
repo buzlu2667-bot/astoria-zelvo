@@ -795,18 +795,26 @@ html {
   width: 100%;
   overflow: hidden;
   display: flex;
-  align-items: center;
+  align-items: center;       /* ✅ dikey ortalama */
   z-index: 10001;
   pointer-events: none;
+
+  /* 🔥 MOBİL PERFORMANS */
+  contain: layout paint;
   will-change: transform;
 }
 
 .scrolling-text {
   white-space: nowrap;
-  padding-left: 20px;
+  padding: 0 48px;
   font-size: 14px;
   line-height: 1;
+  display: inline-flex;
+  align-items: center;
+
+  /* 🔥 GPU FORCE */
   will-change: transform;
+  backface-visibility: hidden;
 }
 
 
