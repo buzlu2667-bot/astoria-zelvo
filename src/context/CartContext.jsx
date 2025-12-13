@@ -11,6 +11,24 @@ export function CartProvider({ children }) {
   const [cart, setCart] = useState([]);
   const [loading, setLoading] = useState(true);
     const { session } = useSession();
+const [discountRules, setDiscountRules] = useState([]);
+
+  // 🚚 ÜCRETSİZ KARGO LİMİTİ
+  const FREE_SHIPPING_LIMIT = 2500;
+
+useEffect(() => {
+  loadDiscountRules();
+}, []);
+
+async function loadDiscountRules() {
+  const { data } = await supabase
+    .from("cart_discounts")
+    .select("*")
+    .eq("active", true)
+    .order("min_quantity", { ascending: true });
+
+  setDiscountRules(data || []);
+}
 
   // ---------------------------------------------------------
   // SAYFA AÇILDIĞINDA USER KONTROL + DB LOAD
@@ -182,6 +200,7 @@ if (!user) {
           name: product.title || product.name,
           quantity: 1,
           price: Number(product.price),
+          old_price: Number(product.old_price || 0),
           main_img: img,
         selectedcolor: product.selectedColor || null,
         },
@@ -215,6 +234,7 @@ if (!user) {
        product_id: String(pid),
           name: product.title || product.name || "Ürün",
           price: Number(product.price) || 0,
+           old_price: Number(product.old_price || 0),
           quantity: 1,
           main_img: img || null,
           img_url: img || null,
@@ -354,14 +374,21 @@ const removeFromCart = async (id) => {
 // ---------------------------------------------------------
 // 🔥 SİPARİŞ OLUŞTUR — RENK + ORDER_ITEMS EKLENMİŞ FINAL V10
 // ---------------------------------------------------------
+
+
 const placeOrder = async (payload) => {
   try {
     const { data: ud } = await supabase.auth.getUser();
     const user = ud?.user;
-
     if (!user) return { error: "no-user" };
 
-    // 1) ORDER KAYDININ OLUŞTURULMASI
+    // 🎟 KUPON İNDİRİMİ
+    const couponDiscount = Number(payload.coupon_discount_amount || 0);
+
+    // 💰 GERÇEK ÖDENEN TUTAR
+    const finalAmount = Math.max(total - couponDiscount, 0);
+
+    // 1️⃣ ORDER OLUŞTUR
     const { data: orderData, error: orderErr } = await supabase
       .from("orders")
       .insert([
@@ -374,9 +401,21 @@ const placeOrder = async (payload) => {
           note: payload.note || null,
           payment_method: payload.payment_method,
           status: payload.status,
+
+          // 🎟 KUPON
           coupon: payload.coupon || null,
-          discount_amount: payload.discount_amount || 0,
-          final_amount: payload.final_amount,
+          coupon_discount_amount: couponDiscount,
+
+          // 🔥 SEPET İNDİRİMİ
+          cart_discount_amount: cartExtraDiscount,
+
+          // 💰 ÖDENEN TUTAR (EN ÖNEMLİ SATIR)
+          final_amount: finalAmount,
+
+          // 🚚 KARGO
+          shipping_type: hasFreeShipping
+            ? "free_shipping"
+            : "paid_by_customer",
         },
       ])
       .select()
@@ -387,36 +426,25 @@ const placeOrder = async (payload) => {
       return { error: orderErr };
     }
 
-    console.log("🟩 ORDER CREATED:", orderData);
+    // 2️⃣ ORDER ITEMS
+    const orderItemsPayload = cart.map((i) => ({
+      order_id: orderData.id,
+      product_id: i.product_id || i.id,
+      product_name: i.name || i.title,
+      quantity: i.quantity,
+      unit_price: Number(i.price),
+      color: i.selectedcolor || i.selectedColor || "Belirtilmedi",
+      image_url:
+        i.image_url ||
+        i.main_img ||
+        i.img_url ||
+        (Array.isArray(i.gallery) ? i.gallery[0] : null) ||
+        "/products/default.png",
+    }));
 
-    // 2) ORDER_ITEMS EKLE (RENK DAHİL)
- const orderItemsPayload = cart.map((i) => ({
-  order_id: orderData.id,
-  product_id: i.product_id || i.id,
-  product_name: i.name || i.title,
-  quantity: i.quantity,
-  unit_price: Number(i.price),
-color: i.selectedcolor || i.selectedColor || "Belirtilmedi",
+    await supabase.from("order_items").insert(orderItemsPayload);
 
-  // ⭐ FOTOĞRAF BURADAN GİDER
-  image_url:
-    i.image_url ||
-    i.main_img ||
-    i.img_url ||
-    (Array.isArray(i.gallery) ? i.gallery[0] : null) ||
-    "/products/default.png",
-}));
-
-
-    const { error: oiErr } = await supabase
-      .from("order_items")
-      .insert(orderItemsPayload);
-
-    if (oiErr) {
-      console.log("🟥 ORDER ITEMS ERROR:", oiErr);
-    }
-
-    // 3) CART TEMİZLE
+    // 3️⃣ CART TEMİZLE
     await clearCart();
 
     return { orderId: orderData.id };
@@ -426,33 +454,117 @@ color: i.selectedcolor || i.selectedColor || "Belirtilmedi",
   }
 };
 
-
-
-  const total = useMemo(() => {
-    return cart.reduce(
-      (acc, i) => acc + Number(i.price || 0) * Number(i.quantity),
-      0
-    );
-  }, [cart]);
-// 🔥 BURAYA EKLE
-  useEffect(() => {
-  
-  }, [cart]);
-  return (
-    <CartContext.Provider
-      value={{
-        cart,
-        loading,
-        total,
-        addToCart,
-        inc,
-        dec,
-        removeFromCart,
-        clearCart,
-           placeOrder,
-      }}
-    >
-      {children}
-    </CartContext.Provider>
+// ⭐ SEPETTEKİ TOPLAM ÜRÜN ADEDİ
+const totalQuantity = useMemo(() => {
+  return cart.reduce(
+    (acc, i) => acc + Number(i.quantity || 0),
+    0
   );
+}, [cart]);
+
+// ⭐ ADET BAZLI SEPET İNDİRİM ORANI
+// 1 ürün  → %0
+// 2 ürün  → %5
+// 3-4     → %7
+// 5+      → %10
+const cartExtraDiscountPercent = useMemo(() => {
+  if (!discountRules.length) return 0;
+
+  let percent = 0;
+
+  for (const rule of discountRules) {
+    if (totalQuantity >= rule.min_quantity) {
+      percent = rule.discount_percent;
+    }
+  }
+
+  return percent;
+}, [totalQuantity, discountRules]);
+
+// ⭐ BİR SONRAKİ İNDİRİM KURALI (UPSSELL)
+const nextDiscountRule = useMemo(() => {
+  if (!discountRules.length) return null;
+
+  // şu anki üründen büyük olan ilk kural
+  return discountRules.find(
+    (r) => r.min_quantity > totalQuantity
+  ) || null;
+}, [discountRules, totalQuantity]);
+
+// ⭐ KAÇ ÜRÜN DAHA EKLENMELİ
+const remainingForNextDiscount = useMemo(() => {
+  if (!nextDiscountRule) return 0;
+  return Math.max(nextDiscountRule.min_quantity - totalQuantity, 0);
+}, [nextDiscountRule, totalQuantity]);
+
+
+// ⭐ ARA TOPLAM
+const subtotal = useMemo(() => {
+  return cart.reduce(
+    (acc, i) => acc + Number(i.price || 0) * Number(i.quantity),
+    0
+  );
+}, [cart]);
+
+// 🚚 Ücretsiz kargo için kalan tutar
+const remainingForFreeShipping = useMemo(() => {
+  return Math.max(FREE_SHIPPING_LIMIT - subtotal, 0);
+}, [subtotal]);
+
+// 🚚 Ücretsiz kargo kazanıldı mı?
+const hasFreeShipping = useMemo(() => {
+  return subtotal >= FREE_SHIPPING_LIMIT;
+}, [subtotal]);
+
+
+// ⭐ SEPETE ÖZEL İNDİRİM TUTARI
+const cartExtraDiscount = useMemo(() => {
+  return subtotal * cartExtraDiscountPercent / 100;
+}, [subtotal, cartExtraDiscountPercent]);
+
+// ⭐ ÖDENECEK TOPLAM
+const total = useMemo(() => {
+  return Math.max(subtotal - cartExtraDiscount, 0);
+}, [subtotal, cartExtraDiscount]);
+
+// 🔥 (İLERDE TOAST / LOG / ANALYTICS İÇİN HAZIR)
+useEffect(() => {
+  // burada istersek:
+  // - toast
+  // - event
+  // - analytics
+}, [cart]);
+
+return (
+  <CartContext.Provider
+    value={{
+      cart,
+      loading,
+
+      // 🔥 YENİ DEĞERLER
+      subtotal,
+      totalQuantity,
+      cartExtraDiscount,
+      cartExtraDiscountPercent,
+      total,
+     nextDiscountRule,
+    remainingForNextDiscount,
+     // 🚚 KARGO
+    remainingForFreeShipping,
+    hasFreeShipping,
+  
+
+      // 🔥 AKSİYONLAR
+      addToCart,
+      inc,
+      dec,
+      removeFromCart,
+      clearCart,
+      placeOrder,
+    }}
+  >
+    {children}
+  </CartContext.Provider>
+);
+
 }

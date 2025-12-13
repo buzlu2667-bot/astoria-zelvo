@@ -8,6 +8,7 @@ import { useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { useSession } from "../context/SessionContext";
 import ProductCardVertical from "../components/ProductCardVertical";
+import { Hourglass } from "lucide-react";
 
 function formatName(name) {
   if (!name) return "Kullanıcı";
@@ -406,9 +407,48 @@ useEffect(() => {
 
             <p className="text-gray-500 mt-1">{p.category}</p>
 
-            <div className="mt-3">
-              <span className={stockBadge.cls}>{stockBadge.t}</span>
-            </div>
+           {/* STOK */}
+<div className="mt-3">
+  {Number(p.stock) <= 0 ? (
+    <span className="
+      inline-flex items-center gap-1
+      text-[12px] font-bold
+      text-red-600
+      bg-red-50
+      px-2 py-[2px]
+      rounded-md
+      border border-red-200
+    ">
+      Tükendi
+    </span>
+  ) : Number(p.stock) < 10 ? (
+    <span className="
+      inline-flex items-center gap-1
+      text-[12px] font-semibold
+      text-orange-700
+      bg-orange-50
+      px-2 py-[2px]
+      rounded-md
+      border border-orange-200
+    ">
+      <Hourglass className="w-3.5 h-3.5 animate-hourglass" />
+      Son Adetler
+    </span>
+  ) : (
+    <span className="
+      inline-flex items-center gap-1
+      text-[12px] font-medium
+      text-emerald-700
+      bg-emerald-50
+      px-2 py-[2px]
+      rounded-md
+      border border-emerald-200
+    ">
+      Stokta
+    </span>
+  )}
+</div>
+
 
             {/* FİYAT */}
             <div className="mt-6 flex items-center gap-3">

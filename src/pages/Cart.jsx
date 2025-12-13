@@ -10,7 +10,27 @@ import { useRef } from "react";
 import ProductCardVertical from "../components/ProductCardVertical";
 
 export default function Cart() {
-  const { cart, inc, dec, removeFromCart, total, clearCart } = useCart();
+const {
+  cart,
+  inc,
+  dec,
+  removeFromCart,
+  subtotal,
+  cartExtraDiscount,
+  cartExtraDiscountPercent,
+  total,
+
+  // 🔥 BURAYI EKLE
+  nextDiscountRule,
+  remainingForNextDiscount,
+   // 🚚 kargo
+  remainingForFreeShipping,
+  hasFreeShipping,
+
+  clearCart,
+} = useCart();
+
+
   const { session } = useSession();
   const nav = useNavigate();
 
@@ -112,66 +132,143 @@ useEffect(() => {
           ))}
         </div>
 
-        {/* SAĞ TARAF — SİPARİŞ ÖZETİ */}
-    <div className="hidden lg:block w-full lg:w-[480px] shrink-0">
-       <div className="bg-white border border-gray-200 rounded-2xl p-8 shadow-sm sticky top-4">
-            <h3 className="text-xl font-bold text-gray-800 mb-4">
-              Sipariş Özeti
-            </h3>
+      {/* SAĞ TARAF — SİPARİŞ ÖZETİ */}
+<div className="hidden lg:block w-full lg:w-[480px] shrink-0">
+  <div className="bg-white border border-gray-200 rounded-2xl p-8 shadow-sm sticky top-4">
 
-            {/* Toplam */}
-       <div className="flex justify-between text-gray-700 font-semibold text-lg border-b pb-4">
-              <span>Sepet Toplamı</span>
-              <span className="font-bold text-gray-900">
-                ₺{total.toLocaleString("tr-TR")}
-              </span>
-            </div>
+    <h3 className="text-xl font-bold text-gray-800 mb-4">
+      Sipariş Özeti
+    </h3>
 
-            {/* BUTONLAR */}
-            <div className="flex flex-col gap-3 mt-5">
-              {/* TEMİZLE */}
-              <button
-                onClick={() => {
-                  clearCart();
-                  window.dispatchEvent(
-                    new CustomEvent("toast", {
-                      detail: { type: "info", text: "Sepet temizlendi!" },
-                    })
-                  );
-                }}
-                className="w-full py-3 border border-gray-300 rounded-xl text-gray-700 font-medium hover:bg-gray-100"
-              >
-                Temizle
-              </button>
+    {/* Ara Toplam */}
+    <div className="flex justify-between text-gray-600 text-sm">
+      <span>Ara Toplam</span>
+      <span>₺{subtotal.toLocaleString("tr-TR")}</span>
+    </div>
 
-              {/* SATIN AL */}
-              <button
-                onClick={handleOrder}
-                className="w-full py-3 rounded-xl text-white font-bold bg-[#f27a1a] hover:opacity-90"
-              >
-                Satın Al
-              </button>
-            </div>
-          </div>
-        </div>
+    {/* %5 Sepet İndirimi */}
+   {cartExtraDiscount > 0 && (
+  <>
+    <div className="flex justify-between text-green-600 text-sm font-medium mt-1">
+      <span>Sepete Özel %{cartExtraDiscountPercent} İndirim</span>
+      <span>-₺{cartExtraDiscount.toLocaleString("tr-TR")}</span>
+    </div>
+
+    <hr className="my-3" />
+  </>
+)}
+
+   {/* 🔥 BİR ÜRÜN DAHA EKLE TEXT */}
+{nextDiscountRule && remainingForNextDiscount > 0 && (
+  <div className="mt-3 text-sm bg-orange-50 border border-orange-200 text-orange-700 px-4 py-3 rounded-xl">
+    🔥 <b>{remainingForNextDiscount} ürün</b> daha eklersen{" "}
+    <b>%{nextDiscountRule.discount_percent}</b> indirim kazanırsın
+  </div>
+)}
+
+{/* 🚚 ÜCRETSİZ KARGO BİLGİSİ */}
+{!hasFreeShipping ? (
+  <div className="mt-3 text-sm bg-blue-50 border border-blue-200 text-blue-700 px-4 py-3 rounded-xl">
+    🚚 <b>₺{remainingForFreeShipping.toLocaleString("tr-TR")}</b> daha eklersen
+    <b> ücretsiz kargo</b> kazanırsın
+  </div>
+) : (
+  <div className="mt-3 text-sm bg-green-50 border border-green-200 text-green-700 px-4 py-3 rounded-xl font-semibold">
+    🎉 Tebrikler! Ücretsiz kargo kazandın
+  </div>
+)}
+
+
+
+    {/* Ödenecek Tutar */}
+    <div className="flex justify-between text-lg font-bold text-gray-900">
+      <span>Ödenecek Tutar</span>
+      <span>₺{total.toLocaleString("tr-TR")}</span>
+    </div>
+
+    {/* BUTONLAR */}
+    <div className="flex flex-col gap-3 mt-5">
+      <button
+        onClick={() => {
+          clearCart();
+          window.dispatchEvent(
+            new CustomEvent("toast", {
+              detail: { type: "info", text: "Sepet temizlendi!" },
+            })
+          );
+        }}
+        className="w-full py-3 border border-gray-300 rounded-xl text-gray-700 font-medium hover:bg-gray-100"
+      >
+        Temizle
+      </button>
+
+      <button
+        onClick={handleOrder}
+        className="w-full py-3 rounded-xl text-white font-bold bg-[#f27a1a] hover:opacity-90"
+      >
+        Satın Al
+      </button>
+    </div>
+
+  </div>
+</div>
+
       </div>
 
-      {/* MOBİL ALT BAR */}
-     {/* 📱 MOBİL SİPARİŞ ÖZETİ (TAM KUTU VERSİYONU) */}
+     
+    {/* 📱 MOBİL SİPARİŞ ÖZETİ */}
 <div className="lg:hidden fixed bottom-0 left-0 right-0 z-[99999] bg-white border-t border-gray-300 shadow-xl p-4 rounded-t-2xl">
-  
-  <h3 className="text-xl font-bold text-gray-800 mb-4">
+
+  <h3 className="text-lg font-bold text-gray-800 mb-3">
     Sipariş Özeti
   </h3>
 
-  <div className="flex justify-between text-gray-700 font-medium border-b pb-2">
-    <span>Sepet Toplamı</span>
-    <span className="font-bold text-gray-900">
-      ₺{total.toLocaleString("tr-TR")}
-    </span>
+  {/* Ara Toplam */}
+  <div className="flex justify-between text-gray-600 text-sm">
+    <span>Ara Toplam</span>
+    <span>₺{subtotal.toLocaleString("tr-TR")}</span>
   </div>
 
-  <div className="flex flex-col gap-3 mt-4">
+  {/* %5 Sepet İndirimi */}
+  {cartExtraDiscount > 0 && (
+  <>
+    <div className="flex justify-between text-green-600 text-sm font-medium mt-1">
+      <span>Sepete Özel %{cartExtraDiscountPercent} İndirim</span>
+      <span>-₺{cartExtraDiscount.toLocaleString("tr-TR")}</span>
+    </div>
+
+    <hr className="my-2" />
+  </>
+)}
+
+
+   {nextDiscountRule && remainingForNextDiscount > 0 && (
+  <div className="mb-2 text-xs bg-orange-50 border border-orange-200 text-orange-700 px-3 py-2 rounded-lg">
+    🔥 {remainingForNextDiscount} ürün daha eklersen{" "}
+    %{nextDiscountRule.discount_percent} indirim kazanırsın
+  </div>
+)}
+
+{/* 🚚 MOBİL KARGO BİLGİSİ */}
+{!hasFreeShipping ? (
+  <div className="mb-2 text-xs bg-blue-50 border border-blue-200 text-blue-700 px-3 py-2 rounded-lg">
+    🚚 ₺{remainingForFreeShipping.toLocaleString("tr-TR")} kaldı → ücretsiz kargo
+  </div>
+) : (
+  <div className="mb-2 text-xs bg-green-50 border border-green-200 text-green-700 px-3 py-2 rounded-lg font-semibold">
+    🎉 Ücretsiz kargo kazandın
+  </div>
+)}
+
+
+  {/* Ödenecek */}
+  <div className="flex justify-between text-base font-bold text-gray-900 mb-3">
+    <span>Ödenecek Tutar</span>
+    <span>₺{total.toLocaleString("tr-TR")}</span>
+  </div>
+
+  {/* BUTONLAR */}
+  <div className="flex gap-2">
     <button
       onClick={() => {
         clearCart();
@@ -181,20 +278,21 @@ useEffect(() => {
           })
         );
       }}
-      className="w-full py-3 border border-gray-300 rounded-xl text-gray-700 font-medium hover:bg-gray-100"
+      className="flex-1 py-3 border border-gray-300 rounded-xl text-gray-700 font-medium"
     >
       Temizle
     </button>
 
     <button
       onClick={handleOrder}
-      className="w-full py-3 rounded-xl text-white font-bold bg-[#f27a1a] hover:opacity-90"
+      className="flex-1 py-3 rounded-xl text-white font-bold bg-[#f27a1a]"
     >
       Satın Al
     </button>
   </div>
 
 </div>
+
 
 {/* ⭐⭐⭐ İLGİNİZİ ÇEKEBİLİR — HOME İLE AYNI ⭐⭐⭐ */}
 {suggested.length > 0 && (

@@ -28,11 +28,7 @@ export default function ProductCardCart({ item, inc, dec, remove }) {
       {/* 📌 GÖRSEL — ÜRÜN KARTIYLA AYNI */}
       <div className="relative w-full h-[210px] rounded-lg overflow-hidden bg-gray-100">
         
-        {hasDiscount && (
-          <div className="absolute top-2 left-2 bg-red-600 text-white text-xs font-semibold px-2 py-[2px] rounded-md">
-            %{discount}
-          </div>
-        )}
+      
 
         {/* FOTO */}
         <img
@@ -109,24 +105,32 @@ export default function ProductCardCart({ item, inc, dec, remove }) {
 
 
 
-      {/* FİYAT — ÜRÜN KARTIYLA AYNI */}
-      <div className="mt-3 flex items-center gap-2">
-        {hasDiscount && (
-          <span className="text-gray-400 line-through text-sm">
-            ₺{old.toLocaleString("tr-TR")}
-          </span>
-        )}
+    {/* FİYAT — HOME KARTIYLA AYNI */}
+<div className="mt-3 flex flex-col gap-1">
 
-        <span className="text-gray-900 font-bold text-lg">
-          ₺{price.toLocaleString("tr-TR")}
+  {/* ÜST SATIR: İNDİRİM + ESKİ FİYAT */}
+  <div className="flex items-center gap-2 min-h-[24px]">
+    {hasDiscount ? (
+      <>
+        <span className="text-xs bg-red-100 text-red-600 px-2 py-[2px] rounded-lg font-bold">
+          %{discount}
         </span>
 
-        {hasDiscount && (
-          <span className="bg-red-600 text-white text-xs font-semibold px-2 py-[2px] rounded-md">
-            %{discount}
-          </span>
-        )}
-      </div>
+        <span className="text-gray-400 line-through text-sm">
+          ₺{old.toLocaleString("tr-TR")}
+        </span>
+      </>
+    ) : (
+      <span className="opacity-0">placeholder</span>
+    )}
+  </div>
+
+  {/* ALT SATIR: YENİ FİYAT */}
+  <span className="text-gray-900 font-extrabold text-xl leading-tight">
+    ₺{price.toLocaleString("tr-TR")}
+  </span>
+
+</div>
 
       {/* 📌 ADET ALANI — ALTTA MODERN */}
       <div className="flex items-center justify-between mt-4">

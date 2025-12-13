@@ -49,6 +49,10 @@ export default function AdminLayout() {
         </h2>
         <NavItem to="/admin/home-settings" setOpen={setOpen}>Home Ayarları</NavItem>
         <NavItem to="/admin" setOpen={setOpen}>Dashboard</NavItem>
+        <NavItem to="/admin/cart-discounts" setOpen={setOpen}>
+  Sepet İndirimleri
+</NavItem>
+
         <NavItem to="/admin/orders" setOpen={setOpen}>Siparişler</NavItem>
         <NavItem to="/admin/products" setOpen={setOpen}>Ürünler</NavItem>
         <NavItem to="/admin/coupons" setOpen={setOpen}>Kuponlar</NavItem>

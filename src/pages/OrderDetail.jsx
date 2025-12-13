@@ -148,18 +148,41 @@ export default function OrderDetail() {
           </p>
         </div>
 
-        {/* KUPON */}
-        {order.discount_amount > 0 && (
-          <div className="mt-4 bg-white border border-gray-200 rounded-xl p-4">
-            <h3 className="text-gray-900 font-bold mb-1">Kupon Bilgisi</h3>
-            <p className="text-gray-700 text-sm">
-              Kupon Kodu: <b>{order.coupon}</b>
-            </p>
-            <p className="text-green-600 font-semibold text-sm">
-              İndirim: -₺{TRY(order.discount_amount)}
-            </p>
-          </div>
-        )}
+       {/* 🎟 KUPON İNDİRİMİ */}
+{order.coupon && order.coupon_discount_amount > 0 && (
+  <div className="mt-4 bg-white border border-gray-200 rounded-xl p-4">
+    <h3 className="text-gray-900 font-bold mb-1">🎟 Kupon Bilgisi</h3>
+
+    <p className="text-gray-700 text-sm">
+      Kupon Kodu: <b>{order.coupon}</b>
+    </p>
+
+    <p className="text-green-600 font-semibold text-sm">
+      Kupon İndirimi: -{TRY(order.coupon_discount_amount)}
+    </p>
+  </div>
+)}
+
+
+  {/* 🎟 SEPET İNDİRİMİ */}
+{order.cart_discount_amount > 0 && (
+  <div className="mt-4 bg-orange-50 border border-orange-200 rounded-xl p-4">
+    <h3 className="text-orange-800 font-bold mb-1">
+      🔥 Kazanılan İndirim
+    </h3>
+
+    <p className="text-orange-700 text-sm">
+      Sepete özel indirim uygulandı
+    </p>
+
+    <p className="text-green-700 font-semibold text-sm mt-1">
+      İndirim: -{TRY(order.cart_discount_amount)}
+    </p>
+  </div>
+)}
+
+
+
 
         {/* GERİ */}
         <div className="mt-8 text-right">

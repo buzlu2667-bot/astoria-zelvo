@@ -11,7 +11,16 @@ const TRY = (n) =>
   });
 
 export default function Checkout() {
-  const { cart, total, placeOrder, clearCart } = useCart();
+ const {
+  cart,
+  total,
+  cartDiscount,      // 🔥 sepet indirimi
+  placeOrder,
+  clearCart
+} = useCart();
+
+
+
   const nav = useNavigate();
 
   const [form, setForm] = useState({
@@ -29,7 +38,16 @@ export default function Checkout() {
   const [msg, setMsg] = useState("");
   const [user, setUser] = useState(null);
 
+  const finalAmount = Math.max(
+  Number(total || 0) -
+  Number(discount || 0) -
+  Number(cartDiscount || 0),
+  0
+);
+
   const change = (k, v) => setForm((f) => ({ ...f, [k]: v }));
+
+  
 
   // Kullanıcı bilgisi
   useEffect(() => {
@@ -43,39 +61,33 @@ export default function Checkout() {
     })();
   }, []);
 
+
   // Sipariş tamamlama
   const finishOrder = async () => {
     try {
       const { data: ud } = await supabase.auth.getUser();
       const user = ud?.user;
 
-      if (user) {
-        await supabase.from("profiles").upsert(
-          {
-            id: user.id,
-            email: user.email,
-            full_name: form.name,
-            phone: form.phone,
-            address: form.address,
-            role: "user",
-          },
-          { onConflict: "id" }
-        );
-      }
+     
     } catch {}
 
-    const res = await placeOrder({
-      full_name: form.name,
-      phone: form.phone,
-      email: form.email,
-      address: form.address,
-      note: form.note,
-      payment_method: pay,
-      status: pay === "cod" ? "processing" : "awaiting_payment",
-      coupon: discount > 0 ? coupon : null,
-      discount_amount: discount,
-      final_amount: total - discount,
-    });
+const res = await placeOrder({
+  full_name: form.name,
+  phone: form.phone,
+  email: form.email,
+  address: form.address,
+  note: form.note,
+  payment_method: pay,
+  status: pay === "cod" ? "processing" : "awaiting_payment",
+
+  coupon: discount > 0 ? coupon : null,
+  coupon_discount_amount: discount,
+  cart_discount_amount: cartDiscount,
+
+  total_amount: total,
+  final_amount: finalAmount, // 🔥 TEK GERÇEK
+});
+
 
     if (res?.orderId) {
       window.dispatchEvent(
@@ -87,13 +99,24 @@ export default function Checkout() {
         })
       );
 
-      await sendShopAlert(`
+ const { data: order } = await supabase
+  .from("orders")
+  .select("final_amount, coupon, coupon_discount_amount, cart_discount_amount")
+  .eq("id", res.orderId)
+  .single();
+
+await sendShopAlert(`
 📦 Yeni Sipariş
 Ad: ${form.name}
 Telefon: ${form.phone}
-Tutar: ${total - discount} TL
+Ödenen Tutar: ${order.final_amount} TL
+Kupon: ${order.coupon || "-"}
+Kupon İndirimi: ${order.coupon_discount_amount || 0} TL
+Sepet İndirimi: ${order.cart_discount_amount || 0} TL
 Ödeme: ${pay}
 `);
+
+
 
       setTimeout(() => nav("/orders"), 500);
     }
@@ -108,7 +131,7 @@ Tutar: ${total - discount} TL
   if (!res?.orderId) return;
 
   const orderId = res.orderId;
-  const finalTotal = total - discount;
+
 
   await fetch(
     "https://tvsfhhxxligbqrcqtprq.supabase.co/functions/v1/send-mail",
@@ -139,13 +162,15 @@ Tutar: ${total - discount} TL
     <b>Sipariş No:</b> #${orderId}<br/>
     <b>Ödeme:</b> ${pay === "iban" ? "Havale / EFT" : "Kapıda Ödeme"}<br/>
     <b>Adres:</b> ${form.address}<br/>
-    <b>Toplam:</b> ₺${finalTotal}<br/>
+  <b>Ödenen Tutar:</b> ₺${finalAmount}<br/>
 
-    ${
-      coupon
-        ? `<b>Kupon:</b> ${coupon}<br/><b>İndirim:</b> ₺${discount}<br/>`
-        : ""
-    }
+${coupon ? `<b>Kupon:</b> ${coupon}<br/>` : ""}
+${discount > 0 ? `<b>Kupon İndirimi:</b> ₺${discount}<br/>` : ""}
+${cartDiscount > 0 ? `<b>Sepet İndirimi:</b> ₺${cartDiscount}<br/>` : ""}
+
+   
+
+   
   </div>
 
   <p style="margin-top:20px;color:#bbb;text-align:center;">
@@ -259,15 +284,19 @@ Tutar: ${total - discount} TL
         </div>
 
         {/* ÖZET */}
-        <Summary
-          cart={cart}
-          total={total}
-          coupon={coupon}
-          setCoupon={setCoupon}
-          discount={discount}
-          applyCoupon={applyCoupon}
-          TRY={TRY}
-        />
+   <Summary
+  cart={cart}
+  total={total}
+  coupon={coupon}
+  setCoupon={setCoupon}
+  discount={discount}
+  cartDiscount={cartDiscount}
+  finalAmount={finalAmount}   // 🔥 EKLE
+  applyCoupon={applyCoupon}
+  TRY={TRY}
+/>
+
+
       </div>
 
       {/* IBAN MODAL */}
@@ -276,22 +305,27 @@ Tutar: ${total - discount} TL
       )}
 
       {/* MOBİL ALT BAR */}
-      <MobileSummaryBar
-        coupon={coupon}
-        setCoupon={setCoupon}
-        applyCoupon={applyCoupon}
-        discount={discount}
-        total={total}
-        TRY={TRY}
-        validateBeforePayment={validateBeforePayment}
-      />
+   <MobileSummaryBar
+  coupon={coupon}
+  setCoupon={setCoupon}
+  applyCoupon={applyCoupon}
+  discount={discount}
+  cartDiscount={cartDiscount}
+  total={total}
+  finalAmount={finalAmount}   // 🔥 EKLE
+  TRY={TRY}
+  validateBeforePayment={validateBeforePayment}
+/>
+
     </div>
   );
 }
 
 /* COMPONENTS */
 
-function MobileSummaryBar({ coupon, setCoupon, applyCoupon, discount, total, TRY, validateBeforePayment }) {
+function MobileSummaryBar({ coupon, setCoupon, applyCoupon, discount, cartDiscount, total, finalAmount, TRY, validateBeforePayment }) {
+
+
   return (
     <div className="md:hidden fixed bottom-[70px] left-0 right-0 z-[999] px-4">
       <div className="bg-white border border-gray-300 rounded-xl shadow-md p-4">
@@ -322,7 +356,7 @@ function MobileSummaryBar({ coupon, setCoupon, applyCoupon, discount, total, TRY
 
         <div className="flex justify-between font-bold text-[#333]">
           <span>Genel Toplam</span>
-          <span>{TRY(total - discount)}</span>
+      <span>{TRY(finalAmount)}</span>
         </div>
 
         <button
@@ -336,7 +370,9 @@ function MobileSummaryBar({ coupon, setCoupon, applyCoupon, discount, total, TRY
   );
 }
 
-function Summary({ cart, total, coupon, setCoupon, discount, applyCoupon, TRY }) {
+function Summary({ cart, total, coupon, setCoupon, discount, cartDiscount, finalAmount, applyCoupon, TRY }) {
+
+
   return (
     <div className="bg-white rounded-xl border border-gray-200 p-6 shadow-sm h-fit hidden md:block">
       <h3 className="text-lg font-bold mb-3 text-[#444]">Sipariş Özeti</h3>
@@ -397,7 +433,7 @@ function Summary({ cart, total, coupon, setCoupon, discount, applyCoupon, TRY })
 
       <div className="mt-2 pt-3 border-t border-gray-200 flex justify-between font-bold text-[#222] text-lg">
         <span>GENEL TOPLAM</span>
-        <span>{TRY(total - discount)}</span>
+    <span>{TRY(finalAmount)}</span>
       </div>
     </div>
   );

@@ -44,6 +44,7 @@ import AdminMail from "./pages/admin/AdminMail";
 import AdminProfit from "./pages/admin/AdminProfit";
 import AdminSales from "./pages/admin/AdminSales";
 import AdminHome from "./pages/admin/AdminHome";
+import AdminCartDiscounts from "./pages/admin/AdminCartDiscounts";
 
 import MaintenancePage from "./pages/MaintenancePage";
 import { supabase } from "./lib/supabaseClient";
@@ -178,6 +179,7 @@ export default function App() {
           <Route path="profit" element={<AdminProfit />} />
           <Route path="/admin/sales" element={<AdminSales />} />
         <Route path="/admin/home-settings" element={<AdminHome />} />
+        <Route path="/admin/cart-discounts" element={<AdminCartDiscounts />} />
         </Route>
       </Routes>
 

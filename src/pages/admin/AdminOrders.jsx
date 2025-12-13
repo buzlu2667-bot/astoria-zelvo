@@ -105,7 +105,15 @@ export default function AdminOrders() {
     <b>Adres:</b> ${order.address}<br/>
     ${
       order.coupon
-        ? `<b>Kupon:</b> ${order.coupon}<br/><b>İndirim:</b> ₺${order.discount_amount}<br/>`
+        ? `<b>Kupon:</b> ${order.coupon}<br/>${order.coupon_discount_amount > 0 ? `
+<b>Kupon:</b> ${order.coupon}<br/>
+<b>Kupon İndirimi:</b> ₺${order.coupon_discount_amount}<br/>
+` : ""}
+
+${order.cart_discount_amount > 0 ? `
+<b>Sepet İndirimi:</b> ₺${order.cart_discount_amount}<br/>
+` : ""}
+<br/>`
         : ""
     }
   </div>
@@ -161,13 +169,11 @@ Siparişiniz özenle hazırlanıyor. Güvenli ödeme, hızlı teslimat ve premiu
         <p className="text-gray-500">Henüz sipariş yok.</p>
       ) : (
         orders.map(o => {
-         const originalTotal = (items[o.id] || []).reduce(
-  (s, it) => s + it.unit_price * it.quantity, 0
-  
-);
+        
+const couponDiscount = Number(o.coupon_discount_amount || 0);
+const cartDiscount = Number(o.cart_discount_amount || 0);
+const totalDiscount = couponDiscount + cartDiscount;
 
-const total = o.final_amount ?? o.total_amount ?? originalTotal;
-const discount = o.discount_amount ?? 0;
 
 
 
@@ -191,11 +197,18 @@ const discount = o.discount_amount ?? 0;
                <p className="text-xs text-gray-700">
                     <b>Adres:</b> {o.address || "Belirtilmedi"}
                   </p>
-                  {discount > 0 && o.coupon && (
-  <p className="text-xs text-blue-400 font-semibold mt-1">
-    🎟 Kupon: {o.coupon} (İndirim: -{TRY.format(discount)})
+                 {couponDiscount > 0 && o.coupon && (
+  <p className="text-xs text-blue-600 font-semibold mt-1">
+    🎟 Kupon: {o.coupon} ( -{TRY.format(couponDiscount)} )
   </p>
 )}
+
+{cartDiscount > 0 && (
+  <p className="text-xs text-orange-600 font-semibold mt-1">
+    🔥 Sepet İndirimi: -{TRY.format(cartDiscount)}
+  </p>
+)}
+
 
 
                   {o.note && (
@@ -207,23 +220,32 @@ const discount = o.discount_amount ?? 0;
 
                 <div className="text-right">
                   {/* 🔥 İndirim varsa göster */}
-{discount > 0 && (
-  <p className="text-emerald-400 text-sm font-semibold">
-    İndirim: -{TRY.format(discount)}
+
+
+{totalDiscount > 0 && (
+  <p className="text-emerald-600 text-sm font-semibold">
+    Toplam İndirim: -{TRY.format(totalDiscount)}
   </p>
 )}
 
-{/* ✅ Final Tutar */}
-<p className="text-lg font-bold text-gray-900">
-  {TRY.format(total)}
+<p className="text-lg font-bold text-gray-900 mt-1">
+  Ödenen Tutar: {TRY.format(o.final_amount)}
 </p>
 
-{/* 🧾 Ürünlerin gerçek toplamını küçük göster */}
-{discount > 0 && (
-  <p className="text-xs text-gray-400 line-through">
-    {TRY.format(originalTotal)}
-  </p>
+
+{/* 🚚 KARGO DURUMU */}
+{o.shipping_type === "free_shipping" ? (
+  <span className="inline-block mt-1 text-xs font-bold text-green-600 bg-green-50 border border-green-200 px-2 py-1 rounded-lg">
+    🚚 Ücretsiz Kargo
+  </span>
+) : (
+  <span className="inline-block mt-1 text-xs font-bold text-orange-600 bg-orange-50 border border-orange-200 px-2 py-1 rounded-lg">
+    💸 Kargo Müşteriden
+  </span>
 )}
+
+
+
 
 
                   {o.status === "pending" || o.status === "awaiting_payment" ? (
