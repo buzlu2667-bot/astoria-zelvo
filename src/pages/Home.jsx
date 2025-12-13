@@ -444,8 +444,8 @@ const activeCat = homeCats.find((c) => c.slug === openCat);
     </div>
 
     <div className="rounded-xl border border-gray-200 bg-gray-50 px-3 py-2">
-      <p className="text-xs text-gray-500">🔁 İade</p>
-      <p className="text-sm font-semibold text-gray-900">30 gün kolay iade</p>
+      <p className="text-xs text-gray-500">🔁 Değişim</p>
+      <p className="text-sm font-semibold text-gray-900"></p>
     </div>
 
     <div className="rounded-xl border border-gray-200 bg-gray-50 px-3 py-2">
