@@ -229,6 +229,14 @@ useEffect(() => {
 
   const [selectedColor, setSelectedColor] = useState("");
 
+    // ✅ KAZANÇ (old_price - price)
+  const savings = useMemo(() => {
+    const oldP = Number(p?.old_price || 0);
+    const newP = Number(p?.price || 0);
+    return oldP > newP ? oldP - newP : 0;
+  }, [p]);
+
+
   const handleFavClick = () => {
     if (isFav(p.id)) {
       removeFav(p.id);
@@ -266,10 +274,10 @@ useEffect(() => {
   <div className="w-full mx-auto px-4 sm:px-6 md:px-10 pt-4 pb-10">
 
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
+       <div className="grid grid-cols-1 lg:grid-cols-[520px_1fr] gap-10">
 
          {/* GÖRSELLER */}
-<div className="bg-white border border-gray-200 rounded-2xl p-4 shadow-sm">
+<div className="bg-white border border-gray-200 rounded-2xl p-4 shadow-sm lg:sticky lg:top-6 h-fit">
 
   {/* --- MASAÜSTÜ BÜYÜK GÖRSEL + OKLAR --- */}
   <div className="hidden lg:flex items-center justify-center relative">
@@ -292,12 +300,14 @@ useEffect(() => {
       className="cursor-zoom-in"
       onClick={() => setZoomOpen(true)}
     >
-      <img
-        src={mainImage}
-        alt={p.title}
-        className="w-full h-auto object-contain rounded-xl"
-        style={{ aspectRatio: "3/4" }}
-      />
+     <img
+  src={mainImage}
+  alt={p.title}
+className="w-full h-[520px] object-cover rounded-xl bg-white transition-transform duration-300 hover:scale-[1.02]"
+
+  style={{ aspectRatio: "3/4" }}
+/>
+
     </div>
 
     {/* Sağ ok */}
@@ -343,7 +353,7 @@ useEffect(() => {
 >
   <img
     src={mainImage}
-    className="w-full h-auto object-contain rounded-xl"
+  className="w-full h-[420px] object-cover rounded-xl bg-white"
     style={{ aspectRatio: "3/4" }}
     onClick={() => setZoomOpen(true)}   // ⭐⭐⭐ ZOOM BURADA ÇALIŞIR!
   />
@@ -469,6 +479,15 @@ useEffect(() => {
                 {TRY(p.price)}
               </span>
             </div>
+
+                        {/* ✅ KAZANCIN (sadece indirim varsa) */}
+            {savings > 0 && (
+             <div className="mt-2 inline-flex items-center gap-2 bg-green-50 border border-green-200 text-green-700 px-3 py-1 rounded-lg text-sm font-semibold">
+  Avantajın: {TRY(savings)}
+</div>
+
+            )}
+
 
             {/* RENK SEÇİMİ */}
             {parsedColors.length > 0 && (
