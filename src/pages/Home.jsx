@@ -400,12 +400,14 @@ const activeCat = homeCats.find((c) => c.slug === openCat);
         <div
           key={deal.id}
           onClick={() => navigate(`/product/${deal.products.id}`)}
-          className="cursor-pointer bg-white shadow-lg rounded-xl flex flex-col sm:flex-row overflow-hidden hover:shadow-xl transition"
+        className="cursor-pointer bg-white shadow-lg rounded-xl flex flex-col sm:flex-row overflow-hidden hover:shadow-xl transition sm:min-h-[340px]"
+
         >
-          <img
-            src={deal.products.main_img}
-            className="w-full sm:w-1/3 h-64 object-cover"
-          />
+        <img
+  src={deal.products.main_img}
+  className="w-full sm:w-1/3 h-80 sm:h-full object-cover object-center"
+ />
+
 
           <div className="p-5 flex flex-col justify-center">
             <h3 className="text-xl font-bold text-gray-900">
@@ -427,6 +429,62 @@ const activeCat = homeCats.find((c) => c.slug === openCat);
             <p className="text-orange-500 font-bold text-2xl mt-2">
               {(deal.products.price || 0).toLocaleString("tr-TR")} ₺
             </p>
+
+          <div className="mt-6 w-full max-w-md">
+  {/* mini güven rozetleri */}
+  <div className="grid grid-cols-2 gap-2">
+    <div className="rounded-xl border border-gray-200 bg-gray-50 px-3 py-2">
+      <p className="text-xs text-gray-500">🚚 Kargo</p>
+      <p className="text-sm font-semibold text-gray-900">2500₺+ Bedava</p>
+    </div>
+
+    <div className="rounded-xl border border-gray-200 bg-gray-50 px-3 py-2">
+      <p className="text-xs text-gray-500">⚡ Gönderim</p>
+      <p className="text-sm font-semibold text-gray-900">24 saatte kargoda</p>
+    </div>
+
+    <div className="rounded-xl border border-gray-200 bg-gray-50 px-3 py-2">
+      <p className="text-xs text-gray-500">🔁 İade</p>
+      <p className="text-sm font-semibold text-gray-900">30 gün kolay iade</p>
+    </div>
+
+    <div className="rounded-xl border border-gray-200 bg-gray-50 px-3 py-2">
+      <p className="text-xs text-gray-500">🔒 Ödeme</p>
+      <p className="text-sm font-semibold text-gray-900">Güvenli ödeme</p>
+    </div>
+  </div>
+
+  {/* kampanya mesajı */}
+  <div className="mt-3 rounded-xl border border-red-200 bg-red-50 px-4 py-3">
+    <p className="text-sm font-semibold text-red-700">
+      🔥 Kampanya ürünü — stoklarla sınırlı
+    </p>
+    <p className="text-xs text-red-600 mt-1">
+      Bu fırsat kaldırılmadan yakala.
+    </p>
+  </div>
+
+  {/* CTA */}
+  <div className="mt-3 flex gap-3">
+    <button
+      onClick={(e) => {
+        e.stopPropagation();
+        navigate(`/product/${deal.products.id}`);
+      }}
+      className="flex-1 bg-black text-white font-bold py-3 rounded-xl hover:opacity-90 transition"
+    >
+      Ürünü İncele
+    </button>
+
+   
+  </div>
+
+  {/* mini dipnot */}
+  <p className="text-[11px] text-gray-400 mt-2">
+    * Fiyat/indirim stok durumuna göre değişebilir.
+  </p>
+</div>
+
           </div>
         </div>
       ))}
