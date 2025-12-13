@@ -44,28 +44,32 @@ const [activeIndex, setActiveIndex] = useState(0);
 const [homeCats, setHomeCats] = useState([]);
 const [pageLoading, setPageLoading] = useState(true);
   // ⭐ Haftanın Fırsatı
-const [deal, setDeal] = useState(null);
+const [deals, setDeals] = useState([]);
 
-async function loadDeal() {
-  const { data } = await supabase
+async function loadDeals() {
+  const { data, error } = await supabase
     .from("haftanin_firsati")
     .select("*, products(*)")
-    .maybeSingle();
+    .eq("active", true)
+    .order("updated_at", { ascending: false })
+    .limit(5);
 
-  setDeal(data);
+  if (error) console.error("LOAD DEALS ERROR:", error);
+  setDeals(data || []);
 }
 
-useEffect(() => {
-  loadDeal();
-}, []);
+
+
 
 useEffect(() => {
   Promise.all([
-    loadDeal(),
+    loadDeals(),
     loadCampaignsFull(),
     loadData(),
   ]).finally(() => setPageLoading(false));
 }, []);
+
+
 
 
 // ⭐ TRENDYOL Çok Ürünlü Kampanya
@@ -384,47 +388,52 @@ const activeCat = homeCats.find((c) => c.slug === openCat);
       </div>
 
       {/* ⭐ HAFTANIN FIRSATI ALANI */}
-{deal && deal.active && deal.products && (
+{deals.length > 0 && (
   <div className="max-w-7xl mx-auto px-4 mt-12">
-  <h2 className="text-2xl font-bold mb-4 text-red-600 flex items-center gap-2">
-  <FlameKindling className="w-6 h-6 text-red-600" />
-  Haftanın Fırsatı
-</h2>
+    <h2 className="text-2xl font-bold mb-4 text-red-600 flex items-center gap-2">
+      <FlameKindling className="w-6 h-6 text-red-600" />
+      Haftanın Fırsatları
+    </h2>
 
+    <div className="space-y-6">
+      {deals.map((deal) => (
+        <div
+          key={deal.id}
+          onClick={() => navigate(`/product/${deal.products.id}`)}
+          className="cursor-pointer bg-white shadow-lg rounded-xl flex flex-col sm:flex-row overflow-hidden hover:shadow-xl transition"
+        >
+          <img
+            src={deal.products.main_img}
+            className="w-full sm:w-1/3 h-64 object-cover"
+          />
 
-    <div
-      onClick={() => navigate(`/product/${deal.products.id}`)}
-      className="cursor-pointer bg-white shadow-lg rounded-xl flex flex-col sm:flex-row overflow-hidden hover:shadow-xl transition"
-    >
-      <img
-        src={deal.products.main_img}
-        className="w-full sm:w-1/3 h-64 object-cover"
-      />
+          <div className="p-5 flex flex-col justify-center">
+            <h3 className="text-xl font-bold text-gray-900">
+              {deal.products.title}
+            </h3>
 
-      <div className="p-5 flex flex-col justify-center">
-        <h3 className="text-xl font-bold text-gray-900">
-          {deal.products.title}
-        </h3>
+            <p className="text-gray-600 mt-2">{deal.note}</p>
 
-        <p className="text-gray-600 mt-2">{deal.note}</p>
+            <div className="mt-4">
+              <span className="text-gray-400 line-through text-lg">
+                {(deal.products.old_price || 0).toLocaleString("tr-TR")} ₺
+              </span>
 
-        <div className="mt-4">
-          <span className="text-gray-400 line-through text-lg">
-            {(deal.products.old_price || 0).toLocaleString("tr-TR")} ₺
-          </span>
+              <span className="ml-3 bg-red-500 text-white px-3 py-1 rounded-full font-bold">
+                %{deal.discount_percent} İndirim
+              </span>
+            </div>
 
-          <span className="ml-3 bg-red-500 text-white px-3 py-1 rounded-full font-bold">
-            %{deal.discount_percent} İndirim
-          </span>
+            <p className="text-orange-500 font-bold text-2xl mt-2">
+              {(deal.products.price || 0).toLocaleString("tr-TR")} ₺
+            </p>
+          </div>
         </div>
-
-        <p className="text-orange-500 font-bold text-2xl mt-2">
-          {(deal.products.price || 0).toLocaleString("tr-TR")} ₺
-        </p>
-      </div>
+      ))}
     </div>
   </div>
 )}
+
 
 
 {/* ⭐ TRENDYOL TİPİ KAMPANYA BLOKLARI */}

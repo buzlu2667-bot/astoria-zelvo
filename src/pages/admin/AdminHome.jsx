@@ -15,7 +15,7 @@ export default function AdminHome() {
   // -------------------------
   // ⭐ 1) HAFTANIN FIRSATI
   // -------------------------
-  const [hf, setHf] = useState(null);
+const [hfList, setHfList] = useState([]);
   const [hfProduct, setHfProduct] = useState("");
   const [hfDiscount, setHfDiscount] = useState("");
   const [hfNote, setHfNote] = useState("");
@@ -50,49 +50,64 @@ export default function AdminHome() {
   // -------------------------------------
   // ⭐ Haftanın Fırsatı YÜKLE
   // -------------------------------------
-  async function loadHafta() {
-    const { data } = await supabase
-      .from("haftanin_firsati")
-      .select("*")
-      .maybeSingle();
+ async function loadHafta() {
+  const { data, error } = await supabase
+    .from("haftanin_firsati")
+    .select("*, products(id,title,main_img)")
+    .order("updated_at", { ascending: false })
+    .limit(5);
 
-    if (data) {
-      setHf(data);
-      setHfProduct(data.product_id);
-      setHfDiscount(data.discount_percent);
-      setHfNote(data.note);
-      setHfActive(data.active);
+  if (error) console.error("LOAD HAFTA ERROR:", error);
+  setHfList(data || []);
+}
 
-    }
-  }
 
   // ⭐ Haftanın Fırsatı KAYDET
-  async function saveHafta() {
-    if (!hf) {
-      await supabase.from("haftanin_firsati").insert([
-        {
-          product_id: hfProduct,
-          discount_percent: Number(hfDiscount),
-          note: hfNote,
-           active: hfActive
-        },
-      ]);
-    } else {
-      await supabase
-        .from("haftanin_firsati")
-        .update({
-          product_id: hfProduct,
-          discount_percent: Number(hfDiscount),
-          note: hfNote,
-          updated_at: new Date(),
-           active: hfActive
-        })
-        .eq("id", hf.id);
-    }
+ async function saveHafta() {
+  if (!hfProduct) return alert("Ürün seç!");
 
-    loadHafta();
-    alert("Haftanın Fırsatı Kaydedildi!");
+  const { error } = await supabase.from("haftanin_firsati").insert([
+    {
+      product_id: hfProduct,
+      discount_percent: Number(hfDiscount) || 0,
+      note: hfNote || "",
+      active: hfActive,
+      updated_at: new Date(),
+    },
+  ]);
+
+  if (error) {
+    console.error("SAVE HAFTA ERROR:", error);
+    return alert("Hata var, console bak.");
   }
+
+  // formu temizle
+  setHfProduct("");
+  setHfDiscount("");
+  setHfNote("");
+  setHfActive(true);
+
+  await loadHafta();
+  alert("Haftanın Fırsatına eklendi!");
+}
+
+// ✅ Haftanın Fırsatı: Sil
+async function deleteHafta(id) {
+  const { error } = await supabase.from("haftanin_firsati").delete().eq("id", id);
+  if (error) console.error("DELETE HAFTA ERROR:", error);
+  loadHafta();
+}
+
+// ✅ Haftanın Fırsatı: Aktif/Pasif
+async function toggleHaftaActive(id, active) {
+  const { error } = await supabase
+    .from("haftanin_firsati")
+    .update({ active, updated_at: new Date() })
+    .eq("id", id);
+
+  if (error) console.error("TOGGLE HAFTA ERROR:", error);
+  loadHafta();
+}
 
   // -----------------------------------------------------------------
   // ⭐ TRENDYOL TIPİ KAMPANYALAR: Kampanyalar + içindeki ürünleri yükle
@@ -239,6 +254,55 @@ export default function AdminHome() {
           Kaydet
         </button>
       </div>
+
+      {/* ✅ Ekli Haftanın Fırsatları (son 5) — Kaydet butonunun altı */}
+<div className="mt-6">
+  <p className="font-bold mb-2">Ekli Fırsatlar (son 5)</p>
+
+  {hfList.length === 0 ? (
+    <p className="text-gray-400 text-sm">Henüz eklenmemiş.</p>
+  ) : (
+    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+      {hfList.map((x) => (
+        <div
+          key={x.id}
+          className="bg-black border border-gray-700 rounded-lg p-3 flex gap-3"
+        >
+          <img
+            src={x.products?.main_img}
+            className="w-20 h-20 object-cover rounded"
+          />
+
+          <div className="flex-1">
+            <p className="font-semibold text-sm">{x.products?.title}</p>
+            <p className="text-xs text-gray-300 mt-1">
+              %{x.discount_percent} — {x.note}
+            </p>
+
+            <div className="flex gap-2 mt-2">
+              <button
+                onClick={() => toggleHaftaActive(x.id, !x.active)}
+                className={`text-xs px-2 py-1 rounded ${
+                  x.active ? "bg-yellow-500 text-black" : "bg-gray-600 text-white"
+                }`}
+              >
+                {x.active ? "Aktif" : "Pasif"}
+              </button>
+
+              <button
+                onClick={() => deleteHafta(x.id)}
+                className="text-xs px-2 py-1 rounded bg-red-600"
+              >
+                Sil
+              </button>
+            </div>
+          </div>
+        </div>
+      ))}
+    </div>
+  )}
+</div>
+
 
       {/* ----------------⭐ VİTRİN / KAMPANYA BLOKLARI ---------------- */}
       <h2 className="text-2xl font-bold mb-4">🎯 Vitrin / Kampanya Blokları</h2>
