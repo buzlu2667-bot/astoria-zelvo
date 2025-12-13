@@ -56,7 +56,7 @@ export default function CategoryMain() {
     );
 
   return (
-  <div className="px-6 pt-[110px] pb-6">
+<div className="px-6 pt-4 pb-6">
    <h1 className="text-3xl font-bold mb-4 text-gray-800">
   {main?.title} Kategorileri
 </h1>
