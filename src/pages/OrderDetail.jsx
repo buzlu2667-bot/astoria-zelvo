@@ -48,7 +48,8 @@ export default function OrderDetail() {
   const status = STATUS[order.status] || STATUS.pending;
 
   return (
-   <div className="min-h-screen bg-[#f6f6f6] px-4 pt-[90px] pb-8">
+<div className="min-h-screen bg-[#f6f6f6] px-4 pt-4 pb-8">
+
       <div className="max-w-3xl mx-auto bg-white p-6 rounded-xl shadow-sm border border-gray-200">
 
         {/* BAŞLIK */}
