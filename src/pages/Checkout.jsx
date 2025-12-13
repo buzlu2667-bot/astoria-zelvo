@@ -11,13 +11,21 @@ const TRY = (n) =>
   });
 
 export default function Checkout() {
- const {
+const {
   cart,
-  total,
-  cartDiscount,      // 🔥 sepet indirimi
+
+  subtotal,                 // ✅ indirimsiz ara toplam
+  cartExtraDiscount,        // ✅ sepet indirimi tutarı
+  cartExtraDiscountPercent, // ✅ sepet indirimi %
+  total,                    // ✅ sepet indirimi sonrası toplam (kargo hariç)
+
+  hasFreeShipping,          // ✅ ücretsiz kargo kazanıldı mı
+  remainingForFreeShipping, // ✅ ücretsiz kargo için kalan
+
   placeOrder,
-  clearCart
+  clearCart,
 } = useCart();
+
 
 
 
@@ -44,14 +52,15 @@ export default function Checkout() {
   phone: false,
   address: false,
 });
+const SHIPPING_FEE = 149; // istersen sonra ayarlardan çekersin
+const shippingFee = hasFreeShipping ? 0 : SHIPPING_FEE;
 
 
-  const finalAmount = Math.max(
-  Number(total || 0) -
-  Number(discount || 0) -
-  Number(cartDiscount || 0),
+ const finalAmount = Math.max(
+  Number(total || 0) + Number(shippingFee || 0) - Number(discount || 0),
   0
 );
+
 
   const change = (k, v) => setForm((f) => ({ ...f, [k]: v }));
 
@@ -90,10 +99,11 @@ const res = await placeOrder({
 
   coupon: discount > 0 ? coupon : null,
   coupon_discount_amount: discount,
-  cart_discount_amount: cartDiscount,
+cart_discount_amount: cartExtraDiscount,
+total_amount: total,            // sepet indirimi sonrası (kargo hariç)
+final_amount: finalAmount,      // kupon + kargo sonrası tek gerçek
+shipping_amount: shippingFee,   // ✅ (db'de kolon yoksa kaldır)
 
-  total_amount: total,
-  final_amount: finalAmount, // 🔥 TEK GERÇEK
 });
 
 
@@ -310,12 +320,20 @@ ${cartDiscount > 0 ? `<b>Sepet İndirimi:</b> ₺${cartDiscount}<br/>` : ""}
   setCoupon={setCoupon}
   applyCoupon={applyCoupon}
   discount={discount}
-  cartDiscount={cartDiscount}
+
+  subtotal={subtotal}
+  cartExtraDiscount={cartExtraDiscount}
+  cartExtraDiscountPercent={cartExtraDiscountPercent}
+  shippingFee={shippingFee}
+  hasFreeShipping={hasFreeShipping}
+  remainingForFreeShipping={remainingForFreeShipping}
+
   total={total}
   finalAmount={finalAmount}
   TRY={TRY}
   validateBeforePayment={validateBeforePayment}
 />
+
 
 {/* ✅ ORTALAMA WRAPPER (PROTEINOCN GİBİ) */}
 <div className="w-full">
@@ -432,17 +450,25 @@ ${cartDiscount > 0 ? `<b>Sepet İndirimi:</b> ₺${cartDiscount}<br/>` : ""}
 
     {/* ÖZET */}
     <div className="hidden lg:block w-full">
-      <Summary
-        cart={cart}
-        total={total}
-        coupon={coupon}
-        setCoupon={setCoupon}
-        discount={discount}
-        cartDiscount={cartDiscount}
-        finalAmount={finalAmount}
-        applyCoupon={applyCoupon}
-        TRY={TRY}
-      />
+     <Summary
+  cart={cart}
+
+  subtotal={subtotal}
+  cartExtraDiscount={cartExtraDiscount}
+  cartExtraDiscountPercent={cartExtraDiscountPercent}
+  shippingFee={shippingFee}
+  hasFreeShipping={hasFreeShipping}
+  remainingForFreeShipping={remainingForFreeShipping}
+
+  total={total}
+  coupon={coupon}
+  setCoupon={setCoupon}
+  discount={discount}
+  finalAmount={finalAmount}
+  applyCoupon={applyCoupon}
+  TRY={TRY}
+/>
+
     </div>
 
   </div>
@@ -467,12 +493,21 @@ function MobileSummaryBar({
   setCoupon,
   applyCoupon,
   discount,
-  cartDiscount,
+
+  subtotal,
+  cartExtraDiscount,
+  cartExtraDiscountPercent,
+
+  shippingFee,
+  hasFreeShipping,
+  remainingForFreeShipping,
+
   total,
   finalAmount,
   TRY,
   validateBeforePayment,
 }) {
+
   const [open, setOpen] = useState(false);
 
   const itemCount = cart.reduce((acc, i) => acc + Number(i.quantity || 0), 0);
@@ -579,21 +614,40 @@ function MobileSummaryBar({
 
             {/* Tutarlar */}
             <div className="mt-4 space-y-2 text-sm">
-              <Row label="Ara Toplam" value={TRY(total)} />
-              {cartDiscount > 0 && (
-                <Row
-                  label="Sepet İndirimi"
-                  value={`- ${TRY(cartDiscount)}`}
-                  valueClass="text-green-600"
-                />
-              )}
-              {discount > 0 && (
-                <Row
-                  label="Kupon İndirimi"
-                  value={`- ${TRY(discount)}`}
-                  valueClass="text-green-600"
-                />
-              )}
+             <Row label="Ara Toplam" value={TRY(subtotal)} />
+
+{cartExtraDiscount > 0 && (
+  <Row
+    label={`Sepet İndirimi (%${cartExtraDiscountPercent})`}
+    value={`- ${TRY(cartExtraDiscount)}`}
+    valueClass="text-green-600"
+  />
+)}
+
+<Row
+  label="Kargo"
+  value={shippingFee === 0 ? `${TRY(0)} (Ücretsiz)` : TRY(shippingFee)}
+  valueClass={shippingFee === 0 ? "text-green-600" : "text-gray-900"}
+/>
+
+{discount > 0 && (
+  <Row
+    label="Kupon İndirimi"
+    value={`- ${TRY(discount)}`}
+    valueClass="text-green-600"
+  />
+)}
+
+/* opsiyonel küçük mesaj */
+{shippingFee > 0 ? (
+  <p className="text-[11px] text-blue-600 mt-1">
+    🚚 Ücretsiz kargo için {TRY(remainingForFreeShipping)} kaldı
+  </p>
+) : (
+  <p className="text-[11px] text-green-600 font-semibold mt-1">
+    🎉 Ücretsiz kargo aktif
+  </p>
+)}
 
               <div className="pt-3 border-t border-gray-200 flex items-center justify-between">
                 <span className="text-base font-extrabold text-gray-900">
@@ -630,15 +684,24 @@ function Row({ label, value, valueClass = "text-gray-900" }) {
 
 function Summary({
   cart,
+
+  subtotal,
+  cartExtraDiscount,
+  cartExtraDiscountPercent,
+
+  shippingFee,
+  hasFreeShipping,
+  remainingForFreeShipping,
+
   total,
   coupon,
   setCoupon,
   discount,
-  cartDiscount,
   finalAmount,
   applyCoupon,
   TRY,
 }) {
+
   const itemCount = cart.reduce((acc, i) => acc + Number(i.quantity || 0), 0);
 
   return (
@@ -735,21 +798,41 @@ function Summary({
 
             {/* Totals */}
             <div className="mt-5 rounded-2xl border border-gray-100 bg-gray-50 p-4 space-y-2">
-              <Row label="Ara Toplam" value={TRY(total)} />
-              {cartDiscount > 0 && (
-                <Row
-                  label="Sepet İndirimi"
-                  value={`- ${TRY(cartDiscount)}`}
-                  valueClass="text-green-600"
-                />
-              )}
-              {discount > 0 && (
-                <Row
-                  label="Kupon İndirimi"
-                  value={`- ${TRY(discount)}`}
-                  valueClass="text-green-600"
-                />
-              )}
+             <Row label="Ara Toplam" value={TRY(subtotal)} />
+
+{cartExtraDiscount > 0 && (
+  <Row
+    label={`Sepet İndirimi (%${cartExtraDiscountPercent})`}
+    value={`- ${TRY(cartExtraDiscount)}`}
+    valueClass="text-green-600"
+  />
+)}
+
+<Row
+  label="Kargo"
+  value={shippingFee === 0 ? `${TRY(0)} (Ücretsiz)` : TRY(shippingFee)}
+  valueClass={shippingFee === 0 ? "text-green-600" : "text-gray-900"}
+/>
+
+{discount > 0 && (
+  <Row
+    label="Kupon İndirimi"
+    value={`- ${TRY(discount)}`}
+    valueClass="text-green-600"
+  />
+)}
+
+/* opsiyonel küçük mesaj */
+{shippingFee > 0 ? (
+  <p className="text-[11px] text-blue-600 mt-1">
+    🚚 Ücretsiz kargo için {TRY(remainingForFreeShipping)} kaldı
+  </p>
+) : (
+  <p className="text-[11px] text-green-600 font-semibold mt-1">
+    🎉 Ücretsiz kargo aktif
+  </p>
+)}
+
 
               <div className="pt-3 border-t border-gray-200 flex items-center justify-between">
                 <span className="text-base font-extrabold text-gray-900">
