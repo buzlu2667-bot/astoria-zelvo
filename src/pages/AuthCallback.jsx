@@ -4,6 +4,7 @@ import { sendShopAlert } from "../utils/sendShopAlert";
 
 export default function AuthCallback() {
   useEffect(() => {
+    console.log("🔥 AUTH CALLBACK ÇALIŞTI");
     async function run() {
       // User al
       const {
