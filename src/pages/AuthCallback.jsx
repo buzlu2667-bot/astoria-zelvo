@@ -3,78 +3,47 @@ import { supabase } from "../lib/supabaseClient";
 import { sendShopAlert } from "../utils/sendShopAlert";
 
 export default function AuthCallback() {
-  useEffect(() => {
-    console.log("🔥 AUTH CALLBACK ÇALIŞTI");
-    async function run() {
-      // User al
-      const {
-        data: { user },
-      } = await supabase.auth.getUser();
+ useEffect(() => {
+  async function run() {
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) return;
 
-      if (!user) {
-        window.location.href = "/login";
-        return;
-      }
+    const isNewUser = user.created_at === user.last_sign_in_at;
 
-      // Profile var mı?
-      const { data: profile } = await supabase
-        .from("profiles")
-        .select("*")
-        .eq("id", user.id)
-        .maybeSingle();
-
-      // Full name fallback
-      const name =
-        user.user_metadata.full_name ||
-        user.user_metadata.name ||
-        user.email.split("@")[0];
-
-      if (!profile) {
-        // Yeni profile oluştur
-        await supabase.from("profiles").insert({
-          id: user.id,
-          email: user.email,
-          full_name: name,
-          phone: user.user_metadata.phone || "",
-        });
-
-         await sendShopAlert(`
+    if (isNewUser) {
+      await sendShopAlert(`
 🆕 YENİ ÜYE (GOOGLE)
 📧 ${user.email}
-👤 ${name}
-`);
+👤 ${user.user_metadata?.full_name || "-"}
+      `);
 
-        // 🎉 TOAST → KAYIT BAŞARILI
-        window.dispatchEvent(
-          new CustomEvent("toast", {
-            detail: {
-              type: "success",
-              text: "🎉 Google ile kayıt başarılı! Hoş geldin!",
-            },
-          })
-        );
-      } else {
-        // 👋 TOAST → GİRİŞ BAŞARILI
-        window.dispatchEvent(
-          new CustomEvent("toast", {
-            detail: {
-              type: "success",
-              text: "👋 Google ile giriş yapıldı!",
-            },
-          })
-        );
-      }
-
-
-
-      // ⏳ Toast'ın görünmesi için küçük bekleme
-      setTimeout(() => {
-        window.location.href = "/";
-      }, 1200);
+      window.dispatchEvent(
+        new CustomEvent("toast", {
+          detail: {
+            type: "success",
+            text: "🎉 Google ile kayıt başarılı!",
+          },
+        })
+      );
+    } else {
+      window.dispatchEvent(
+        new CustomEvent("toast", {
+          detail: {
+            type: "success",
+            text: "👋 Google ile giriş yapıldı!",
+          },
+        })
+      );
     }
 
-    run();
-  }, []);
+    setTimeout(() => {
+      window.location.href = "/";
+    }, 800);
+  }
+
+  run();
+}, []);
+
 
   return (
     <div className="flex items-center justify-center h-screen text-lg">
