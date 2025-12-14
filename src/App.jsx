@@ -110,22 +110,53 @@ export default function App() {
 
 useEffect(() => {
   supabase.auth.getSession().then(({ data }) => {
-    if (data?.session?.user) {
-      const user = data.session.user;
+    const user = data?.session?.user;
+    if (!user) return;
 
-      const key = `tg_new_user_${user.id}`;
-      if (localStorage.getItem(key)) return;
+    const key = `tg_new_user_${user.id}`;
+    const provider = user.app_metadata?.provider || "email";
 
+    // 🆕 İLK KEZ → KAYIT
+    if (!localStorage.getItem(key)) {
+      // 📩 Telegram
       sendShopAlert(`
 🆕 YENİ ÜYE
 📧 ${user.email}
-🔑 ${user.app_metadata?.provider}
+🔑 ${provider}
 `);
 
+      // 🎉 Toast (KAYIT)
+      window.dispatchEvent(
+        new CustomEvent("toast", {
+          detail: {
+            type: "success",
+            text:
+              provider === "google"
+                ? "🎉 Google ile kayıt başarılı! Hoş geldin!"
+                : "🎉 Kayıt başarılı! Hoş geldin!",
+          },
+        })
+      );
+
       localStorage.setItem(key, "true");
+      return;
     }
+
+    // 👋 DAHA ÖNCE VAR → GİRİŞ
+    window.dispatchEvent(
+      new CustomEvent("toast", {
+        detail: {
+          type: "success",
+          text:
+            provider === "google"
+              ? "👋 Google ile giriş yapıldı"
+              : "👋 Giriş yapıldı",
+        },
+      })
+    );
   });
 }, []);
+
 
 
   
