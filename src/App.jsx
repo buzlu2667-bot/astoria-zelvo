@@ -113,19 +113,18 @@ useEffect(() => {
     const user = data?.session?.user;
     if (!user) return;
 
-    const key = `tg_new_user_${user.id}`;
     const provider = user.app_metadata?.provider || "email";
+    const registerKey = `tg_new_user_${user.id}`;
+    const loginToastKey = `login_toast_shown_${user.id}`;
 
     // 🆕 İLK KEZ → KAYIT
-    if (!localStorage.getItem(key)) {
-      // 📩 Telegram
+    if (!localStorage.getItem(registerKey)) {
       sendShopAlert(`
 🆕 YENİ ÜYE
 📧 ${user.email}
 🔑 ${provider}
 `);
 
-      // 🎉 Toast (KAYIT)
       window.dispatchEvent(
         new CustomEvent("toast", {
           detail: {
@@ -138,24 +137,30 @@ useEffect(() => {
         })
       );
 
-      localStorage.setItem(key, "true");
+      localStorage.setItem(registerKey, "true");
+      sessionStorage.setItem(loginToastKey, "true");
       return;
     }
 
-    // 👋 DAHA ÖNCE VAR → GİRİŞ
-    window.dispatchEvent(
-      new CustomEvent("toast", {
-        detail: {
-          type: "success",
-          text:
-            provider === "google"
-              ? "👋 Google ile giriş yapıldı"
-              : "👋 Giriş yapıldı",
-        },
-      })
-    );
+    // 👋 GİRİŞ TOAST → SADECE 1 KEZ (refresh’te yok)
+    if (!sessionStorage.getItem(loginToastKey)) {
+      window.dispatchEvent(
+        new CustomEvent("toast", {
+          detail: {
+            type: "success",
+            text:
+              provider === "google"
+                ? "👋 Google ile giriş yapıldı"
+                : "👋 Giriş yapıldı",
+          },
+        })
+      );
+
+      sessionStorage.setItem(loginToastKey, "true");
+    }
   });
 }, []);
+
 
 
 
