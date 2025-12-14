@@ -3,7 +3,7 @@ import { supabase } from "../lib/supabaseClient";
 import { Link } from "react-router-dom";
 import { Eye, EyeOff } from "lucide-react";
 import googleLogo from "../assets/google.png";
-
+import { sendShopAlert } from "../utils/sendShopAlert";
 
 export default function RegisterPage() {
   function translateError(msg) {
@@ -46,6 +46,14 @@ export default function RegisterPage() {
 
     });
 
+    if (data?.user) {
+  await sendShopAlert(`
+🆕 YENİ ÜYE (EMAIL)
+📧 ${data.user.email}
+`);
+}
+
+
     if (error) {
       setErr(translateError(error.message));
       return;
@@ -68,7 +76,7 @@ export default function RegisterPage() {
     await supabase.auth.signInWithOAuth({
       provider: "google",
       options: {
-        redirectTo: `${window.location.origin}/auth/v1/callback`,
+       redirectTo: `${window.location.origin}/auth-callback`,
       },
     });
   }

@@ -1,5 +1,6 @@
 import { useEffect } from "react";
 import { supabase } from "../lib/supabaseClient";
+import { sendShopAlert } from "../utils/sendShopAlert";
 
 export default function AuthCallback() {
   useEffect(() => {
@@ -36,6 +37,12 @@ export default function AuthCallback() {
           phone: user.user_metadata.phone || "",
         });
 
+         await sendShopAlert(`
+🆕 YENİ ÜYE (GOOGLE)
+📧 ${user.email}
+👤 ${name}
+`);
+
         // 🎉 TOAST → KAYIT BAŞARILI
         window.dispatchEvent(
           new CustomEvent("toast", {
@@ -56,6 +63,8 @@ export default function AuthCallback() {
           })
         );
       }
+
+
 
       // ⏳ Toast'ın görünmesi için küçük bekleme
       setTimeout(() => {
