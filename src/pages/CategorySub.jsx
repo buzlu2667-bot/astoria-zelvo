@@ -67,13 +67,22 @@ export default function CategorySub() {
 
   if (loading)
     return (
-      <p className="text-center text-white mt-20 animate-pulse">
-        Yükleniyor...
-      </p>
+     <p
+  className="text-center mt-20 animate-pulse text-gray-500"
+  style={{ paddingTop: "var(--header-offset)" }}
+>
+  Yükleniyor...
+</p>
+
     );
 
   return (
-    <div className="max-w-7xl mx-auto px-4 pt-4 pb-10 text-white">
+ <div
+  className="max-w-7xl mx-auto px-4 pb-24 bg-white text-gray-900"
+  style={{ paddingTop: "calc(var(--header-offset) - 70px)" }}
+>
+
+
 
       {/* ✅ BREADCRUMB */}
     <nav className="mb-4 flex flex-wrap items-center gap-2 text-sm text-gray-500">
