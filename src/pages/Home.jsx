@@ -670,6 +670,8 @@ const activeCat = homeCats.find((c) => c.slug === openCat);
             "
           >
            {c.items.map((item) => (
+
+            
   <div
   key={item.id}
   className="
@@ -681,14 +683,18 @@ const activeCat = homeCats.find((c) => c.slug === openCat);
   <ProductCardVertical p={item.products} />
 </div>
 
-))}
+  ))}
 
           </div>
+          <p className="text-center text-gray-400 text-sm mt-2 md:hidden animate-pulse">
+  Kaydır →
+</p>
         </div>
       </div>
     ))}
 
   </div>
+  
 )}
 
 
@@ -742,9 +748,13 @@ const activeCat = homeCats.find((c) => c.slug === openCat);
 ))}
 
       </div>
+      <p className="text-center text-gray-400 text-sm mt-2 md:hidden animate-pulse">
+  Kaydır →
+</p>
     </div>
   </div>
 )}
+
 
 
 
@@ -797,15 +807,19 @@ const activeCat = homeCats.find((c) => c.slug === openCat);
 ))}
 
       </div>
-
+   {/* ✅ SADECE KARTLAR VARSA */}
+      <p className="text-center text-gray-400 text-sm mt-2 md:hidden animate-pulse">
+        Kaydır →
+      </p>
     </div>
   </div>
 )}
 
-
   </div>
   );
 }
+
+
 
 /* ----------------------------- SECTION SWITCH ----------------------------- */
 

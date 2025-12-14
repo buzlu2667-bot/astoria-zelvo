@@ -400,6 +400,10 @@ useEffect(() => {
 
       </div>
 
+       <p className="text-center text-gray-400 text-sm mt-2 md:hidden animate-pulse">
+  Kaydır →
+</p>
+
     </div>
   </div>
 )}
