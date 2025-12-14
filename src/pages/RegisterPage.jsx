@@ -72,14 +72,15 @@ export default function RegisterPage() {
     setMsg("✔️ Kayıt başarılı! Lütfen e-postanı doğrula.");
   }
 
-  async function googleLogin() {
-    await supabase.auth.signInWithOAuth({
-      provider: "google",
-      options: {
-      redirectTo: `${window.location.origin}/auth/callback`,
-      },
-    });
-  }
+ async function googleLogin() {
+  await supabase.auth.signInWithOAuth({
+    provider: "google",
+    options: {
+      redirectTo: "https://www.maximorashop.com/auth/callback",
+    },
+  });
+}
+
 
 
   return (

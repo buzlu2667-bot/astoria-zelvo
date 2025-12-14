@@ -14,7 +14,6 @@ import ReturnPolicyPage from "./pages/ReturnPolicyPage";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
 import Toast from "./components/Toast";
-import Callback from "./pages/auth/Callback";
 import AuthCallback from "./pages/AuthCallback"; 
 import DeleteDataPage from "./pages/DeleteDataPage";
 
@@ -161,7 +160,6 @@ export default function App() {
         <Route path="/kvkk" element={<KvkkPage />} />
           <Route path="/gizlilik-politikasi" element={<PrivacyPage />} />
          <Route path="/iade-kosullari" element={<ReturnPolicyPage />} />
-         <Route path="/auth/callback" element={<Callback />} />
        <Route path="/auth/callback" element={<AuthCallback />} />
            <Route path="/delete-data" element={<DeleteDataPage />} />
 
