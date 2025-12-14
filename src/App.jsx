@@ -162,7 +162,7 @@ export default function App() {
           <Route path="/gizlilik-politikasi" element={<PrivacyPage />} />
          <Route path="/iade-kosullari" element={<ReturnPolicyPage />} />
          <Route path="/auth/callback" element={<Callback />} />
-           <Route path="/auth/v1/callback" element={<AuthCallback />} />
+       <Route path="/auth/callback" element={<AuthCallback />} />
            <Route path="/delete-data" element={<DeleteDataPage />} />
 
 
