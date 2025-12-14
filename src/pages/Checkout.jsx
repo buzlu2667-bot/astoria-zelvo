@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { sendShopAlert } from "../utils/sendShopAlert";
 import { Link } from "react-router-dom";
 import { Home, ShoppingCart } from "lucide-react";
-
+import { ChevronDown } from "lucide-react";
 const TRY = (n) =>
   Number(n || 0).toLocaleString("tr-TR", {
     style: "currency",
@@ -450,9 +450,16 @@ ${cartExtraDiscount > 0 ? `<b>Sepet İndirimi:</b> ₺${cartExtraDiscount}<br/>`
   `}
 >
   <span>💳 Ödemeye Geç</span>
-  <span className={`transition-transform ${showPayment ? "rotate-180" : ""}`}>
-    ▾
-  </span>
+ <div className="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center">
+  <ChevronDown
+    className={`
+      w-5 h-5 text-white
+      transition-transform duration-300
+      ${showPayment ? "rotate-180" : ""}
+    `}
+  />
+</div>
+
 </button>
 
 {showPayment && (
@@ -564,6 +571,27 @@ function MobileSummaryBar({
 
   const [open, setOpen] = useState(false);
 
+  useEffect(() => {
+  if (!open) return;
+
+  let lastY = window.scrollY;
+
+  const onScroll = () => {
+    const currentY = window.scrollY;
+
+    // aşağı doğru scroll varsa kapat
+    if (currentY > lastY + 10) {
+      setOpen(false);
+    }
+
+    lastY = currentY;
+  };
+
+  window.addEventListener("scroll", onScroll);
+  return () => window.removeEventListener("scroll", onScroll);
+}, [open]);
+
+
   const itemCount = cart.reduce((acc, i) => acc + Number(i.quantity || 0), 0);
 
   return (
@@ -600,13 +628,16 @@ function MobileSummaryBar({
       {TRY(finalAmount)}
     </span>
 
-    <span
-      className={`text-lg transition-transform duration-300 ${
-        open ? "rotate-180" : ""
-      }`}
-    >
-      ▾
-    </span>
+   <div className="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center">
+  <ChevronDown
+    className={`
+      w-5 h-5 text-white
+      transition-transform duration-300
+      ${open ? "rotate-180" : ""}
+    `}
+  />
+</div>
+
   </div>
 </button>
 

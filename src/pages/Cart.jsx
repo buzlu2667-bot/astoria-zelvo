@@ -10,7 +10,7 @@ import { useRef } from "react";
 import ProductCardVertical from "../components/ProductCardVertical";
 import { Link } from "react-router-dom";
 import { Home, ShoppingCart } from "lucide-react";
-
+import { ChevronDown } from "lucide-react";
 export default function Cart() {
 const {
   cart,
@@ -36,6 +36,8 @@ const {
   const { session } = useSession();
   const nav = useNavigate();
 const [mobileSummaryOpen, setMobileSummaryOpen] = useState(false);
+
+
    // ⭐ İLGİNİZİ ÇEKEBİLİR STATE
   const [suggested, setSuggested] = useState([]);
   const suggestedRef = useRef(null);
@@ -169,13 +171,23 @@ useEffect(() => {
       </div>
     </div>
 
-    <span
-      className={`transition-transform ${
-        mobileSummaryOpen ? "rotate-180" : ""
-      }`}
-    >
-      ▾
-    </span>
+    <div
+  className="
+    w-8 h-8 rounded-full
+    bg-white/20
+    flex items-center justify-center
+    transition-all
+  "
+>
+  <ChevronDown
+    className={`
+      w-5 h-5 text-white
+      transition-transform duration-300 ease-out
+      ${mobileSummaryOpen ? "rotate-180" : ""}
+    `}
+  />
+</div>
+
   </button>
 
   {/* BODY */}
