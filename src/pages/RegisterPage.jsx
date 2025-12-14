@@ -108,6 +108,20 @@ export default function RegisterPage() {
             <div className="flex-1 h-px bg-gray-300" />
           </div>
 
+          {/* 🎁 Yeni Üyelere Özel Kampanya */}
+<div className="mt-5 mb-6 rounded-xl border border-orange-200 bg-orange-50 px-4 py-3 text-center">
+  <p className="text-sm font-bold text-orange-700">
+    🎁 Yeni Üyelere Özel 100 ₺ İndirim Kodu
+  </p>
+  <p className="text-sm text-orange-600 mt-1">
+    Kayıt olan kullanıcılara özel tanımlanır.
+  </p>
+  <p className="text-[11px] text-orange-500 mt-1">
+    * Kampanya dönemsel olarak geçerlidir.
+  </p>
+</div>
+
+
           {/* FORM */}
           <form onSubmit={handleRegister} className="space-y-4">
             

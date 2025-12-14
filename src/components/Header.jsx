@@ -174,7 +174,7 @@ async function loadUnreadMessages() {
  const { data, error } = await supabase
   .from("messages")
   .select("*")
-  .or(`is_global.eq.true,user_id.eq.${user.id}`)
+.or(`is_global.eq.true,user_id.eq.${user.id},user_email.eq.${user.email}`)
   .eq("is_read", false)
   .eq("hidden_by_user", false);   // ⭐⭐ EKLENECEK SATIR
 

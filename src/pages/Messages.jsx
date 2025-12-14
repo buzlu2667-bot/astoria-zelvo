@@ -4,7 +4,6 @@ import { supabase } from "../lib/supabaseClient";
 import { Megaphone, MessageCircle, Trash2, Home, Mail } from "lucide-react";
 import { useSession } from "../context/SessionContext";
 import { Link } from "react-router-dom";
-
 export default function Messages() {
   const { session } = useSession();
 
@@ -42,12 +41,14 @@ export default function Messages() {
     const user = (await supabase.auth.getUser()).data.user;
     if (!user) return;
 
-    const { data } = await supabase
-      .from("messages")
-      .select("*")
-      .eq("hidden_by_user", false)
-      .or(`is_global.eq.true,user_id.eq.${user.id}`)
-      .order("created_at", { ascending: false });
+   const { data } = await supabase
+  .from("messages")
+  .select("*")
+  .eq("hidden_by_user", false)
+  .or(
+    `is_global.eq.true,user_id.eq.${user.id},user_email.eq.${user.email}`
+  )
+  .order("created_at", { ascending: false });
 
     setMessages(data || []);
     setLoading(false);

@@ -7,6 +7,8 @@ export default function AdminSendMessage() {
   const [target, setTarget] = useState("global"); // ⭐ Varsayılan GLOBAL
   const [title, setTitle] = useState("");
   const [message, setMessage] = useState("");
+  const [targetEmail, setTargetEmail] = useState("");
+
 
   useEffect(() => {
     loadUsers();
@@ -38,14 +40,23 @@ export default function AdminSendMessage() {
       });
     }
     // ⭐ KULLANICIYA ÖZEL MESAJ
-    else {
-      await supabase.from("messages").insert({
-        title,
-        message,
-        user_id: target,
-        is_global: false,
-      });
-    }
+   else {
+  if (!targetEmail) {
+    return window.dispatchEvent(
+      new CustomEvent("toast", {
+        detail: { type: "danger", text: "E-posta girmen lazım!" },
+      })
+    );
+  }
+
+  await supabase.from("messages").insert({
+    title,
+    message,
+    is_global: false,
+    user_email: targetEmail,
+  });
+}
+
 
     window.dispatchEvent(
       new CustomEvent("toast", {
@@ -110,18 +121,22 @@ export default function AdminSendMessage() {
             <label className="text-sm text-gray-300 mb-2 block">
               Kullanıcı Seç
             </label>
-            <select
-              className="w-full p-3 bg-black/40 border border-yellow-500/30 rounded-xl mb-5"
-              value={target}
-              onChange={(e) => setTarget(e.target.value)}
-            >
-              <option value="">Seçiniz…</option>
-              {users.map((u) => (
-                <option key={u.id} value={u.id}>
-                  {u.email} ({u.username})
-                </option>
-              ))}
-            </select>
+          {target !== "global" && (
+  <>
+    <label className="text-sm text-gray-300 mb-2 block">
+      Kullanıcı E-posta
+    </label>
+
+    <input
+      type="email"
+      placeholder="kullanici@mail.com"
+      className="w-full p-3 bg-black/40 border border-yellow-500/30 rounded-xl mb-5 focus:border-yellow-400 outline-none"
+      value={targetEmail}
+      onChange={(e) => setTargetEmail(e.target.value)}
+    />
+  </>
+)}
+
           </>
         )}
 
