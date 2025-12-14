@@ -492,7 +492,7 @@ const activeCat = homeCats.find((c) => c.slug === openCat);
       {/* ⭐ Slider alt yazı — sade */}
       <div className="w-full text-center mt-3">
         <h1 className="text-xl font-semibold text-gray-800">
-          2500 TL üzeri kargo bedava
+          1500 TL üzeri kargo bedava
         </h1>
       </div>
 
@@ -555,7 +555,7 @@ const activeCat = homeCats.find((c) => c.slug === openCat);
   <div className="grid grid-cols-2 gap-2">
     <div className="rounded-xl border border-gray-200 bg-gray-50 px-3 py-2">
       <p className="text-xs text-gray-500">🚚 Kargo</p>
-      <p className="text-sm font-semibold text-gray-900">2500₺+ Bedava</p>
+      <p className="text-sm font-semibold text-gray-900">1500₺+ Bedava</p>
     </div>
 
     <div className="rounded-xl border border-gray-200 bg-gray-50 px-3 py-2">

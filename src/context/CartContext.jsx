@@ -14,7 +14,7 @@ export function CartProvider({ children }) {
 const [discountRules, setDiscountRules] = useState([]);
 
   // 🚚 ÜCRETSİZ KARGO LİMİTİ
-  const FREE_SHIPPING_LIMIT = 2500;
+  const FREE_SHIPPING_LIMIT = 1500;
 
 useEffect(() => {
   loadDiscountRules();
