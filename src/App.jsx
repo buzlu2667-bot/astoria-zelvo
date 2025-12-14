@@ -14,8 +14,8 @@ import ReturnPolicyPage from "./pages/ReturnPolicyPage";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
 import Toast from "./components/Toast";
-import AuthCallback from "./pages/AuthCallback"; 
 import DeleteDataPage from "./pages/DeleteDataPage";
+import { sendShopAlert } from "./utils/sendShopAlert";
 
 import CategoryMain from "./pages/CategoryMain";
 import CategorySub from "./pages/CategorySub";
@@ -108,6 +108,24 @@ export default function App() {
     checkAdmin();
   }, []);
 
+useEffect(() => {
+  supabase.auth.getSession().then(({ data }) => {
+    if (data?.session?.user) {
+      const user = data.session.user;
+
+      const key = `tg_new_user_${user.id}`;
+      if (localStorage.getItem(key)) return;
+
+      sendShopAlert(`
+🆕 YENİ ÜYE
+📧 ${user.email}
+🔑 ${user.app_metadata?.provider}
+`);
+
+      localStorage.setItem(key, "true");
+    }
+  });
+}, []);
 
 
   
@@ -160,7 +178,7 @@ export default function App() {
         <Route path="/kvkk" element={<KvkkPage />} />
           <Route path="/gizlilik-politikasi" element={<PrivacyPage />} />
          <Route path="/iade-kosullari" element={<ReturnPolicyPage />} />
-       <Route path="/auth/callback" element={<AuthCallback />} />
+     
            <Route path="/delete-data" element={<DeleteDataPage />} />
 
 
