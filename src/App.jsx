@@ -117,22 +117,21 @@ useEffect(() => {
     const registerKey = `tg_new_user_${user.id}`;
     const loginToastKey = `login_toast_shown_${user.id}`;
 
-    // 🆕 İLK KEZ → KAYIT
-    if (!localStorage.getItem(registerKey)) {
+    // 🆕 SADECE GOOGLE İLE İLK KAYIT
+    if (provider === "google" && !localStorage.getItem(registerKey)) {
+      // 📩 Telegram (SADECE GOOGLE REGISTER)
       sendShopAlert(`
-🆕 YENİ ÜYE
+🆕 YENİ ÜYE (GOOGLE)
 📧 ${user.email}
-🔑 ${provider}
+🔑 google
 `);
 
+      // 🎉 Toast → Google kayıt
       window.dispatchEvent(
         new CustomEvent("toast", {
           detail: {
             type: "success",
-            text:
-              provider === "google"
-                ? "🎉 Google ile kayıt başarılı! Hoş geldin!"
-                : "🎉 Kayıt başarılı! Hoş geldin!",
+            text: "🎉 Google ile kayıt başarılı! Hoş geldin!",
           },
         })
       );
@@ -142,7 +141,7 @@ useEffect(() => {
       return;
     }
 
-    // 👋 GİRİŞ TOAST → SADECE 1 KEZ (refresh’te yok)
+    // 👋 GİRİŞ TOAST (EMAIL + GOOGLE) → SADECE 1 KEZ
     if (!sessionStorage.getItem(loginToastKey)) {
       window.dispatchEvent(
         new CustomEvent("toast", {
