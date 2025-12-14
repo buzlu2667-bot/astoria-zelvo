@@ -3,6 +3,8 @@ import { useState, useEffect } from "react";
 import { useCart } from "../context/CartContext";
 import { useNavigate } from "react-router-dom";
 import { sendShopAlert } from "../utils/sendShopAlert";
+import { Link } from "react-router-dom";
+import { Home, ShoppingCart } from "lucide-react";
 
 const TRY = (n) =>
   Number(n || 0).toLocaleString("tr-TR", {
@@ -306,11 +308,67 @@ ${cartExtraDiscount > 0 ? `<b>Sepet İndirimi:</b> ₺${cartExtraDiscount}<br/>`
 
   return (
 <div className="min-h-screen bg-white">
-      {/* BAŞLIK */}
-<h1 className="text-2xl sm:text-3xl font-bold text-center text-[#333] mt-6 sm:mt-12 mb-6 sm:mb-10">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 pt-6 pb-10">
 
-  Siparişinizi Tamamlayın
-</h1>
+  {/* Breadcrumb */}
+  <nav className="mb-4 flex flex-wrap items-center gap-2 text-sm text-gray-500">
+    <Link to="/" className="inline-flex items-center gap-1 hover:text-gray-800">
+      <Home className="w-4 h-4" />
+      <span>Ana Sayfa</span>
+    </Link>
+
+    <span className="text-gray-300">/</span>
+
+    <Link to="/cart" className="hover:text-gray-800">
+      Sepetim
+    </Link>
+
+    <span className="text-gray-300">/</span>
+
+    <span className="text-gray-900 font-semibold">
+      Ödeme
+    </span>
+  </nav>
+
+  {/* Premium Header */}
+  <div className="
+    relative overflow-hidden rounded-3xl
+    border border-white/10 bg-gray-900/85 backdrop-blur
+    shadow-[0_18px_60px_-40px_rgba(0,0,0,0.85)]
+    px-5 py-6 sm:px-7 sm:py-7
+  ">
+    <div className="absolute inset-0 pointer-events-none bg-[radial-gradient(700px_circle_at_15%_20%,rgba(249,115,22,0.35),transparent_60%)]" />
+
+    <div className="relative flex items-start justify-between gap-4">
+      <div className="flex items-start gap-4">
+        <div className="w-12 h-12 rounded-2xl bg-orange-500/15 border border-orange-500/20 flex items-center justify-center">
+          <ShoppingCart className="w-6 h-6 text-orange-300" />
+        </div>
+
+        <div>
+          <div className="text-xs font-semibold tracking-wide text-gray-300">
+            Güvenli Ödeme
+          </div>
+
+          <h1 className="mt-1 text-2xl sm:text-3xl font-extrabold text-white">
+            Siparişinizi Tamamlayın
+          </h1>
+
+          <p className="mt-1 text-sm sm:text-base text-gray-200">
+            Teslimat ve ödeme bilgilerinizi girerek siparişinizi oluşturun.
+          </p>
+        </div>
+      </div>
+
+      <div className="hidden sm:block text-right">
+        <div className="text-xs text-gray-300">Toplam</div>
+        <div className="text-sm font-semibold text-white">
+          {TRY(finalAmount)}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
 
 {/* 📱 MOBİL SIPARIS OZETI – HEADER ALTINDA */}
 <MobileSummaryBar

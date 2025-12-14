@@ -3,7 +3,7 @@ import { useParams, Link } from "react-router-dom";
 import { supabase } from "../lib/supabaseClient";
 import { useCart } from "../context/CartContext";
 import { useFavorites } from "../context/FavoritesContext";
-import { Heart, ZoomIn, ChevronLeft, ChevronRight } from "lucide-react";
+import { Heart, ZoomIn, ChevronLeft, ChevronRight, Home } from "lucide-react";
 import { useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { useSession } from "../context/SessionContext";
@@ -84,6 +84,7 @@ const touchEndX = useRef(0);
   const [mainImage, setMainImage] = useState("");
   const [zoomOpen, setZoomOpen] = useState(false);
   const [images, setImages] = useState([]);
+  const [crumbs, setCrumbs] = useState([]);
 const autoScrollRef = useRef(null);
   const relatedRef = useRef(null);
 
@@ -111,9 +112,55 @@ const scrollRightRelated = () =>
       if (!alive) return;
 
       setP(data);
+
+
       setLoading(false);
 
-      
+      // ✅ Breadcrumb üret (sub_id -> sub_categories -> main_categories)
+(async () => {
+  try {
+    if (!data?.sub_id) {
+      setCrumbs([]);
+      return;
+    }
+
+    // 1) sub category çek
+    const { data: sub, error: subErr } = await supabase
+     .from("sub_categories")
+.select("id, title, main_id")
+
+      .eq("id", data.sub_id)
+      .single();
+
+   
+
+
+    if (subErr) {
+ 
+      setCrumbs([]);
+      return;
+    }
+
+    // 2) main category çek
+    const { data: main, error: mainErr } = await supabase
+     .from("main_categories")
+.select("id, title")
+
+      .eq("id", sub.main_id)
+      .single();
+
+    if (mainErr) {
+
+     setCrumbs([sub?.title].filter(Boolean));
+      return;
+    }
+
+  setCrumbs([main?.title, sub?.title].filter(Boolean));
+  } catch (e) {
+ 
+    setCrumbs([]);
+  }
+})();
 
       // Benzer ürünler yükle
       const { data: relatedProducts } = await supabase
@@ -179,6 +226,7 @@ const scrollRightRelated = () =>
   // Görseller
   useEffect(() => {
     if (!p) return;
+    
 
     const imgs = [];
     if (p.main_img) imgs.push(p.main_img);
@@ -268,6 +316,8 @@ useEffect(() => {
         Ürün bulunamadı.
       </div>
     );
+
+   
 
   return (
  <div className="min-h-screen bg-white text-gray-900">
@@ -394,10 +444,28 @@ className="w-full h-[520px] object-cover rounded-xl bg-white transition-transfor
     ))}
   </div>
 )}
-
+    
 
           {/* ÜRÜN BİLGİLERİ */}
           <div>
+              {/* BREADCRUMB */}
+<nav className="mb-3 flex flex-wrap items-center gap-2 text-sm text-gray-500">
+  <Link to="/" className="inline-flex items-center gap-1 hover:text-gray-800">
+    <Home className="w-4 h-4" />
+    <span>Ana Sayfa</span>
+  </Link>
+
+  {crumbs.map((c, i) => (
+    <span key={i} className="inline-flex items-center gap-2">
+      <span className="text-gray-300">/</span>
+
+      {/* şimdilik link yok; istersen category sayfan varsa linkleriz */}
+      <span className={i === crumbs.length - 1 ? "text-gray-800 font-semibold" : "hover:text-gray-800"}>
+        {c}
+      </span>
+    </span>
+  ))}
+</nav>
             <div className="flex items-start justify-between">
               <h1 className="text-2xl md:text-3xl font-bold">{p.title}</h1>
 

@@ -1,7 +1,8 @@
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { useFavorites } from "../context/FavoritesContext";
 import { useCart } from "../context/CartContext";
-import { ShoppingCart, Trash2, Heart } from "lucide-react";
+import { ShoppingCart, Trash2, Heart, Home } from "lucide-react";
+import { Sparkles } from "lucide-react";
 import { supabase } from "../lib/supabaseClient";
 import { Hourglass } from "lucide-react";
 const TRY = (n) =>
@@ -28,13 +29,34 @@ export default function Favorites() {
   const { addToCart } = useCart();
   const navigate = useNavigate();
 
+
+  
   /* ----------- BOŞ FAVORİLER ----------- */
-  if (!favorites || favorites.length === 0)
-    return (
-      <div className="min-h-[60vh] flex flex-col items-center justify-center text-center bg-white">
-        <Heart className="w-14 h-14 text-[#f27a1a] opacity-70" />
-        <h2 className="mt-4 text-3xl font-bold text-gray-800">Favoriler Boş</h2>
-        <p className="text-gray-500 mt-1 text-sm">
+ if (!favorites || favorites.length === 0)
+  return (
+    <div className="min-h-[60vh] bg-white px-5 py-10">
+
+      {/* ✅ BREADCRUMB (BOŞKEN DE GÖZÜKSÜN) */}
+      <nav className="mb-6 flex flex-wrap items-center gap-2 text-sm text-gray-500">
+        <Link to="/" className="inline-flex items-center gap-1 hover:text-gray-900">
+          <Home className="w-4 h-4" />
+          <span>Ana Sayfa</span>
+        </Link>
+
+        <span className="text-gray-300">/</span>
+
+        <span className="text-gray-900 font-semibold">Favorilerim</span>
+      </nav>
+
+      {/* BOŞ FAVORİ İÇERİĞİ */}
+      <div className="min-h-[45vh] flex flex-col items-center justify-center text-center">
+        <Heart className="w-14 h-14 text-red-500 fill-red-500 drop-shadow-[0_0_10px_rgba(255,0,0,0.35)]" />
+
+        <h2 className="mt-4 text-3xl font-extrabold text-gray-900 tracking-tight">
+          Favoriler Boş
+        </h2>
+
+        <p className="text-gray-500 mt-2 text-sm">
           Beğendiğin ürünleri burada görebilirsin.
         </p>
 
@@ -45,15 +67,65 @@ export default function Favorites() {
           Alışverişe Başla
         </button>
       </div>
-    );
+    </div>
+  );
+
 
   /* ----------- LİSTE ----------- */
   return (
   <div className="max-w-7xl mx-auto px-5 py-10 bg-white">
-     <h1 className="text-3xl font-bold mb-8 text-gray-800 flex items-center gap-2">
-  <Heart className="w-7 h-7 text-red-500 fill-red-500 drop-shadow-[0_0_8px_rgba(255,0,0,0.4)]" />
-  Favorilerim
-</h1>
+
+    {/* ✅ BREADCRUMB */}
+<nav className="mb-4 flex flex-wrap items-center gap-2 text-sm text-gray-500">
+  <Link to="/" className="inline-flex items-center gap-1 hover:text-gray-900">
+    <Home className="w-4 h-4" />
+    <span>Ana Sayfa</span>
+  </Link>
+
+  <span className="text-gray-300">/</span>
+
+  <span className="text-gray-900 font-semibold">Favorilerim</span>
+</nav>
+
+   {/* PREMIUM HEADER */}
+<div className="
+  relative overflow-hidden rounded-3xl
+  border border-gray-200 bg-white
+  shadow-[0_18px_60px_-40px_rgba(0,0,0,0.25)]
+  px-5 py-6 sm:px-7 sm:py-7 mb-8
+">
+  <div className="absolute inset-0 pointer-events-none bg-[radial-gradient(700px_circle_at_15%_20%,rgba(249,115,22,0.18),transparent_60%)]" />
+
+  <div className="relative flex items-start justify-between gap-4">
+    <div className="flex items-start gap-4">
+      <div className="w-12 h-12 rounded-2xl bg-orange-50 border border-orange-100 flex items-center justify-center">
+        <Heart className="w-6 h-6 text-red-500 fill-red-500" />
+      </div>
+
+      <div className="min-w-0">
+        <div className="text-xs font-semibold tracking-wide text-gray-500">
+          Favoriler
+        </div>
+
+        <h1 className="mt-1 text-2xl sm:text-3xl font-extrabold tracking-tight text-gray-900">
+          Favorilerim
+        </h1>
+
+        <p className="mt-1 text-sm sm:text-base text-gray-600">
+          Beğendiklerin burada. Tek tıkla sepete ekle.
+        </p>
+      </div>
+    </div>
+
+    <div className="hidden sm:flex flex-col items-end">
+      <div className="text-xs text-gray-500">Toplam</div>
+      <div className="mt-1 text-sm font-semibold text-gray-900">
+        {favorites.length} ürün
+      </div>
+    </div>
+  </div>
+</div>
+
 
 
       {/* Trendyol grid */}

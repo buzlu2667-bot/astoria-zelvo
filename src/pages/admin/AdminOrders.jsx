@@ -36,10 +36,10 @@ export default function AdminOrders() {
     setOrders(od || []);
 
     if (od?.length) {
-      const { data: its } = await supabase
-        .from("order_items")
-        .select("*")
-        .in("order_id", od.map(o => o.id));
+     const { data: its } = await supabase
+  .from("order_items")
+  .select("id, order_id, product_name, quantity, unit_price, color, image_url")
+  .in("order_id", od.map(o => o.id));
 
       const grouped = {};
       (its || []).forEach(it => {
@@ -287,17 +287,43 @@ const totalDiscount = couponDiscount + cartDiscount;
     }
 
     return (
-      <li key={it.id}>
-        ✅ {it.product_name || it.name} × {it.quantity} —{" "}
-        {TRY.format(it.unit_price || it.price)}
+      <ul className="mt-4 space-y-3 border-t border-gray-200 pt-4">
+  {(items[o.id] || []).map((it) => (
+    <li
+      key={it.id}
+      className="flex items-center gap-3 rounded-xl border border-gray-100 p-3 bg-gray-50"
+    >
+      {/* ✅ Ürün görseli */}
+      <div className="w-14 h-14 rounded-xl overflow-hidden border border-gray-200 bg-white shrink-0">
+        <img
+          src={it.image_url || "/products/default.png"}
+          alt={it.product_name || "Ürün"}
+          className="w-full h-full object-cover"
+          draggable="false"
+        />
+      </div>
 
-       {it.color && (
-<p className="ml-6 mt-1 text-gray-600 text-xs">
-    Renk: <span className="text-gray-700">{it.color}</span>
-  </p>
-)}
+      {/* ✅ Ürün adı + adet + renk */}
+      <div className="min-w-0 flex-1">
+        <p className="font-bold text-gray-900 truncate">
+          {it.product_name || "Ürün"} × {it.quantity}
+        </p>
 
-      </li>
+        <p className="text-sm font-extrabold text-gray-900">
+          {TRY.format(it.unit_price || 0)}
+        </p>
+
+        <p className="text-xs text-gray-600 mt-1">
+          Renk:{" "}
+          <span className="font-semibold text-gray-800">
+            {it.color || "Belirtilmedi"}
+          </span>
+        </p>
+      </div>
+    </li>
+  ))}
+</ul>
+
     );
   })}
 </ul>

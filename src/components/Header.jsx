@@ -753,17 +753,22 @@ async function closeNotification() {
   {/* Yazılar */}
   <div className="leading-[1.1] flex flex-col hidden sm:flex">
 
-    <div className="relative">
-      {/* OUTLINE */}
-      <span className="absolute inset-0 text-blue-900 font-extrabold tracking-wide text-xl opacity-60 pointer-events-none">
-        MAXIMORA
-      </span>
+   <div className="relative flex items-center gap-[1px]">
+  {/* MAT SİYAH YAZI */}
+  <span className="text-gray-900 font-extrabold tracking-wide text-xl">
+    MAXI
+  </span>
 
-      {/* MAIN COLOR */}
-      <span className="relative text-[#f27a1a] font-extrabold tracking-wide text-xl">
-        MAXIMORA
-      </span>
-    </div>
+  {/* GOLD AKSENT – SADECE M */}
+  <span className="text-[#C9A24D] font-extrabold tracking-wide text-xl">
+    M
+  </span>
+
+  {/* DEVAM */}
+  <span className="text-gray-900 font-extrabold tracking-wide text-xl">
+    ORA
+  </span>
+</div>
 
     {/* Alt yazı */}
     <span className="text-[10px] tracking-[0.3em] text-blue-400 uppercase group-hover:text-yellow-400 transition">

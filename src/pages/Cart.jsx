@@ -1,6 +1,6 @@
 import { useCart } from "../context/CartContext";
 import { useSession } from "../context/SessionContext";
-import { ShoppingCart } from "lucide-react";
+
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import ProductCardCart from "../components/ProductCardCart";
@@ -8,6 +8,8 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 import { supabase } from "../lib/supabaseClient"; // Eğer yoksa ekle
 import { useRef } from "react";
 import ProductCardVertical from "../components/ProductCardVertical";
+import { Link } from "react-router-dom";
+import { Home, ShoppingCart } from "lucide-react";
 
 export default function Cart() {
 const {
@@ -96,19 +98,54 @@ useEffect(() => {
 
   return (
    <div className="min-h-screen bg-[#f6f6f6] p-4 md:p-6">
-     {/* ⭐ SEPET BAŞLIK BLOĞU */}
-<div className="bg-white p-4 md:p-6 rounded-2xl shadow-sm border border-gray-200 mb-6">
-  <div className="flex items-center gap-3">
-    <ShoppingCart className="w-8 h-8 text-[#f27a1a]" />
-    
-    <div>
-      <h2 className="text-2xl font-bold text-gray-800">Sepetim</h2>
-      <p className="text-gray-500 text-sm mt-1">
-        Eklediğiniz ürünlerin detaylarını aşağıdan düzenleyebilirsiniz.
-      </p>
+  {/* Breadcrumb */}
+<nav className="mb-4 flex flex-wrap items-center gap-2 text-sm text-gray-500">
+  <Link to="/" className="inline-flex items-center gap-1 hover:text-gray-800">
+    <Home className="w-4 h-4" />
+    <span>Ana Sayfa</span>
+  </Link>
+  <span className="text-gray-300">/</span>
+  <span className="text-gray-900 font-semibold">Sepetim</span>
+</nav>
+
+{/* Premium Header */}
+<div className="
+  relative overflow-hidden rounded-3xl
+  border border-white/10 bg-gray-900/85 backdrop-blur
+  shadow-[0_18px_60px_-40px_rgba(0,0,0,0.85)]
+  px-5 py-6 sm:px-7 sm:py-7
+  mb-6
+">
+  <div className="absolute inset-0 pointer-events-none bg-[radial-gradient(700px_circle_at_15%_20%,rgba(249,115,22,0.35),transparent_60%)]" />
+
+  <div className="relative flex items-start justify-between gap-4">
+    <div className="flex items-start gap-4">
+      <div className="w-12 h-12 rounded-2xl bg-orange-500/15 border border-orange-500/20 flex items-center justify-center">
+        <ShoppingCart className="w-6 h-6 text-orange-300" />
+      </div>
+
+      <div>
+        <div className="text-xs font-semibold tracking-wide text-gray-300">
+          Alışveriş
+        </div>
+        <h1 className="mt-1 text-2xl sm:text-3xl font-extrabold text-white">
+          Sepetim
+        </h1>
+        <p className="mt-1 text-sm text-gray-200">
+          Eklediğin ürünleri buradan düzenleyebilir ve ödemeye geçebilirsin.
+        </p>
+      </div>
+    </div>
+
+    <div className="hidden sm:block text-right">
+      <div className="text-xs text-gray-300">Toplam</div>
+      <div className="text-sm font-semibold text-white">
+        {cart.length} ürün
+      </div>
     </div>
   </div>
 </div>
+
 
       {/* 2 SÜTUN: Sol ürünler / Sağ özet */}
       <div className="flex flex-col lg:flex-row gap-6">

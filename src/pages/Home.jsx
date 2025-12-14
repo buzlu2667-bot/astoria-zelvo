@@ -18,7 +18,9 @@ import {
   ChevronLeft,
   ChevronRight,
   FlameKindling,
-  ChevronDown
+  ChevronDown,
+   PawPrint,
+     Handbag
 } from "lucide-react";
 
 const ICONS = {
@@ -215,6 +217,8 @@ const campaignRight = () =>
     { desktop: "/hero/slide6.jpg", tablet: "/hero/slide6-tablet.jpg", mobile: "/hero/slide6-mobil.jpg", url: "/category/petshop/mama" },
  
   ];
+
+  
 const activeCat = homeCats.find((c) => c.slug === openCat);
 
   return (
@@ -236,27 +240,58 @@ const activeCat = homeCats.find((c) => c.slug === openCat);
 
    {/* ================= Kadın Aksesuar ================= */}
 <button
-  onClick={() =>
-    setOpenCat(openCat === "Katagoriler" ? null : "Katagoriler")
-  }
+  onClick={() => setOpenCat(openCat === "Katagoriler" ? null : "Katagoriler")}
   className={`
-    flex items-center gap-1.5
-    px-3 py-1.5 text-sm
-    sm:px-5 sm:py-2.5 sm:text-base
-    rounded-full font-semibold border transition
+    group relative
+    inline-flex items-center gap-2
+    h-11 px-4
+    rounded-2xl
+    text-[13px] font-semibold
+    transition-all duration-200
     ${
       openCat === "Katagoriler"
-        ? "bg-black text-white border-black"
-        : "bg-gray-50 text-gray-800 border-gray-200 hover:bg-gray-100"
+        ? "bg-gray-900 text-white shadow-[0_12px_30px_-16px_rgba(0,0,0,0.6)]"
+        : "bg-white text-gray-900 shadow-[0_8px_24px_-18px_rgba(0,0,0,0.35)] hover:shadow-[0_12px_30px_-16px_rgba(0,0,0,0.45)]"
     }
+    border border-gray-200/70
   `}
 >
-  Kadın Aksesuar
-  <ChevronDown
-    className={`w-3.5 h-3.5 sm:w-4 sm:h-4 transition ${
-      openCat === "Katagoriler" ? "rotate-180" : ""
-    }`}
+  {/* sol mini accent */}
+  <span
+    className={`
+      h-7 w-[3px] rounded-full
+      ${openCat === "Katagoriler" ? "bg-orange-400" : "bg-gray-200 group-hover:bg-gray-300"}
+    `}
   />
+
+  <span
+  className={`
+    grid place-items-center
+    w-7 h-7 rounded-xl
+    transition
+    ${openCat === "Katagoriler"
+      ? "bg-white/10 text-white"
+      : "bg-gray-100 text-gray-700 group-hover:bg-gray-200"}
+  `}
+>
+  <Handbag className="w-4 h-4" />
+</span>
+
+
+  <span className="leading-none">Kadın Aksesuar</span>
+
+  {/* ok */}
+  <ChevronDown
+    className={`
+      w-4 h-4 ml-1 transition
+      ${openCat === "Katagoriler" ? "rotate-180 text-white" : "text-gray-500 group-hover:text-gray-800"}
+    `}
+  />
+
+  {/* active ring */}
+  {openCat === "Katagoriler" && (
+    <span className="absolute inset-0 rounded-2xl ring-1 ring-white/20 pointer-events-none" />
+  )}
 </button>
 
 
@@ -265,66 +300,151 @@ const activeCat = homeCats.find((c) => c.slug === openCat);
 
     {/* ================= Petshop ================= */}
    <button
-  onClick={() =>
-    setOpenCat(openCat === "petshop" ? null : "petshop")
-  }
+  onClick={() => setOpenCat(openCat === "petshop" ? null : "petshop")}
   className={`
-    flex items-center gap-1.5
-    px-3 py-1.5 text-sm
-    sm:px-5 sm:py-2.5 sm:text-base
-    rounded-full font-semibold border transition
+    group relative
+    inline-flex items-center gap-2
+    h-11 px-4
+    rounded-2xl
+    text-[13px] font-semibold
+    transition-all duration-200
     ${
       openCat === "petshop"
-        ? "bg-black text-white border-black"
-        : "bg-gray-50 text-gray-800 border-gray-200 hover:bg-gray-100"
+        ? "bg-gray-900 text-white shadow-[0_12px_30px_-16px_rgba(0,0,0,0.6)]"
+        : "bg-white text-gray-900 shadow-[0_8px_24px_-18px_rgba(0,0,0,0.35)] hover:shadow-[0_12px_30px_-16px_rgba(0,0,0,0.45)]"
     }
+    border border-gray-200/70
   `}
 >
-  Petshop
-  <ChevronDown
-    className={`w-3.5 h-3.5 sm:w-4 sm:h-4 transition ${
-      openCat === "petshop" ? "rotate-180" : ""
-    }`}
+  <span
+    className={`
+      h-7 w-[3px] rounded-full
+      ${openCat === "petshop" ? "bg-orange-400" : "bg-gray-200 group-hover:bg-gray-300"}
+    `}
   />
+
+  <span
+  className={`
+    grid place-items-center
+    w-7 h-7 rounded-xl
+    transition
+    ${openCat === "petshop"
+      ? "bg-white/10 text-white"
+      : "bg-gray-100 text-gray-700 group-hover:bg-gray-200"}
+  `}
+>
+  <PawPrint className="w-4 h-4" />
+</span>
+
+
+  <span className="leading-none">Petshop</span>
+
+  <ChevronDown
+    className={`
+      w-4 h-4 ml-1 transition
+      ${openCat === "petshop" ? "rotate-180 text-white" : "text-gray-500 group-hover:text-gray-800"}
+    `}
+  />
+
+  {openCat === "petshop" && (
+    <span className="absolute inset-0 rounded-2xl ring-1 ring-white/20 pointer-events-none" />
+  )}
 </button>
 
   </div>
 
   {/* ⬇️ ALT KATEGORİLER — MODERN LİSTE */}
-  {openCat && activeCat && (
-  <div className="mt-4 bg-gray-50 rounded-xl border p-4">
-    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
-      {activeCat.subs.map((s) => (
-        <button
-          key={s.id}
-          onClick={() => {
-            setOpenCat(null);
-            navigate(`/category/${activeCat.slug}/${s.slug}`);
-          }}
+ {openCat && activeCat && (
+  <>
+    {/* BACKDROP */}
+    <div
+      onClick={() => setOpenCat(null)}
+      className="fixed inset-0 z-40 bg-black/40 backdrop-blur-md backdrop-saturate-150"
+    />
+
+    {/* MODAL */}
+    <div className="fixed top-[120px] left-1/2 -translate-x-1/2 z-50 w-[92%] max-w-4xl">
+      <div
+        className="
+          relative
+          bg-white/90 backdrop-blur-xl
+          rounded-3xl
+          shadow-[0_30px_80px_-20px_rgba(0,0,0,0.35)]
+          border border-white/40
+          p-6
+        "
+      >
+        {/* GLOW */}
+        <div
           className="
-            group w-full text-left
-            px-4 py-3 rounded-xl
-            bg-white border border-gray-200
-            hover:border-black hover:shadow-md
-            transition-all duration-200
-            flex items-center justify-between
+            pointer-events-none absolute inset-0 rounded-3xl
+            bg-[radial-gradient(600px_circle_at_20%_0%,rgba(249,115,22,0.25),transparent_60%)]
           "
-        >
-          <span className="text-sm font-medium text-gray-800">
-            {s.title}
-          </span>
-          <ChevronRight className="w-4 h-4 text-gray-400 group-hover:text-black transition" />
-        </button>
-      ))}
+        />
+
+        <div className="relative">
+          {/* HEADER */}
+          <div className="flex items-center justify-between mb-5">
+            <div>
+              <p className="text-xs text-gray-500">Kategori</p>
+              <h3 className="text-xl font-bold text-gray-900">
+                {activeCat.title}
+              </h3>
+            </div>
+
+            <button
+              onClick={() => setOpenCat(null)}
+              className="
+                w-9 h-9 rounded-full border border-gray-200
+                flex items-center justify-center
+                hover:bg-gray-100 transition
+              "
+            >
+              ✕
+            </button>
+          </div>
+
+          {/* ALT KATEGORİLER */}
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
+            {activeCat.subs.map((s) => (
+              <button
+                key={s.id}
+                onClick={() => {
+                  setOpenCat(null);
+                  navigate(`/category/${activeCat.slug}/${s.slug}`);
+                }}
+                className="
+                  group relative w-full text-left
+                  px-4 py-3 rounded-2xl
+                  bg-white/70 border border-gray-200
+                  hover:border-black
+                  hover:shadow-[0_12px_30px_-12px_rgba(0,0,0,0.35)]
+                  transition-all duration-200
+                  flex items-center justify-between
+                "
+              >
+                <span className="text-sm font-semibold text-gray-900">
+                  {s.title}
+                </span>
+
+                <ChevronRight
+                  className="
+                    w-4 h-4 text-gray-400
+                    group-hover:text-black
+                    group-hover:translate-x-0.5
+                    transition
+                  "
+                />
+              </button>
+            ))}
+          </div>
+        </div>
+      </div>
     </div>
-  </div>
+  </>
 )}
 
 </div>
-
-
-
-
 
       {/* 🚨 SLIDER BLOĞUNA DOKUNMADIM — 1 satır bile değişmedi */}
       <section
@@ -356,7 +476,7 @@ const activeCat = homeCats.find((c) => c.slug === openCat);
         </Swiper>
 
           {/* ⭐ CUSTOM DOTS */}
-  <div className="absolute bottom-5 left-0 right-0 flex justify-center gap-2 z-50">
+<div className="absolute bottom-5 left-0 right-0 flex justify-center gap-2 z-10">
     {slides.map((_, i) => (
       <div
         key={i}
