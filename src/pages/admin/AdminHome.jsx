@@ -6,6 +6,7 @@ export default function AdminHome() {
   const [products, setProducts] = useState([]);
 
   const [search, setSearch] = useState("");
+  const [hfEndAt, setHfEndAt] = useState("");
 
   const filteredProducts = products.filter(p =>
   p.title.toLowerCase().includes(search.toLowerCase())
@@ -21,6 +22,8 @@ const [hfList, setHfList] = useState([]);
   const [hfNote, setHfNote] = useState("");
 
   const [hfActive, setHfActive] = useState(true);
+  const [editingHaftaId, setEditingHaftaId] = useState(null);
+
 
   // -------------------------
   // ⭐ 2) KAMPANYALAR (TrendYol Tipi)
@@ -66,29 +69,45 @@ const [hfList, setHfList] = useState([]);
  async function saveHafta() {
   if (!hfProduct) return alert("Ürün seç!");
 
-  const { error } = await supabase.from("haftanin_firsati").insert([
-    {
-      product_id: hfProduct,
-      discount_percent: Number(hfDiscount) || 0,
-      note: hfNote || "",
-      active: hfActive,
-      updated_at: new Date(),
-    },
-  ]);
+  const payload = {
+    product_id: hfProduct,
+    discount_percent: Number(hfDiscount) || 0,
+    note: hfNote || "",
+    active: hfActive,
+    end_at: hfEndAt ? new Date(hfEndAt).toISOString() : null,
+    updated_at: new Date(),
+  };
+
+  let error;
+
+  if (editingHaftaId) {
+    // ✏️ DÜZENLE
+    ({ error } = await supabase
+      .from("haftanin_firsati")
+      .update(payload)
+      .eq("id", editingHaftaId));
+  } else {
+    // ➕ YENİ EKLE
+    ({ error } = await supabase
+      .from("haftanin_firsati")
+      .insert([payload]));
+  }
 
   if (error) {
     console.error("SAVE HAFTA ERROR:", error);
     return alert("Hata var, console bak.");
   }
 
-  // formu temizle
+  // 🔄 FORM RESET
   setHfProduct("");
   setHfDiscount("");
   setHfNote("");
   setHfActive(true);
+  setHfEndAt("");
+  setEditingHaftaId(null);
 
-  await loadHafta();
-  alert("Haftanın Fırsatına eklendi!");
+  loadHafta();
+  alert(editingHaftaId ? "Güncellendi!" : "Eklendi!");
 }
 
 // ✅ Haftanın Fırsatı: Sil
@@ -236,6 +255,18 @@ async function toggleHaftaActive(id, active) {
           onChange={(e) => setHfNote(e.target.value)}
         />
 
+        <label className="block font-semibold mt-4">
+  Bitiş Tarihi & Saati
+</label>
+
+<input
+  type="datetime-local"
+  className={inputClass}
+  value={hfEndAt}
+  onChange={(e) => setHfEndAt(e.target.value)}
+/>
+
+
         <label className="block font-semibold mt-4">Aktif mi?</label>
 <select
   className={inputClass}
@@ -247,12 +278,13 @@ async function toggleHaftaActive(id, active) {
 </select>
 
 
-        <button
-          onClick={saveHafta}
-          className="mt-4 bg-yellow-500 text-black font-bold px-5 py-2 rounded hover:bg-yellow-400"
-        >
-          Kaydet
-        </button>
+      <button
+  onClick={saveHafta}
+  className="mt-4 bg-yellow-500 text-black font-bold px-5 py-2 rounded hover:bg-yellow-400"
+>
+  {editingHaftaId ? "Güncelle" : "Kaydet"}
+</button>
+
       </div>
 
       {/* ✅ Ekli Haftanın Fırsatları (son 5) — Kaydet butonunun altı */}
@@ -295,6 +327,25 @@ async function toggleHaftaActive(id, active) {
               >
                 Sil
               </button>
+              <button
+  onClick={() => {
+    setEditingHaftaId(x.id);
+    setHfProduct(x.product_id);
+    setHfDiscount(x.discount_percent);
+    setHfNote(x.note || "");
+    setHfActive(x.active);
+    setHfEndAt(
+      x.end_at
+        ? new Date(x.end_at).toISOString().slice(0, 16)
+        : ""
+    );
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }}
+  className="text-xs px-2 py-1 rounded bg-blue-600"
+>
+  Düzenle
+</button>
+
             </div>
           </div>
         </div>

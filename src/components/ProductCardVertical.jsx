@@ -2,6 +2,7 @@ import { useNavigate } from "react-router-dom";
 import { useFavorites } from "../context/FavoritesContext";
 import { useCart } from "../context/CartContext";
 import { ShoppingCart, Hourglass } from "lucide-react";
+import DealCountdown from "./DealCountdown";
 
 function pickImage(p) {
   return (
@@ -47,6 +48,7 @@ export default function ProductCardVertical({ p, hideCartButton = false }) {
           onError={(e) => (e.currentTarget.src = "/products/default.png")}
           className="max-w-full max-h-full object-contain mx-auto"
         />
+
 
         {/* ❤️ FAVORİ (AYNI SENİN KART) */}
         <button
@@ -187,7 +189,17 @@ export default function ProductCardVertical({ p, hideCartButton = false }) {
   ) : (
     <span className="opacity-0">placeholder</span>
   )}
+
+  {/* ⏱️ SAYAÇ — TAM BURASI */}
+  {p.deal_active && p.deal_end_at && (
+    <DealCountdown
+      endAt={new Date(p.deal_end_at).getTime()}
+      compact
+    />
+  )}
 </div>
+
+
 
   {/* ALT SATIR: YENİ FİYAT */}
   <span className="text-gray-900 font-extrabold text-xl leading-tight">
@@ -195,7 +207,8 @@ export default function ProductCardVertical({ p, hideCartButton = false }) {
   </span>
 
 </div>
-
+   
+ 
 
    {/* SEPET */}
 <div className="mt-4 min-h-[44px]">

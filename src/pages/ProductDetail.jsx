@@ -9,6 +9,56 @@ import { useNavigate } from "react-router-dom";
 import { useSession } from "../context/SessionContext";
 import ProductCardVertical from "../components/ProductCardVertical";
 import { Hourglass } from "lucide-react";
+import { Clock, Flame } from "lucide-react";
+
+function DealCountdown({ endAt }) {
+  console.log("⏱️ DealCountdown endAt:", endAt);
+  if (!endAt || isNaN(endAt)) return null;
+
+  const [left, setLeft] = useState(endAt - Date.now());
+
+
+  useEffect(() => {
+    const t = setInterval(() => {
+      setLeft(endAt - Date.now());
+    }, 1000);
+    return () => clearInterval(t);
+  }, [endAt]);
+
+  if (left <= 0) return null;
+
+  const h = Math.floor(left / 1000 / 60 / 60);
+  const m = Math.floor((left / 1000 / 60) % 60);
+  const s = Math.floor((left / 1000) % 60);
+
+  return (
+    <div className="
+      mt-4
+      rounded-xl
+      border border-red-300
+      bg-gradient-to-r from-red-50 to-orange-50
+      px-4 py-3
+      shadow-sm
+    ">
+      <div className="flex items-center gap-2">
+        <Flame className="w-4 h-4 text-red-600 animate-pulse" />
+        <p className="text-sm font-bold text-red-700">
+          Avantaj Ürünü
+        </p>
+      </div>
+
+      <div className="mt-1 flex items-center gap-2 text-sm font-mono text-red-600">
+        <Clock className="w-4 h-4" />
+        <span>
+          {h.toString().padStart(2, "0")}:
+          {m.toString().padStart(2, "0")}:
+          {s.toString().padStart(2, "0")}
+        </span>
+      </div>
+    </div>
+  );
+}
+
 
 function formatName(name) {
   if (!name) return "Kullanıcı";
@@ -58,6 +108,7 @@ export default function ProductDetail() {
 
   const [p, setP] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [weeklyDeal, setWeeklyDeal] = useState(null);
   const hasReloadedRef = useRef(false);
   const [tab, setTab] = useState("desc");
   const [reviews, setReviews] = useState([]);
@@ -112,6 +163,37 @@ const scrollRightRelated = () =>
       if (!alive) return;
 
       setP(data);
+
+      // ⭐ Haftanın fırsatı kontrolü (product bazlı)
+const { data: deal, error: dealErr } = await supabase
+  .from("haftanin_firsati")
+  .select("*")
+  .eq("product_id", data.id)
+  .eq("active", true)
+  .maybeSingle();
+
+
+if (deal) {
+  console.log("🔥 DEAL RAW:", deal);
+  console.log("🧪 end_at:", deal.end_at);
+  console.log("🧪 deal_end_at:", deal.deal_end_at);
+  console.log("🧪 end_date:", deal.end_date);
+
+  setWeeklyDeal(deal);
+
+  setP((prev) => ({
+    ...prev,
+    deal_active: true,
+    deal_end_at:
+      deal.end_at ||
+      deal.deal_end_at ||
+      deal.end_date ||
+      null,
+  }));
+}
+
+
+
 
 
       setLoading(false);
@@ -244,13 +326,18 @@ useEffect(() => {
 
   viewed = viewed.filter((x) => x.id !== p.id);
 
-  viewed.unshift({
-    id: p.id,
-    title: p.title,
-    main_img: p.main_img,
-    price: Number(p.price) || 0,
-    old_price: Number(p.old_price) || 0,
-  });
+viewed.unshift({
+  id: p.id,
+  title: p.title,
+  main_img: p.main_img,
+  price: Number(p.price) || 0,
+  old_price: Number(p.old_price) || 0,
+
+  // ⏱️ SAYAÇ BİLGİLERİ (ŞART!)
+  deal_active: p.deal_active || false,
+  deal_end_at: p.deal_end_at || null,
+});
+
 
   viewed = viewed.slice(0, 10);
 
@@ -547,6 +634,29 @@ className="w-full h-[520px] object-cover rounded-xl bg-white transition-transfor
                 {TRY(p.price)}
               </span>
             </div>
+
+          {/* ⏱️ KAMPANYA SAYAÇ (ÜRÜN + HAFTANIN FIRSATI) */}
+{(() => {
+  let endAt = null;
+
+  // ürün kampanyası
+  if (p?.deal_active && p?.deal_end_at) {
+    endAt = new Date(p.deal_end_at).getTime();
+  }
+
+  // haftanın fırsatı
+  if (!endAt && weeklyDeal) {
+    const raw =
+      weeklyDeal.end_at ||
+      weeklyDeal.deal_end_at ||
+      weeklyDeal.end_date;
+
+    if (raw) endAt = new Date(raw).getTime();
+  }
+
+  return endAt ? <DealCountdown endAt={endAt} /> : null;
+})()}
+
 
                         {/* ✅ KAZANCIN (sadece indirim varsa) */}
             {savings > 0 && (

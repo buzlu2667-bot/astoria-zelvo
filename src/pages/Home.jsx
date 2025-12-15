@@ -608,9 +608,12 @@ const activeCat = homeCats.find((c) => c.slug === openCat);
               {(deal.products.price || 0).toLocaleString("tr-TR")} ₺
             </p>
 
-            <DealCountdown
-  endAt={new Date("2025-12-17T23:59:59").getTime()}
-/>
+       {deal.end_at && (
+  <DealCountdown
+    endAt={new Date(deal.end_at).getTime()}
+  />
+)}
+
 
           <div className="mt-6 w-full max-w-md">
   {/* mini güven rozetleri */}

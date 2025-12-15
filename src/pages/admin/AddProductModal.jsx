@@ -38,7 +38,14 @@ useEffect(() => {
       is_new: initialData.is_new || false,
       is_popular: initialData.is_popular || false,
       is_featured: initialData.is_featured || false,
-       colors: initialData.colors || "" 
+       colors: initialData.colors || "" ,
+       
+       deal_active: initialData.deal_active || false,
+deal_end_at: initialData.deal_end_at
+  ? initialData.deal_end_at.slice(0, 16)
+  : "",
+
+       
     });
 
     // kategorileri yükle
@@ -63,6 +70,10 @@ useEffect(() => {
 is_featured: false,
  is_suggested: false, 
  colors: "",
+
+ // ⏱ SAYAÇ
+  deal_active: false,
+  deal_end_at: "",
 
 });
 
@@ -171,6 +182,12 @@ if (initialData) {
       is_featured: form.is_featured,
       is_suggested: form.is_suggested,
        colors: form.colors,
+
+       deal_active: form.deal_active,
+deal_end_at: form.deal_active
+  ? new Date(form.deal_end_at)
+  : null,
+
       // fotoğraflar sadece yeni seçildiyse güncellenecek
       ...(mainImg && { main_img: mainUrl }),
       ...(gallery.length > 0 && { gallery: galleryUrls }),
@@ -202,6 +219,11 @@ main_id: form.main_id || null,
 sub_id: form.sub_id || null,
 server_id: form.server_id || null,
   old_price: form.old_price ? Number(form.old_price) : null,
+
+  deal_active: form.deal_active,
+deal_end_at: form.deal_active
+  ? new Date(form.deal_end_at)
+  : null,
 
 is_new: form.is_new,   // ⭐ EKLENDİ
 
@@ -278,6 +300,32 @@ gallery: galleryUrls,
 />
 {/* 🔥 Vitrin Ayarları */}
 <div className="col-span-2 grid grid-cols-3 gap-3 mt-2 text-white">
+
+  {/* ⏱ ÜRÜN SAYAÇ AYARI */}
+<div className="col-span-2 mt-4 p-3 border border-[#333] rounded-lg text-white">
+  <label className="flex items-center gap-2">
+    <input
+      type="checkbox"
+      checked={form.deal_active}
+      onChange={(e) =>
+        setForm({ ...form, deal_active: e.target.checked })
+      }
+    />
+    <span>⏱ Bu üründe sayaç olsun</span>
+  </label>
+
+  {form.deal_active && (
+    <input
+      type="datetime-local"
+      className="input-premium mt-3"
+      value={form.deal_end_at}
+      onChange={(e) =>
+        setForm({ ...form, deal_end_at: e.target.value })
+      }
+    />
+  )}
+</div>
+
 
   {/* Yeni Gelen */}
   <label className="flex items-center gap-2">

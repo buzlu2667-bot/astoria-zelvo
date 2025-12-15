@@ -2,6 +2,8 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useFavorites } from "../context/FavoritesContext";
 import { Hourglass } from "lucide-react";
+import DealCountdown from "./DealCountdown";
+
 export default function ProductCard({ product }) {
   const navigate = useNavigate();
   const { addFav, removeFav, isFav } = useFavorites();
@@ -216,6 +218,14 @@ className="w-full h-full object-contain"
     ) : (
       <span className="opacity-0">placeholder</span>
     )}
+
+      {/* ⏱️ SAYAÇ — TAM DOĞRU NOKTA */}
+  {hasDiscount && product.deal_active && product.deal_end_at && (
+    <DealCountdown
+      endAt={new Date(product.deal_end_at).getTime()}
+      compact
+    />
+  )}
   </div>
 
   {/* ALT SATIR: YENİ FİYAT (ANA ODAK) */}
