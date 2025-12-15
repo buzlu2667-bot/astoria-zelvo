@@ -219,13 +219,7 @@ className="w-full h-full object-contain"
       <span className="opacity-0">placeholder</span>
     )}
 
-      {/* ⏱️ SAYAÇ — TAM DOĞRU NOKTA */}
-  {hasDiscount && product.deal_active && product.deal_end_at && (
-    <DealCountdown
-      endAt={new Date(product.deal_end_at).getTime()}
-      compact
-    />
-  )}
+     
   </div>
 
   {/* ALT SATIR: YENİ FİYAT (ANA ODAK) */}
@@ -233,6 +227,15 @@ className="w-full h-full object-contain"
     ₺{price.toLocaleString("tr-TR")}
   </span>
 
+{/* ⏱️ SAYAÇ — FİYATIN ALTINDA (EN DOĞRU YER) */}
+{hasDiscount && product.deal_active && product.deal_end_at && (
+  <div className="mt-1">
+    <DealCountdown
+      endAt={new Date(product.deal_end_at).getTime()}
+      compact
+    />
+  </div>
+)}
 </div>
 
 

@@ -190,13 +190,7 @@ export default function ProductCardVertical({ p, hideCartButton = false }) {
     <span className="opacity-0">placeholder</span>
   )}
 
-  {/* ⏱️ SAYAÇ — TAM BURASI */}
-  {p.deal_active && p.deal_end_at && (
-    <DealCountdown
-      endAt={new Date(p.deal_end_at).getTime()}
-      compact
-    />
-  )}
+ 
 </div>
 
 
@@ -205,6 +199,14 @@ export default function ProductCardVertical({ p, hideCartButton = false }) {
   <span className="text-gray-900 font-extrabold text-xl leading-tight">
     ₺{price.toLocaleString("tr-TR")}
   </span>
+{p.deal_active && p.deal_end_at && (
+  <div className="mt-1">
+    <DealCountdown
+      endAt={new Date(p.deal_end_at).getTime()}
+      compact
+    />
+  </div>
+)}
 
 </div>
    
