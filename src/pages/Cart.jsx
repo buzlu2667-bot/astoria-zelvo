@@ -99,7 +99,7 @@ useEffect(() => {
 
 
   return (
-   <div className="min-h-screen bg-[#f6f6f6] p-4 md:p-6">
+ <div className="min-h-screen bg-white p-4 md:p-6">
   {/* Breadcrumb */}
 <nav className="mb-4 flex flex-wrap items-center gap-2 text-sm text-gray-500">
   <Link to="/" className="inline-flex items-center gap-1 hover:text-gray-800">

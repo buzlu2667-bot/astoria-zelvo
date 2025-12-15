@@ -73,7 +73,7 @@ export default function LoginPage() {
  
 
   return (
-<div className="bg-[#f5f5f5] flex justify-center px-4 pt-6">
+<div className="bg-white min-h-screen flex justify-center px-4 pt-6">
 
 
   <div

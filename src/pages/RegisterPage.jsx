@@ -89,7 +89,7 @@ export default function RegisterPage() {
 
 
   return (
-<div className="min-h-screen bg-[#f5f5f5] flex justify-center px-4 pt-6 md:pt-10">
+<div className="min-h-screen bg-white flex justify-center px-4 pt-6 md:pt-10">
 
 
     <div className="
