@@ -88,9 +88,19 @@ useEffect(() => {
  
 
   return (
-  <div className="min-h-screen bg-[#f5f5f5] flex justify-center px-4 pt-16 md:pt-5">
+<div className="min-h-screen bg-[#f5f5f5] flex justify-center px-4 pt-6 md:pt-5">
 
-      <div className="w-full max-w-md bg-white shadow-2xl rounded-2xl p-10 border border-gray-200">
+
+     <div
+  className="
+    w-full max-w-md bg-white shadow-2xl rounded-2xl
+    border border-gray-200
+    p-6 md:p-10
+    max-h-[85dvh]
+    overflow-y-auto
+  "
+>
+
 
         {/* Title */}
         <h1 className="text-3xl font-bold text-center text-gray-800 mb-6">
