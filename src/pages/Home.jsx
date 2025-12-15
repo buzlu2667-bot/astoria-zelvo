@@ -20,7 +20,8 @@ import {
   FlameKindling,
   ChevronDown,
    PawPrint,
-     Handbag
+  Handbag,
+  Mountain
 } from "lucide-react";
 
 function DealCountdown({ endAt }) {
@@ -384,7 +385,7 @@ const activeCat = homeCats.find((c) => c.slug === openCat);
     grid place-items-center
     w-7 h-7 rounded-xl
     transition
-    ${openCat === "Katagoriler"
+    ${openCat === "Erkek"
       ? "bg-white/10 text-white"
       : "bg-gray-100 text-gray-700 group-hover:bg-gray-200"}
   `}
@@ -405,6 +406,63 @@ const activeCat = homeCats.find((c) => c.slug === openCat);
 
   {/* active ring */}
   {openCat === "Erkek" && (
+    <span className="absolute inset-0 rounded-2xl ring-1 ring-white/20 pointer-events-none" />
+  )}
+</button>
+
+
+   {/* =================outdoor Aksesuar ================= */}
+<button
+  onClick={() => setOpenCat(openCat === "outdoor" ? null : "outdoor")}
+  className={`
+    group relative
+    inline-flex items-center gap-2
+    h-11 px-4
+    rounded-2xl
+    text-[13px] font-semibold
+    transition-all duration-200
+    ${
+      openCat === "outdoor"
+        ? "bg-gray-900 text-white shadow-[0_12px_30px_-16px_rgba(0,0,0,0.6)]"
+        : "bg-white text-gray-900 shadow-[0_8px_24px_-18px_rgba(0,0,0,0.35)] hover:shadow-[0_12px_30px_-16px_rgba(0,0,0,0.45)]"
+    }
+    border border-gray-200/70
+  `}
+>
+  {/* sol mini accent */}
+  <span
+    className={`
+      h-7 w-[3px] rounded-full
+      ${openCat === "outdoor" ? "bg-orange-400" : "bg-gray-200 group-hover:bg-gray-300"}
+    `}
+  />
+
+  <span
+  className={`
+    grid place-items-center
+    w-7 h-7 rounded-xl
+    transition
+    ${openCat === "outdoor"
+      ? "bg-white/10 text-white"
+      : "bg-gray-100 text-gray-700 group-hover:bg-gray-200"}
+  `}
+>
+  <Mountain className="w-4 h-4" />
+</span>
+
+
+  <span className="leading-none">Outdoor</span>
+
+  {/* ok */}
+  <ChevronDown
+    className={`
+      w-4 h-4 ml-1 transition
+      ${openCat === "outdoor" ? "rotate-180 text-white" : "text-gray-500 group-hover:text-gray-800"}
+    `}
+  />
+
+  {/* active ring */}
+  {openCat === "outdoor" && (
     <span className="absolute inset-0 rounded-2xl ring-1 ring-white/20 pointer-events-none" />
   )}
 </button>
