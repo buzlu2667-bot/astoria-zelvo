@@ -40,13 +40,14 @@ export default function ProductCardVertical({ p, hideCartButton = false }) {
 >
 
       {/* FOTO */}
-    <div className="relative w-full h-[130px] sm:h-[180px] rounded-lg overflow-hidden bg-white">
+    <div className="relative w-full h-[130px] sm:h-[210px] lg:h-[230px] rounded-lg overflow-hidden bg-white">
+
         <img
           src={img}
           loading="lazy"
           draggable="false"
           onError={(e) => (e.currentTarget.src = "/products/default.png")}
-          className="max-w-full max-h-full object-contain mx-auto"
+          className="w-full h-full object-cover"
         />
 
 
