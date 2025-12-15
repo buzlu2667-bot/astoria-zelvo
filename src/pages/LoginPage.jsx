@@ -96,7 +96,7 @@ useEffect(() => {
     w-full max-w-md bg-white shadow-2xl rounded-2xl
     border border-gray-200
     p-6 md:p-10
-    max-h-[85dvh]
+ h-[85vh] md:max-h-none
     overflow-y-auto
   "
 >
