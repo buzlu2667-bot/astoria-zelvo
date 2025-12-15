@@ -7,7 +7,7 @@ import "swiper/css";
 import "swiper/css/pagination";
 import { useNavigate } from "react-router-dom";
 import ProductCardVertical from "../components/ProductCardVertical";
-
+import { Clock } from "lucide-react";
 import {
   Flame,
   Sparkles,
@@ -22,6 +22,64 @@ import {
    PawPrint,
      Handbag
 } from "lucide-react";
+
+function DealCountdown({ endAt }) {
+  const [left, setLeft] = useState(endAt - Date.now());
+
+  useEffect(() => {
+    const t = setInterval(() => {
+      setLeft(endAt - Date.now());
+    }, 1000);
+    return () => clearInterval(t);
+  }, [endAt]);
+
+  // ⛔ Kampanya bitti
+  if (left <= 0) {
+    return (
+      <div className="mt-3 flex items-center gap-2 rounded-xl border border-gray-200 bg-gray-50 px-4 py-3">
+        <Clock className="w-4 h-4 text-gray-500" />
+        <p className="text-sm font-semibold text-gray-600">
+          Kampanya sona erdi
+        </p>
+      </div>
+    );
+  }
+
+  const h = Math.floor(left / 1000 / 60 / 60);
+  const m = Math.floor((left / 1000 / 60) % 60);
+  const s = Math.floor((left / 1000) % 60);
+
+  return (
+    <div
+      className="
+        mt-3
+        rounded-xl
+        border border-red-300
+        bg-gradient-to-r from-red-50 to-orange-50
+        px-4 py-3
+        shadow-sm
+      "
+    >
+      <div className="flex items-center gap-2">
+        <Flame className="w-4 h-4 text-red-600 animate-pulse" />
+        <p className="text-sm font-bold text-red-700">
+          Avantaj Ürünü 
+        </p>
+      </div>
+
+      <div className="mt-1 flex items-center gap-2 text-sm font-mono text-red-600">
+        <Clock className="w-4 h-4" />
+        <span>
+          {h.toString().padStart(2, "0")}:
+          {m.toString().padStart(2, "0")}:
+          {s.toString().padStart(2, "0")}
+        </span>
+      </div>
+    </div>
+  );
+}
+
+
 
 const ICONS = {
   Flame: <Flame className="w-6 h-6" />,
@@ -549,6 +607,10 @@ const activeCat = homeCats.find((c) => c.slug === openCat);
             <p className="text-orange-500 font-bold text-2xl mt-2">
               {(deal.products.price || 0).toLocaleString("tr-TR")} ₺
             </p>
+
+            <DealCountdown
+  endAt={new Date("2025-12-17T23:59:59").getTime()}
+/>
 
           <div className="mt-6 w-full max-w-md">
   {/* mini güven rozetleri */}
