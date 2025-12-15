@@ -12,41 +12,10 @@
 }
 
 
-/* 🌑 Global Tema */
 body {
-  @apply bg-black text-white font-sans antialiased transition-colors duration-300;
-}
-
-h1, h2, h3, h4 {
-  @apply font-bold tracking-tight;
-}
-
-button, a {
-  @apply transition-all duration-300;
-}
-
-/* ===== GLOBAL CORPORATE SCROLLBAR ===== */
-::-webkit-scrollbar {
-  width: 10px;
-}
-
-::-webkit-scrollbar-track {
-  background: #f1f1f1;
-}
-
-::-webkit-scrollbar-thumb {
-  background: #c1c1c1;
-  border-radius: 8px;
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background: #a8a8a8;
-}
-
-/* Firefox */
-* {
-  scrollbar-width: thin;
-  scrollbar-color: #c1c1c1 #f1f1f1;
+  background-color: #f5f5f5;
+  min-height: 100vh;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
 }
 
 
@@ -564,20 +533,7 @@ iframe[src*="livechat"] {
 .animate-scaleIn {
   animation: scaleIn 0.3s cubic-bezier(.25,1.2,.5,1);
 }
-/* tüm site sayfası ren palet */
-body {
-  background: linear-gradient(
-    135deg,
-    #ffffff 100%,
-    #ffffff 100%,
-    #ffffff 100%,
-    #ffffff 100%
-  );
-  background-attachment: fixed;
-  background-size: cover;
-  background-repeat: no-repeat;
-  min-height: 100vh;
-}
+
 .maxi-card {
   background: var(--card-bg);
   border: 1px solid var(--card-border);

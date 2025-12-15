@@ -4,25 +4,10 @@ import { Link, useNavigate } from "react-router-dom";
 import { Eye, EyeOff } from "lucide-react";
 import ForgotPasswordModal from "../components/ForgotPasswordModal";
 import googleLogo from "../assets/google.png";
-
+import { Gift, Sparkles } from "lucide-react";
 
 export default function LoginPage() {
 
-useEffect(() => {
-  const html = document.documentElement;
-  const body = document.body;
-
-  const prevHtmlOverflow = html.style.overflow;
-  const prevBodyOverflow = body.style.overflow;
-
-  html.style.overflow = "hidden";
-  body.style.overflow = "hidden";
-
-  return () => {
-    html.style.overflow = prevHtmlOverflow;
-    body.style.overflow = prevBodyOverflow;
-  };
-}, []);
 
 
   const nav = useNavigate();
@@ -135,18 +120,42 @@ useEffect(() => {
           <div className="flex-1 h-px bg-gray-300" />
         </div>
 
-        {/* 🎁 Yeni Üyelere Özel Kampanya */}
-<div className="mt-5 mb-6 rounded-xl border border-orange-200 bg-orange-50 px-4 py-3 text-center">
-  <p className="text-sm font-bold text-orange-700">
-    🎁 Yeni Üyelere Özel 100 ₺ İndirim Kodu
-  </p>
-  <p className="text-sm text-orange-600 mt-1">
-    Kayıt olan kullanıcılara özel tanımlanır.
-  </p>
-  <p className="text-[11px] text-orange-500 mt-1">
-    * Kampanya dönemsel olarak geçerlidir.
-  </p>
+       {/* 🎁 Yeni Üyelere Özel Kampanya */}
+<div className="
+  mt-5 mb-6 rounded-2xl 
+  border border-orange-200 
+  bg-gradient-to-br from-orange-50 to-orange-100
+  px-4 py-4
+  flex items-start gap-3
+">
+
+  {/* ICON */}
+  <div className="
+    flex items-center justify-center
+    w-10 h-10 rounded-full
+    bg-orange-500 text-white
+    shadow-md
+  ">
+    <Gift size={20} />
+  </div>
+
+  {/* TEXT */}
+  <div className="text-left">
+    <p className="text-sm font-bold text-orange-700 flex items-center gap-1">
+      Yeni Üyelere Özel 100 ₺ İndirim
+      <Sparkles size={14} className="text-orange-500" />
+    </p>
+
+    <p className="text-sm text-orange-600 mt-1">
+      Kayıt olan kullanıcılara özel tanımlanır.
+    </p>
+
+    <p className="text-[11px] text-orange-500 mt-1">
+      * Kampanya dönemsel olarak geçerlidir.
+    </p>
+  </div>
 </div>
+
 
 
         {/* FORM */}

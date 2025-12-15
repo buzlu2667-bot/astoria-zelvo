@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import { Eye, EyeOff } from "lucide-react";
 import googleLogo from "../assets/google.png";
 import { sendShopAlert } from "../utils/sendShopAlert";
+import { Gift, Sparkles, Star, Truck } from "lucide-react";
 
 export default function RegisterPage() {
   function translateError(msg) {
@@ -28,25 +29,7 @@ export default function RegisterPage() {
   const [msg, setMsg] = useState("");
   const [err, setErr] = useState("");
 
-  useEffect(() => {
-  const html = document.documentElement;
-  const body = document.body;
-  const main = document.querySelector(".main-wrapper");
-
-  const prevHtml = html.style.overflow;
-  const prevBody = body.style.overflow;
-  const prevMain = main?.style.overflow;
-
-  html.style.overflow = "hidden";
-  body.style.overflow = "hidden";
-  if (main) main.style.overflow = "hidden";
-
-  return () => {
-    html.style.overflow = prevHtml;
-    body.style.overflow = prevBody;
-    if (main) main.style.overflow = prevMain;
-  };
-}, []);
+ 
 
 
   useEffect(() => {
@@ -106,25 +89,67 @@ export default function RegisterPage() {
 
 
   return (
-   <div className="min-h-screen bg-[#f5f5f5] flex justify-center px-4 pt-12">
+<div className="min-h-screen bg-[#f5f5f5] flex justify-center px-4 pt-6 md:pt-10">
 
-     <div className="
+
+    <div className="
   max-w-4xl w-full bg-white shadow-2xl rounded-2xl 
-  grid grid-cols-1 md:grid-cols-2 
-  overflow-hidden
- h-[85vh]
+  grid grid-cols-1 md:grid-cols-2
 ">
 
 
-        {/* SOL PANEL */}
-        <div className="hidden md:flex items-center justify-center bg-gradient-to-br from-orange-400 to-orange-600 text-white p-12">
-          <h2 className="text-4xl font-bold drop-shadow-lg leading-tight">
-            Maximora Shop <br /> Ailesine Katıl!
-          </h2>
-        </div>
+
+     {/* SOL PANEL */}
+<div className="hidden md:flex flex-col justify-between 
+  bg-gradient-to-br from-orange-400 to-orange-600 
+  text-white p-12 relative overflow-hidden">
+
+  {/* Arka plan süsleri */}
+  <div className="absolute -top-16 -left-16 w-56 h-56 bg-white/10 rounded-full blur-2xl" />
+  <div className="absolute bottom-0 -right-16 w-72 h-72 bg-white/10 rounded-full blur-2xl" />
+
+  {/* Üst içerik */}
+  <div className="relative z-10">
+    <h2 className="text-4xl font-extrabold leading-tight drop-shadow-lg">
+      Maximora Shop <br /> Ailesine Katıl!
+    </h2>
+
+    <p className="mt-4 text-white/90 text-lg">
+      Yeni üyelere özel avantajlar seni bekliyor 🎉
+    </p>
+  </div>
+
+  {/* Icon özellikler */}
+  <div className="relative z-10 mt-10 space-y-4 text-sm font-medium">
+    <div className="flex items-center gap-3">
+      <Gift size={22} className="text-yellow-200" />
+      <span>Yeni Üyelere 100₺ İndirim</span>
+    </div>
+
+    <div className="flex items-center gap-3">
+      <Truck size={22} className="text-yellow-200" />
+      <span>Hızlı & Güvenli Teslimat</span>
+    </div>
+
+    <div className="flex items-center gap-3">
+      <Star size={22} className="text-yellow-200" />
+      <span>Premium Ürün Deneyimi</span>
+    </div>
+
+    <div className="flex items-center gap-3">
+      <Sparkles size={22} className="text-yellow-200" />
+      <span>Yılbaşına Özel Fırsatlar</span>
+    </div>
+  </div>
+
+  {/* Alt küçük yılbaşı notu */}
+  <div className="relative z-10 mt-8 text-xs text-white/80">
+    🎄 Yılbaşı kampanyaları sınırlı süreli
+  </div>
+</div>
 
         {/* SAĞ FORM */}
-  <div className="p-10 overflow-y-auto h-full pb-32">
+<div className="p-10">
           <h1 className="text-3xl font-bold text-center text-gray-800 mb-6">
             Kayıt Ol
           </h1>
@@ -145,18 +170,42 @@ export default function RegisterPage() {
             <div className="flex-1 h-px bg-gray-300" />
           </div>
 
-          {/* 🎁 Yeni Üyelere Özel Kampanya */}
-<div className="mt-5 mb-6 rounded-xl border border-orange-200 bg-orange-50 px-4 py-3 text-center">
-  <p className="text-sm font-bold text-orange-700">
-    🎁 Yeni Üyelere Özel 100 ₺ İndirim Kodu
-  </p>
-  <p className="text-sm text-orange-600 mt-1">
-    Kayıt olan kullanıcılara özel tanımlanır.
-  </p>
-  <p className="text-[11px] text-orange-500 mt-1">
-    * Kampanya dönemsel olarak geçerlidir.
-  </p>
+       {/* 🎁 Yeni Üyelere Özel Kampanya */}
+<div className="
+  mt-5 mb-6 rounded-2xl 
+  border border-orange-200 
+  bg-gradient-to-br from-orange-50 to-orange-100
+  px-4 py-4
+  flex items-start gap-3
+">
+
+  {/* ICON */}
+  <div className="
+    flex items-center justify-center
+    w-10 h-10 rounded-full
+    bg-orange-500 text-white
+    shadow-md
+  ">
+    <Gift size={20} />
+  </div>
+
+  {/* TEXT */}
+  <div className="text-left">
+    <p className="text-sm font-bold text-orange-700 flex items-center gap-1">
+      Yeni Üyelere Özel 100 ₺ İndirim
+      <Sparkles size={14} className="text-orange-500" />
+    </p>
+
+    <p className="text-sm text-orange-600 mt-1">
+      Kayıt olan kullanıcılara özel tanımlanır.
+    </p>
+
+    <p className="text-[11px] text-orange-500 mt-1">
+      * Kampanya dönemsel olarak geçerlidir.
+    </p>
+  </div>
 </div>
+
 
 
           {/* FORM */}
