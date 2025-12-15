@@ -104,7 +104,7 @@ export default function Dashboard() {
   const remaining = Math.max(0, (tier + 1) * STEP - points);
 
   return (
-  <div className="min-h-screen bg-[#fafafa] px-4 md:px-8 pb-8">
+ <div className="min-h-screen bg-white px-4 md:px-8 pb-8">
       {/* HEADER */}
       <div className="max-w-4xl mx-auto bg-white rounded-2xl p-6 shadow-sm border border-gray-200 flex justify-between items-center">
         <div>

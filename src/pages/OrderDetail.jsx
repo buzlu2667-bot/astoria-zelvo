@@ -48,7 +48,7 @@ export default function OrderDetail() {
   const status = STATUS[order.status] || STATUS.pending;
 
   return (
-<div className="min-h-screen bg-[#f6f6f6] px-4 pt-4 pb-8">
+<div className="min-h-screen bg-white px-4 pt-4 pb-8">
 
       <div className="max-w-3xl mx-auto bg-white p-6 rounded-xl shadow-sm border border-gray-200">
 
@@ -150,19 +150,29 @@ export default function OrderDetail() {
         </div>
 
        {/* 🎟 KUPON İNDİRİMİ */}
+{/* 🎟 KUPON İNDİRİMİ */}
 {order.coupon && order.coupon_discount_amount > 0 && (
-  <div className="mt-4 bg-white border border-gray-200 rounded-xl p-4">
-    <h3 className="text-gray-900 font-bold mb-1">🎟 Kupon Bilgisi</h3>
+  <div className="
+    mt-4
+    bg-blue-50
+    border border-blue-200
+    rounded-xl
+    p-4
+  ">
+    <h3 className="text-blue-800 font-bold mb-1">
+      🎟 Kupon İndirimi
+    </h3>
 
-    <p className="text-gray-700 text-sm">
+    <p className="text-blue-700 text-sm">
       Kupon Kodu: <b>{order.coupon}</b>
     </p>
 
-    <p className="text-green-600 font-semibold text-sm">
-      Kupon İndirimi: -{TRY(order.coupon_discount_amount)}
+    <p className="text-green-700 font-semibold text-sm mt-1">
+      İndirim: -{TRY(order.coupon_discount_amount)}
     </p>
   </div>
 )}
+
 
 
   {/* 🎟 SEPET İNDİRİMİ */}
