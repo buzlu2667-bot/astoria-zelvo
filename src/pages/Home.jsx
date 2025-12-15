@@ -267,11 +267,11 @@ const campaignRight = () =>
 
 
   const slides = [
-    { desktop: "/hero/slide1.jpg", tablet: "/hero/slide1-tablet.jpg", mobile: "/hero/slide1-mobil.jpg", url: "/category/kadın/canta" },
+    { desktop: "/hero/slide1.jpg", tablet: "/hero/slide1-tablet.jpg", mobile: "/hero/slide1-mobil.jpg", url: "/category/kadin/canta" },
     { desktop: "/hero/slide2.jpg", tablet: "/hero/slide2-tablet.jpg", mobile: "/hero/slide2-mobil.jpg", url: "/dashboard" },
     { desktop: "/hero/slide3.jpg", tablet: "/hero/slide3-tablet.jpg", mobile: "/hero/slide3-mobil.jpg", url: null },
     { desktop: "/hero/slide4.jpg", tablet: "/hero/slide4-tablet.jpg", mobile: "/hero/slide4-mobil.jpg", url: "/category/petshop" },
-    { desktop: "/hero/slide5.jpg", tablet: "/hero/slide5-tablet.jpg", mobile: "/hero/slide5-mobil.jpg", url: "/category/kadın/canta" },
+    { desktop: "/hero/slide5.jpg", tablet: "/hero/slide5-tablet.jpg", mobile: "/hero/slide5-mobil.jpg", url: "/category/kadin/canta" },
     { desktop: "/hero/slide6.jpg", tablet: "/hero/slide6-tablet.jpg", mobile: "/hero/slide6-mobil.jpg", url: "/category/petshop/mama" },
  
   ];
@@ -298,7 +298,64 @@ const activeCat = homeCats.find((c) => c.slug === openCat);
 
    {/* ================= Kadın Aksesuar ================= */}
 <button
-  onClick={() => setOpenCat(openCat === "Katagoriler" ? null : "Katagoriler")}
+  onClick={() => setOpenCat(openCat === "kadin" ? null : "kadin")}
+  className={`
+    group relative
+    inline-flex items-center gap-2
+    h-11 px-4
+    rounded-2xl
+    text-[13px] font-semibold
+    transition-all duration-200
+    ${
+      openCat === "kadin"
+        ? "bg-gray-900 text-white shadow-[0_12px_30px_-16px_rgba(0,0,0,0.6)]"
+        : "bg-white text-gray-900 shadow-[0_8px_24px_-18px_rgba(0,0,0,0.35)] hover:shadow-[0_12px_30px_-16px_rgba(0,0,0,0.45)]"
+    }
+    border border-gray-200/70
+  `}
+>
+  {/* sol mini accent */}
+  <span
+    className={`
+      h-7 w-[3px] rounded-full
+      ${openCat === "kadin" ? "bg-orange-400" : "bg-gray-200 group-hover:bg-gray-300"}
+    `}
+  />
+
+  <span
+  className={`
+    grid place-items-center
+    w-7 h-7 rounded-xl
+    transition
+    ${openCat === "kadin"
+      ? "bg-white/10 text-white"
+      : "bg-gray-100 text-gray-700 group-hover:bg-gray-200"}
+  `}
+>
+  <Handbag className="w-4 h-4" />
+</span>
+
+
+  <span className="leading-none">Kadın Aksesuar</span>
+
+  {/* ok */}
+  <ChevronDown
+    className={`
+      w-4 h-4 ml-1 transition
+      ${openCat === "kadin" ? "rotate-180 text-white" : "text-gray-500 group-hover:text-gray-800"}
+    `}
+  />
+
+  {/* active ring */}
+  {openCat === "kadin" && (
+    <span className="absolute inset-0 rounded-2xl ring-1 ring-white/20 pointer-events-none" />
+  )}
+</button>
+
+
+  {/* =================Erkek Aksesuar ================= */}
+<button
+  onClick={() => setOpenCat(openCat === "Erkek" ? null : "Erkek")}
   className={`
     group relative
     inline-flex items-center gap-2
@@ -318,7 +375,7 @@ const activeCat = homeCats.find((c) => c.slug === openCat);
   <span
     className={`
       h-7 w-[3px] rounded-full
-      ${openCat === "Katagoriler" ? "bg-orange-400" : "bg-gray-200 group-hover:bg-gray-300"}
+      ${openCat === "Erkek" ? "bg-orange-400" : "bg-gray-200 group-hover:bg-gray-300"}
     `}
   />
 
@@ -336,24 +393,21 @@ const activeCat = homeCats.find((c) => c.slug === openCat);
 </span>
 
 
-  <span className="leading-none">Kadın Aksesuar</span>
+  <span className="leading-none">Erkek Aksesuar</span>
 
   {/* ok */}
   <ChevronDown
     className={`
       w-4 h-4 ml-1 transition
-      ${openCat === "Katagoriler" ? "rotate-180 text-white" : "text-gray-500 group-hover:text-gray-800"}
+      ${openCat === "Erkek" ? "rotate-180 text-white" : "text-gray-500 group-hover:text-gray-800"}
     `}
   />
 
   {/* active ring */}
-  {openCat === "Katagoriler" && (
+  {openCat === "Erkek" && (
     <span className="absolute inset-0 rounded-2xl ring-1 ring-white/20 pointer-events-none" />
   )}
 </button>
-
-
-
 
 
     {/* ================= Petshop ================= */}

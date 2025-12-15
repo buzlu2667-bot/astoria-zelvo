@@ -15,19 +15,37 @@ export default function CategorySub() {
   const [products, setProducts] = useState([]);
   const [subCat, setSubCat] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [mainCat, setMainCat] = useState(null);
 
   // Breadcrumb label (DB title varsa onu kullan, yoksa slug’ı güzelleştir)
-  const mainLabel = useMemo(() => pretty(mainSlug), [mainSlug]);
+const mainLabel = useMemo(
+  () => mainCat?.title || pretty(mainSlug),
+  [mainCat?.title, mainSlug]
+);
+
   const subLabel = useMemo(
     () => subCat?.title || pretty(subSlug),
     [subCat?.title, subSlug]
   );
 
+
+
+
   useEffect(() => {
     let alive = true;
 
-    async function loadData() {
+     async function loadData() {
       setLoading(true);
+
+      // ✅ ANA KATEGORİ (Kadın Aksesuar vs.)
+const { data: main } = await supabase
+  .from("main_categories")
+  .select("title")
+  .eq("slug", mainSlug)
+  .maybeSingle();
+
+setMainCat(main);
+
 
       const { data: sub, error: subErr } = await supabase
         .from("sub_categories")
