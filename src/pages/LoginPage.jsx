@@ -88,18 +88,22 @@ useEffect(() => {
  
 
   return (
-<div className="min-h-screen bg-[#f5f5f5] flex justify-center px-4 pt-6 md:pt-5">
+<div className="bg-[#f5f5f5] flex justify-center px-4 pt-6">
 
 
-     <div
+  <div
   className="
+    login-scroll
     w-full max-w-md bg-white shadow-2xl rounded-2xl
     border border-gray-200
     p-6 md:p-10
- h-[85vh] md:max-h-none
+    max-h-[90svh]
     overflow-y-auto
+    overscroll-contain
   "
 >
+
+
 
 
         {/* Title */}

@@ -825,5 +825,8 @@ html {
   will-change: transform;
   backface-visibility: hidden;
 }
+.login-scroll {
+  -webkit-overflow-scrolling: touch;
+}
 
 
