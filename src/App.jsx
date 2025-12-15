@@ -162,6 +162,54 @@ useEffect(() => {
 
 
 
+useEffect(() => {
+  let intervalId;
+
+  const startTracking = async () => {
+    const { data } = await supabase.auth.getUser();
+    const user = data?.user;
+    if (!user) return;
+
+    const updateOnline = async () => {
+      await supabase
+        .from("profiles")
+        .update({
+          is_online: true,
+          last_seen: new Date().toISOString(),
+        })
+        .eq("id", user.id);
+    };
+
+    // ilk anda
+    updateOnline();
+
+    // 💓 heartbeat
+    intervalId = setInterval(updateOnline, 15000);
+  };
+
+  startTracking();
+
+  // 🔴 kapatınca offline
+  const handleUnload = async () => {
+    const { data } = await supabase.auth.getUser();
+    if (data?.user) {
+      await supabase
+        .from("profiles")
+        .update({
+          is_online: false,
+          last_seen: new Date().toISOString(),
+        })
+        .eq("id", data.user.id);
+    }
+  };
+
+  window.addEventListener("beforeunload", handleUnload);
+
+  return () => {
+    clearInterval(intervalId);
+    window.removeEventListener("beforeunload", handleUnload);
+  };
+}, []);
 
   
   // 🔥 Admin + URL bypass, bakım modunu geçer

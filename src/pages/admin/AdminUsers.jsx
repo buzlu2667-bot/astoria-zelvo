@@ -24,14 +24,37 @@ export default function AdminUsers() {
       const { data, error } = await supabase
         .from("profiles")
         .select(
-          "id, full_name, email, phone, address, total_spent, points, rewards, role"
-        )
+  "id, full_name, email, phone, address, total_spent, points, rewards, role, is_online, last_seen"
+)
+
         .order("created_at", { ascending: false });
 
       if (!error) setUsers(data || []);
       setLoading(false);
     })();
   }, []);
+
+
+  // ------------------------------
+// 🔄 10 sn'de bir online durum yenile
+// ------------------------------
+useEffect(() => {
+  const interval = setInterval(async () => {
+    const { data, error } = await supabase
+      .from("profiles")
+      .select(
+        "id, full_name, email, phone, address, total_spent, points, rewards, role, last_seen"
+      )
+      .order("created_at", { ascending: false });
+
+    if (!error && data) {
+      setUsers(data);
+    }
+  }, 10000); // 10 saniye
+
+  return () => clearInterval(interval);
+}, []);
+
 
   // ------------------------------
   // Harcama / puan / hediye hesaplama
@@ -119,6 +142,16 @@ export default function AdminUsers() {
       );
     }
   }
+ 
+  // ------------------------------
+// ONLINE KULLANICI SAYISI
+// ------------------------------
+const onlineCount = users.filter(
+  (u) =>
+    u.last_seen &&
+    Date.now() - new Date(u.last_seen).getTime() < 60000
+).length;
+
 
   // ------------------------------
   // LOADING
@@ -138,6 +171,20 @@ export default function AdminUsers() {
       <div className="max-w-7xl mx-auto bg-white border border-gray-200 shadow-md p-6 rounded-xl">
 
         <h1 className="text-3xl font-bold mb-6">👥 Kullanıcı Bilgileri</h1>
+
+        <div className="mb-6">
+  <span className="inline-block bg-gray-100 border border-gray-300 rounded-lg px-4 py-2 text-gray-800 font-semibold">
+    👤 Toplam kayıtlı kullanıcı: {users.length}
+  </span>
+</div>
+
+   <div className="mb-6">
+  <span className="inline-block bg-green-50 border border-green-300 rounded-lg px-4 py-2 text-green-700 font-semibold">
+    🟢 Şu an online: {onlineCount}
+  </span>
+</div>
+
+
 
         {/* ARAMA */}
         <input
@@ -160,6 +207,7 @@ export default function AdminUsers() {
           <table className="w-full text-sm">
             <thead className="bg-gray-100 text-gray-700 border-b">
               <tr>
+                <th className="py-2 px-3 text-center">Durum</th>
                 <th className="py-2 px-3 text-center">Sil</th>
                 <th className="py-2 px-3 text-left">Ad Soyad</th>
                 <th className="py-2 px-3 text-left">E-posta</th>
@@ -172,52 +220,70 @@ export default function AdminUsers() {
               </tr>
             </thead>
 
-            <tbody>
-              {filtered.map((u) => (
-                <tr
-                  key={u.id}
-                  className="border-b hover:bg-gray-50 transition"
-                >
+        <tbody>
+  {filtered.map((u) => {
+  const isOnline =
+    u.last_seen &&
+    Date.now() - new Date(u.last_seen).getTime() < 60000;
 
-                  {/* SİL */}
-                  <td className="py-3 px-3 text-center">
-                    <button
-                      onClick={() => handleDelete(u.id, u.full_name)}
-                      className="text-red-500 hover:text-red-600 text-lg"
-                    >
-                      🗑️
-                    </button>
-                  </td>
+  return (
+    <tr key={u.id}>
+      <td className="py-3 px-3 text-center">
+        <span
+          className={`inline-block w-3 h-3 rounded-full ${
+            isOnline ? "bg-green-500 animate-pulse" : "bg-gray-400"
+          }`}
+          title={
+            isOnline
+              ? "Şu an sitede"
+              : u.last_seen
+              ? `Son görülme: ${new Date(u.last_seen).toLocaleString("tr-TR")}`
+              : "Offline"
+          }
+        />
+      </td>
 
-                  <td className="py-3 px-3 font-semibold text-gray-900">
-                    {u.full_name || "-"}
-                  </td>
-                  <td className="px-3 text-gray-800">{u.email || "-"}</td>
-                  <td className="px-3 text-gray-800">{u.phone || "-"}</td>
 
-                  <td className="px-3 text-gray-700 truncate max-w-[230px]">
-                    {u.address || "Adres belirtilmedi"}
-                  </td>
+        {/* SİL */}
+        <td className="py-3 px-3 text-center">
+          <button
+            onClick={() => handleDelete(u.id, u.full_name)}
+            className="text-red-500 hover:text-red-600 text-lg"
+          >
+            🗑️
+          </button>
+        </td>
 
-                  <td className="px-3 text-right text-green-600 font-bold">
-                    {TRY(u.real_spent || 0)}
-                  </td>
+        <td className="py-3 px-3 font-semibold text-gray-900">
+          {u.full_name || "-"}
+        </td>
+        <td className="px-3 text-gray-800">{u.email || "-"}</td>
+        <td className="px-3 text-gray-800">{u.phone || "-"}</td>
 
-                  <td className="px-3 text-right text-yellow-600 font-bold">
-                    {u.real_points || 0}
-                  </td>
+        <td className="px-3 text-gray-700 truncate max-w-[230px]">
+          {u.address || "Adres belirtilmedi"}
+        </td>
 
-                  <td className="px-3 text-right text-blue-600 font-semibold">
-                    {u.real_rewards || 0} 🎁
-                  </td>
+        <td className="px-3 text-right text-green-600 font-bold">
+          {TRY(u.real_spent || 0)}
+        </td>
 
-                  <td className="px-3 text-right text-gray-700">
-                    {u.role || "-"}
-                  </td>
+        <td className="px-3 text-right text-yellow-600 font-bold">
+          {u.real_points || 0}
+        </td>
 
-                </tr>
-              ))}
-            </tbody>
+        <td className="px-3 text-right text-blue-600 font-semibold">
+          {u.real_rewards || 0} 🎁
+        </td>
+
+        <td className="px-3 text-right text-gray-700">
+          {u.role || "-"}
+        </td>
+      </tr>
+    );
+  })}
+</tbody>
+
 
           </table>
         </div>
