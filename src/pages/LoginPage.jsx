@@ -7,12 +7,32 @@ import googleLogo from "../assets/google.png";
 
 
 export default function LoginPage() {
+
+useEffect(() => {
+  const html = document.documentElement;
+  const body = document.body;
+
+  const prevHtmlOverflow = html.style.overflow;
+  const prevBodyOverflow = body.style.overflow;
+
+  html.style.overflow = "hidden";
+  body.style.overflow = "hidden";
+
+  return () => {
+    html.style.overflow = prevHtmlOverflow;
+    body.style.overflow = prevBodyOverflow;
+  };
+}, []);
+
+
   const nav = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPass, setShowPass] = useState(false);
   const [error, setError] = useState("");
   const [forgotOpen, setForgotOpen] = useState(false);
+
+
 
   useEffect(() => {
     document.body.classList.remove("login-page");
@@ -68,7 +88,7 @@ export default function LoginPage() {
  
 
   return (
-    <div className="min-h-screen bg-[#f5f5f5] flex items-center justify-center px-4">
+  <div className="min-h-screen bg-[#f5f5f5] flex justify-center px-4 pt-16 md:pt-5">
 
       <div className="w-full max-w-md bg-white shadow-2xl rounded-2xl p-10 border border-gray-200">
 

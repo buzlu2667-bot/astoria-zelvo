@@ -29,6 +29,27 @@ export default function RegisterPage() {
   const [err, setErr] = useState("");
 
   useEffect(() => {
+  const html = document.documentElement;
+  const body = document.body;
+  const main = document.querySelector(".main-wrapper");
+
+  const prevHtml = html.style.overflow;
+  const prevBody = body.style.overflow;
+  const prevMain = main?.style.overflow;
+
+  html.style.overflow = "hidden";
+  body.style.overflow = "hidden";
+  if (main) main.style.overflow = "hidden";
+
+  return () => {
+    html.style.overflow = prevHtml;
+    body.style.overflow = prevBody;
+    if (main) main.style.overflow = prevMain;
+  };
+}, []);
+
+
+  useEffect(() => {
     document.body.classList.remove("login-page");
   }, []);
 
@@ -85,9 +106,15 @@ export default function RegisterPage() {
 
 
   return (
-    <div className="min-h-screen bg-[#f5f5f5] flex items-center justify-center px-4 py-10">
+   <div className="min-h-screen bg-[#f5f5f5] flex justify-center px-4 pt-12">
 
-      <div className="max-w-4xl w-full bg-white shadow-2xl rounded-2xl grid grid-cols-1 md:grid-cols-2 overflow-hidden">
+     <div className="
+  max-w-4xl w-full bg-white shadow-2xl rounded-2xl 
+  grid grid-cols-1 md:grid-cols-2 
+  overflow-hidden
+ h-[85vh]
+">
+
 
         {/* SOL PANEL */}
         <div className="hidden md:flex items-center justify-center bg-gradient-to-br from-orange-400 to-orange-600 text-white p-12">
@@ -97,7 +124,7 @@ export default function RegisterPage() {
         </div>
 
         {/* SAĞ FORM */}
-        <div className="p-10">
+  <div className="p-10 overflow-y-auto h-full pb-32">
           <h1 className="text-3xl font-bold text-center text-gray-800 mb-6">
             Kayıt Ol
           </h1>

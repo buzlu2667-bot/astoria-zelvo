@@ -25,21 +25,30 @@ button, a {
   @apply transition-all duration-300;
 }
 
-/* ✨ Premium Scrollbar */
+/* ===== GLOBAL CORPORATE SCROLLBAR ===== */
 ::-webkit-scrollbar {
   width: 10px;
 }
+
 ::-webkit-scrollbar-track {
-  background: #0f0f0f;
+  background: #f1f1f1;
 }
+
 ::-webkit-scrollbar-thumb {
-  background: linear-gradient(180deg, #8b0000, #ffd700);
-  border-radius: 10px;
-  border: 2px solid #0f0f0f;
+  background: #c1c1c1;
+  border-radius: 8px;
 }
+
 ::-webkit-scrollbar-thumb:hover {
-  background: linear-gradient(180deg, #b00000, #ffea73);
+  background: #a8a8a8;
 }
+
+/* Firefox */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #c1c1c1 #f1f1f1;
+}
+
 
 /* 🔥 Badge Tarzları — Sipariş + Ürün Detay */
 .badge {
