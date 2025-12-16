@@ -203,6 +203,7 @@ if (!user) {
           old_price: Number(product.old_price || 0),
           main_img: img,
         selectedcolor: product.selectedColor || null,
+        shopier_product_id: product.shopier_product_id || null,
         },
       ];
 
@@ -239,6 +240,7 @@ if (!user) {
           main_img: img || null,
           img_url: img || null,
     selectedcolor: product.selectedColor || null,
+    shopier_product_id: product.shopier_product_id || null,
         },
       ]);
 

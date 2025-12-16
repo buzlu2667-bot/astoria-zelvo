@@ -6,6 +6,7 @@ import { sendShopAlert } from "../utils/sendShopAlert";
 import { Link } from "react-router-dom";
 import { Home, ShoppingCart } from "lucide-react";
 import { ChevronDown } from "lucide-react";
+import { Banknote, CreditCard, Truck, Store } from "lucide-react";
 const TRY = (n) =>
   Number(n || 0).toLocaleString("tr-TR", {
     style: "currency",
@@ -41,7 +42,7 @@ const {
     note: "",
   });
 
-  const [pay, setPay] = useState("iban");
+ const [pay, setPay] = useState("iban"); 
   const [coupon, setCoupon] = useState("");
   const [discount, setDiscount] = useState(0);
   const [ibanModal, setIbanModal] = useState(false);
@@ -283,6 +284,44 @@ ${cartExtraDiscount > 0 ? `<b>Sepet İndirimi:</b> ₺${cartExtraDiscount}<br/>`
     );
 
  const validateBeforePayment = async () => {
+  if (pay === "shopier") {
+  const item = cart[0];
+
+  if (!item?.shopier_product_id) {
+    return toastError("Shopier ürün bağlantısı bulunamadı.");
+  }
+
+  // önce siparişi DB’ye kaydet (awaiting_payment)
+  const res = await placeOrder({
+    full_name: form.name,
+    phone: form.phone,
+    email: form.email,
+    address: form.address,
+    note: form.note,
+    payment_method: "shopier",
+    status: "awaiting_payment",
+
+    coupon: discount > 0 ? coupon : null,
+    coupon_discount_amount: discount,
+    cart_discount_amount: cartExtraDiscount,
+    total_amount: total,
+    final_amount: finalAmount,
+  });
+
+  if (!res?.orderId) {
+    return toastError("Sipariş oluşturulamadı.");
+  }
+
+  // 🔥 SHOPIER’E GİT
+window.location.href =
+ window.location.href =
+  `https://www.shopier.com/maximora/${item.shopier_product_id}`;
+
+
+
+  return;
+}
+
   if (!user) {
     toastError("🔐 Giriş yapmalısınız!");
     return setTimeout(() => nav("/login"), 1000);
@@ -469,32 +508,32 @@ ${cartExtraDiscount > 0 ? `<b>Sepet İndirimi:</b> ₺${cartExtraDiscount}<br/>`
     </h2>
 
     {/* ✅ AKTİF ÖDEME YÖNTEMLERİ */}
-    <div className="grid gap-4 sm:grid-cols-2">
-      <PayBtn
-        active={pay === "iban"}
-        onClick={() => setPay("iban")}
-        label="🏦 Havale / EFT"
-      />
+   <div className="grid gap-4 sm:grid-cols-2">
+  <PayBtn
+    active={pay === "iban"}
+    onClick={() => setPay("iban")}
+    label="Havale / EFT"
+    icon={Banknote}
+  />
 
-      <PayBtn
-        active={pay === "cod"}
-        onClick={() => setPay("cod")}
-        label="🚚 Kapıda Ödeme"
-      />
-    </div>
+  <PayBtn
+    active={pay === "cod"}
+    onClick={() => setPay("cod")}
+    label="Kapıda Ödeme"
+    icon={Truck}
+  />
 
-    {/* 🔒 YAKINDA – TIKLANMAZ */}
-    <div className="mt-6 grid gap-4 sm:grid-cols-2 opacity-60">
-      <PayBtn
-        disabled
-        label="💳 Kredi Kartı (Yakında)"
-      />
+  <PayBtn
+  active={pay === "shopier"}
+  onClick={() => setPay("shopier")}
+  label="💳 Kredi / Banka Kartı ile Öde"
+  icon={CreditCard}
+/>
 
-      <PayBtn
-        disabled
-        label="🛍️ Shopier (Yakında)"
-      />
-    </div>
+
+</div>
+
+
 
     {/* 🔥 TEK VE GERÇEK CTA */}
     <button
@@ -1018,22 +1057,50 @@ function Textarea({ label, value, onChange }) {
   );
 }
 
-function PayBtn({ active, onClick, label, disabled }) {
+function PayBtn({ active, onClick, label, icon: Icon, disabled }) {
   return (
     <button
+      type="button"
       onClick={onClick}
       disabled={disabled}
       className={`
-        w-full px-4 py-4 rounded-xl font-semibold border transition
-        ${disabled ? "opacity-30 cursor-not-allowed" : ""}
+        group relative w-full flex items-center gap-4
+        px-5 py-4 rounded-2xl border
+        transition-all duration-300
         ${
-          active
-            ? "bg-[#f27a1a] text-white border-[#e1680d]"
-            : "bg-white text-[#444] border-gray-300 hover:border-[#f27a1a]"
+          disabled
+            ? "opacity-30 cursor-not-allowed bg-gray-100"
+            : active
+            ? "bg-[#f27a1a] border-[#f27a1a] text-white shadow-[0_0_0_3px_rgba(242,122,26,0.35)]"
+            : "bg-white border-gray-300 text-gray-700 hover:border-[#f27a1a]"
         }
       `}
     >
-      {label}
+      {/* ICON */}
+      <div
+        className={`
+          w-12 h-12 rounded-xl flex items-center justify-center
+          transition
+          ${
+            active
+              ? "bg-white/20 text-white"
+              : "bg-gray-100 text-gray-700 group-hover:bg-[#f27a1a]/10"
+          }
+        `}
+      >
+        {Icon && <Icon className="w-6 h-6" />}
+      </div>
+
+      {/* TEXT */}
+      <div className="flex flex-col text-left">
+        <span className="text-sm font-extrabold">{label}</span>
+        {!disabled && (
+          <span className="text-xs opacity-70">
+            Güvenli ödeme
+          </span>
+        )}
+      </div>
     </button>
   );
 }
+
