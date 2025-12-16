@@ -3,6 +3,19 @@ import { useFavorites } from "../context/FavoritesContext";
 import { useCart } from "../context/CartContext";
 import { ShoppingCart, Hourglass } from "lucide-react";
 import DealCountdown from "./DealCountdown";
+import { Ban } from "lucide-react";
+
+
+function parseLocalDate(dateStr) {
+  if (!dateStr) return null;
+
+  const [date, time] = dateStr.split("T");
+  const [y, m, d] = date.split("-").map(Number);
+  const [hh, mm] = time.split(":").map(Number);
+
+  return new Date(y, m - 1, d, hh, mm);
+}
+
 
 function pickImage(p) {
   return (
@@ -33,11 +46,15 @@ export default function ProductCardVertical({ p, hideCartButton = false }) {
   // -------------------------------
   const now = Date.now();
   const dealEnd = p.deal_end_at
-    ? new Date(p.deal_end_at).getTime()
-    : null;
+  ? parseLocalDate(p.deal_end_at).getTime()
+  : null;
+
 
   const isDealActive =
     p.deal_active && dealEnd && now < dealEnd;
+    const isDealExpired =
+  p.deal_active && dealEnd && now >= dealEnd;
+
 
   const finalPrice = isDealActive ? price : old || price;
   const showDiscount = isDealActive && hasDiscount;
@@ -56,6 +73,27 @@ export default function ProductCardVertical({ p, hideCartButton = false }) {
 
       {/* FOTO */}
     <div className="relative w-full h-[130px] sm:h-[210px] lg:h-[230px] rounded-lg overflow-hidden bg-white">
+     {isDealExpired && (
+  <div
+    className="
+      absolute top-2 left-2 z-10
+      flex items-center gap-1.5
+      bg-gradient-to-r from-red-900/90 to-red-700/90
+      text-white
+      text-[11px] font-semibold
+      px-2.5 py-1
+      rounded-full
+      border border-gray-700/70
+      backdrop-blur-md
+      shadow-md
+    "
+  >
+    <Ban className="w-3.5 h-3.5 text-red-300" />
+    <span>Fırsat Bitti</span>
+  </div>
+)}
+
+
 
         <img
           src={img}
@@ -217,10 +255,11 @@ export default function ProductCardVertical({ p, hideCartButton = false }) {
   </span>
 {isDealActive && (
   <div className="mt-1">
-    <DealCountdown
-      endAt={new Date(p.deal_end_at).getTime()}
-      compact
-    />
+   <DealCountdown
+  endAt={parseLocalDate(p.deal_end_at).getTime()}
+  compact
+/>
+
   </div>
 )}
 
@@ -235,7 +274,10 @@ export default function ProductCardVertical({ p, hideCartButton = false }) {
       onClick={async (e) => {
         e.stopPropagation();
        const now = Date.now();
-const dealEnd = p.deal_end_at ? new Date(p.deal_end_at).getTime() : null;
+const dealEnd = p.deal_end_at
+  ? parseLocalDate(p.deal_end_at).getTime()
+  : null;
+
 
 const finalPrice =
   p.deal_active && dealEnd && now < dealEnd

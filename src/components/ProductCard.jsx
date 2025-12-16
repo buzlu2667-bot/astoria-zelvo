@@ -3,7 +3,17 @@ import { useNavigate } from "react-router-dom";
 import { useFavorites } from "../context/FavoritesContext";
 import { Hourglass } from "lucide-react";
 import DealCountdown from "./DealCountdown";
+import { Ban } from "lucide-react";
 
+function parseLocalDate(dateStr) {
+  if (!dateStr) return null;
+
+  const [date, time] = dateStr.split("T");
+  const [y, m, d] = date.split("-").map(Number);
+  const [hh, mm] = time.split(":").map(Number);
+
+  return new Date(y, m - 1, d, hh, mm);
+}
 
 
 export default function ProductCard({ product, hideDealCountdown = false }) {
@@ -32,9 +42,11 @@ export default function ProductCard({ product, hideDealCountdown = false }) {
   // DEAL / SAYAÇ KONTROLÜ 🔥
   // -------------------------------
   const now = Date.now();
-  const dealEnd = product.deal_end_at
-    ? new Date(product.deal_end_at).getTime()
-    : null;
+const dealEnd = product.deal_end_at
+  ? parseLocalDate(product.deal_end_at).getTime()
+  : null;
+const isDealExpired =
+  product.deal_active && dealEnd && now >= dealEnd;
 
   const isDealActive =
     product.deal_active && dealEnd && now < dealEnd;
@@ -77,6 +89,25 @@ export default function ProductCard({ product, hideDealCountdown = false }) {
   rounded-lg overflow-hidden bg-white
 ">
 
+{isDealExpired && (
+  <div
+    className="
+      absolute top-2 left-2 z-10
+      flex items-center gap-1.5
+      bg-gradient-to-r from-gray-900/90 to-gray-800/90
+      text-white
+      text-[11px] font-semibold
+      px-2.5 py-1
+      rounded-full
+      border border-gray-700/70
+      backdrop-blur-md
+      shadow-md
+    "
+  >
+    <Ban className="w-3.5 h-3.5 text-red-400" />
+    <span>Fırsat Bitti</span>
+  </div>
+)}
 
         {/* Yeni Ürün Etiketi */}
         {product.is_new && (
@@ -250,10 +281,11 @@ className="w-full h-full object-contain"
 {/* ⏱️ SAYAÇ — FİYATIN ALTINDA (EN DOĞRU YER) */}
 {!hideDealCountdown && isDealActive && (
   <div className="mt-1">
-    <DealCountdown
-      endAt={new Date(product.deal_end_at).getTime()}
-      compact
-    />
+   <DealCountdown
+  endAt={parseLocalDate(product.deal_end_at).getTime()}
+  compact
+/>
+
   </div>
 )}
 

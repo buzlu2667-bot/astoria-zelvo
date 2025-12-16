@@ -24,27 +24,56 @@ import {
   Mountain
 } from "lucide-react";
 
-function DealCountdown({ endAt }) {
-  const [left, setLeft] = useState(endAt - Date.now());
+function parseLocalDate(dateStr) {
+  if (!dateStr) return null;
 
-  useEffect(() => {
-    const t = setInterval(() => {
-      setLeft(endAt - Date.now());
-    }, 1000);
-    return () => clearInterval(t);
-  }, [endAt]);
+  const [date, time] = dateStr.split("T");
+  const [y, m, d] = date.split("-").map(Number);
+  const [hh, mm] = time.split(":").map(Number);
+
+  return new Date(y, m - 1, d, hh, mm);
+}
+
+
+function DealCountdown({ endAt }) {
+  const end = typeof endAt === "string"
+    ? parseLocalDate(endAt).getTime()
+    : endAt;
+
+  const [left, setLeft] = useState(end - Date.now());
+
+
+ useEffect(() => {
+  const t = setInterval(() => {
+    setLeft(end - Date.now());
+  }, 1000);
+  return () => clearInterval(t);
+}, [end]);
+
 
   // ⛔ Kampanya bitti
-  if (left <= 0) {
-    return (
-      <div className="mt-3 flex items-center gap-2 rounded-xl border border-gray-200 bg-gray-50 px-4 py-3">
-        <Clock className="w-4 h-4 text-gray-500" />
-        <p className="text-sm font-semibold text-gray-600">
-          Kampanya sona erdi
-        </p>
-      </div>
-    );
-  }
+if (left <= 0) {
+  return (
+    <div
+      className="
+        mt-3
+        flex items-center gap-2
+        rounded-2xl
+        border border-gray-700/40
+        bg-gradient-to-r from-gray-900/90 to-gray-800/90
+        px-4 py-3
+        backdrop-blur-md
+        shadow-md
+      "
+    >
+      <Clock className="w-4 h-4 text-red-400" />
+      <p className="text-sm font-semibold text-white">
+        Fırsat Sona Erdi
+      </p>
+    </div>
+  );
+}
+
 
   const h = Math.floor(left / 1000 / 60 / 60);
   const m = Math.floor((left / 1000 / 60) % 60);
@@ -793,9 +822,10 @@ const activeCat = homeCats.find((c) => c.slug === openCat);
                 {/* ⏱️ SAYAÇ */}
                 {deal.end_at && (
                   <div className="mt-4">
-                    <DealCountdown
-                      endAt={new Date(deal.end_at).getTime()}
-                    />
+                  <DealCountdown
+  endAt={deal.end_at}
+/>
+
                   </div>
                 )}
 

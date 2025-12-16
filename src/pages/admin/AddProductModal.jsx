@@ -26,12 +26,13 @@ export default function AddProductModal({ onClose, onSuccess, initialData }) {
 useEffect(() => {
   if (initialData) {
     setForm({
-      title: initialData.title || "",
-      description: initialData.description || "",
-      price: initialData.price || "",
-      old_price: initialData.old_price || "",
-       cost_price: initialData.cost_price || "", 
-      stock: initialData.stock || "",
+      title: initialData.title ?? "",
+      description: initialData.description ?? "",
+      price: initialData.price ?? "",
+      old_price: initialData.old_price ?? "",
+      cost_price: initialData.cost_price ?? "",
+      stock: initialData.stock ?? "",
+
       main_id: initialData.main_id || "",
       sub_id: initialData.sub_id || "",
       server_id: initialData.server_id || "",
@@ -172,7 +173,10 @@ if (initialData) {
       description: form.description,
       price: Number(form.price),
       old_price: form.old_price ? Number(form.old_price) : null,
-        cost_price: form.cost_price ? Number(form.cost_price) : 0, 
+     cost_price:
+    form.cost_price === ""
+      ? null
+      : Number(form.cost_price),
       stock: Number(form.stock || 0),
       main_id: form.main_id || null,
       sub_id: form.sub_id || null,
@@ -185,8 +189,9 @@ if (initialData) {
 
        deal_active: form.deal_active,
 deal_end_at: form.deal_active
-  ? new Date(form.deal_end_at)
+  ? form.deal_end_at
   : null,
+
 
       // fotoğraflar sadece yeni seçildiyse güncellenecek
       ...(mainImg && { main_img: mainUrl }),
@@ -206,37 +211,40 @@ deal_end_at: form.deal_active
 
 
 
-    const { error } = await supabase.from("products").insert({
-     title: form.title,
-description: form.description,
+  const { error } = await supabase.from("products").insert({
+  title: form.title,
+  description: form.description,
 
-price: Number(form.price),
-old_price: form.old_price ? Number(form.old_price) : null,   // ⭐ EKLENDİ
-
-stock: Number(form.stock || 0),
-
-main_id: form.main_id || null,
-sub_id: form.sub_id || null,
-server_id: form.server_id || null,
+  price: Number(form.price),
   old_price: form.old_price ? Number(form.old_price) : null,
 
+  cost_price:
+    form.cost_price === ""
+      ? null
+      : Number(form.cost_price),
+
+  stock: Number(form.stock || 0),
+
+  main_id: form.main_id || null,
+  sub_id: form.sub_id || null,
+  server_id: form.server_id || null,
+
   deal_active: form.deal_active,
-deal_end_at: form.deal_active
-  ? new Date(form.deal_end_at)
-  : null,
+  deal_end_at: form.deal_active
+    ? form.deal_end_at
+    : null,
 
-is_new: form.is_new,   // ⭐ EKLENDİ
+  is_new: form.is_new,
+  is_popular: form.is_popular,
+  is_featured: form.is_featured,
+  is_suggested: form.is_suggested,
 
-is_popular: form.is_popular,
-is_featured: form.is_featured,
-is_suggested: form.is_suggested,
-colors: form.colors,
-  specs: form.specs,
+  colors: form.colors,
 
-main_img: mainUrl,
-gallery: galleryUrls,
+  main_img: mainUrl,
+  gallery: galleryUrls,
+});
 
-    });
 
     setLoad(false);
 
