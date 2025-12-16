@@ -68,6 +68,7 @@ const [hfList, setHfList] = useState([]);
   // ⭐ Haftanın Fırsatı KAYDET
  async function saveHafta() {
   if (!hfProduct) return alert("Ürün seç!");
+  
 
   const payload = {
     product_id: hfProduct,
@@ -93,6 +94,17 @@ const [hfList, setHfList] = useState([]);
       .insert([payload]));
   }
 
+  // 🔥 ÜRÜN TABLOSUNU DA GÜNCELLE
+await supabase
+  .from("products")
+  .update({
+    deal_active: hfActive,
+    deal_end_at: hfEndAt ? new Date(hfEndAt).toISOString() : null,
+    deal_discount_percent: Number(hfDiscount) || 0,
+  })
+  .eq("id", hfProduct);
+
+
   if (error) {
     console.error("SAVE HAFTA ERROR:", error);
     return alert("Hata var, console bak.");
@@ -111,22 +123,41 @@ const [hfList, setHfList] = useState([]);
 }
 
 // ✅ Haftanın Fırsatı: Sil
-async function deleteHafta(id) {
-  const { error } = await supabase.from("haftanin_firsati").delete().eq("id", id);
-  if (error) console.error("DELETE HAFTA ERROR:", error);
+async function deleteHafta(id, productId) {
+  await supabase.from("haftanin_firsati").delete().eq("id", id);
+
+  // 🔥 ürün kampanyasını tamamen kapat
+  await supabase
+    .from("products")
+    .update({
+      deal_active: false,
+      deal_end_at: null,
+      deal_discount_percent: null,
+    })
+    .eq("id", productId);
+
   loadHafta();
 }
 
+
 // ✅ Haftanın Fırsatı: Aktif/Pasif
-async function toggleHaftaActive(id, active) {
-  const { error } = await supabase
+async function toggleHaftaActive(id, active, productId) {
+  await supabase
     .from("haftanin_firsati")
     .update({ active, updated_at: new Date() })
     .eq("id", id);
 
-  if (error) console.error("TOGGLE HAFTA ERROR:", error);
+  // 🔥 ürün tablosunu da kapat / aç
+  await supabase
+    .from("products")
+    .update({
+      deal_active: active,
+    })
+    .eq("id", productId);
+
   loadHafta();
 }
+
 
   // -----------------------------------------------------------------
   // ⭐ TRENDYOL TIPİ KAMPANYALAR: Kampanyalar + içindeki ürünleri yükle
@@ -313,7 +344,8 @@ async function toggleHaftaActive(id, active) {
 
             <div className="flex gap-2 mt-2">
               <button
-                onClick={() => toggleHaftaActive(x.id, !x.active)}
+              onClick={() => toggleHaftaActive(x.id, !x.active, x.product_id)}
+
                 className={`text-xs px-2 py-1 rounded ${
                   x.active ? "bg-yellow-500 text-black" : "bg-gray-600 text-white"
                 }`}
@@ -322,7 +354,8 @@ async function toggleHaftaActive(id, active) {
               </button>
 
               <button
-                onClick={() => deleteHafta(x.id)}
+               onClick={() => deleteHafta(x.id, x.product_id)}
+
                 className="text-xs px-2 py-1 rounded bg-red-600"
               >
                 Sil

@@ -364,12 +364,48 @@ viewed.unshift({
 
   const [selectedColor, setSelectedColor] = useState("");
 
-    // ✅ KAZANÇ (old_price - price)
-  const savings = useMemo(() => {
-    const oldP = Number(p?.old_price || 0);
-    const newP = Number(p?.price || 0);
-    return oldP > newP ? oldP - newP : 0;
-  }, [p]);
+  
+
+
+
+
+   // -------------------------------
+// DEAL / SAYAÇ KONTROLÜ 🔥 (SAFE)
+// -------------------------------
+const hasProduct = !!p;
+
+const now = Date.now();
+const dealEnd = hasProduct && p.deal_end_at
+  ? new Date(p.deal_end_at).getTime()
+  : null;
+
+const isDealActive =
+  hasProduct &&
+  p.deal_active &&
+  dealEnd &&
+  now < dealEnd;
+
+// 👉 EN KRİTİK SATIR
+const finalPrice = hasProduct
+  ? isDealActive
+    ? Number(p.price)
+    : Number(p.old_price || p.price)
+  : 0;
+
+const showDiscount =
+  hasProduct &&
+  isDealActive &&
+  Number(p.old_price || 0) > Number(p.price || 0);
+
+// ✅ Kazanç
+const savings = useMemo(() => {
+  if (!hasProduct || !isDealActive) return 0;
+
+  const oldP = Number(p.old_price || 0);
+  const newP = Number(p.price || 0);
+  return oldP > newP ? oldP - newP : 0;
+}, [p, isDealActive, hasProduct]);
+
 
 
   const handleFavClick = () => {
@@ -617,23 +653,24 @@ className="w-full h-[520px] object-cover rounded-xl bg-white transition-transfor
 
 
             {/* FİYAT */}
-            <div className="mt-6 flex items-center gap-3">
-              {p.old_price > p.price && (
-                <>
-                  <span className="bg-red-100 border border-red-300 text-red-700 text-xs px-2 py-1 rounded">
-                    %{Math.round(((p.old_price - p.price) / p.old_price) * 100)}
-                  </span>
+         <div className="mt-6 flex items-center gap-3">
+  {showDiscount && (
+    <>
+      <span className="bg-red-100 border border-red-300 text-red-700 text-xs px-2 py-1 rounded">
+        %{Math.round(((p.old_price - p.price) / p.old_price) * 100)}
+      </span>
 
-                  <span className="text-gray-400 line-through text-lg">
-                    {TRY(p.old_price)}
-                  </span>
-                </>
-              )}
+      <span className="text-gray-400 line-through text-lg">
+        {TRY(p.old_price)}
+      </span>
+    </>
+  )}
 
-              <span className="text-3xl font-bold text-gray-900">
-                {TRY(p.price)}
-              </span>
-            </div>
+  <span className="text-3xl font-bold text-gray-900">
+    {TRY(finalPrice)}
+  </span>
+</div>
+
 
           {/* ⏱️ KAMPANYA SAYAÇ (ÜRÜN + HAFTANIN FIRSATI) */}
 {(() => {
@@ -697,10 +734,12 @@ className="w-full h-[520px] object-cover rounded-xl bg-white transition-transfor
               <button
                onClick={async () => {
   const existed = await addToCart({
-    ...p,
-    selectedColor,
-    image_url: p.main_img || p.gallery?.[0],
-  });
+  ...p,
+  price: finalPrice,   // 🔥 GERÇEK FİYAT
+  selectedColor,
+  image_url: p.main_img || p.gallery?.[0],
+});
+
 
   window.dispatchEvent(
     new CustomEvent("toast", {
@@ -730,10 +769,12 @@ className="w-full h-[520px] object-cover rounded-xl bg-white transition-transfor
                     );
                   }
 
-                  addToCart({
-                    ...p,
-                    image_url: p.main_img || p.gallery?.[0],
-                  });
+                 addToCart({
+  ...p,
+  price: finalPrice,
+  image_url: p.main_img || p.gallery?.[0],
+});
+
 
                   navigate("/checkout");
                 }}

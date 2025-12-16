@@ -28,6 +28,21 @@ export default function ProductCardVertical({ p, hideCartButton = false }) {
     ? Math.round(((old - price) / old) * 100)
     : 0;
 
+      // -------------------------------
+  // DEAL / SAYAÇ KONTROLÜ 🔥
+  // -------------------------------
+  const now = Date.now();
+  const dealEnd = p.deal_end_at
+    ? new Date(p.deal_end_at).getTime()
+    : null;
+
+  const isDealActive =
+    p.deal_active && dealEnd && now < dealEnd;
+
+  const finalPrice = isDealActive ? price : old || price;
+  const showDiscount = isDealActive && hasDiscount;
+
+
   return (
   <div
   onClick={() => nav(`/product/${p.id}`)}
@@ -177,7 +192,7 @@ export default function ProductCardVertical({ p, hideCartButton = false }) {
 
   {/* ÜST SATIR: İNDİRİM + ESKİ FİYAT */}
 <div className="flex items-center gap-2 min-h-[24px]">
-  {hasDiscount ? (
+ {showDiscount ? (
     <>
       <span className="text-xs bg-red-100 text-red-600 px-2 py-[2px] rounded-lg font-bold">
         %{discount}
@@ -198,9 +213,9 @@ export default function ProductCardVertical({ p, hideCartButton = false }) {
 
   {/* ALT SATIR: YENİ FİYAT */}
   <span className="text-gray-900 font-extrabold text-xl leading-tight">
-    ₺{price.toLocaleString("tr-TR")}
+  ₺{finalPrice.toLocaleString("tr-TR")}
   </span>
-{p.deal_active && p.deal_end_at && (
+{isDealActive && (
   <div className="mt-1">
     <DealCountdown
       endAt={new Date(p.deal_end_at).getTime()}
@@ -219,7 +234,21 @@ export default function ProductCardVertical({ p, hideCartButton = false }) {
     <button
       onClick={async (e) => {
         e.stopPropagation();
-        const existed = await addToCart({ ...p, image_url: img, quantity: 1 });
+       const now = Date.now();
+const dealEnd = p.deal_end_at ? new Date(p.deal_end_at).getTime() : null;
+
+const finalPrice =
+  p.deal_active && dealEnd && now < dealEnd
+    ? Number(p.price)
+    : Number(p.old_price || p.price);
+
+const existed = await addToCart({
+  ...p,
+  price: finalPrice, // 🔥 GERÇEK FİYAT
+  image_url: img,
+  quantity: 1,
+});
+
 
         window.dispatchEvent(
           new CustomEvent("toast", {

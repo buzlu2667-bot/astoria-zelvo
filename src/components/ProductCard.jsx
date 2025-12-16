@@ -4,7 +4,10 @@ import { useFavorites } from "../context/FavoritesContext";
 import { Hourglass } from "lucide-react";
 import DealCountdown from "./DealCountdown";
 
-export default function ProductCard({ product }) {
+
+
+export default function ProductCard({ product, hideDealCountdown = false }) {
+
   const navigate = useNavigate();
   const { addFav, removeFav, isFav } = useFavorites();
   const [favorites, setFavorites] = useState([]);
@@ -24,6 +27,23 @@ export default function ProductCard({ product }) {
   const old = Number(product.old_price ?? 0);
   const hasDiscount = old > price;
   const discount = hasDiscount ? Math.round(((old - price) / old) * 100) : 0;
+
+    // -------------------------------
+  // DEAL / SAYAÇ KONTROLÜ 🔥
+  // -------------------------------
+  const now = Date.now();
+  const dealEnd = product.deal_end_at
+    ? new Date(product.deal_end_at).getTime()
+    : null;
+
+  const isDealActive =
+    product.deal_active && dealEnd && now < dealEnd;
+
+  // Sayaç bittiyse indirim iptal
+  const finalPrice = isDealActive ? price : old || price;
+  const showOldPrice = isDealActive && hasDiscount;
+  const showDiscount = isDealActive && hasDiscount;
+
 
   // -------------------------------
   // FAVORITES
@@ -87,7 +107,7 @@ className="w-full h-full object-contain"
               id: product.id,
               title: product.title || product.name || "Ürün",
               name: product.title || product.name || "Ürün",
-              price: price,
+              price: finalPrice,
               old_price: old,
               stock: Number(product.stock ?? 0),
               image_url:
@@ -198,7 +218,7 @@ className="w-full h-full object-contain"
 
   {/* ÜST SATIR: İNDİRİM + ESKİ FİYAT */}
   <div className="flex items-center gap-2 min-h-[24px]">
-    {hasDiscount ? (
+ {showDiscount ? (
       <>
         <span className="
           text-xs
@@ -224,11 +244,11 @@ className="w-full h-full object-contain"
 
   {/* ALT SATIR: YENİ FİYAT (ANA ODAK) */}
   <span className="text-gray-900 font-extrabold text-xl leading-tight">
-    ₺{price.toLocaleString("tr-TR")}
+ ₺{finalPrice.toLocaleString("tr-TR")}
   </span>
 
 {/* ⏱️ SAYAÇ — FİYATIN ALTINDA (EN DOĞRU YER) */}
-{hasDiscount && product.deal_active && product.deal_end_at && (
+{!hideDealCountdown && isDealActive && (
   <div className="mt-1">
     <DealCountdown
       endAt={new Date(product.deal_end_at).getTime()}
@@ -236,6 +256,7 @@ className="w-full h-full object-contain"
     />
   </div>
 )}
+
 </div>
 
 

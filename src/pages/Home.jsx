@@ -98,6 +98,17 @@ const SLIDER_HEIGHT = "70vh";
 
 export default function Home() {
 
+  // ⏱️ ZAMAN TİCK — sayaç bittiğinde render tetiklemek için
+const [tick, setTick] = useState(Date.now());
+
+useEffect(() => {
+  const t = setInterval(() => {
+    setTick(Date.now());
+  }, 1000);
+  return () => clearInterval(t);
+}, []);
+
+
  const navigate = useNavigate();
  const [newProducts, setNew] = useState([]);
   const [popularProducts, setPopular] = useState([]);
@@ -576,37 +587,38 @@ const activeCat = homeCats.find((c) => c.slug === openCat);
 
           {/* ALT KATEGORİLER */}
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
-            {activeCat.subs.map((s) => (
-              <button
-                key={s.id}
-                onClick={() => {
-                  setOpenCat(null);
-                  navigate(`/category/${activeCat.slug}/${s.slug}`);
-                }}
-                className="
-                  group relative w-full text-left
-                  px-4 py-3 rounded-2xl
-                  bg-white/70 border border-gray-200
-                  hover:border-black
-                  hover:shadow-[0_12px_30px_-12px_rgba(0,0,0,0.35)]
-                  transition-all duration-200
-                  flex items-center justify-between
-                "
-              >
-                <span className="text-sm font-semibold text-gray-900">
-                  {s.title}
-                </span>
+           {activeCat.subs.map((s) => (
+  <button
+    key={s.id}
+    onClick={() => {
+      setOpenCat(null);
+      navigate(`/category/${activeCat.slug}/${s.slug}`);
+    }}
+    className="
+      group relative w-full text-left
+      px-4 py-3 rounded-2xl
+      bg-white/70 border border-gray-200
+      hover:border-black
+      hover:shadow-[0_12px_30px_-12px_rgba(0,0,0,0.35)]
+      transition-all duration-200
+      flex items-center justify-between
+    "
+  >
+    <span className="text-sm font-semibold text-gray-900">
+      {s.title}
+    </span>
 
-                <ChevronRight
-                  className="
-                    w-4 h-4 text-gray-400
-                    group-hover:text-black
-                    group-hover:translate-x-0.5
-                    transition
-                  "
-                />
-              </button>
-            ))}
+    <ChevronRight
+      className="
+        w-4 h-4 text-gray-400
+        group-hover:text-black
+        group-hover:translate-x-0.5
+        transition
+      "
+    />
+  </button>
+))}
+
           </div>
         </div>
       </div>
@@ -677,118 +689,140 @@ const activeCat = homeCats.find((c) => c.slug === openCat);
         />
       </div>
 
-      {/* ⭐ HAFTANIN FIRSATI ALANI */}
+  {/* ⭐ HAFTANIN FIRSATLARI */}
 {deals.length > 0 && (
-  <div className="max-w-7xl mx-auto px-4 mt-12">
-    <h2 className="text-2xl font-bold mb-4 text-red-600 flex items-center gap-2">
-      <FlameKindling className="w-6 h-6 text-red-600" />
-      Haftanın Fırsatları
-    </h2>
+  <div className="max-w-7xl mx-auto px-4 mt-16">
+    
+    {/* 🔥 BAŞLIK */}
+    <div className="flex items-center gap-3 mb-6">
+      <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-red-500 to-orange-500 flex items-center justify-center shadow-lg">
+        <FlameKindling className="w-5 h-5 text-white" />
+      </div>
+      <div>
+        <h2 className="text-2xl font-extrabold text-gray-900">
+          Haftanın Fırsatları
+        </h2>
+        <p className="text-sm text-gray-500">
+          Sınırlı süre · Özel avantajlar
+        </p>
+      </div>
+    </div>
 
-    <div className="space-y-6">
-      {deals.map((deal) => (
-        <div
-          key={deal.id}
-          onClick={() => navigate(`/product/${deal.products.id}`)}
-        className="cursor-pointer bg-white shadow-lg rounded-xl flex flex-col sm:flex-row overflow-hidden hover:shadow-xl transition sm:min-h-[340px]"
+    <div className="space-y-8">
+      {deals.map((deal) => {
+        const product = deal.products;
+        if (!product) return null;
 
-        >
-        <img
-  src={deal.products.main_img}
-  className="w-full sm:w-1/3 h-80 sm:h-full object-cover object-center"
- />
+        return (
+          <div
+            key={deal.id}
+            className="
+              relative
+              group
+              rounded-3xl
+              overflow-hidden
+              bg-white
+              border border-gray-200
+              shadow-[0_20px_50px_-20px_rgba(0,0,0,0.25)]
+              hover:shadow-[0_30px_80px_-25px_rgba(0,0,0,0.35)]
+              transition-all duration-300
+            "
+          >
+            {/* ✨ GLOW */}
+            <div className="
+              pointer-events-none
+              absolute inset-0
+              bg-[radial-gradient(600px_circle_at_20%_0%,rgba(239,68,68,0.18),transparent_60%)]
+            " />
 
+            <div className="relative flex flex-col sm:flex-row">
+              
+              {/* 🔥 SOL – GÖRSEL */}
+              <div className="relative sm:w-1/3">
+                <img
+                  src={product.main_img}
+                  alt={product.title}
+                  className="
+                    w-full
+                    h-80 sm:h-full
+                    object-cover
+                    group-hover:scale-105
+                    transition duration-500
+                  "
+                />
 
-          <div className="p-5 flex flex-col justify-center">
-            <h3 className="text-xl font-bold text-gray-900">
-              {deal.products.title}
-            </h3>
+                {/* BADGE */}
+                <div className="absolute top-4 left-4">
+                  <span className="
+                    px-3 py-1
+                    text-xs font-bold
+                    text-white
+                    rounded-full
+                    bg-gradient-to-r from-red-500 to-orange-500
+                    shadow-md
+                  ">
+                    ⚡ Avantaj Ürünü
+                  </span>
+                </div>
+              </div>
 
-            <p className="text-gray-600 mt-2">{deal.note}</p>
+              {/* 👉 SAĞ – İÇERİK */}
+              <div className="p-6 flex flex-col justify-between flex-1">
+                <div>
+                  <h3 className="text-xl font-extrabold text-gray-900 leading-snug">
+                    {product.title}
+                  </h3>
 
-            <div className="mt-4">
-              <span className="text-gray-400 line-through text-lg">
-                {(deal.products.old_price || 0).toLocaleString("tr-TR")} ₺
-              </span>
+                  {deal.note && (
+                    <p className="text-gray-600 mt-2">
+                      {deal.note}
+                    </p>
+                  )}
 
-              <span className="ml-3 bg-red-500 text-white px-3 py-1 rounded-full font-bold">
-                %{deal.discount_percent} İndirim
-              </span>
+                  {/* ✅ FİYAT */}
+                  <div className="mt-4">
+                   <ProductCard
+  product={product}
+  deal={deal}
+  hideDealCountdown
+/>
+
+                  </div>
+                </div>
+
+                {/* ⏱️ SAYAÇ */}
+                {deal.end_at && (
+                  <div className="mt-4">
+                    <DealCountdown
+                      endAt={new Date(deal.end_at).getTime()}
+                    />
+                  </div>
+                )}
+
+                {/* CTA */}
+                <button
+                  onClick={() => navigate(`/product/${product.id}`)}
+                  className="
+                    mt-5
+                    h-12
+                    rounded-xl
+                    font-bold
+                    text-white
+                    bg-black
+                    hover:bg-gray-900
+                    transition
+                  "
+                >
+                  Ürünü İncele
+                </button>
+              </div>
             </div>
-
-            <p className="text-orange-500 font-bold text-2xl mt-2">
-              {(deal.products.price || 0).toLocaleString("tr-TR")} ₺
-            </p>
-
-       {deal.end_at && (
-  <DealCountdown
-    endAt={new Date(deal.end_at).getTime()}
-  />
-)}
-
-
-          <div className="mt-6 w-full max-w-md">
-  {/* mini güven rozetleri */}
-  <div className="grid grid-cols-2 gap-2">
-    <div className="rounded-xl border border-gray-200 bg-gray-50 px-3 py-2">
-      <p className="text-xs text-gray-500">🚚 Kargo</p>
-      <p className="text-sm font-semibold text-gray-900">1500₺+ Bedava</p>
-    </div>
-
-    <div className="rounded-xl border border-gray-200 bg-gray-50 px-3 py-2">
-      <p className="text-xs text-gray-500">⚡ Gönderim</p>
-      <p className="text-sm font-semibold text-gray-900">24 saatte kargoda</p>
-    </div>
-
-    <div className="rounded-xl border border-gray-200 bg-gray-50 px-3 py-2">
-      <p className="text-xs text-gray-500">🔁 Değişim</p>
-      <p className="text-sm font-semibold text-gray-900"></p>
-    </div>
-
-    <div className="rounded-xl border border-gray-200 bg-gray-50 px-3 py-2">
-      <p className="text-xs text-gray-500">🔒 Ödeme</p>
-      <p className="text-sm font-semibold text-gray-900">Güvenli ödeme</p>
-    </div>
-  </div>
-
-  {/* kampanya mesajı */}
-  <div className="mt-3 rounded-xl border border-red-200 bg-red-50 px-4 py-3">
-    <p className="text-sm font-semibold text-red-700">
-      🔥 Kampanya ürünü — stoklarla sınırlı
-    </p>
-    <p className="text-xs text-red-600 mt-1">
-      Bu fırsat kaldırılmadan yakala.
-    </p>
-  </div>
-
-  {/* CTA */}
-  <div className="mt-3 flex gap-3">
-    <button
-      onClick={(e) => {
-        e.stopPropagation();
-        navigate(`/product/${deal.products.id}`);
-      }}
-      className="flex-1 bg-black text-white font-bold py-3 rounded-xl hover:opacity-90 transition"
-    >
-      Ürünü İncele
-    </button>
-
-   
-  </div>
-
-  {/* mini dipnot */}
-  <p className="text-[11px] text-gray-400 mt-2">
-    * Fiyat/indirim stok durumuna göre değişebilir.
-  </p>
-</div>
-
           </div>
-        </div>
-      ))}
+        );
+      })}
     </div>
   </div>
 )}
-
 
 
 {/* ⭐ TRENDYOL TİPİ KAMPANYA BLOKLARI */}
