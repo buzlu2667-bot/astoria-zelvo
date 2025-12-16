@@ -30,6 +30,11 @@ const {
 } = useCart();
 
 
+// 🔥 Kampanyalı ürün var mı?
+const hasCampaignProduct = cart.some(
+  (i) => Number(i.old_price) > Number(i.price)
+);
+
 
 
   const nav = useNavigate();
@@ -67,11 +72,22 @@ const finalAmount = Math.max(
   const change = (k, v) => setForm((f) => ({ ...f, [k]: v }));
 
   
-// 🔒 Shopier sadece SABİT fiyat + tek ürün için
-const shopierDisabled =
-  cart.length !== 1 ||            // 1’den fazla ürün
-  cartExtraDiscountPercent > 5 || // %7 gibi dinamik sepet indirimi
-  discount > 0;                   // kupon kullanıldıysa
+
+// 🔒 Shopier neden kapalı? (TEK GERÇEK KAYNAK)
+const shopierBlockReason = (() => {
+  if (hasCampaignProduct) return "CAMPAIGN";      // ürün indirimi
+  if (cart.length !== 1) return "MULTI_PRODUCT"; // tek ürün değil
+  if (discount > 0 || cartExtraDiscount > 0) return "DISCOUNT"; // kupon / sepet indirimi
+  return null; // açık
+})();
+const shopierDisabled = shopierBlockReason !== null;
+
+// ℹ️ Shopier adet bilgilendirme (tek ürün + adet > 1)
+const shopierQuantityWarning =
+  pay === "shopier" &&
+  cart.length === 1 &&
+  Number(cart[0]?.quantity || 1) > 1;
+
 
   // Kullanıcı bilgisi
   useEffect(() => {
@@ -290,11 +306,12 @@ ${cartExtraDiscount > 0 ? `<b>Sepet İndirimi:</b> ₺${cartExtraDiscount}<br/>`
 
  const validateBeforePayment = async () => {
   // 🔒 SHOPIER GÜVENLİK KİLİDİ (EN BAŞ)
-if (pay === "shopier" && shopierDisabled) {
-  return toastError(
-    "Bu ödeme yöntemi yalnızca tek ürün ve sabit fiyat için kullanılabilir."
-  );
-}
+// 🔒 SHOPIER GÜVENLİK KİLİDİ (EN BAŞ)
+  if (pay === "shopier" && shopierDisabled) {
+    return toastError(
+      "Bu ödeme yöntemi yalnızca tek ürün ve sabit fiyat için kullanılabilir."
+    );
+  }
 
   if (pay === "shopier") {
   const item = cart[0];
@@ -544,12 +561,37 @@ window.location.href =
   label="💳 Kredi / Banka Kartı ile Öde"
   icon={CreditCard}
 />
-{shopierDisabled && (
-  <div className="mt-3 text-sm text-amber-700 bg-amber-50 border border-amber-200 rounded-xl p-3">
-    ⚠️ Bu indirimli fiyat <b>yalnızca Havale / EFT</b> için geçerlidir.  
-    Kredi kartı (Shopier) ile ödeme için sepetinizde <b>tek ürün</b> olmalıdır.
+
+{shopierQuantityWarning && (
+  <div className="mt-3 text-sm text-blue-700 bg-blue-50 border border-blue-200 rounded-xl p-3">
+    ℹ️ Sepetinizde <b>{cart[0].quantity} adet</b> ürün bulunuyor.<br />
+    <b>Shopier ödeme sayfasında</b> lütfen ürün adedini
+    <b> {cart[0].quantity} </b> olarak tekrar seçiniz.
   </div>
 )}
+
+{shopierBlockReason === "CAMPAIGN" && (
+  <div className="mt-3 text-sm text-red-700 bg-red-50 border border-red-200 rounded-xl p-3">
+    ⚠️ <b>Kampanya ürünü</b> içeren sepetlerde
+    <b> kredi kartı (Shopier)</b> ile ödeme kapalıdır.<br />
+    Bu fiyat yalnızca <b>Havale / EFT</b> için geçerlidir.
+  </div>
+)}
+
+{shopierBlockReason === "MULTI_PRODUCT" && (
+  <div className="mt-3 text-sm text-amber-700 bg-amber-50 border border-amber-200 rounded-xl p-3">
+    ⚠️ Kredi kartı (Shopier) ile ödeme için
+    sepetinizde <b>tek ürün</b> bulunmalıdır.
+  </div>
+)}
+
+{shopierBlockReason === "DISCOUNT" && (
+  <div className="mt-3 text-sm text-amber-700 bg-amber-50 border border-amber-200 rounded-xl p-3">
+    ⚠️ <b>İndirimli sepetlerde</b> kredi kartı (Shopier) ile ödeme kapalıdır.<br />
+    Bu fiyat yalnızca <b>Havale / EFT</b> için geçerlidir.
+  </div>
+)}
+
 
 </div>
 
