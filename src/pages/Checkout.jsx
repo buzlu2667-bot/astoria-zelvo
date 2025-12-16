@@ -67,6 +67,11 @@ const finalAmount = Math.max(
   const change = (k, v) => setForm((f) => ({ ...f, [k]: v }));
 
   
+// 🔒 Shopier sadece SABİT fiyat + tek ürün için
+const shopierDisabled =
+  cart.length !== 1 ||            // 1’den fazla ürün
+  cartExtraDiscountPercent > 5 || // %7 gibi dinamik sepet indirimi
+  discount > 0;                   // kupon kullanıldıysa
 
   // Kullanıcı bilgisi
   useEffect(() => {
@@ -284,6 +289,13 @@ ${cartExtraDiscount > 0 ? `<b>Sepet İndirimi:</b> ₺${cartExtraDiscount}<br/>`
     );
 
  const validateBeforePayment = async () => {
+  // 🔒 SHOPIER GÜVENLİK KİLİDİ (EN BAŞ)
+if (pay === "shopier" && shopierDisabled) {
+  return toastError(
+    "Bu ödeme yöntemi yalnızca tek ürün ve sabit fiyat için kullanılabilir."
+  );
+}
+
   if (pay === "shopier") {
   const item = cart[0];
 
@@ -516,20 +528,28 @@ window.location.href =
     icon={Banknote}
   />
 
-  <PayBtn
-    active={pay === "cod"}
-    onClick={() => setPay("cod")}
-    label="Kapıda Ödeme"
-    icon={Truck}
-  />
+ 
 
-  <PayBtn
+ <PayBtn
+  active={false}
+  onClick={() => {}}
+  disabled={true}
+  label="Kapıda Ödeme "
+  icon={Truck}
+/>
+ <PayBtn
   active={pay === "shopier"}
   onClick={() => setPay("shopier")}
+  disabled={shopierDisabled}
   label="💳 Kredi / Banka Kartı ile Öde"
   icon={CreditCard}
 />
-
+{shopierDisabled && (
+  <div className="mt-3 text-sm text-amber-700 bg-amber-50 border border-amber-200 rounded-xl p-3">
+    ⚠️ Bu indirimli fiyat <b>yalnızca Havale / EFT</b> için geçerlidir.  
+    Kredi kartı (Shopier) ile ödeme için sepetinizde <b>tek ürün</b> olmalıdır.
+  </div>
+)}
 
 </div>
 
@@ -967,9 +987,10 @@ function Summary({
             <div className="mt-5 grid gap-2">
               <div className="rounded-xl border border-gray-100 p-3 text-sm text-gray-700">
                 ✅ <span className="font-semibold">Değişim</span> • 🚚 Hızlı kargo
+                 ✅ <span className="font-semibold">Hızlı Teslimat</span>
               </div>
               <div className="rounded-xl border border-gray-100 p-3 text-sm text-gray-700">
-                🔒 <span className="font-semibold">Güvenli alışveriş</span> • Destek: WhatsApp
+                🔒 <span className="font-semibold">Güvenli alışveriş</span> • Destek: destek@maximorashop.com
               </div>
             </div>
           </div>

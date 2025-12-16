@@ -9,9 +9,20 @@ const STATUS = {
   cancelled: "İptal",
 };
 
+
+
+
+ 
 export default function AdminOrders() {
   const [orders, setOrders] = useState([]);
   const [items, setItems] = useState({});
+
+    // ❌ İPTAL MODALI
+  const [cancelModal, setCancelModal] = useState(null); 
+  // { orderId, email, full_name }
+
+  const [cancelReason, setCancelReason] = useState("");
+
 
   useEffect(() => {
     fetchOrders();
@@ -137,6 +148,8 @@ Siparişiniz özenle hazırlanıyor. Güvenli ödeme, hızlı teslimat ve premiu
 
 
   async function updateStatus(orderId, status) {
+
+
     await supabase
       .from("orders")
       .update({ status })
@@ -145,6 +158,117 @@ Siparişiniz özenle hazırlanıyor. Güvenli ödeme, hızlı teslimat ve premiu
     toast("🔄 Sipariş Güncellendi");
     fetchOrders();
   }
+
+    async function confirmCancel() {
+    if (!cancelReason.trim()) {
+      alert("İptal sebebi yazman lazım");
+      return;
+    }
+
+    const { orderId, email, full_name } = cancelModal;
+
+    // 1️⃣ Siparişi iptal et + sebebi kaydet
+    await supabase
+      .from("orders")
+      .update({
+        status: "cancelled",
+        cancel_reason: cancelReason,
+      })
+      .eq("id", orderId);
+
+    // 2️⃣ Müşteriye mail
+    await fetch(
+      "https://tvsfhhxxligbqrcqtprq.supabase.co/functions/v1/send-mail",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_ANON_KEY}`,
+        },
+        body: JSON.stringify({
+          to: email,
+          subject: "Siparişiniz İptal Edildi",
+         html: `
+<div style="
+  padding:24px;
+  font-family:Arial, Helvetica, sans-serif;
+  background:#0d0d0d;
+  color:white;
+  border-radius:16px;
+  border:1px solid #333;
+">
+
+  <!-- LOGO -->
+  <div style="text-align:center; margin-bottom:22px;">
+    <img
+      src="https://tvsfhhxxligbqrcqtprq.supabase.co/storage/v1/object/public/notification-images/logo%20(3).png"
+      alt="MaximoraShop"
+      style="width:120px; height:auto; border-radius:12px;"
+    />
+  </div>
+
+  <!-- TITLE -->
+  <h2 style="color:#ef4444; text-align:center; margin-bottom:12px;">
+    ❌ Siparişiniz İptal Edildi
+  </h2>
+
+  <!-- TEXT -->
+  <p style="font-size:14px; line-height:1.6;">
+    Merhaba <b>${full_name}</b>,
+  </p>
+
+  <p style="font-size:14px; line-height:1.6;">
+    Oluşturmuş olduğunuz sipariş, aşağıda belirtilen sebepten dolayı
+    <b>iptal edilmiştir</b>.
+  </p>
+
+  <!-- REASON BOX -->
+  <div style="
+    margin-top:16px;
+    padding:14px;
+    background:#1a1a1a;
+    border-radius:12px;
+    border:1px solid #444;
+  ">
+    <p style="margin:0; font-size:13px; color:#fca5a5;">
+      <b>İptal Sebebi:</b>
+    </p>
+    <p style="margin-top:6px; font-size:14px; color:#fff;">
+      ${cancelReason}
+    </p>
+  </div>
+
+  <!-- INFO -->
+  <p style="margin-top:18px; font-size:13px; color:#bbb;">
+    Eğer ödemeniz alınmışsa, ücret iadesi en kısa sürede tarafınıza
+    gerçekleştirilecektir.
+  </p>
+
+  <p style="margin-top:10px; font-size:13px; color:#bbb;">
+    Siparişlerinizi ve durumlarını <b>Siparişlerim</b> sayfasından
+    takip edebilirsiniz.
+  </p>
+
+  <!-- FOOTER -->
+  <p style="margin-top:22px; text-align:center; font-size:13px; color:#aaa;">
+    Anlayışınız için teşekkür ederiz.<br/>
+    <b style="color:#facc15;">MaximoraShop 💛</b>
+  </p>
+
+</div>
+`,
+
+        }),
+      }
+    );
+
+    toast("🚫 Sipariş iptal edildi, mail gönderildi.");
+
+    setCancelModal(null);
+    setCancelReason("");
+    fetchOrders();
+  }
+
 
   async function remove(orderId) {
     if (!confirm("Siparişi silmek istiyor musun?")) return;
@@ -233,6 +357,8 @@ const totalDiscount = couponDiscount + cartDiscount;
 </p>
 
 
+
+
 {/* 🚚 KARGO DURUMU */}
 {o.shipping_type === "free_shipping" ? (
   <span className="inline-block mt-1 text-xs font-bold text-green-600 bg-green-50 border border-green-200 px-2 py-1 rounded-lg">
@@ -268,6 +394,23 @@ const totalDiscount = couponDiscount + cartDiscount;
                     </select>
                   )}
 
+
+                  {o.status !== "cancelled" && (
+  <button
+    onClick={() =>
+      setCancelModal({
+        orderId: o.id,
+        email: o.email,
+        full_name: o.full_name,
+      })
+    }
+    className="block text-orange-600 hover:text-orange-700 text-xs mt-1 font-semibold"
+  >
+    🚫 Siparişi İptal Et
+  </button>
+)}
+
+
                   <button
                     onClick={() => remove(o.id)}
                     className="block text-red-500 hover:text-red-400 text-xs mt-2"
@@ -276,6 +419,13 @@ const totalDiscount = couponDiscount + cartDiscount;
                   </button>
                 </div>
               </header>
+              {o.status === "cancelled" && o.cancel_reason && (
+  <div className="mt-3 rounded-xl border border-red-200 bg-red-50 p-3 text-sm text-red-700">
+    <b>İptal Sebebi:</b><br />
+    {o.cancel_reason}
+  </div>
+)}
+
 
             <ul className="mt-3 text-sm text-gray-700 ml-2 space-y-1 border-t border-gray-200 pt-2">
   {(items[o.id] || []).map((it) => {
@@ -333,6 +483,48 @@ const totalDiscount = couponDiscount + cartDiscount;
           );
         })
       )}
+
+      {cancelModal && (
+  <div className="fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4">
+    <div className="bg-white w-full max-w-md rounded-2xl p-6">
+      <h2 className="text-xl font-bold mb-2">
+        Siparişi İptal Et
+      </h2>
+
+      <p className="text-sm text-gray-600 mb-3">
+        Müşteriye gönderilecek iptal sebebini yaz:
+      </p>
+
+      <textarea
+        rows={4}
+        value={cancelReason}
+        onChange={(e) => setCancelReason(e.target.value)}
+        className="w-full border rounded-xl p-3 text-sm"
+        placeholder="Örn: Ödeme süresi dolduğu için iptal edilmiştir."
+      />
+
+      <div className="flex justify-end gap-2 mt-4">
+        <button
+          onClick={() => {
+            setCancelModal(null);
+            setCancelReason("");
+          }}
+          className="px-4 py-2 text-sm rounded-lg border"
+        >
+          Vazgeç
+        </button>
+
+        <button
+          onClick={confirmCancel}
+          className="px-4 py-2 text-sm rounded-lg bg-red-600 text-white font-semibold"
+        >
+          İptal Et
+        </button>
+      </div>
+    </div>
+  </div>
+)}
+
     </div>
   );
 }

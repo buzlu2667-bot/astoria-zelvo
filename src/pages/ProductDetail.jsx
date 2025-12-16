@@ -11,6 +11,17 @@ import ProductCardVertical from "../components/ProductCardVertical";
 import { Hourglass } from "lucide-react";
 import { Clock, Flame } from "lucide-react";
 
+function parseLocalDate(dateStr) {
+  if (!dateStr) return null;
+
+  const [date, time] = dateStr.split("T");
+  const [y, m, d] = date.split("-").map(Number);
+  const [hh, mm] = time.split(":").map(Number);
+
+  return new Date(y, m - 1, d, hh, mm);
+}
+
+
 function DealCountdown({ endAt }) {
   console.log("⏱️ DealCountdown endAt:", endAt);
   if (!endAt || isNaN(endAt)) return null;
@@ -375,9 +386,11 @@ viewed.unshift({
 const hasProduct = !!p;
 
 const now = Date.now();
-const dealEnd = hasProduct && p.deal_end_at
-  ? new Date(p.deal_end_at).getTime()
-  : null;
+const dealEnd =
+  hasProduct && p.deal_end_at
+    ? parseLocalDate(p.deal_end_at)?.getTime()
+    : null;
+
 
 const isDealActive =
   hasProduct &&
@@ -677,9 +690,10 @@ className="w-full h-[520px] object-cover rounded-xl bg-white transition-transfor
   let endAt = null;
 
   // ürün kampanyası
-  if (p?.deal_active && p?.deal_end_at) {
-    endAt = new Date(p.deal_end_at).getTime();
-  }
+ if (p?.deal_active && p?.deal_end_at) {
+  endAt = parseLocalDate(p.deal_end_at)?.getTime();
+}
+
 
   // haftanın fırsatı
   if (!endAt && weeklyDeal) {
@@ -687,8 +701,7 @@ className="w-full h-[520px] object-cover rounded-xl bg-white transition-transfor
       weeklyDeal.end_at ||
       weeklyDeal.deal_end_at ||
       weeklyDeal.end_date;
-
-    if (raw) endAt = new Date(raw).getTime();
+if (raw) endAt = parseLocalDate(raw)?.getTime();
   }
 
   return endAt ? <DealCountdown endAt={endAt} /> : null;

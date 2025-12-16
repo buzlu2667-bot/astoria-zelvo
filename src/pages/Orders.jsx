@@ -3,6 +3,14 @@ import { supabase } from "../lib/supabaseClient";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { STATUS_BADGE } from "../utils/statusBadge";
 import { ShoppingBag } from "lucide-react";
+import {
+  Info,
+  MailWarning,
+  PackageCheck,
+  Truck,
+  CheckCircle
+} from "lucide-react";
+
 const TRY = (n) =>
   Number(n || 0).toLocaleString("tr-TR", {
     style: "currency",
@@ -59,6 +67,52 @@ async function fetchAllOrders(setOrders, setItemsByOrder, setLoading) {
 
   setLoading(false);
 }
+
+function StatusInfo({ color, icon: Icon, title, text }) {
+  const styles = {
+    green: {
+      bg: "bg-green-50",
+      border: "border-green-200",
+      iconBg: "bg-green-100",
+      text: "text-green-800",
+      icon: "text-green-600",
+    },
+    orange: {
+      bg: "bg-orange-50",
+      border: "border-orange-200",
+      iconBg: "bg-orange-100",
+      text: "text-orange-800",
+      icon: "text-orange-600",
+    },
+    blue: {
+      bg: "bg-blue-50",
+      border: "border-blue-200",
+      iconBg: "bg-blue-100",
+      text: "text-blue-800",
+      icon: "text-blue-600",
+    },
+  };
+
+  const s = styles[color];
+
+  return (
+    <div className={`mt-4 rounded-2xl border ${s.border} ${s.bg} p-4`}>
+      <div className="flex items-start gap-3">
+        <div
+          className={`w-9 h-9 rounded-xl ${s.iconBg} flex items-center justify-center shrink-0`}
+        >
+          <Icon className={`w-5 h-5 ${s.icon}`} />
+        </div>
+
+        <div className={`text-sm ${s.text}`}>
+          <p className="font-extrabold mb-1">{title}</p>
+          <p className="leading-relaxed">{text}</p>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 
 export default function Orders() {
   const navigate = useNavigate();
@@ -177,6 +231,40 @@ return (
         </div>
       </div>
   </div>
+
+  <div className="mb-6 rounded-3xl border border-blue-200 bg-gradient-to-br from-blue-50 to-white p-5 shadow-sm">
+  <div className="flex items-start gap-4">
+
+    {/* ICON */}
+    <div className="w-11 h-11 rounded-2xl bg-blue-100 flex items-center justify-center shrink-0">
+      <Info className="w-6 h-6 text-blue-600" />
+    </div>
+
+    {/* TEXT */}
+    <div className="text-sm text-blue-900 leading-relaxed">
+      <p className="font-extrabold mb-1 flex items-center gap-2">
+        Bilgilendirme
+      </p>
+
+      <p>
+        Sipariş durumunuza ait bilgilendirme e-postaları zaman zaman
+        <b className="text-blue-700"> Spam / Gereksiz</b> klasörüne düşebilir.
+        Lütfen e-posta almadıysanız bu klasörleri de kontrol ediniz.
+      </p>
+
+      <div className="mt-4 flex items-start gap-2">
+        <PackageCheck className="w-5 h-5 text-blue-600 mt-0.5 shrink-0" />
+        <p>
+          Ödemeniz <b>onaylandıktan sonra</b> siparişiniz hazırlanma sürecine
+          alınır. Sipariş durumunuzu bu sayfa üzerinden anlık olarak
+          takip edebilirsiniz.
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+
+
       {/* ====== SENİN ESKİ İÇERİK (AYNEN) ====== */}
       <div className="mt-8 max-w-4xl mx-auto">
 
@@ -294,6 +382,80 @@ return (
                     );
                   })}
                 </div>
+
+            {o.status === "processing" && (
+  <>
+    {/* KAPIDA ÖDEME */}
+    {o.payment_method === "cod" && (
+      <StatusInfo
+        color="green"
+        icon={PackageCheck}
+        title="Siparişiniz Onaylandı"
+        text="Siparişiniz onaylanmıştır. Ödeme, ürün teslimi sırasında kapıda alınacaktır."
+      />
+    )}
+
+    {/* HAVALE / EFT */}
+    {o.payment_method === "iban" && (
+      <StatusInfo
+        color="green"
+        icon={PackageCheck}
+        title="Ödemeniz Onaylandı"
+        text="Havale / EFT ödemeniz onaylanmıştır. Siparişiniz hazırlık aşamasındadır."
+      />
+    )}
+
+    {/* KREDİ KARTI (SHOPIER) */}
+    {o.payment_method === "shopier" && (
+      <StatusInfo
+        color="green"
+        icon={PackageCheck}
+        title="Ödeme Başarıyla Alındı"
+        text="Kredi kartı ödemeniz başarıyla tamamlanmıştır. Siparişiniz hazırlanmaktadır."
+      />
+    )}
+  </>
+)}
+
+ {o.status === "shipped" && (
+  <StatusInfo
+    color="orange"
+    icon={Truck}
+    title="Siparişiniz Kargoya Verildi"
+    text="Siparişiniz kargo firmasına teslim edilmiştir. En kısa sürede adresinize ulaştırılacaktır."
+  />
+)}
+{o.status === "delivered" && (
+  <StatusInfo
+    color="blue"
+    icon={CheckCircle}
+    title="Siparişiniz Teslim Edildi"
+    text="Siparişiniz başarıyla teslim edilmiştir. Bizi tercih ettiğiniz için teşekkür ederiz."
+  />
+)}
+
+
+                {/* ❌ İPTAL EDİLDİYSE SEBEP GÖSTER */}
+{o.status === "cancelled" && o.cancel_reason && (
+  <div className="mt-4 rounded-2xl border border-red-200 bg-red-50 p-4">
+    <div className="flex items-start gap-3">
+      <div className="w-9 h-9 rounded-xl bg-red-100 flex items-center justify-center shrink-0">
+        <MailWarning className="w-5 h-5 text-red-600" />
+      </div>
+
+      <div className="text-sm text-red-800">
+        <p className="font-extrabold mb-1">
+          Sipariş İptal Edildi
+        </p>
+        <p className="leading-relaxed">
+          <span className="font-semibold">İptal Sebebi:</span>{" "}
+          {o.cancel_reason}
+        </p>
+      </div>
+    </div>
+  </div>
+)}
+
 
                 {/* DETAYA GİT */}
                 <div className="flex justify-end mt-4">
