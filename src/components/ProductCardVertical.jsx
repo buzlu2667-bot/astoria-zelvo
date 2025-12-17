@@ -273,15 +273,15 @@ export default function ProductCardVertical({ p, hideCartButton = false }) {
   <span className="text-gray-900 font-extrabold text-xl leading-tight">
   ₺{finalPrice.toLocaleString("tr-TR")}
   </span>
-{isDealActive && (
-  <div className="mt-1">
-   <DealCountdown
-  endAt={parseLocalDate(p.deal_end_at).getTime()}
-  compact
-/>
-
-  </div>
-)}
+{/* ⏱️ SAYAÇ ALANI — SABİT YÜKSEKLİK */}
+<div className="mt-1 min-h-[28px]">
+  {isDealActive && (
+    <DealCountdown
+      endAt={parseLocalDate(p.deal_end_at).getTime()}
+      compact
+    />
+  )}
+</div>
 
 </div>
    

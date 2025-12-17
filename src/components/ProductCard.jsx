@@ -262,25 +262,16 @@ className="w-full h-full object-contain"
 
 
     
-     {/* ------------------ FİYAT BLOĞU (YAN YANA ETİKETLİ) ------------------ */}
-{/* FİYAT */}
+  {/* ------------------ FİYAT BLOĞU ------------------ */}
 <div className="mt-3 flex flex-col gap-1">
 
   {/* ÜST SATIR: İNDİRİM + ESKİ FİYAT */}
   <div className="flex items-center gap-2 min-h-[24px]">
- {showDiscount ? (
+    {showDiscount ? (
       <>
-        <span className="
-          text-xs
-          bg-red-100
-          text-red-600
-          px-2 py-[2px]
-          rounded-lg
-          font-bold
-        ">
+        <span className="text-xs bg-red-100 text-red-600 px-2 py-[2px] rounded-lg font-bold">
           %{discount}
         </span>
-
         <span className="text-gray-400 line-through text-sm">
           ₺{old.toLocaleString("tr-TR")}
         </span>
@@ -288,27 +279,25 @@ className="w-full h-full object-contain"
     ) : (
       <span className="opacity-0">placeholder</span>
     )}
-
-     
   </div>
 
-  {/* ALT SATIR: YENİ FİYAT (ANA ODAK) */}
+  {/* ✅ FİYAT – SADECE 1 KERE */}
   <span className="text-gray-900 font-extrabold text-xl leading-tight">
- ₺{finalPrice.toLocaleString("tr-TR")}
+    ₺{finalPrice.toLocaleString("tr-TR")}
   </span>
 
-{/* ⏱️ SAYAÇ — FİYATIN ALTINDA (EN DOĞRU YER) */}
-{!hideDealCountdown && isDealActive && (
-  <div className="mt-1">
-   <DealCountdown
-  endAt={parseLocalDate(product.deal_end_at).getTime()}
-  compact
-/>
-
+  {/* ✅ SAYAÇ ALANI – HER ZAMAN AYNI YERİ TUTAR */}
+  <div className="mt-1 min-h-[28px]">
+    {!hideDealCountdown && isDealActive && (
+      <DealCountdown
+        endAt={parseLocalDate(product.deal_end_at).getTime()}
+        compact
+      />
+    )}
   </div>
-)}
 
 </div>
+
 
 
     </div>
