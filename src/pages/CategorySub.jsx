@@ -97,7 +97,7 @@ setMainCat(main);
   return (
  <div
   className="max-w-7xl mx-auto px-4 pb-24 bg-white text-gray-900"
-  style={{ paddingTop: "calc(var(--header-offset) - 70px)" }}
+  style={{ paddingTop: "calc(var(--header-offset) - 60px)" }}
 >
 
 
