@@ -108,7 +108,7 @@ export default function AdminOrders() {
   <h2 style="color:#facc15; text-align:center;">🎉 Siparişiniz Onaylandı!</h2>
 
   <p>Merhaba <b>${order.full_name}</b>,</p>
-  <p>Havale / EFT ödemeniz onaylanmıştır. Siparişiniz hazırlanıyor.</p>
+  <p>Havale / EFT & Kredi K. Banka K.  ödemeniz  onaylanmıştır. Siparişiniz hazırlanıyor.</p>
 
   <div style="margin-top:15px;padding:15px;background:#111;border-radius:10px;border:1px solid #444">
     <b>Sipariş No:</b> #${order.id}<br/>
