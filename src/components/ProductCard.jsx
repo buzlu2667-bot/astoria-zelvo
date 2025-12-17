@@ -89,10 +89,12 @@ const isDealExpired =
   rounded-lg overflow-hidden bg-white
 ">
 
+{/* 🔰 BADGE ALANI (SOL ÜST) */}
+<div className="absolute top-2 left-2 z-10 flex flex-col gap-1">
+
 {isDealExpired && (
   <div
     className="
-      absolute top-2 left-2 z-10
       flex items-center gap-1.5
       bg-gradient-to-r from-gray-900/90 to-gray-800/90
       text-white
@@ -109,12 +111,29 @@ const isDealExpired =
   </div>
 )}
 
+
         {/* Yeni Ürün Etiketi */}
-        {product.is_new && (
-          <div className="absolute top-2 left-2 bg-blue-600 text-white text-xs font-semibold px-2 py-[2px] rounded-md">
-            Yeni
-          </div>
-        )}
+      {product.is_new && (
+  <div
+    className="
+      inline-flex w-fit
+      items-center
+      px-2 py-0.5
+      rounded-full
+      border border-black/70
+      text-black
+      text-[10px]
+      font-semibold
+      tracking-wide
+      bg-white/80
+      backdrop-blur
+    "
+  >
+    YENİ
+  </div>
+)}
+
+</div>
 
       
 

@@ -73,25 +73,45 @@ export default function ProductCardVertical({ p, hideCartButton = false }) {
 
       {/* FOTO */}
     <div className="relative w-full h-[130px] sm:h-[210px] lg:h-[230px] rounded-lg overflow-hidden bg-white">
-     {isDealExpired && (
+
+        {/* 🔰 BADGE STACK (SOL ÜST) */}
+  <div className="absolute top-2 left-2 z-10 flex flex-col gap-1">
+
+    {isDealExpired && (
+      <div className="
+        flex items-center gap-1.5
+        bg-gradient-to-r from-red-900/90 to-red-700/90
+        text-white text-[11px] font-semibold
+        px-2.5 py-1 rounded-full
+      ">
+        <Ban className="w-3.5 h-3.5 text-red-300" />
+        <span>Fırsat Bitti</span>
+      </div>
+    )}
+
+   {p.is_new && !isDealExpired && (
   <div
     className="
-      absolute top-2 left-2 z-10
-      flex items-center gap-1.5
-      bg-gradient-to-r from-red-900/90 to-red-700/90
-      text-white
-      text-[11px] font-semibold
-      px-2.5 py-1
+      inline-flex w-fit
+      items-center
+      px-2 py-[1px]
       rounded-full
-      border border-gray-700/70
-      backdrop-blur-md
-      shadow-md
+      border border-black/60
+      text-black
+      text-[9px]
+      font-semibold
+      tracking-wide
+      bg-white/80
+      backdrop-blur
     "
   >
-    <Ban className="w-3.5 h-3.5 text-red-300" />
-    <span>Fırsat Bitti</span>
+    YENİ
   </div>
 )}
+
+
+  </div>
+   
 
 
 
