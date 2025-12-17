@@ -21,7 +21,8 @@ import {
   ChevronDown,
    PawPrint,
   Handbag,
-  Mountain
+  Mountain,
+  Truck
 } from "lucide-react";
 
 function parseLocalDate(dateStr) {
@@ -701,11 +702,29 @@ const activeCat = homeCats.find((c) => c.slug === openCat);
       </section>
 
       {/* ⭐ Slider alt yazı — sade */}
-      <div className="w-full text-center mt-3">
-        <h1 className="text-xl font-semibold text-gray-800">
-          1500 TL üzeri kargo bedava
-        </h1>
-      </div>
+<div className="w-full flex justify-center mt-3">
+  <div
+    className="
+      inline-flex items-center gap-2
+      px-4 py-2
+      rounded-full
+      bg-emerald-50
+      border border-emerald-200
+      text-emerald-800
+    "
+  >
+    <Truck className="w-4 h-4 text-emerald-600" />
+
+    <span className="text-sm font-semibold">
+      1500 TL üzeri
+    </span>
+
+    <span className="text-sm">
+      ücretsiz kargo
+    </span>
+  </div>
+</div>
+
 
       {/* ⭐ Alt bölüm artık beyaz sade */}
       <div className="bg-white pt-10 pb-20">
