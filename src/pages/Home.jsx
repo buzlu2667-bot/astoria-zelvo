@@ -129,6 +129,19 @@ const SLIDER_HEIGHT = "70vh";
 
 export default function Home() {
 
+
+ 
+
+  // ⭐ Campaign akıllı ok state
+const [canCampaignLeft, setCanCampaignLeft] = useState(false);
+const [canCampaignRight, setCanCampaignRight] = useState(false);
+// ⭐ Recent (Son İncelenenler) akıllı ok state
+const [canRecentLeft, setCanRecentLeft] = useState(false);
+const [canRecentRight, setCanRecentRight] = useState(false);
+// ⭐ Suggested (İlginizi Çekebilir) akıllı ok state
+const [canSuggestedLeft, setCanSuggestedLeft] = useState(false);
+const [canSuggestedRight, setCanSuggestedRight] = useState(false);
+
   // ⏱️ ZAMAN TİCK — sayaç bittiğinde render tetiklemek için
 const [tick, setTick] = useState(Date.now());
 
@@ -175,6 +188,7 @@ useEffect(() => {
 
 
 
+
 // ⭐ TRENDYOL Çok Ürünlü Kampanya
 const [campaignsFull, setCampaignsFull] = useState([]);
 
@@ -208,6 +222,11 @@ useEffect(() => {
   loadCampaignsFull();
 }, []);
 
+useEffect(() => {
+  checkCampaignScroll();
+}, [campaignsFull]);
+
+
 
   
   const [featuredProducts, setFeatured] = useState([]);
@@ -215,6 +234,10 @@ useEffect(() => {
   const [categories, setCategories] = useState([]);
   const [recent, setRecent] = useState([]);
   const [suggested, setSuggested] = useState([]);
+
+  useEffect(() => {
+  checkSuggestedScroll();
+}, [suggested]);
 
 const [openCat, setOpenCat] = useState(null);
 
@@ -267,6 +290,39 @@ const campaignRight = () =>
   setRecent(viewed);
 }, []);
 
+useEffect(() => {
+  checkRecentScroll();
+}, [recent]);
+
+
+function checkCampaignScroll() {
+  const el = campaignRef.current;
+  if (!el) return;
+
+  setCanCampaignLeft(el.scrollLeft > 0);
+  setCanCampaignRight(
+    el.scrollLeft + el.clientWidth < el.scrollWidth - 5
+  );
+}
+function checkRecentScroll() {
+  const el = recentRef.current;
+  if (!el) return;
+
+  setCanRecentLeft(el.scrollLeft > 0);
+  setCanRecentRight(
+    el.scrollLeft + el.clientWidth < el.scrollWidth - 5
+  );
+}
+
+function checkSuggestedScroll() {
+  const el = suggestedRef.current;
+  if (!el) return;
+
+  setCanSuggestedLeft(el.scrollLeft > 0);
+  setCanSuggestedRight(
+    el.scrollLeft + el.clientWidth < el.scrollWidth - 5
+  );
+}
 
 
   function chooseSlideImage(s) {
@@ -901,37 +957,50 @@ const activeCat = homeCats.find((c) => c.slug === openCat);
         <div className="relative">
 
           {/* Sol Ok - Masaüstü */}
-          <button
-            onClick={campaignLeft}
-            className="
-              hidden md:flex absolute left-0 top-1/2 -translate-y-1/2
-              w-10 h-10 rounded-full bg-white border border-gray-300
-              items-center justify-center hover:bg-gray-100 transition z-20
-            "
-          >
-            <ChevronLeft className="w-5 h-5 text-gray-700" />
-          </button>
+       {canCampaignLeft && (
+  <button
+    onClick={() => {
+      campaignLeft();
+      setTimeout(checkCampaignScroll, 200);
+    }}
+    className="
+      hidden md:flex absolute left-0 top-1/2 -translate-y-1/2
+      w-10 h-10 rounded-full bg-white border border-gray-300
+      items-center justify-center hover:bg-gray-100 transition z-20
+    "
+  >
+    <ChevronLeft className="w-5 h-5 text-gray-700" />
+  </button>
+)}
 
           {/* Sağ Ok - Masaüstü */}
-          <button
-            onClick={campaignRight}
-            className="
-              hidden md:flex absolute right-0 top-1/2 -translate-y-1/2
-              w-10 h-10 rounded-full bg-white border border-gray-300
-              items-center justify-center hover:bg-gray-100 transition z-20
-            "
-          >
-            <ChevronRight className="w-5 h-5 text-gray-700" />
-          </button>
+          {canCampaignRight && (
+  <button
+    onClick={() => {
+      campaignRight();
+      setTimeout(checkCampaignScroll, 200);
+    }}
+    className="
+      hidden md:flex absolute right-0 top-1/2 -translate-y-1/2
+      w-10 h-10 rounded-full bg-white border border-gray-300
+      items-center justify-center hover:bg-gray-100 transition z-20
+    "
+  >
+    <ChevronRight className="w-5 h-5 text-gray-700" />
+  </button>
+)}
+
 
           {/* Kaydırılabilir Alan */}
-          <div
-            ref={campaignRef}
-            className="
-              flex gap-4 overflow-x-auto whitespace-nowrap scroll-smooth no-scrollbar
-              pb-4
-            "
-          >
+         <div
+  ref={campaignRef}
+  onScroll={checkCampaignScroll}
+  className="
+    flex gap-4 overflow-x-auto whitespace-nowrap scroll-smooth no-scrollbar
+    pb-4
+  "
+>
+
            {c.items.map((item) => (
 
             
@@ -972,30 +1041,48 @@ const activeCat = homeCats.find((c) => c.slug === openCat);
     <div className="relative">
 
       {/* Sol ok */}
-      <button
-        onClick={recentLeft}
-        className="hidden md:flex absolute left-0 top-1/2 -translate-y-1/2
-        w-10 h-10 rounded-full bg-white border border-gray-300
-        items-center justify-center hover:bg-gray-100 transition z-20"
-      >
-        <ChevronLeft className="w-5 h-5 text-gray-700" />
-      </button>
+     {canRecentLeft && (
+  <button
+    onClick={() => {
+      recentLeft();
+      setTimeout(checkRecentScroll, 200);
+    }}
+    className="
+      hidden md:flex absolute left-0 top-1/2 -translate-y-1/2
+      w-10 h-10 rounded-full bg-white border border-gray-300
+      items-center justify-center hover:bg-gray-100 transition z-20
+    "
+  >
+    <ChevronLeft className="w-5 h-5 text-gray-700" />
+  </button>
+)}
+
 
       {/* Sağ ok */}
-      <button
-        onClick={recentRight}
-        className="hidden md:flex absolute right-0 top-1/2 -translate-y-1/2
-        w-10 h-10 rounded-full bg-white border border-gray-300
-        items-center justify-center hover:bg-gray-100 transition z-20"
-      >
-        <ChevronRight className="w-5 h-5 text-gray-700" />
-      </button>
+     {canRecentRight && (
+  <button
+    onClick={() => {
+      recentRight();
+      setTimeout(checkRecentScroll, 200);
+    }}
+    className="
+      hidden md:flex absolute right-0 top-1/2 -translate-y-1/2
+      w-10 h-10 rounded-full bg-white border border-gray-300
+      items-center justify-center hover:bg-gray-100 transition z-20
+    "
+  >
+    <ChevronRight className="w-5 h-5 text-gray-700" />
+  </button>
+)}
+
 
       {/* Kaydırılabilir alan */}
-      <div
-        ref={recentRef}
-        className="flex gap-4 pb-4 overflow-x-auto whitespace-nowrap scroll-smooth no-scrollbar"
-      >
+    <div
+  ref={recentRef}
+  onScroll={checkRecentScroll}
+  className="flex gap-4 pb-4 overflow-x-auto whitespace-nowrap scroll-smooth no-scrollbar"
+>
+
       {recent.map((item) => (
  <div
   key={item.id}
@@ -1031,30 +1118,48 @@ const activeCat = homeCats.find((c) => c.slug === openCat);
     <div className="relative">
 
       {/* Sol ok */}
-      <button
-        onClick={suggestedLeft}
-        className="hidden md:flex absolute left-0 top-1/2 -translate-y-1/2
-        w-10 h-10 rounded-full bg-white border border-gray-300
-        items-center justify-center hover:bg-gray-100 transition z-20"
-      >
-        <ChevronLeft className="w-5 h-5 text-gray-700" />
-      </button>
+      {canSuggestedLeft && (
+  <button
+    onClick={() => {
+      suggestedLeft();
+      setTimeout(checkSuggestedScroll, 200);
+    }}
+    className="
+      hidden md:flex absolute left-0 top-1/2 -translate-y-1/2
+      w-10 h-10 rounded-full bg-white border border-gray-300
+      items-center justify-center hover:bg-gray-100 transition z-20
+    "
+  >
+    <ChevronLeft className="w-5 h-5 text-gray-700" />
+  </button>
+)}
+
 
       {/* Sağ ok */}
-      <button
-        onClick={suggestedRight}
-        className="hidden md:flex absolute right-0 top-1/2 -translate-y-1/2
-        w-10 h-10 rounded-full bg-white border border-gray-300
-        items-center justify-center hover:bg-gray-100 transition z-20"
-      >
-        <ChevronRight className="w-5 h-5 text-gray-700" />
-      </button>
+     {canSuggestedRight && (
+  <button
+    onClick={() => {
+      suggestedRight();
+      setTimeout(checkSuggestedScroll, 200);
+    }}
+    className="
+      hidden md:flex absolute right-0 top-1/2 -translate-y-1/2
+      w-10 h-10 rounded-full bg-white border border-gray-300
+      items-center justify-center hover:bg-gray-100 transition z-20
+    "
+  >
+    <ChevronRight className="w-5 h-5 text-gray-700" />
+  </button>
+)}
+
 
       {/* Kaydırılabilir alan */}
-      <div
-        ref={suggestedRef}
-        className="flex gap-4 pb-4 overflow-x-auto whitespace-nowrap scroll-smooth no-scrollbar"
-      >
+     <div
+  ref={suggestedRef}
+  onScroll={checkSuggestedScroll}
+  className="flex gap-4 pb-4 overflow-x-auto whitespace-nowrap scroll-smooth no-scrollbar"
+>
+
        {suggested.map((item) => (
   <div
   key={item.id}
@@ -1088,17 +1193,43 @@ const activeCat = homeCats.find((c) => c.slug === openCat);
 
 function SectionSwitch({ featured, popular, newest, loading }) {
 
-  
+  const [canLeft, setCanLeft] = useState(false);
+const [canRight, setCanRight] = useState(false);
+
   const [tab, setTab] = useState("featured");
   const products = tab === "featured" ? featured : tab === "popular" ? popular : newest;
   const sliderRef = useRef(null);
 
-  useEffect(() => {
-    sliderRef.current?.scrollTo({ left: 0, behavior: "smooth" });
-  }, [tab]);
+ useEffect(() => {
+  sliderRef.current?.scrollTo({ left: 0, behavior: "smooth" });
+  setTimeout(checkScroll, 50);
+}, [tab]);
+
+useEffect(() => {
+  if (!sliderRef.current) return;
+
+  // DOM otursun diye minicik gecikme
+  const t = setTimeout(() => {
+    checkScroll();
+  }, 100);
+
+  return () => clearTimeout(t);
+}, [products]);
+
 
   const scrollLeft = () => sliderRef.current?.scrollBy({ left: -350, behavior: "smooth" });
   const scrollRight = () => sliderRef.current?.scrollBy({ left: 350, behavior: "smooth" });
+
+  function checkScroll() {
+  const el = sliderRef.current;
+  if (!el) return;
+
+  setCanLeft(el.scrollLeft > 0);
+  setCanRight(
+    el.scrollLeft + el.clientWidth < el.scrollWidth - 5
+  );
+}
+
 
   const tabs = [
     { key: "featured", label: "Öne Çıkan", icon: <Star className="w-4 h-4" /> },
@@ -1139,33 +1270,47 @@ function SectionSwitch({ featured, popular, newest, loading }) {
         <div className="relative">
 
           {/* Oklar */}
-          <button
-            onClick={scrollLeft}
-            className="
-              hidden md:flex absolute left-0 top-1/2 -translate-y-1/2
-              w-10 h-10 rounded-full bg-white border border-gray-300
-              items-center justify-center hover:bg-gray-100 transition z-20
-            "
-          >
-            <ChevronLeft className="w-5 h-5 text-gray-700" />
-          </button>
+        {canLeft && (
+  <button
+    onClick={() => {
+      scrollLeft();
+      setTimeout(checkScroll, 200);
+    }}
+    className="
+      hidden md:flex absolute left-0 top-1/2 -translate-y-1/2
+      w-10 h-10 rounded-full bg-white border border-gray-300
+      items-center justify-center hover:bg-gray-100 transition z-20
+    "
+  >
+    <ChevronLeft className="w-5 h-5 text-gray-700" />
+  </button>
+)}
 
-          <button
-            onClick={scrollRight}
-            className="
-              hidden md:flex absolute right-0 top-1/2 -translate-y-1/2
-              w-10 h-10 rounded-full bg-white border border-gray-300
-              items-center justify-center hover:bg-gray-100 transition z-20
-            "
-          >
-            <ChevronRight className="w-5 h-5 text-gray-700" />
-          </button>
+
+          {canRight && (
+  <button
+    onClick={() => {
+      scrollRight();
+      setTimeout(checkScroll, 200);
+    }}
+    className="
+      hidden md:flex absolute right-0 top-1/2 -translate-y-1/2
+      w-10 h-10 rounded-full bg-white border border-gray-300
+      items-center justify-center hover:bg-gray-100 transition z-20
+    "
+  >
+    <ChevronRight className="w-5 h-5 text-gray-700" />
+  </button>
+)}
+
 
           {/* ⭐ Kartlar */}
-          <div
-            ref={sliderRef}
-            className="flex gap-4 pb-4 overflow-x-auto whitespace-nowrap scroll-smooth no-scrollbar"
-          >
+        <div
+  ref={sliderRef}
+  onScroll={checkScroll}
+  className="flex gap-4 pb-4 overflow-x-auto whitespace-nowrap scroll-smooth no-scrollbar"
+>
+
             {products.map((p) => (
               <div
                 key={p.id}

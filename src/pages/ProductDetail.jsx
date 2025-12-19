@@ -140,6 +140,10 @@ const touchStartX = useRef(0);
 const touchEndX = useRef(0);
   const [related, setRelated] = useState([]);
 
+  const [canRelatedLeft, setCanRelatedLeft] = useState(false);
+const [canRelatedRight, setCanRelatedRight] = useState(false);
+
+
   const [activeIndex, setActiveIndex] = useState(0);
 
   const [newReview, setNewReview] = useState({ name: "", text: "", rating: 5 });
@@ -155,6 +159,16 @@ const scrollLeftRelated = () =>
 
 const scrollRightRelated = () =>
   relatedRef.current?.scrollBy({ left: 300, behavior: "smooth" });
+
+function checkRelatedScroll() {
+  const el = relatedRef.current;
+  if (!el) return;
+
+  setCanRelatedLeft(el.scrollLeft > 0);
+  setCanRelatedRight(
+    el.scrollLeft + el.clientWidth < el.scrollWidth - 5
+  );
+}
 
   
 
@@ -264,6 +278,9 @@ if (deal) {
         .limit(50);
 
       setRelated(relatedProducts || []);
+
+   
+
 
       // Yorumları yükle
       const { data: comments } = await supabase
@@ -377,6 +394,15 @@ viewed.unshift({
 
   
 
+useEffect(() => {
+  if (!related.length) return;
+
+  const t = setTimeout(() => {
+    checkRelatedScroll();
+  }, 100);
+
+  return () => clearTimeout(t);
+}, [related]);
 
 
 
@@ -1034,31 +1060,50 @@ if (raw) endAt = parseLocalDate(raw)?.getTime();
     </h2>
 
     {/* Masaüstü Oklar */}
-    <div className="hidden lg:block relative w-full mb-4">
-      <button
-        onClick={scrollLeftRelated}
-        className="absolute left-0 top-1/2 -translate-y-1/2
-        w-10 h-10 rounded-full bg-white border border-gray-300 shadow
-        flex items-center justify-center hover:bg-gray-100 transition z-20"
-      >
-        <ChevronLeft className="w-5 h-5 text-gray-700" />
-      </button>
+   <div className="hidden lg:block relative w-full mb-4">
 
-      <button
-        onClick={scrollRightRelated}
-        className="absolute right-0 top-1/2 -translate-y-1/2
+  {canRelatedLeft && (
+    <button
+      onClick={() => {
+        scrollLeftRelated();
+        setTimeout(checkRelatedScroll, 200);
+      }}
+      className="
+        absolute left-0 top-1/2 -translate-y-1/2
         w-10 h-10 rounded-full bg-white border border-gray-300 shadow
-        flex items-center justify-center hover:bg-gray-100 transition z-20"
-      >
-        <ChevronRight className="w-5 h-5 text-gray-700" />
-      </button>
-    </div>
+        flex items-center justify-center hover:bg-gray-100 transition z-20
+      "
+    >
+      <ChevronLeft className="w-5 h-5 text-gray-700" />
+    </button>
+  )}
+
+  {canRelatedRight && (
+    <button
+      onClick={() => {
+        scrollRightRelated();
+        setTimeout(checkRelatedScroll, 200);
+      }}
+      className="
+        absolute right-0 top-1/2 -translate-y-1/2
+        w-10 h-10 rounded-full bg-white border border-gray-300 shadow
+        flex items-center justify-center hover:bg-gray-100 transition z-20
+      "
+    >
+      <ChevronRight className="w-5 h-5 text-gray-700" />
+    </button>
+  )}
+
+</div>
+
 
     {/* SCROLL ALANI — TEK DIV!!! */}
-    <div
-      ref={relatedRef}
-      className="flex gap-4 overflow-x-auto no-scrollbar px-2 pb-4 scroll-smooth"
-    >
+  <div
+  ref={relatedRef}
+  onScroll={checkRelatedScroll}
+  className="flex gap-4 overflow-x-auto no-scrollbar px-2 pb-4 scroll-smooth"
+>
+
    {related.map((item) => (
   <div key={item.id} className="flex-shrink-0 w-[160px] sm:w-[200px]">
     <ProductCardVertical

@@ -48,6 +48,23 @@ const [mobileSummaryOpen, setMobileSummaryOpen] = useState(false);
   const suggestedRight = () =>
     suggestedRef.current?.scrollBy({ left: 350, behavior: "smooth" });
 
+  const [canSuggestedLeft, setCanSuggestedLeft] = useState(false);
+const [canSuggestedRight, setCanSuggestedRight] = useState(false);
+
+function checkSuggestedScroll() {
+  const el = suggestedRef.current;
+  if (!el) return;
+
+ const THRESHOLD = 20; // 👈 kritik
+
+setCanSuggestedLeft(el.scrollLeft > THRESHOLD);
+setCanSuggestedRight(
+  el.scrollLeft + el.clientWidth < el.scrollWidth - THRESHOLD
+);
+
+}
+
+
   // Login kontrol → Satın al
   const handleOrder = () => {
     if (!session) {
@@ -76,6 +93,32 @@ useEffect(() => {
   }
   loadSuggested();
 }, []);
+
+useEffect(() => {
+  if (!suggested.length) return;
+
+  const t = setTimeout(() => {
+    requestAnimationFrame(() => {
+      checkSuggestedScroll();
+    });
+  }, 150); // 👈 biraz daha sabır
+
+  return () => clearTimeout(t);
+}, [suggested]);
+
+
+useEffect(() => {
+  const onLoad = () => {
+    setTimeout(() => {
+      checkSuggestedScroll();
+    }, 200);
+  };
+
+  window.addEventListener("load", onLoad);
+  return () => window.removeEventListener("load", onLoad);
+}, []);
+
+
 
   /* 🟡 BOŞ SEPET */
  if (!cart || cart.length === 0)
@@ -360,23 +403,34 @@ useEffect(() => {
 
     <div className="relative">
 
-      <button
-        onClick={suggestedLeft}
-        className="hidden md:flex absolute left-0 top-1/2 -translate-y-1/2
-        w-10 h-10 rounded-full bg-white border border-gray-300
-        items-center justify-center hover:bg-gray-100 transition z-20"
-      >
-        <ChevronLeft className="w-5 h-5 text-gray-700" />
-      </button>
+     {canSuggestedLeft && (
+  <button
+    onClick={() => {
+      suggestedLeft();
+      setTimeout(checkSuggestedScroll, 200);
+    }}
+    className="hidden md:flex absolute left-0 top-1/2 -translate-y-1/2
+      w-10 h-10 rounded-full bg-white border border-gray-300
+      items-center justify-center hover:bg-gray-100 transition z-20"
+  >
+    <ChevronLeft className="w-5 h-5 text-gray-700" />
+  </button>
+)}
 
-      <button
-        onClick={suggestedRight}
-        className="hidden md:flex absolute right-0 top-1/2 -translate-y-1/2
-        w-10 h-10 rounded-full bg-white border border-gray-300
-        items-center justify-center hover:bg-gray-100 transition z-20"
-      >
-        <ChevronRight className="w-5 h-5 text-gray-700" />
-      </button>
+{canSuggestedRight && (
+  <button
+    onClick={() => {
+      suggestedRight();
+      setTimeout(checkSuggestedScroll, 200);
+    }}
+    className="hidden md:flex absolute right-0 top-1/2 -translate-y-1/2
+      w-10 h-10 rounded-full bg-white border border-gray-300
+      items-center justify-center hover:bg-gray-100 transition z-20"
+  >
+    <ChevronRight className="w-5 h-5 text-gray-700" />
+  </button>
+)}
+
 
       <div
         ref={suggestedRef}
