@@ -218,6 +218,23 @@ className="w-full h-full object-contain"
         {product.title}
       </p>
 
+      {/* ⭐ YILDIZ & YORUM SAYISI (SABİT YÜKSEKLİK) */}
+<div className="mt-1 min-h-[16px] flex items-center gap-1 text-[12px] text-gray-600">
+  {Number(product.rating_count) > 0 && (
+    <>
+      <span className="text-orange-500 leading-none">
+        {"★".repeat(Math.round(product.rating_avg))}
+        {"☆".repeat(5 - Math.round(product.rating_avg))}
+      </span>
+
+      <span className="text-gray-400">
+        ({product.rating_count})
+      </span>
+    </>
+  )}
+</div>
+
+
       {/* STOK */}
 <div className="mt-1">
   {Number(product.stock ?? 0) <= 0 ? (

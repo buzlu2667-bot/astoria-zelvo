@@ -201,6 +201,24 @@ export default function ProductCardVertical({ p, hideCartButton = false }) {
   </p>
 </div>
 
+ {/* ⭐ YILDIZ & YORUM SAYISI (SABİT YÜKSEKLİK) */}
+<div className="mt-1 min-h-[16px] flex items-center gap-1 text-[12px] text-gray-600">
+  {Number(p.rating_count) > 0 && (
+    <>
+      <span className="text-orange-500 leading-none">
+        {"★".repeat(Math.round(p.rating_avg))}
+        {"☆".repeat(5 - Math.round(p.rating_avg))}
+      </span>
+
+      <span className="text-gray-400">
+        ({p.rating_count})
+      </span>
+    </>
+  )}
+</div>
+
+
+
   {/* STOK */}
 <div className="mt-1">
   {p.stock <= 0 ? (

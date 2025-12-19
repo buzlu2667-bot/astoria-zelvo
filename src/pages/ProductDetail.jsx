@@ -1033,7 +1033,29 @@ if (raw) endAt = parseLocalDate(raw)?.getTime();
       })
     );
   }
+
+  // ⭐⭐⭐ ÜRÜN PUANINI GÜNCELLE
+const { data: ratings } = await supabase
+  .from("comments")
+  .select("rating")
+  .eq("product_id", id);
+
+if (ratings && ratings.length > 0) {
+  const total = ratings.reduce((sum, r) => sum + r.rating, 0);
+  const avg = total / ratings.length;
+
+  await supabase
+    .from("products")
+    .update({
+      rating_avg: Number(avg.toFixed(1)),
+      rating_count: ratings.length,
+    })
+    .eq("id", id);
+}
+
 }}
+
+    
 
     className="w-full bg-orange-500 hover:bg-orange-600 text-white font-semibold py-2 rounded-lg"
   >
