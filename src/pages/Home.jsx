@@ -1,4 +1,5 @@
 import { useEffect, useState, useRef } from "react";
+import ReviewsSlider from "../components/ReviewsSlider";
 import { supabase } from "../lib/supabaseClient";
 import ProductCard from "../components/ProductCard";
 import { Swiper, SwiperSlide } from "swiper/react";
@@ -723,9 +724,11 @@ const activeCat = homeCats.find((c) => c.slug === openCat);
       ücretsiz kargo
     </span>
   </div>
+  
+
 </div>
 
-
+<ReviewsSlider />
       {/* ⭐ Alt bölüm artık beyaz sade */}
       <div className="bg-white pt-10 pb-20">
         <SectionSwitch
