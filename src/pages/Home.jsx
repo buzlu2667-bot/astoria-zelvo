@@ -168,7 +168,7 @@ async function loadDeals() {
     .select("*, products(*)")
     .eq("active", true)
     .order("updated_at", { ascending: false })
-    .limit(5);
+    .limit(10);
 
   if (error) console.error("LOAD DEALS ERROR:", error);
   setDeals(data || []);
