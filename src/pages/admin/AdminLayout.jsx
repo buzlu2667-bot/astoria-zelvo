@@ -54,6 +54,9 @@ export default function AdminLayout() {
 </NavItem>
 
         <NavItem to="/admin/orders" setOpen={setOpen}>Siparişler</NavItem>
+        <NavItem to="/admin/comments" setOpen={setOpen}>
+  Yorumlar
+</NavItem>
         <NavItem to="/admin/products" setOpen={setOpen}>Ürünler</NavItem>
         <NavItem to="/admin/coupons" setOpen={setOpen}>Kuponlar</NavItem>
         <NavItem to="/admin/users" setOpen={setOpen}>Kullanıcılar</NavItem>
@@ -64,6 +67,7 @@ export default function AdminLayout() {
         <NavItem to="/admin/mail" setOpen={setOpen}>Mail Gönder</NavItem>
         <NavItem to="/admin/profit" setOpen={setOpen}>Kâr Yönetimi</NavItem>
         <NavItem to="/admin/sales" setOpen={setOpen}>Satış Raporu</NavItem>
+
       </aside>
 
       {/* 🌟 İçerik */}

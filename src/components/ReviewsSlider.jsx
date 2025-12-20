@@ -18,15 +18,16 @@ export default function ReviewsSlider() {
     loadReviews();
   }, []);
 
-  async function loadReviews() {
-    const { data } = await supabase
-      .from("comments")
-      .select("id, product_id, name, text")
-      .order("id", { ascending: false })
-      .limit(8);
+ async function loadReviews() {
+  const { data } = await supabase
+    .from("comments")
+    .select("id, product_id, name, text")
+    .eq("approved", true)   // 🔥 KRİTİK SATIR
+    .order("created_at", { ascending: false })
+    .limit(8);
 
-    setReviews(data || []);
-  }
+  setReviews(data || []);
+}
 
   if (reviews.length === 0) return null;
 

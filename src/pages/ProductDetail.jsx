@@ -10,6 +10,7 @@ import { useSession } from "../context/SessionContext";
 import ProductCardVertical from "../components/ProductCardVertical";
 import { Hourglass } from "lucide-react";
 import { Clock, Flame } from "lucide-react";
+import { ShieldAlert } from "lucide-react";
 
 function parseLocalDate(dateStr) {
   if (!dateStr) return null;
@@ -282,27 +283,41 @@ if (deal) {
    
 
 
-      // Yorumları yükle
-      const { data: comments } = await supabase
-        .from("comments")
-        .select("*")
-        .eq("product_id", id)
-        .order("created_at", { ascending: false });
+     // Yorumları yükle (ONAYLI + KULLANICININ KENDİ YORUMU)
+const { data: comments } = await supabase
+  .from("comments")
+  .select("*")
+  .eq("product_id", id)
+ .or(
+  session
+    ? `approved.eq.true,user_id.eq.${session.user.id}`
+    : "approved.eq.true"
+)
 
-      setReviews(comments || []);
+  .order("created_at", { ascending: false });
+
+setReviews(comments || []);
 
       // Realtime
       const sub = supabase
         .channel("realtime-comments")
         .on(
-          "postgres_changes",
-          { event: "INSERT", schema: "public", table: "comments" },
-          (payload) => {
-            if (payload.new.product_id === id) {
-              setReviews((prev) => [payload.new, ...prev]);
-            }
-          }
-        )
+  "postgres_changes",
+  { event: "UPDATE", schema: "public", table: "comments" },
+  (payload) => {
+    const c = payload.new;
+
+    if (c.product_id !== id) return;
+    if (!c.approved) return;
+
+    setReviews((prev) => {
+      if (prev.some((r) => r.id === c.id)) return prev;
+      return [c, ...prev];
+    });
+  }
+)
+
+
         .subscribe();
 
       return () => {
@@ -894,6 +909,23 @@ if (raw) endAt = parseLocalDate(raw)?.getTime();
               key={r.id}
               className="bg-gray-100 border border-gray-300 rounded-lg p-3 mb-3"
             >
+
+             {!r.approved && r.user_id === session?.user?.id && (
+  <div className="
+    inline-flex items-center gap-1.5
+    text-[11px] font-semibold
+    text-orange-600
+    bg-orange-50
+    border border-orange-200
+    px-2 py-1
+    rounded-lg
+  ">
+    <ShieldAlert className="w-3.5 h-3.5" />
+    Onay bekliyor
+  </div>
+)}
+
+
               <div className="flex justify-between">
                 <p className="font-semibold">{r.name}</p>
                 <p className="text-orange-500">
@@ -1013,32 +1045,52 @@ if (raw) endAt = parseLocalDate(raw)?.getTime();
     .single();
 
   const displayName = formatName(prof?.full_name);
+const { error } = await supabase.from("comments").insert([
+  {
+    product_id: id,
+    user_id: session.user.id,
+    name: displayName,
+    text: newReview.text,
+    rating: newReview.rating,
+   approved: false, // 🔥 NET
+  },
+]);
 
-  const { error } = await supabase.from("comments").insert([
-    {
-      product_id: id,
-      user_id: session.user.id,
-      name: displayName, // Burak A.
-      text: newReview.text,
-      rating: newReview.rating,
-    },
-  ]);
 
   if (!error) {
-    setNewReview({ name: "", text: "", rating: 5 });
+ const newItem = {
+  id: Date.now(), // geçici
+  product_id: id,
+  user_id: session.user.id,     // 🔥 ŞART
+  name: displayName,
+  text: newReview.text,
+  rating: newReview.rating,
+  approved: false,              // 🔥 ŞART
+  created_at: new Date().toISOString(),
+};
 
-    window.dispatchEvent(
-      new CustomEvent("toast", {
-        detail: { type: "success", text: "Yorum eklendi!" },
-      })
-    );
-  }
+
+  setReviews((prev) => [newItem, ...prev]);
+
+  setNewReview({ name: "", text: "", rating: 5 });
+
+  window.dispatchEvent(
+    new CustomEvent("toast", {
+      detail: { type: "success", text: "Yorum eklendi!" },
+    })
+  );
+}
+
+
+
 
   // ⭐⭐⭐ ÜRÜN PUANINI GÜNCELLE
 const { data: ratings } = await supabase
   .from("comments")
   .select("rating")
-  .eq("product_id", id);
+  .eq("product_id", id)
+ .eq("approved", true);
+
 
 if (ratings && ratings.length > 0) {
   const total = ratings.reduce((sum, r) => sum + r.rating, 0);
