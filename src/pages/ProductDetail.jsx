@@ -11,6 +11,7 @@ import ProductCardVertical from "../components/ProductCardVertical";
 import { Hourglass } from "lucide-react";
 import { Clock, Flame } from "lucide-react";
 import { ShieldAlert } from "lucide-react";
+import { sendShopAlert } from "../utils/sendShopAlert";
 
 function parseLocalDate(dateStr) {
   if (!dateStr) return null;
@@ -1055,6 +1056,23 @@ const { error } = await supabase.from("comments").insert([
    approved: false, // 🔥 NET
   },
 ]);
+
+ if (!error) {
+  // 📩 TELEGRAM BİLDİRİMİ
+  sendShopAlert(`
+📝 <b>Yeni Ürün Yorumu</b>
+
+👤 <b>Kullanıcı:</b> ${displayName}
+⭐ <b>Puan:</b> ${newReview.rating}/5
+📦 <b>Ürün ID:</b> ${id}
+
+💬 <b>Yorum:</b>
+${newReview.text}
+
+⏳ <i>Onay bekliyor</i>
+  `);
+}
+
 
 
   if (!error) {
