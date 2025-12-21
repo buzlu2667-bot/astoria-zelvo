@@ -58,7 +58,7 @@ const [hfList, setHfList] = useState([]);
     .from("haftanin_firsati")
     .select("*, products(id,title,main_img)")
     .order("updated_at", { ascending: false })
-    .limit(5);
+    .limit(10);
 
   if (error) console.error("LOAD HAFTA ERROR:", error);
   setHfList(data || []);
