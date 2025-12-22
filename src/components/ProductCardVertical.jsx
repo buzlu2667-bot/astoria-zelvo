@@ -71,6 +71,20 @@ function getViewCount(p) {
 
   return min + (Math.abs(hash) % (max - min + 1));
 }
+
+// 📱 Mobil / Desktop'a göre görüntüleme metni
+function getViewText(p) {
+  const count = getViewCount(p);
+
+  // mobil (Tailwind sm < 640px)
+  if (window.innerWidth < 640) {
+    return `${count} kişi baktı`;
+  }
+
+  // desktop
+  return `Son 24 saatte ${count} kişi inceledi`;
+}
+
  
 // ❤️ Favori sayısı – ürüne göre sabit ama farklı
 function getFavCount(p) {
@@ -163,11 +177,12 @@ const socialMessages = [
   },
 
   // 👀 GÖRÜNTÜLEME
-  {
-    icon: null,
-    text: `Son 24 saatte ${getViewCount(p)} kişi inceledi`,
-    className: "text-gray-400",
-  },
+ {
+  icon: null,
+  text: getViewText(p),
+  className: "text-gray-400",
+},
+
 ].filter(Boolean);
 useEffect(() => {
   if (socialMessages.length <= 1) return;
@@ -338,7 +353,7 @@ useEffect(() => {
 </div>
 
 {/* 📊 SOSYAL KANIT — TEK SATIR (SABİT BOY) */}
-<div className="mt-1 min-h-[18px] flex items-center gap-1 text-[11px] animate-fade-soft">
+<div className="mt-1 min-h-[18px] flex items-center gap-1 text-[11px] animate-social">
   {socialMessages[socialIndex]?.icon}
   <span className={socialMessages[socialIndex]?.className}>
     {socialMessages[socialIndex]?.text}

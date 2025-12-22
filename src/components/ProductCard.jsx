@@ -356,7 +356,7 @@ className="w-full h-full object-contain"
 </div>
 
 {/* 📊 SOSYAL KANIT — TEK SATIR DÖNÜŞÜMLÜ */}
-<div className="mt-1 min-h-[18px] flex items-center gap-1 text-[11px] animate-fade-soft">
+<div className="mt-1 min-h-[18px] flex items-center gap-1 text-[11px] animate-social">
   {socialMessages[socialIndex]?.icon}
   <span className={socialMessages[socialIndex]?.className}>
     {socialMessages[socialIndex]?.text}
