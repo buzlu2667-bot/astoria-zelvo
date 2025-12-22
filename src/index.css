@@ -784,5 +784,15 @@ html {
 .login-scroll {
   -webkit-overflow-scrolling: touch;
 }
+@keyframes fadeSoft {
+  0%   { opacity: 0; transform: translateY(4px); }
+  20%  { opacity: 1; transform: translateY(0); }
+  80%  { opacity: 1; }
+  100% { opacity: 0; }
+}
+
+.animate-fade-soft {
+  animation: fadeSoft 6s ease-in-out infinite;
+}
 
 

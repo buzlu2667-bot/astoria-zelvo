@@ -4,7 +4,8 @@ import { useCart } from "../context/CartContext";
 import { ShoppingCart, Hourglass } from "lucide-react";
 import DealCountdown from "./DealCountdown";
 import { Ban } from "lucide-react";
-
+import { Heart } from "lucide-react";
+import { Truck } from "lucide-react";
 
 function parseLocalDate(dateStr) {
   if (!dateStr) return null;
@@ -27,6 +28,85 @@ function pickImage(p) {
     "/products/default.png"
   );
 }
+
+// 🟢 Soft fake purchase text (ürüne göre stabil ama canlı hissi verir)
+function getRecentPurchaseText(p) {
+  const str = String(p.id || p.title || "");
+  let hash = 0;
+
+  for (let i = 0; i < str.length; i++) {
+    hash = str.charCodeAt(i) + ((hash << 5) - hash);
+  }
+
+  // %35 ihtimalle hiç gösterme
+  if (hash % 10 < 4) return null;
+
+  const minutes = (Math.abs(hash) % 7) + 1; // 1–7 dk
+
+  // %70 → 1 kişi, %30 → 2–3 kişi
+  const buyers =
+    hash % 10 < 7
+      ? 1
+      : (Math.abs(hash) % 2) + 2;
+
+  return `${minutes} dk önce ${buyers} kişi aldı`;
+}
+
+
+// 👀 Son 24 saat – ürüne göre sabit ama farklı sayı
+function getViewCount(p) {
+  const str = String(p.id || p.title || "");
+  let hash = 0;
+
+  for (let i = 0; i < str.length; i++) {
+    hash = str.charCodeAt(i) + ((hash << 5) - hash);
+  }
+
+  const min = 2;
+  const max = 45;
+
+  return min + (Math.abs(hash) % (max - min + 1));
+}
+ 
+// ❤️ Favori sayısı – ürüne göre sabit ama farklı
+function getFavCount(p) {
+  const str = String(p.id || p.title || "");
+  let hash = 0;
+
+  for (let i = 0; i < str.length; i++) {
+    hash = str.charCodeAt(i) + ((hash << 5) - hash);
+  }
+
+  const min = 3;
+  const max = 45;
+
+  return min + (Math.abs(hash) % (max - min + 1));
+}
+
+// 🚚 Kargo metni (saat bazlı)
+function getCargoInfo() {
+  const now = new Date();
+  const day = now.getDay(); // 0 = Pazar, 6 = Cumartesi
+  const hour = now.getHours();
+
+  // Pazar
+  if (day === 0) {
+    return "Pazartesi kargoda";
+  }
+
+  // Cumartesi
+  if (day === 6) {
+    return "Pazartesi kargoda";
+  }
+
+  // Hafta içi
+  if (hour >= 8 && hour < 17) {
+    return "Bugün kargoda";
+  }
+
+  return "Yarın kargoda";
+}
+
 
 export default function ProductCardVertical({ p, hideCartButton = false }) {
   const nav = useNavigate();
@@ -217,6 +297,45 @@ export default function ProductCardVertical({ p, hideCartButton = false }) {
   )}
 </div>
 
+{/* 📊 SOSYAL KANIT BLOĞU — SABİT */}
+<div className="mt-1 min-h-[60px] flex flex-col gap-[2px]">
+
+  {/* 👀 Son 24 saat */}
+  <div className="text-[11px] text-gray-400">
+    Son 24 saatte <b>{getViewCount(p)}</b> kişi inceledi
+  </div>
+
+  {/* ❤️ Favori */}
+  <div className="flex items-center gap-1 text-[11px] text-gray-500">
+    <Heart className="w-3.5 h-3.5 text-pink-500" />
+    <span><b>{getFavCount(p)}</b> kişi favoriledi</span>
+  </div>
+
+  {/* 🟢 Son satın alma (dönüşümlü, soft) */}
+  <div
+    className={`
+      flex items-center gap-1.5
+      text-[11px] font-semibold text-emerald-600
+      ${getRecentPurchaseText(p) ? "opacity-100 animate-fade-soft" : "opacity-0"}
+    `}
+  >
+    <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+    <span>{getRecentPurchaseText(p) || "placeholder"}</span>
+  </div>
+
+  {/* 🚚 Kargo */}
+  <div
+    className={`
+      flex items-center gap-1
+      text-[11px] font-semibold text-emerald-600
+      ${p.stock > 0 ? "opacity-100" : "opacity-0"}
+    `}
+  >
+    <Truck className="w-3.5 h-3.5" />
+    <span>{getCargoInfo() || "placeholder"}</span>
+  </div>
+
+</div>
 
 
   {/* STOK */}
@@ -262,7 +381,6 @@ export default function ProductCardVertical({ p, hideCartButton = false }) {
 </div>
 
 
-
     {/* FİYAT */}
 <div className="mt-3 flex flex-col gap-1">
 
@@ -274,9 +392,10 @@ export default function ProductCardVertical({ p, hideCartButton = false }) {
         %{discount}
       </span>
 
-      <span className="text-gray-400 line-through text-sm">
-        ₺{old.toLocaleString("tr-TR")}
-      </span>
+     <span className="text-gray-500 line-through text-[15px] font-semibold">
+  ₺{old.toLocaleString("tr-TR")}
+</span>
+
     </>
   ) : (
     <span className="opacity-0">placeholder</span>
@@ -288,9 +407,16 @@ export default function ProductCardVertical({ p, hideCartButton = false }) {
 
 
   {/* ALT SATIR: YENİ FİYAT */}
-  <span className="text-gray-900 font-extrabold text-xl leading-tight">
+ <span
+  className={`
+    font-extrabold text-xl leading-tight
+   ${isDealActive ? "text-red-600 drop-shadow-[0_1px_0_rgba(239,68,68,0.25)]" : "text-gray-900"}
+
+  `}
+>
   ₺{finalPrice.toLocaleString("tr-TR")}
-  </span>
+</span>
+
 {/* ⏱️ SAYAÇ ALANI — SABİT YÜKSEKLİK */}
 <div className="mt-1 min-h-[28px]">
   {isDealActive && (

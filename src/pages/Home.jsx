@@ -23,8 +23,18 @@ import {
    PawPrint,
   Handbag,
   Mountain,
-  Truck
+  Truck,
+  ShieldCheck,
+  RefreshCcw,
+  MessageCircle,
+  Send,
+  CreditCard
 } from "lucide-react";
+
+
+
+
+
 
 function parseLocalDate(dateStr) {
   if (!dateStr) return null;
@@ -126,6 +136,149 @@ const ICONS = {
 
 
 const SLIDER_HEIGHT = "70vh";
+// slıder altı bılgılendırme watsap telegram //
+
+function MiniTrustBar() {
+  const items = [
+    {
+      icon: <ShieldCheck className="w-5 h-5" />,
+      title: "Güvenli Ödeme",
+    },
+
+    {
+  icon: <CreditCard className="w-5 h-5" />,
+  title: "Kredi & Banka Kartı ile Ödeme",
+},
+
+    {
+      icon: <Truck className="w-5 h-5" />,
+      title: "Hızlı Kargo",
+    },
+    {
+      icon: <RefreshCcw className="w-5 h-5" />,
+      title: "Kolay İade",
+    },
+    {
+      icon: <MessageCircle className="w-5 h-5" />,
+      title: "WhatsApp Destek",
+      link: "https://wa.me/905384657526", // numarayı yaz
+    },
+    {
+      icon: <Send className="w-5 h-5" />,
+      title: "Telegram Ürünler",
+      link: "https://t.me/maximoraofficial", // kanal/user
+    },
+  ];
+
+  return (
+    <section className="max-w-7xl mx-auto px-4 mt-10">
+      <div
+        className="
+          grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3
+          bg-gray-50
+          border border-gray-200
+          rounded-2xl
+          p-4
+        "
+      >
+        {items.map((i, idx) => {
+          const Box = i.link ? "a" : "div";
+          return (
+            <Box
+              key={idx}
+              href={i.link}
+              target={i.link ? "_blank" : undefined}
+              className="
+                flex items-center gap-3
+                px-4 py-3
+                rounded-xl
+                bg-white
+                border border-gray-200
+                hover:border-black
+                hover:shadow-sm
+                transition
+                text-sm font-semibold text-gray-800
+              "
+            >
+              <span className="text-black">{i.icon}</span>
+              <span>{i.title}</span>
+            </Box>
+          );
+        })}
+      </div>
+    </section>
+  );
+}
+
+// ⭐ SATIŞ ALGISI BLOĞU
+function SoldHighlightsSlider() {
+  const items = [
+    {
+      icon: <Flame className="w-6 h-6" />,
+      title: "Termos & Kupalar",
+      desc: "Gün boyu sıcak tutan favoriler",
+      color: "from-orange-400 to-red-500",
+    },
+    {
+      icon: <ShoppingBag className="w-6 h-6" />,
+      title: "Kadın Çantaları",
+      desc: "En çok tercih edilen modeller",
+      color: "from-pink-400 to-fuchsia-500",
+    },
+    {
+      icon: <PawPrint className="w-6 h-6" />,
+      title: "Pet Ürünleri",
+      desc: "Pati dostlarımız için",
+      color: "from-emerald-400 to-teal-500",
+    },
+    {
+      icon: <Mountain className="w-6 h-6" />,
+      title: "Outdoor Ürünler",
+      desc: "Kamp & doğa severler seçti",
+      color: "from-sky-400 to-indigo-500",
+    },
+  ];
+
+  return (
+    <section className="max-w-7xl mx-auto px-4 mt-12">
+      <h3 className="text-xl font-extrabold text-gray-900 mb-6 text-center">
+        En Çok Tercih Edilenler
+      </h3>
+
+      <Swiper
+        modules={[Autoplay]}
+        autoplay={{ delay: 2800, disableOnInteraction: false }}
+        loop
+        spaceBetween={16}
+        slidesPerView={1.2}
+        breakpoints={{
+          640: { slidesPerView: 2.2 },
+          1024: { slidesPerView: 4 },
+        }}
+      >
+        {items.map((i, idx) => (
+          <SwiperSlide key={idx}>
+            <div
+              className={`
+                h-full
+                rounded-2xl p-5 text-white
+                bg-gradient-to-br ${i.color}
+                shadow-lg
+              `}
+            >
+              <div className="mb-3">{i.icon}</div>
+              <h4 className="font-bold text-sm">{i.title}</h4>
+              <p className="text-xs opacity-90 mt-1">{i.desc}</p>
+            </div>
+          </SwiperSlide>
+        ))}
+      </Swiper>
+    </section>
+  );
+}
+
+
+
 
 export default function Home() {
 
@@ -784,7 +937,10 @@ const activeCat = homeCats.find((c) => c.slug === openCat);
 
 </div>
 
+<MiniTrustBar />
+<SoldHighlightsSlider />
 <ReviewsSlider />
+
       {/* ⭐ Alt bölüm artık beyaz sade */}
       <div className="bg-white pt-10 pb-20">
         <SectionSwitch

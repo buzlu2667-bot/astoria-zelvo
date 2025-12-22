@@ -715,15 +715,22 @@ className="w-full h-[520px] object-cover rounded-xl bg-white transition-transfor
         %{Math.round(((p.old_price - p.price) / p.old_price) * 100)}
       </span>
 
-      <span className="text-gray-400 line-through text-lg">
-        {TRY(p.old_price)}
-      </span>
+    <span className="text-gray-500 line-through text-lg font-semibold">
+  {TRY(p.old_price)}
+</span>
+
     </>
   )}
 
-  <span className="text-3xl font-bold text-gray-900">
-    {TRY(finalPrice)}
-  </span>
+<span
+  className={`
+    text-3xl font-bold
+   ${isDealActive ? "text-red-600 drop-shadow-[0_1px_0_rgba(239,68,68,0.25)]" : "text-gray-900"}
+  `}
+>
+  {TRY(finalPrice)}
+</span>
+
 </div>
 
 
