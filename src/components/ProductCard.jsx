@@ -100,6 +100,9 @@ function getCargoInfo() {
 
 export default function ProductCard({ product, hideDealCountdown = false }) {
 
+  const [socialIndex, setSocialIndex] = useState(0);
+
+
   const navigate = useNavigate();
   const { addFav, removeFav, isFav } = useFavorites();
   const [favorites, setFavorites] = useState([]);
@@ -147,6 +150,42 @@ const isDealExpired =
       setFavorites((prev) => [...prev, product.id]);
     }
   }, [product.id, isFav]);
+
+  const socialMessages = [
+  // 🟢 SATIN ALMA
+  Number(product.stock ?? 0) > 0 && getRecentPurchaseText(product)
+    ? {
+        icon: <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />,
+        text: getRecentPurchaseText(product),
+        className: "text-emerald-600 font-semibold",
+      }
+    : null,
+
+  // ❤️ FAVORİ
+  {
+    icon: <Heart className="w-3.5 h-3.5 text-pink-500" />,
+    text: `${getFavCount(product)} kişi favoriledi`,
+    className: "text-gray-500",
+  },
+
+  // 👀 GÖRÜNTÜLEME
+  {
+    icon: null,
+    text: `Son 24 saatte ${getViewCount(product)} kişi inceledi`,
+    className: "text-gray-400",
+  },
+].filter(Boolean);
+
+useEffect(() => {
+  if (socialMessages.length <= 1) return;
+
+  const interval = setInterval(() => {
+    setSocialIndex(i => (i + 1) % socialMessages.length);
+  }, 2500); // 2.5 sn
+
+  return () => clearInterval(interval);
+}, [socialMessages.length]);
+
 
   return (
     <div
@@ -316,41 +355,25 @@ className="w-full h-full object-contain"
   )}
 </div>
 
-{/* 📊 SOSYAL KANIT BLOĞU — SABİT YÜKSEKLİK */}
-<div className="mt-1 min-h-[60px] flex flex-col gap-[2px]">
-
-  {/* 👀 SON 24 SAAT */}
-  <div className="text-[11px] text-gray-400">
-    Son 24 saatte <b>{getViewCount(product)}</b> kişi inceledi
-  </div>
-
-  {/* ❤️ FAVORİ */}
-  <div className="flex items-center gap-1 text-[11px] text-gray-500">
-    <Heart className="w-3.5 h-3.5 text-pink-500" />
-    <span><b>{getFavCount(product)}</b> kişi favoriledi</span>
-  </div>
-
-  {/* 🟢 AZ ÖNCE SATIN ALINDI */}
-  <div
-    className={`flex items-center gap-1.5 text-[11px] font-semibold text-emerald-600
-      ${getRecentPurchaseText(product) ? "opacity-100 animate-fade-soft" : "opacity-0"}
-    `}
-  >
-    <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-    <span>{getRecentPurchaseText(product) || "placeholder"}</span>
-  </div>
-
-  {/* 🚚 KARGO */}
-  <div
-    className={`flex items-center gap-1 text-[11px] font-semibold text-emerald-600
-      ${Number(product.stock ?? 0) > 0 ? "opacity-100" : "opacity-0"}
-    `}
-  >
-    <Truck className="w-3.5 h-3.5" />
-    <span>{getCargoInfo() || "placeholder"}</span>
-  </div>
-
+{/* 📊 SOSYAL KANIT — TEK SATIR DÖNÜŞÜMLÜ */}
+<div className="mt-1 min-h-[18px] flex items-center gap-1 text-[11px] animate-fade-soft">
+  {socialMessages[socialIndex]?.icon}
+  <span className={socialMessages[socialIndex]?.className}>
+    {socialMessages[socialIndex]?.text}
+  </span>
 </div>
+
+
+{/* 🚚 KARGO — AYRI SATIR, SABİT */}
+<div
+  className={`flex items-center gap-1 text-[11px] font-semibold text-emerald-600
+    ${Number(product.stock ?? 0) > 0 ? "opacity-100" : "opacity-0"}
+  `}
+>
+  <Truck className="w-3.5 h-3.5" />
+  <span>{getCargoInfo()}</span>
+</div>
+
 
 
       {/* STOK */}
