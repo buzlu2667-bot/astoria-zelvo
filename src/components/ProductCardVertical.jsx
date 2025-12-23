@@ -160,7 +160,8 @@ export default function ProductCardVertical({ p, hideCartButton = false }) {
   const finalPrice = isDealActive ? price : old || price;
   const showDiscount = isDealActive && hasDiscount;
 const socialMessages = [
-  // 🟢 SATIN ALMA
+  /*
+  // 🟢 SATIN ALMA (ŞİMDİLİK KAPALI)
   p.stock > 0 && getRecentPurchaseText(p)
     ? {
         icon: <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />,
@@ -168,6 +169,7 @@ const socialMessages = [
         className: "text-emerald-600 font-semibold",
       }
     : null,
+  */
 
   // ❤️ FAVORİ
   {
@@ -177,13 +179,13 @@ const socialMessages = [
   },
 
   // 👀 GÖRÜNTÜLEME
- {
-  icon: null,
-  text: getViewText(p),
-  className: "text-gray-400",
-},
-
+  {
+    icon: null,
+    text: getViewText(p),
+    className: "text-gray-400",
+  },
 ].filter(Boolean);
+
 useEffect(() => {
   if (socialMessages.length <= 1) return;
 

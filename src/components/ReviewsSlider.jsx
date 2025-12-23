@@ -24,7 +24,7 @@ export default function ReviewsSlider() {
     .select("id, product_id, name, text")
     .eq("approved", true)   // 🔥 KRİTİK SATIR
     .order("created_at", { ascending: false })
-    .limit(15);
+    .limit(8);
 
   setReviews(data || []);
 }

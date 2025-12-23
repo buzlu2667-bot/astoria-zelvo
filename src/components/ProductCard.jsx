@@ -151,8 +151,9 @@ const isDealExpired =
     }
   }, [product.id, isFav]);
 
-  const socialMessages = [
-  // 🟢 SATIN ALMA
+ const socialMessages = [
+  /*
+  // 🟢 SATIN ALMA (ŞİMDİLİK KAPALI)
   Number(product.stock ?? 0) > 0 && getRecentPurchaseText(product)
     ? {
         icon: <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />,
@@ -160,6 +161,7 @@ const isDealExpired =
         className: "text-emerald-600 font-semibold",
       }
     : null,
+  */
 
   // ❤️ FAVORİ
   {
@@ -175,6 +177,7 @@ const isDealExpired =
     className: "text-gray-400",
   },
 ].filter(Boolean);
+
 
 useEffect(() => {
   if (socialMessages.length <= 1) return;
