@@ -40,6 +40,8 @@ useEffect(() => {
       is_popular: initialData.is_popular || false,
       is_featured: initialData.is_featured || false,
        colors: initialData.colors || "" ,
+       is_selected: initialData.is_selected || false,
+
        
        deal_active: initialData.deal_active || false,
 deal_end_at: initialData.deal_end_at
@@ -70,6 +72,7 @@ deal_end_at: initialData.deal_end_at
   is_popular: false,
 is_featured: false,
  is_suggested: false, 
+  is_selected: false,
  colors: "",
 
  // ⏱ SAYAÇ
@@ -184,6 +187,7 @@ if (initialData) {
       is_new: form.is_new,
       is_popular: form.is_popular,
       is_featured: form.is_featured,
+      is_selected: form.is_selected,
       is_suggested: form.is_suggested,
        colors: form.colors,
 
@@ -238,6 +242,7 @@ deal_end_at: form.deal_active
   is_popular: form.is_popular,
   is_featured: form.is_featured,
   is_suggested: form.is_suggested,
+  is_selected: form.is_selected,
 
   colors: form.colors,
 
@@ -364,6 +369,14 @@ deal_end_at: form.deal_active
     />
     <span>🔥 Öne Çıkan</span>
   </label>
+<label className="flex items-center gap-2 text-white">
+  <input
+    type="checkbox"
+    checked={form.is_selected}
+    onChange={(e) => setForm({ ...form, is_selected: e.target.checked })}
+  />
+  <span>⭐ Seçili Ürün (Ücretsiz Kargo)</span>
+</label>
 
 </div>
 

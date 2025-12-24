@@ -121,10 +121,13 @@ export default function RegisterPage() {
 
   {/* Icon özellikler */}
   <div className="relative z-10 mt-10 space-y-4 text-sm font-medium">
-    <div className="flex items-center gap-3">
-      <Gift size={22} className="text-yellow-200" />
-      <span>Yeni Üyelere 100₺ İndirim</span>
-    </div>
+   {/*
+<div className="flex items-center gap-3">
+  <Gift size={22} className="text-yellow-200" />
+  <span>Yeni Üyelere 100₺ İndirim</span>
+</div>
+*/}
+
 
     <div className="flex items-center gap-3">
       <Truck size={22} className="text-yellow-200" />
@@ -143,9 +146,12 @@ export default function RegisterPage() {
   </div>
 
   {/* Alt küçük yılbaşı notu */}
-  <div className="relative z-10 mt-8 text-xs text-white/80">
-    🎄 Yılbaşı kampanyaları sınırlı süreli
-  </div>
+  {/*
+<div className="relative z-10 mt-8 text-xs text-white/80">
+  🎄 Yılbaşı kampanyaları sınırlı süreli
+</div>
+*/}
+
 </div>
 
         {/* SAĞ FORM */}
@@ -170,7 +176,8 @@ export default function RegisterPage() {
             <div className="flex-1 h-px bg-gray-300" />
           </div>
 
-       {/* 🎁 Yeni Üyelere Özel Kampanya */}
+     {/*
+🎁 Yeni Üyelere Özel Kampanya (GEÇİCİ OLARAK KAPATILDI)
 <div className="
   mt-5 mb-6 rounded-2xl 
   border border-orange-200 
@@ -178,8 +185,6 @@ export default function RegisterPage() {
   px-4 py-4
   flex items-start gap-3
 ">
-
-  {/* ICON */}
   <div className="
     flex items-center justify-center
     w-10 h-10 rounded-full
@@ -189,7 +194,6 @@ export default function RegisterPage() {
     <Gift size={20} />
   </div>
 
-  {/* TEXT */}
   <div className="text-left">
     <p className="text-sm font-bold text-orange-700 flex items-center gap-1">
       Yeni Üyelere Özel 100 ₺ İndirim
@@ -205,6 +209,8 @@ export default function RegisterPage() {
     </p>
   </div>
 </div>
+*/}
+
 
 
 

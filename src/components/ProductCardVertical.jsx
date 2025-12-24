@@ -213,18 +213,38 @@ useEffect(() => {
 
         {/* 🔰 BADGE STACK (SOL ÜST) */}
   <div className="absolute top-2 left-2 z-10 flex flex-col gap-1">
+  
 
-    {isDealExpired && (
-      <div className="
-        flex items-center gap-1.5
-        bg-gradient-to-r from-red-900/90 to-red-700/90
-        text-white text-[11px] font-semibold
-        px-2.5 py-1 rounded-full
-      ">
-        <Ban className="w-3.5 h-3.5 text-red-300" />
-        <span>Fırsat Bitti</span>
-      </div>
-    )}
+   {/* ⭐ SEÇİLİ ÜRÜN */}
+{p.is_selected && (
+  <div className="
+    inline-flex items-center gap-1
+    px-2.5 py-1 rounded-full
+    text-[11px] font-bold
+    text-white
+    bg-gradient-to-r from-emerald-500 to-green-600
+    shadow-lg animate-pulse
+    border border-white/40 backdrop-blur
+  ">
+    <Truck className="w-3.5 h-3.5" />
+    Ücretsiz Kargo
+  </div>
+)}
+
+   {/*
+{isDealExpired && (
+  <div className="
+    flex items-center gap-1.5
+    bg-gradient-to-r from-red-900/90 to-red-700/90
+    text-white text-[11px] font-semibold
+    px-2.5 py-1 rounded-full
+  ">
+    <Ban className="w-3.5 h-3.5 text-red-300" />
+    <span>Fırsat Bitti</span>
+  </div>
+)}
+*/}
+
 
    {p.is_new && !isDealExpired && (
   <div

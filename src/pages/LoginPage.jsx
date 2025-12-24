@@ -119,8 +119,8 @@ export default function LoginPage() {
           <span className="text-gray-500 text-sm">veya</span>
           <div className="flex-1 h-px bg-gray-300" />
         </div>
-
-       {/* 🎁 Yeni Üyelere Özel Kampanya */}
+{/*
+🎁 Yeni Üyelere Özel Kampanya (GEÇİCİ OLARAK KAPATILDI)
 <div className="
   mt-5 mb-6 rounded-2xl 
   border border-orange-200 
@@ -129,7 +129,6 @@ export default function LoginPage() {
   flex items-start gap-3
 ">
 
-  {/* ICON */}
   <div className="
     flex items-center justify-center
     w-10 h-10 rounded-full
@@ -139,7 +138,6 @@ export default function LoginPage() {
     <Gift size={20} />
   </div>
 
-  {/* TEXT */}
   <div className="text-left">
     <p className="text-sm font-bold text-orange-700 flex items-center gap-1">
       Yeni Üyelere Özel 100 ₺ İndirim
@@ -155,6 +153,8 @@ export default function LoginPage() {
     </p>
   </div>
 </div>
+*/}
+
 
 
 

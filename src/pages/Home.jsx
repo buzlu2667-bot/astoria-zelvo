@@ -54,6 +54,8 @@ function DealCountdown({ endAt }) {
 
   const [left, setLeft] = useState(end - Date.now());
 
+  if (left <= 0) return null;
+
 
  useEffect(() => {
   const t = setInterval(() => {
@@ -64,20 +66,20 @@ function DealCountdown({ endAt }) {
 
 
   // ⛔ Kampanya bitti
+/*
+// ⛔ Kampanya bitti (KAPATILDI — fiyat zaten normale dönüyor)
 if (left <= 0) {
   return (
-    <div
-      className="
-        mt-3
-        flex items-center gap-2
-        rounded-2xl
-        border border-gray-700/40
-        bg-gradient-to-r from-gray-900/90 to-gray-800/90
-        px-4 py-3
-        backdrop-blur-md
-        shadow-md
-      "
-    >
+    <div className="
+      mt-3
+      flex items-center gap-2
+      rounded-2xl
+      border border-gray-700/40
+      bg-gradient-to-r from-gray-900/90 to-gray-800/90
+      px-4 py-3
+      backdrop-blur-md
+      shadow-md
+    ">
       <Clock className="w-4 h-4 text-red-400" />
       <p className="text-sm font-semibold text-white">
         Fırsat Sona Erdi
@@ -85,6 +87,8 @@ if (left <= 0) {
     </div>
   );
 }
+*/
+
 
 
   const h = Math.floor(left / 1000 / 60 / 60);

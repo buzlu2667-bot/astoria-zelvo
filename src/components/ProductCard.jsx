@@ -215,25 +215,37 @@ useEffect(() => {
 
 {/* 🔰 BADGE ALANI (SOL ÜST) */}
 <div className="absolute top-2 left-2 z-10 flex flex-col gap-1">
+{/* ⭐ SEÇİLİ ÜRÜN ROZETİ */}
+{product.is_selected && (
+  <div className="
+    inline-flex items-center gap-1
+    px-2.5 py-1 rounded-full
+    text-[11px] font-bold
+    text-white
+    bg-gradient-to-r from-emerald-500 to-green-600
+    shadow-lg animate-pulse
+    border border-white/40 backdrop-blur
+  ">
+    <Truck className="w-3.5 h-3.5" />
+    Ücretsiz Kargo
+  </div>
+)}
 
+{/*
 {isDealExpired && (
   <div
-    className="
-      flex items-center gap-1.5
+    className="flex items-center gap-1.5
       bg-gradient-to-r from-gray-900/90 to-gray-800/90
-      text-white
-      text-[11px] font-semibold
-      px-2.5 py-1
-      rounded-full
-      border border-gray-700/70
-      backdrop-blur-md
-      shadow-md
-    "
+      text-white text-[11px] font-semibold
+      px-2.5 py-1 rounded-full
+      border border-gray-700/70 backdrop-blur-md shadow-md"
   >
     <Ban className="w-3.5 h-3.5 text-red-400" />
     <span>Fırsat Bitti</span>
   </div>
 )}
+*/}
+
 
 
         {/* Yeni Ürün Etiketi */}
