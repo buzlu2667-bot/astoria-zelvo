@@ -9,6 +9,14 @@ import { Truck } from "lucide-react";
 import { useEffect, useState } from "react";
 
 
+function smartTitle(title, max = 52) {
+  if (!title) return "";
+
+  if (title.length <= max) return title;
+
+  const lastWords = title.split(" ").slice(-2).join(" ");
+  return title.slice(0, max - lastWords.length - 3).trim() + "... " + lastWords;
+}
 
 
 function parseLocalDate(dateStr) {
@@ -345,18 +353,13 @@ useEffect(() => {
       </div>
 
       {/* BAŞLIK */}
-   <div className="mt-3 overflow-hidden">
-  <p
-    className="
-      font-semibold text-gray-800 text-[15px]
-      whitespace-nowrap
-      animate-title-scroll
-      md:animate-none
-    "
-  >
+  <div className="mt-3 overflow-hidden h-[64px] sm:h-[44px]">
+  <p className="font-semibold text-gray-800 text-[14px] leading-[1.25] break-words">
     {p.title}
   </p>
 </div>
+
+
 
  {/* ⭐ YILDIZ & YORUM SAYISI (SABİT YÜKSEKLİK) */}
 <div className="mt-1 min-h-[16px] flex items-center gap-1 text-[12px] text-gray-600">
