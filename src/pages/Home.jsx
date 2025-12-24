@@ -915,6 +915,24 @@ const activeCat = homeCats.find((c) => c.slug === openCat);
   </div>
       </section>
 
+      <div className="w-full flex justify-center mt-3">
+  <div className="
+    inline-flex items-center gap-2
+    px-4 py-2
+    rounded-full
+    bg-emerald-100
+    border border-emerald-300
+    text-emerald-900
+    mb-2
+  ">
+    <Truck className="w-4 h-4 text-emerald-600" />
+    <span className="text-sm font-bold">
+      Seçili ürünlerde ÜCRETSİZ KARGO
+    </span>
+  </div>
+</div>
+
+
       {/* ⭐ Slider alt yazı — sade */}
 <div className="w-full flex justify-center mt-3">
   <div
