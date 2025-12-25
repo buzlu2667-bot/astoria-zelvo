@@ -1,6 +1,6 @@
 {
   "rewrites": [
-    { "source": "/logo.png", "destination": "/logo.png" },
+    { "source": "/static/(.*)", "destination": "/static/$1" },
     { "source": "/(.*)", "destination": "/" }
   ]
 }
