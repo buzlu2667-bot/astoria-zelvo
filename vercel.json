@@ -1,6 +1,8 @@
 {
-  "routes": [
-    { "src": "^/\\.well-known/(.*)$", "dest": "/.well-known/$1" },
-    { "src": "/(.*)", "dest": "/" }
+  "rewrites": [
+    {
+      "source": "/((?!assets|favicon.png|logo.png|manifest.json|pwa-192.png|pwa-512.png).*)",
+      "destination": "/"
+    }
   ]
 }
