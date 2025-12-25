@@ -3,7 +3,12 @@ import react from "@vitejs/plugin-react";
 import { VitePWA } from "vite-plugin-pwa";
 
 export default defineConfig({
+  publicDir: "public",
+  build: {
+    assetsInlineLimit: 0
+  },
   plugins: [
+
     react(),
     VitePWA({
       registerType: "autoUpdate",
