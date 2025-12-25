@@ -1,0 +1,12 @@
+{
+  "routes": [
+    {
+      "src": "^/(.*\\.(png|jpg|jpeg|svg|webp|gif|ico|json|xml|txt|woff2?|ttf|eot|mp4|webm|css|js))$",
+      "dest": "/$1"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "/"
+    }
+  ]
+}
