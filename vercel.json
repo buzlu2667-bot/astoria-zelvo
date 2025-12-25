@@ -1,8 +1,12 @@
 {
-  "rewrites": [
+  "routes": [
     {
-      "source": "/((?!assets|favicon.png|logo.png|manifest.json|pwa-192.png|pwa-512.png).*)",
-      "destination": "/"
+      "src": "^/(logo\\.png|favicon\\.png|manifest\\.json|pwa-192\\.png|pwa-512\\.png)$",
+      "dest": "/$1"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "/"
     }
   ]
 }
