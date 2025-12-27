@@ -789,30 +789,26 @@ const activeCat = homeCats.find((c) => c.slug === openCat);
 
     {/* MODAL */}
     <div className="fixed top-[120px] left-1/2 -translate-x-1/2 z-50 w-[92%] max-w-4xl">
-      <div
-        className="
-          relative
-          bg-white/90 backdrop-blur-xl
-          rounded-3xl
-          shadow-[0_30px_80px_-20px_rgba(0,0,0,0.35)]
-          border border-white/40
-          p-6
-        "
-      >
+     <div className="
+  relative
+  rounded-3xl
+  bg-gradient-to-br from-[#0f172a] via-[#020617] to-black
+  border border-white/10
+  shadow-[0_40px_120px_-30px_rgba(0,0,0,0.9)]
+  p-6
+">
+
         {/* GLOW */}
-        <div
-          className="
-            pointer-events-none absolute inset-0 rounded-3xl
-            bg-[radial-gradient(600px_circle_at_20%_0%,rgba(249,115,22,0.25),transparent_60%)]
-          "
-        />
+        <div className="pointer-events-none absolute inset-0 rounded-3xl
+bg-[radial-gradient(800px_circle_at_15%_0%,rgba(34,211,238,0.18),transparent_60%)]"/>
 
         <div className="relative">
           {/* HEADER */}
           <div className="flex items-center justify-between mb-5">
             <div>
-              <p className="text-xs text-gray-500">Kategori</p>
-              <h3 className="text-xl font-bold text-gray-900">
+             <p className="text-xs text-cyan-300 tracking-wide">Kategori</p>
+             <h3 className="text-xl font-extrabold text-white">
+
                 {activeCat.title}
               </h3>
             </div>
@@ -820,10 +816,11 @@ const activeCat = homeCats.find((c) => c.slug === openCat);
             <button
               onClick={() => setOpenCat(null)}
               className="
-                w-9 h-9 rounded-full border border-gray-200
-                flex items-center justify-center
-                hover:bg-gray-100 transition
-              "
+  w-9 h-9 rounded-full border border-white/20
+  hover:bg-white/10
+  text-white
+"
+
             >
               ✕
             </button>
@@ -839,26 +836,25 @@ const activeCat = homeCats.find((c) => c.slug === openCat);
       navigate(`/category/${activeCat.slug}/${s.slug}`);
     }}
     className="
-      group relative w-full text-left
-      px-4 py-3 rounded-2xl
-      bg-white/70 border border-gray-200
-      hover:border-black
-      hover:shadow-[0_12px_30px_-12px_rgba(0,0,0,0.35)]
-      transition-all duration-200
-      flex items-center justify-between
-    "
+  group relative w-full text-left
+  px-4 py-3 rounded-xl
+  bg-white/5 border border-white/10
+  hover:bg-white/10
+  hover:border-cyan-300/40
+  transition-all duration-300
+  flex items-center justify-between
+  text-white
+"
+
   >
-    <span className="text-sm font-semibold text-gray-900">
+   <span className="text-sm font-semibold text-white tracking-wide">
+
       {s.title}
     </span>
 
     <ChevronRight
-      className="
-        w-4 h-4 text-gray-400
-        group-hover:text-black
-        group-hover:translate-x-0.5
-        transition
-      "
+      className="w-4 h-4 text-cyan-300 group-hover:translate-x-1 transition"
+
     />
   </button>
 ))}

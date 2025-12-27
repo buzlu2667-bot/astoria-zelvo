@@ -692,8 +692,20 @@ async function closeNotification() {
   </div>
 
   {/* Favori */}
-  <Link to="/favorites" className="relative">
-    <Heart className="w-6 h-6 text-gray-700" />
+ <Link to="/favorites" className="relative">
+  <Heart
+  className="
+    w-6 h-6
+    text-pink-500
+    drop-shadow-[0_0_10px_rgba(255,0,150,0.6)]
+    hover:text-cyan-400
+    hover:drop-shadow-[0_0_16px_rgba(0,200,255,0.8)]
+    transition-all duration-300
+  "
+/>
+
+
+
     {favCount > 0 && (
       <span className="absolute -top-1 -right-1 bg-pink-500 text-white text-[10px] w-4 h-4 flex items-center justify-center rounded-full">
         {favCount}
@@ -753,25 +765,45 @@ async function closeNotification() {
   {/* Yazılar */}
   <div className="leading-[1.1] flex flex-col hidden sm:flex">
 
-   <div className="relative flex items-center gap-[1px]">
-  {/* MAT SİYAH YAZI */}
-  <span className="text-gray-900 font-extrabold tracking-wide text-xl">
+   <div className="relative flex items-center gap-[2px] select-none">
+  
+  <span className="
+    text-transparent bg-clip-text
+    bg-gradient-to-r from-emerald-300 via-cyan-300 to-sky-400
+    font-black tracking-[0.18em] text-[22px]
+    drop-shadow-[0_0_12px_rgba(0,255,200,0.55)]
+  ">
     MAXI
   </span>
 
-  {/* GOLD AKSENT – SADECE M */}
-  <span className="text-[#C9A24D] font-extrabold tracking-wide text-xl">
+  <span className="
+    text-transparent bg-clip-text
+    bg-gradient-to-r from-yellow-300 via-orange-300 to-rose-400
+    font-black tracking-[0.18em] text-[22px]
+    drop-shadow-[0_0_12px_rgba(255,190,90,0.65)]
+    animate-pulse
+  ">
     M
   </span>
 
-  {/* DEVAM */}
-  <span className="text-gray-900 font-extrabold tracking-wide text-xl">
+  <span className="
+    text-transparent bg-clip-text
+    bg-gradient-to-r from-emerald-300 via-cyan-300 to-sky-400
+    font-black tracking-[0.18em] text-[22px]
+    drop-shadow-[0_0_12px_rgba(0,255,200,0.55)]
+  ">
     ORA
   </span>
+
 </div>
 
     {/* Alt yazı */}
-    <span className="text-[10px] tracking-[0.3em] text-blue-400 uppercase group-hover:text-yellow-400 transition">
+  <span className="
+  text-[10px] tracking-[0.35em] uppercase
+  text-cyan-300
+  drop-shadow-[0_0_8px_rgba(0,255,255,0.6)]
+">
+
       Lifestyle & Tech Store
     </span>
 
@@ -802,7 +834,18 @@ async function closeNotification() {
 className="relative rounded-xl p-1 sm:p-2 hover:bg-white/5 transition hidden lg:flex"
 >
 
-   <Heart className="w-6 h-6 text-gray-700" />
+ <Heart
+  className="
+    w-6 h-6
+    text-pink-500
+    drop-shadow-[0_0_10px_rgba(255,0,150,0.6)]
+    hover:text-cyan-400
+    hover:drop-shadow-[0_0_16px_rgba(0,200,255,0.8)]
+    transition-all duration-300
+  "
+/>
+
+
     {favCount > 0 && (
       <span className="absolute -top-1.5 -right-1.5 bg-pink-500 text-white text-[10px] min-w-[18px] h-[18px] flex items-center justify-center rounded-full font-bold shadow-lg">
         {favCount}
@@ -821,7 +864,16 @@ className="relative rounded-xl p-1 sm:p-2 hover:bg-white/5 transition hidden lg:
   "
 >
 
-  <MessageSquare className="w-6 h-6 text-blue-400" />
+ <MessageSquare
+  className="
+    w-6 h-6
+    text-cyan-400
+    drop-shadow-[0_0_12px_rgba(0,255,255,0.7)]
+    hover:text-cyan-300
+    transition
+  "
+/>
+
 
   {unreadCount > 0 && (
     <span
@@ -847,7 +899,16 @@ className="relative rounded-xl p-1 sm:p-2 hover:bg-white/5 transition hidden lg:
   to="/cart"
   className="relative rounded-xl p-1 sm:p-2 hover:bg-white/5 transition hidden 2xl:flex"
 >
- <ShoppingCart className="w-6 h-6 text-[#f27a1a]" />
+ <ShoppingCart
+  className="
+    w-6 h-6
+    text-amber-400
+    drop-shadow-[0_0_12px_rgba(255,180,0,0.8)]
+    hover:text-amber-300
+    transition
+  "
+/>
+
     {cart?.length > 0 && (
       <span className="absolute -top-1.5 -right-1.5 bg-yellow-500 text-black text-[10px] min-w-[18px] h-[18px] flex items-center justify-center rounded-full font-bold shadow-lg">
         {cart.length}
@@ -1194,7 +1255,8 @@ className="relative rounded-xl p-1 sm:p-2 hover:bg-white/5 transition hidden lg:
       onClick={() => setAccountModal(true)}
       className="flex flex-col items-center text-white"
     >
-      <User2 className="w-6 h-6 text-yellow-300" />
+    <User2 className="w-6 h-6 text-violet-400 drop-shadow-[0_0_10px_rgba(180,90,255,0.8)]" />
+
      <span className="text-[11px] mt-1 font-medium max-w-[70px] truncate leading-tight">
   {profile?.full_name || session.user.email.split("@")[0]}
 
@@ -1208,7 +1270,16 @@ className="relative rounded-xl p-1 sm:p-2 hover:bg-white/5 transition hidden lg:
     onClick={() => (window.location.href = '/mesajlarim')}
     className="flex flex-col items-center text-white relative"
   >
-    <MessageSquare className="w-6 h-6 text-blue-400" />
+  <MessageSquare
+  className="
+    w-6 h-6
+    text-cyan-400
+    drop-shadow-[0_0_12px_rgba(0,255,255,0.7)]
+    hover:text-cyan-300
+    transition
+  "
+/>
+
     {unreadCount > 0 && (
       <span
         className="
@@ -1228,7 +1299,14 @@ className="relative rounded-xl p-1 sm:p-2 hover:bg-white/5 transition hidden lg:
     onClick={() => (window.location.href = '/cart')}
     className="flex flex-col items-center text-white relative"
   >
-    <ShoppingCart className="w-6 h-6 text-yellow-300" />
+   <ShoppingCart
+  className="
+    w-6 h-6
+    text-amber-400
+    drop-shadow-[0_0_14px_rgba(255,180,0,0.9)]
+  "
+/>
+
     {cart?.length > 0 && (
       <span
         className="

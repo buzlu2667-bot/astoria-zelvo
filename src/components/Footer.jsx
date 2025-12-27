@@ -93,7 +93,57 @@ export default function Footer() {
 
           {/* MAXIMORA */}
           <div>
-            <h2 className="text-3xl font-extrabold text-gray-900">MAXIMORA</h2>
+          <div className="leading-[1.05] select-none">
+
+  <div className="relative flex items-center gap-[2px]">
+    <span
+      className="
+        text-transparent bg-clip-text
+        bg-gradient-to-r from-emerald-300 via-cyan-300 to-sky-400
+        font-black tracking-[0.22em] text-[34px]
+        drop-shadow-[0_0_16px_rgba(0,255,200,0.7)]
+      "
+    >
+      MAXI
+    </span>
+
+    <span
+      className="
+        text-transparent bg-clip-text
+        bg-gradient-to-r from-yellow-300 via-orange-300 to-rose-400
+        font-black tracking-[0.22em] text-[34px]
+        drop-shadow-[0_0_18px_rgba(255,190,90,0.9)]
+        animate-pulse
+      "
+    >
+      M
+    </span>
+
+    <span
+      className="
+        text-transparent bg-clip-text
+        bg-gradient-to-r from-emerald-300 via-cyan-300 to-sky-400
+        font-black tracking-[0.22em] text-[34px]
+        drop-shadow-[0_0_16px_rgba(0,255,200,0.7)]
+      "
+    >
+      ORA
+    </span>
+  </div>
+
+  <span
+    className="
+      block mt-1 text-[11px]
+      tracking-[0.45em] uppercase
+      text-cyan-400
+      drop-shadow-[0_0_10px_rgba(0,255,255,0.6)]
+    "
+  >
+    Lifestyle & Tech Store
+  </span>
+
+</div>
+
             <p className="mt-4 text-gray-600 leading-6">
               Premium çanta • dijital ürünler • petshop ürünleri • oyun içi alışveriş.
               Güvenli ödeme – anlık teslimat – hızlı kargo.
@@ -145,24 +195,33 @@ export default function Footer() {
           </div>
 
         </div>
-
-        {/* Güvenli Alışveriş */}
-<div className="flex justify-center items-center gap-2 mt-12 text-yellow-600 text-sm">
-  <svg
-    className="w-5 h-5"
-    fill="none"
-    stroke="currentColor"
-    strokeWidth="2"
-    viewBox="0 0 24 24"
+<div className="mt-14 flex justify-center">
+  <div
+    className="
+      flex items-center gap-2
+      px-5 py-2.5
+      rounded-full
+      bg-white
+      border border-emerald-400/50
+      text-emerald-500 font-semibold tracking-[0.18em] text-[13px]
+      shadow-[0_4px_14px_rgba(0,200,170,0.25)]
+    "
   >
-    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
-    <path d="M9 12l2 2 4-4" />
-  </svg>
+    <svg
+      className="w-5 h-5 text-emerald-400"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2.2"
+      viewBox="0 0 24 24"
+    >
+      <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+      <path d="M9 12l2 2 4-4" />
+    </svg>
 
-  <span className="font-medium tracking-wide">
     GÜVENLİ ALIŞVERİŞ
-  </span>
+  </div>
 </div>
+
 
 
         {/* Alt Yazı */}
