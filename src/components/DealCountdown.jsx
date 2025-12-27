@@ -17,20 +17,25 @@ export default function DealCountdown({ endAt }) {
   const m = Math.floor((left / 1000 / 60) % 60);
   const s = Math.floor((left / 1000) % 60);
 
+  // 🔥 PANIC BEYNİ
+  const isLast30 = left <= 30 * 60 * 1000;
+  const isLast10 = left <= 10 * 60 * 1000;
+
   return (
     <div
-      className="
+      className={`
         inline-flex items-center gap-1.5
-        rounded-full
-        px-2.5 py-1
-        text-[11px] font-semibold
-        text-red-700
-        bg-gradient-to-r from-red-50 to-orange-50
-        border border-red-200
-        shadow-sm
-      "
+        rounded-full px-2.5 py-1 text-[11px] font-semibold transition-all
+        ${
+          isLast10
+            ? "panic-siren"
+            : isLast30
+            ? "panic-card"
+            : "text-red-700 bg-gradient-to-r from-red-50 to-orange-50 border border-red-200 shadow-sm"
+        }
+      `}
     >
-      <Flame className="w-3.5 h-3.5 text-red-600 animate-pulse" />
+      <Flame className="w-3.5 h-3.5 animate-pulse" />
 
       <span className="font-mono tracking-tight">
         {h.toString().padStart(2, "0")}:
@@ -38,7 +43,7 @@ export default function DealCountdown({ endAt }) {
         {s.toString().padStart(2, "0")}
       </span>
 
-      <Clock className="w-3 h-3 text-red-400" />
+      <Clock className="w-3 h-3 opacity-70" />
     </div>
   );
 }
