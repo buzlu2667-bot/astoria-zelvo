@@ -1,100 +1,104 @@
-import { NavLink, Outlet } from "react-router-dom";
-import { useState } from "react";
-import { Menu, X } from "lucide-react";
+import { NavLink, Outlet, useNavigate } from "react-router-dom";
+import {
+  LayoutDashboard,
+  ShoppingCart,
+  PackageCheck,
+  Users,
+  BadgePercent,
+  MessageSquare,
+  Megaphone,
+  Image,
+  BarChart3,
+  Mail,
+  TrendingUp,
+  Settings,
+  LogOut
+} from "lucide-react";
 
 export default function AdminLayout() {
-  const [open, setOpen] = useState(false);
-
   return (
-    <div className="min-h-screen bg-[#0a0a0a] text-gray-100 flex">
+    <div className="flex min-h-screen bg-[#0b0b0b] text-white">
 
-      {/* 🌟 Mobil Üst Bar */}
-     <div className="lg:hidden flex items-center justify-between px-4 py-3 border-b border-yellow-600/20 bg-[#0f0f0f] fixed top-[70px] left-0 right-0 z-50">
+      <aside className="w-[260px] bg-[#111] border-r border-[#222] flex flex-col p-4">
+        <h1 className="text-xl font-bold mb-6">
+          <span className="text-yellow-400">MAXIMORA</span> ADMIN
+        </h1>
 
-        <h2 className="text-lg font-bold bg-gradient-to-r from-yellow-400 to-amber-200 text-transparent bg-clip-text">
-          MAXIMORA ADMIN
-        </h2>
+        <nav className="flex flex-col gap-1">
+
+          {/* DASHBOARD */}
+          <NavGroup title="Genel">
+            <AdminLink to="/admin" icon={<LayoutDashboard size={18} />}>Dashboard</AdminLink>
+            <AdminLink to="/admin/home-settings" icon={<Settings size={18} />}>Home Ayarları</AdminLink>
+          </NavGroup>
+
+          {/* SATIŞ */}
+          <NavGroup title="Satış & Sipariş">
+            <AdminLink to="/admin/orders" icon={<ShoppingCart size={18} />}>Siparişler</AdminLink>
+            <AdminLink to="/admin/profit" icon={<TrendingUp size={18} />}>Kâr Yönetimi</AdminLink>
+            <AdminLink to="/admin/sales" icon={<BarChart3 size={18} />}>Satış Raporu</AdminLink>
+            <AdminLink to="/admin/cart-discounts" icon={<BadgePercent size={18} />}>Sepet İndirimleri</AdminLink>
+          </NavGroup>
+
+          {/* ÜRÜN */}
+          <NavGroup title="Ürün & İçerik">
+            <AdminLink to="/admin/products" icon={<PackageCheck size={18} />}>Ürünler</AdminLink>
+            <AdminLink to="/admin/comments" icon={<MessageSquare size={18} />}>Yorumlar</AdminLink>
+            <AdminLink to="/admin/banner-settings" icon={<Image size={18} />}>Banner</AdminLink>
+            <AdminLink to="/admin/scroll-text" icon={<Megaphone size={18} />}>Kayan Yazı</AdminLink>
+          </NavGroup>
+
+          {/* PAZARLAMA */}
+          <NavGroup title="Pazarlama">
+            <AdminLink to="/admin/coupons" icon={<BadgePercent size={18} />}>Kuponlar</AdminLink>
+            <AdminLink to="/admin/notifications" icon={<Megaphone size={18} />}>Bildirim</AdminLink>
+            <AdminLink to="/admin/mail" icon={<Mail size={18} />}>Mail Gönder</AdminLink>
+          </NavGroup>
+
+          {/* KULLANICI */}
+          <NavGroup title="Kullanıcı & Destek">
+            <AdminLink to="/admin/users" icon={<Users size={18} />}>Kullanıcılar</AdminLink>
+            <AdminLink to="/admin/messages" icon={<MessageSquare size={18} />}>Mesajlar</AdminLink>
+          </NavGroup>
+
+        </nav>
 
         <button
-          onClick={() => setOpen(true)}
-          className="p-2 rounded-md bg-black/40 border border-yellow-600/30"
+          onClick={() => window.location.href="/logout"}
+          className="mt-auto flex items-center gap-2 px-3 py-2 text-sm text-red-400 hover:text-red-300"
         >
-          <Menu className="w-6 h-6 text-yellow-300" />
+          <LogOut size={18}/> Çıkış
         </button>
-      </div>
-
-      {/* 🌟 Sidebar */}
-     <aside
-  className={`
-    w-60 bg-gradient-to-b from-[#0f0f0f] via-[#111] to-[#0a0a0a]
-    border-r border-yellow-600/20 p-5 flex flex-col gap-4 
-    shadow-[0_0_25px_rgba(255,215,0,0.05)]
-    fixed top-[70px] bottom-0 z-50
-    transition-transform duration-300
-    lg:relative lg:translate-x-0 
-    ${open ? "translate-x-0" : "-translate-x-full lg:translate-x-0"}
-  `}
->
-
-        {/* Mobile close button */}
-        <button
-          onClick={() => setOpen(false)}
-          className="lg:hidden absolute top-4 right-4 p-2 bg-black/40 border border-yellow-600/30 rounded-md"
-        >
-          <X className="w-5 h-5 text-yellow-300" />
-        </button>
-
-        <h2 className="text-lg font-bold mb-3 tracking-wide bg-gradient-to-r from-yellow-400 to-amber-200 bg-clip-text text-transparent">
-          MAXIMORA ADMIN
-        </h2>
-        <NavItem to="/admin/home-settings" setOpen={setOpen}>Home Ayarları</NavItem>
-        <NavItem to="/admin" setOpen={setOpen}>Dashboard</NavItem>
-        <NavItem to="/admin/cart-discounts" setOpen={setOpen}>
-  Sepet İndirimleri
-</NavItem>
-
-        <NavItem to="/admin/orders" setOpen={setOpen}>Siparişler</NavItem>
-        <NavItem to="/admin/comments" setOpen={setOpen}>
-  Yorumlar
-</NavItem>
-        <NavItem to="/admin/products" setOpen={setOpen}>Ürünler</NavItem>
-        <NavItem to="/admin/coupons" setOpen={setOpen}>Kuponlar</NavItem>
-        <NavItem to="/admin/users" setOpen={setOpen}>Kullanıcılar</NavItem>
-        <NavItem to="/admin/notifications" setOpen={setOpen}>Bildirim Gönder</NavItem>
-        <NavItem to="/admin/messages" setOpen={setOpen}>Mesajlar</NavItem>
-        <NavItem to="/admin/banner-settings" setOpen={setOpen}>Banner Ayarları</NavItem>
-        <NavItem to="/admin/scroll-text" setOpen={setOpen}>Kayan Yazı</NavItem>
-        <NavItem to="/admin/mail" setOpen={setOpen}>Mail Gönder</NavItem>
-        <NavItem to="/admin/profit" setOpen={setOpen}>Kâr Yönetimi</NavItem>
-        <NavItem to="/admin/sales" setOpen={setOpen}>Satış Raporu</NavItem>
-
       </aside>
 
-      {/* 🌟 İçerik */}
-      <main className="flex-1 p-4 lg:p-6 mt-16 lg:mt-0 overflow-y-auto">
+      <main className="flex-1 p-6 overflow-y-auto">
         <Outlet />
       </main>
     </div>
   );
 }
 
-/* 🌟 Navigasyon Butonu */
-function NavItem({ to, children, setOpen }) {
+function NavGroup({ title, children }) {
+  return (
+    <div className="mt-4">
+      <div className="text-xs text-gray-500 uppercase tracking-wide mb-1 px-2">{title}</div>
+      {children}
+    </div>
+  );
+}
+
+function AdminLink({ to, icon, children }) {
   return (
     <NavLink
       to={to}
-      end
-      onClick={() => setOpen(false)}
       className={({ isActive }) =>
-        `block px-3 py-2 rounded-md text-sm font-medium transition-all duration-300
-        ${
-          isActive
-            ? "text-black bg-gradient-to-r from-yellow-400 to-amber-300 shadow-[0_0_15px_rgba(255,215,0,0.4)]"
-            : "text-gray-400 hover:text-yellow-300 hover:bg-yellow-500/10"
-        }`
+        `flex items-center gap-3 px-3 py-2 rounded-lg text-sm transition-all
+        ${isActive
+          ? "bg-yellow-400 text-black shadow-md"
+          : "text-gray-400 hover:text-yellow-300 hover:bg-yellow-400/10"}`
       }
     >
-      {children}
+      {icon}{children}
     </NavLink>
   );
 }
