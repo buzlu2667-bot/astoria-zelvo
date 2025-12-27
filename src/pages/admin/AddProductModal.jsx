@@ -3,6 +3,18 @@ import { supabase } from "../../lib/supabaseClient";
 import { X, Upload, Images, ImagePlus, Loader } from "lucide-react";
 
 
+function localToISO(localStr) {
+  const [date, time] = localStr.split("T");
+  return `${date}T${time}:00`; // DOKUNMA – browser artık UTC’ye çeviremez
+}
+
+function isoToLocal(iso) {
+  return iso.slice(0, 16);
+}
+
+
+
+
 // ⚡ Türkçe – emoji – boşluk temizleyici
 function sanitizeFilename(name) {
   return name
@@ -45,8 +57,9 @@ useEffect(() => {
        
        deal_active: initialData.deal_active || false,
 deal_end_at: initialData.deal_end_at
-  ? initialData.deal_end_at.slice(0, 16)
+  ? isoToLocal(initialData.deal_end_at)
   : "",
+
 
        
     });
@@ -193,8 +206,10 @@ if (initialData) {
 
        deal_active: form.deal_active,
 deal_end_at: form.deal_active
-  ? form.deal_end_at
+  ? localToISO(form.deal_end_at)
   : null,
+
+
 
 
       // fotoğraflar sadece yeni seçildiyse güncellenecek
@@ -234,9 +249,11 @@ deal_end_at: form.deal_active
   server_id: form.server_id || null,
 
   deal_active: form.deal_active,
-  deal_end_at: form.deal_active
-    ? form.deal_end_at
-    : null,
+ deal_end_at: form.deal_active
+  ? localToISO(form.deal_end_at)
+  : null,
+
+
 
   is_new: form.is_new,
   is_popular: form.is_popular,
