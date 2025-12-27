@@ -938,118 +938,100 @@ className="relative rounded-xl p-1 sm:p-2 hover:bg-white/5 transition hidden lg:
 
       
  
-{/* ⭐⭐⭐ TRENDYOL LEFT DRAWER — CLEAN WHITE THEME ⭐⭐⭐ */}
+{/* 🌌 MAXIMORA PREMIUM GLASS DRAWER */}
 
 {menuOpen && (
   <div
-    className="fixed inset-0 bg-black/40 z-[998]"
+    className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[998]"
     onClick={() => setMenuOpen(false)}
   ></div>
 )}
 
 <aside
   className={`
-    fixed top-0 left-0 h-full w-[300px]
-    bg-white text-gray-800
-    shadow-[0_0_30px_rgba(0,0,0,0.15)]
+    fixed top-0 left-0 h-full w-[320px]
+    bg-[#0b0f14]/90 backdrop-blur-2xl
+    text-white
+    border-r border-white/10
+    shadow-[0_0_80px_rgba(0,255,200,0.18)]
     transition-transform duration-300 
     z-[99999]
     ${menuOpen ? "translate-x-0" : "-translate-x-full"}
   `}
 >
-  {/* HEADER */}
-  <div className="flex justify-between items-center px-4 py-4 border-b border-gray-200">
-    <h2 className="text-lg font-semibold text-gray-800">Menü</h2>
 
+  {/* HEADER */}
+  <div className="flex justify-between items-center px-5 py-5 border-b border-white/10">
+    <span className="text-xl font-bold tracking-widest text-emerald-300">MENU</span>
     <button
       onClick={() => setMenuOpen(false)}
-      className="p-2 rounded-md hover:bg-gray-100"
+      className="p-2 rounded-lg hover:bg-white/10"
     >
-      <X className="w-6 h-6 text-gray-700" />
+      <X className="w-6 h-6 text-white" />
     </button>
   </div>
 
-  {/* USER CARD */}
-  <div className="px-4 py-4 border-b border-gray-200">
-    {!session ? (
-      <div className="flex gap-3 items-center">
-        <User2 className="w-10 h-10 p-2 rounded-full bg-gray-100 text-gray-700" />
-        <div>
-          <p className="text-sm font-medium text-gray-800">Giriş Yap / Kayıt Ol</p>
-
-          <button
-            onClick={() => (window.location.href = "/login")}
-            className="text-[#f27a1a] text-xs font-semibold"
-          >
-            Giriş Yap
-          </button>
-        </div>
+  {/* USER */}
+  <div className="px-5 py-5 border-b border-white/10">
+    <div className="flex items-center gap-3">
+      <div className="w-12 h-12 rounded-full bg-gradient-to-br from-emerald-400 to-cyan-400 flex items-center justify-center text-black font-bold text-lg">
+        {session
+          ? (profile?.full_name || session.user.email)[0].toUpperCase()
+          : "?"}
       </div>
-    ) : (
-      <div className="flex gap-3 items-center">
-        <User2 className="w-10 h-10 p-2 rounded-full bg-gray-100 text-[#f27a1a]" />
 
-        <div>
-          <p className="font-semibold text-gray-900">
-            
-       {profile?.full_name || session.user.email.split("@")[0]}
+      <div>
+        <p className="font-semibold">
+          {session ? (profile?.full_name || session.user.email) : "Misafir"}
+        </p>
 
-
-
-          </p>
-
-          <button
-            onClick={() => setAccountModal(true)}
-            className="text-[#f27a1a] text-xs font-semibold"
-          >
-            Hesabım
-          </button>
-        </div>
+        <button
+          onClick={() =>
+            session ? setAccountModal(true) : (window.location.href = "/login")
+          }
+          className="text-emerald-300 text-xs mt-1"
+        >
+          {session ? "Hesabım" : "Giriş Yap"}
+        </button>
       </div>
-    )}
+    </div>
   </div>
 
   {/* KATEGORİLER */}
-  <nav className="p-4 flex flex-col gap-2 overflow-y-auto max-h-[65vh]">
-    {categories.length === 0 ? (
-      <p className="text-gray-500 text-sm">Kategori bulunamadı.</p>
-    ) : (
-      categories.map((cat) => (
-        <button
-          key={cat.id}
-          onClick={() => {
-            setMenuOpen(false);
-            setTimeout(() => navigate(`/category/${cat.slug}`), 250);
-          }}
-          className="
-            w-full flex justify-between items-center
-            px-4 py-3
-            rounded-lg 
-            border border-gray-200 
-            bg-white
-            hover:bg-gray-50
-            transition
-          "
-        >
-          <span className="font-medium text-gray-800">{cat.title}</span>
-
-          <ChevronRight className="text-gray-400 w-4 h-4" />
-        </button>
-      ))
-    )}
+  <nav className="p-4 flex flex-col gap-3 overflow-y-auto max-h-[65vh]">
+    {categories.map((cat) => (
+      <button
+        key={cat.id}
+        onClick={() => {
+          setMenuOpen(false);
+          setTimeout(() => navigate(`/category/${cat.slug}`), 250);
+        }}
+        className="
+          w-full flex justify-between items-center
+          px-4 py-3 rounded-xl
+          bg-white/5 border border-white/10
+          hover:bg-white/10 hover:border-emerald-400/40
+          hover:shadow-[0_0_20px_rgba(0,255,200,0.25)]
+          transition
+        "
+      >
+        <span className="font-medium">{cat.title}</span>
+        <ChevronRight className="text-emerald-300 w-4 h-4" />
+      </button>
+    ))}
   </nav>
 
-  {/* SEPET BUTONU */}
-  <div className="absolute bottom-4 left-0 w-full px-4">
+  {/* SEPET */}
+  <div className="absolute bottom-5 left-0 w-full px-5">
     <button
       onClick={() => (window.location.href = "/cart")}
       className="
-        flex items-center gap-3 w-full
-        px-4 py-3
-        rounded-lg
-        bg-[#f27a1a]/10
-        border border-[#f27a1a]/30
-        text-[#f27a1a] font-semibold
+        w-full flex items-center justify-center gap-3
+        py-3 rounded-xl
+        bg-gradient-to-r from-emerald-400 to-cyan-400
+        text-black font-bold
+        shadow-[0_0_25px_rgba(0,255,200,0.6)]
+        hover:brightness-110 transition
       "
     >
       <ShoppingCart className="w-5 h-5" />
@@ -1057,6 +1039,7 @@ className="relative rounded-xl p-1 sm:p-2 hover:bg-white/5 transition hidden lg:
     </button>
   </div>
 </aside>
+
 
 
 {/* Scrollbar style */}
