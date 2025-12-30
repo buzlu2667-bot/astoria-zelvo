@@ -63,6 +63,18 @@ function HashRedirector() {
 
 export default function App() {
 
+  useEffect(() => {
+  const onPageShow = (e) => {
+    if (e.persisted) {
+      window.location.reload();
+    }
+  };
+
+  window.addEventListener("pageshow", onPageShow);
+  return () => window.removeEventListener("pageshow", onPageShow);
+}, []);
+
+
 
   const [maint, setMaint] = useState(null);
   const [isAdmin, setIsAdmin] = useState(false);
