@@ -970,141 +970,63 @@ bg-[radial-gradient(800px_circle_at_15%_0%,rgba(34,211,238,0.18),transparent_60%
         />
       </div>
 
+      
+
   {/* ⭐ HAFTANIN FIRSATLARI */}
 {deals.length > 0 && (
-  <div className="max-w-7xl mx-auto px-4 mt-16">
-    
-    {/* 🔥 BAŞLIK */}
-    <div className="flex items-center gap-3 mb-6">
-      <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-red-500 to-orange-500 flex items-center justify-center shadow-lg">
-        <FlameKindling className="w-5 h-5 text-white" />
-      </div>
-      <div>
-        <h2 className="text-2xl font-extrabold text-gray-900">
-          Haftanın Fırsatları
-        </h2>
-        <p className="text-sm text-gray-500">
-          Sınırlı süre · Özel avantajlar
-        </p>
-      </div>
-    </div>
+  <section className="max-w-7xl mx-auto px-4 mt-16">
 
-    <div className="space-y-8">
-      {deals.map((deal) => {
-        const product = deal.products;
-        if (!product) return null;
+    <div className="relative rounded-3xl overflow-hidden bg-gradient-to-br from-[#0f172a] via-[#020617] to-black text-white">
 
-        return (
-          <div
-            key={deal.id}
-            className="
-              relative
-              group
-              rounded-3xl
-              overflow-hidden
-              bg-white
-              border border-gray-200
-              shadow-[0_20px_50px_-20px_rgba(0,0,0,0.25)]
-              hover:shadow-[0_30px_80px_-25px_rgba(0,0,0,0.35)]
-              transition-all duration-300
-            "
+      <div className="grid md:grid-cols-2 gap-10 p-10 items-center">
+
+        {/* SOL */}
+        <div>
+          <span className="text-orange-400 font-bold">⚡ Haftanın Fırsatı</span>
+
+          <h2 className="text-3xl md:text-4xl font-extrabold mt-3 leading-tight">
+            {deals[0].products.title}
+          </h2>
+
+          <DealCountdown endAt={deals[0].end_at} />
+
+          <button
+            onClick={() => navigate(`/product/${deals[0].products.id}`)}
+            className="mt-6 px-6 py-3 rounded-xl bg-white text-black font-bold hover:scale-105 transition"
           >
-            {/* ✨ GLOW */}
-            <div className="
-              pointer-events-none
-              absolute inset-0
-              bg-[radial-gradient(600px_circle_at_20%_0%,rgba(239,68,68,0.18),transparent_60%)]
-            " />
+            Ürünü İncele
+          </button>
+        </div>
 
-            <div className="relative flex flex-col sm:flex-row">
-              
-              {/* 🔥 SOL – GÖRSEL */}
-              <div className="relative sm:w-1/3">
-                <img
-                  src={product.main_img}
-                  alt={product.title}
-                  className="
-                    w-full
-                    h-80 sm:h-full
-                    object-cover
-                    group-hover:scale-105
-                    transition duration-500
-                  "
-                />
+        {/* SAĞ */}
+        <img
+          src={deals[0].products.main_img}
+          className="w-full h-[380px] object-contain drop-shadow-2xl"
+        />
+      </div>
 
-                {/* BADGE */}
-                <div className="absolute top-4 left-4">
-                  <span className="
-                    px-3 py-1
-                    text-xs font-bold
-                    text-white
-                    rounded-full
-                    bg-gradient-to-r from-red-500 to-orange-500
-                    shadow-md
-                  ">
-                    ⚡ Avantaj Ürünü
-                  </span>
-                </div>
-              </div>
+      {/* ALT SLIDER */}
+      <div className="px-6 pb-6">
+        <Swiper
+          spaceBetween={16}
+          slidesPerView={1.3}
+          breakpoints={{
+            640: { slidesPerView: 2.3 },
+            1024: { slidesPerView: 4 },
+          }}
+        >
+          {deals.slice(1).map((d) => (
+            <SwiperSlide key={d.id}>
+              <ProductCard product={d.products} />
+            </SwiperSlide>
+          ))}
+        </Swiper>
+      </div>
 
-              {/* 👉 SAĞ – İÇERİK */}
-              <div className="p-6 flex flex-col justify-between flex-1">
-                <div>
-                  <h3 className="text-xl font-extrabold text-gray-900 leading-snug">
-                    {product.title}
-                  </h3>
-
-                  {deal.note && (
-                    <p className="text-gray-600 mt-2">
-                      {deal.note}
-                    </p>
-                  )}
-
-                  {/* ✅ FİYAT */}
-                  <div className="mt-4">
-                   <ProductCard
-  product={product}
-  deal={deal}
-  hideDealCountdown
-/>
-
-                  </div>
-                </div>
-
-                {/* ⏱️ SAYAÇ */}
-                {deal.end_at && (
-                  <div className="mt-4">
-                  <DealCountdown
-  endAt={deal.end_at}
-/>
-
-                  </div>
-                )}
-
-                {/* CTA */}
-                <button
-                  onClick={() => navigate(`/product/${product.id}`)}
-                  className="
-                    mt-5
-                    h-12
-                    rounded-xl
-                    font-bold
-                    text-white
-                    bg-black
-                    hover:bg-gray-900
-                    transition
-                  "
-                >
-                  Ürünü İncele
-                </button>
-              </div>
-            </div>
-          </div>
-        );
-      })}
     </div>
-  </div>
+  </section>
 )}
+
 
 
 {/* ⭐ TRENDYOL TİPİ KAMPANYA BLOKLARI */}
