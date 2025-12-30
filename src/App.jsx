@@ -3,7 +3,7 @@ import ToastContainer from "./components/ToastContainer";
 import ScrollTopButton from "./components/ScrollTopButton";
 import ProductDetail from "./pages/ProductDetail";
 import Favorites from "./pages/Favorites";
-import { Routes, Route, useNavigate } from "react-router-dom";
+import { Routes, Route, useNavigate, useLocation } from "react-router-dom";
 import { useEffect, useState } from "react";
 import LoginPage from "./pages/LoginPage";
 import RegisterPage from "./pages/RegisterPage";
@@ -62,6 +62,7 @@ function HashRedirector() {
 }
 
 export default function App() {
+   const location = useLocation();
 
   useEffect(() => {
   const onPageShow = (e) => {
@@ -256,7 +257,8 @@ useEffect(() => {
   <ScrollTopButton />
       <HashRedirector />
    
-      <Routes>
+     <Routes location={location} key={location.pathname}>
+
         <Route path="/" element={<Home />} />
         <Route path="/favorites" element={<Favorites />} />
         <Route path="/cart" element={<Cart />} />
