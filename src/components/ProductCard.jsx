@@ -193,16 +193,20 @@ useEffect(() => {
   return (
     <div
       onClick={() => navigate(`/product/${product.id}`)}
-      className="
-        cursor-pointer
-        bg-white 
-        rounded-xl 
-        border border-gray-200 
-        hover:shadow-md 
-        transition-all 
-        p-3 
-        flex flex-col
-      "
+     className="
+  cursor-pointer
+  bg-white 
+  rounded-xl 
+  border border-gray-200 
+  hover:shadow-md 
+  transition-all 
+  p-3 
+  flex flex-col
+
+  w-[260px] min-w-[260px] max-w-[260px]
+
+"
+
     >
       {/* ------------------ IMAGE BOX ------------------ */}
      <div className="
@@ -280,7 +284,7 @@ useEffect(() => {
   decoding="async"
   draggable="false"
   onError={(e) => (e.currentTarget.src = "/products/default.png")}
-className="w-full h-full object-contain"
+className="w-full h-full object-cover"
 />
 
 

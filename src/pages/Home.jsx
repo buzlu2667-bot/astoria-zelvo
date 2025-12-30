@@ -1488,7 +1488,8 @@ useEffect(() => {
             {products.map((p) => (
               <div
                 key={p.id}
-                className="shrink-0 min-w-[65vw] max-w-[300px] sm:min-w-[250px]"
+              className="shrink-0 w-[260px] min-w-[260px] max-w-[260px]"
+
               >
                 <ProductCard product={p} />
               </div>
