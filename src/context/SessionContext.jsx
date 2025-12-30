@@ -31,24 +31,6 @@ export const SessionProvider = ({ children }) => {
     };
   }, []);
 
-  // 🔒 TAB’A GERİ GELİNCE SESSION CANLANDIRICI (RELOAD YOK)
-  useEffect(() => {
-    const reviveSession = async () => {
-      const { data } = await supabase.auth.getSession();
-      if (!data.session) {
-        await supabase.auth.refreshSession();
-      }
-    };
-
-    window.addEventListener("focus", reviveSession);
-    document.addEventListener("visibilitychange", reviveSession);
-
-    return () => {
-      window.removeEventListener("focus", reviveSession);
-      document.removeEventListener("visibilitychange", reviveSession);
-    };
-  }, []);
-
   return (
     <SessionContext.Provider
       value={{

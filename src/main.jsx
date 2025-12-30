@@ -10,34 +10,20 @@ import { CartProvider } from "./context/CartContext.jsx";
 import { FavoritesProvider } from "./context/FavoritesContext.jsx";
 import ScrollFixProvider from "./utils/ScrollFixProvider";
 
-// 🔥 Eski bozuk bundle cache’lerini otomatik temizle
-if ("caches" in window) {
-  caches.keys().then((names) => {
-    names.forEach((name) => caches.delete(name));
-  });
+// 🔥 SEKMEYE GERİ DÖNÜNCE YENİLE (SADECE MÜŞTERİ TARAFI)
+function shouldReload() {
+  const url = window.location.pathname;
+  if (url.startsWith("/admin")) return false;
+  return true;
 }
 
-if ("serviceWorker" in navigator) {
-  navigator.serviceWorker.getRegistrations().then((regs) => {
-    regs.forEach((reg) => reg.unregister());
-  });
-}
-
-// 🔄 Sekmeden dönünce 4 sn içinde sadece 1 kere reload (loop YOK)
-let lastReload = 0;
-
-const safeReload = () => {
-  const now = Date.now();
-  if (now - lastReload < 4000) return; // 4sn koruma
-  lastReload = now;
-  window.location.reload();
-};
-
-window.addEventListener("focus", safeReload);
-document.addEventListener("visibilitychange", () => {
-  if (!document.hidden) safeReload();
+window.addEventListener("focus", () => {
+  if (shouldReload()) window.location.reload();
 });
 
+document.addEventListener("visibilitychange", () => {
+  if (!document.hidden && shouldReload()) window.location.reload();
+});
 
 // 🚀 TEK ROOT
 ReactDOM.createRoot(document.getElementById("root")).render(

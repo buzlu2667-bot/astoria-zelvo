@@ -678,16 +678,10 @@ async function closeNotification() {
     <Menu className="w-6 h-6 text-gray-800" />
   </button>
 
- {/* Logo */}
-<img
-  src="/logo.png"
-  className="w-10 h-10 shrink-0 cursor-pointer"
-  onClick={() => {
-    navigate("/", { replace: true });
-    window.scrollTo(0, 0);
-  }}
-/>
-
+  {/* Logo */}
+  <Link to="/" className="shrink-0">
+    <img src="/logo.png" className="w-10 h-10" />
+  </Link>
 
   {/* Arama */}
   <div onClick={() => setSearchOpen(true)} className="flex-1">

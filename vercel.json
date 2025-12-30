@@ -1,16 +1,12 @@
 {
   "routes": [
     {
-      "src": "/(.*)",
-      "dest": "/index.html"
-    }
-  ],
-  "headers": [
+      "src": "^/(.*\\.(png|jpg|jpeg|svg|webp|gif|ico|json|xml|txt|woff2?|ttf|eot|mp4|webm|css|js))$",
+      "dest": "/$1"
+    },
     {
-      "source": "/(.*)",
-      "headers": [
-        { "key": "Cache-Control", "value": "no-store, max-age=0" }
-      ]
+      "src": "/(.*)",
+      "dest": "/"
     }
   ]
 }
