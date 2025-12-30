@@ -10,6 +10,18 @@ import { CartProvider } from "./context/CartContext.jsx";
 import { FavoritesProvider } from "./context/FavoritesContext.jsx";
 import ScrollFixProvider from "./utils/ScrollFixProvider";
 
+// 🔥 Eski bozuk bundle cache’lerini otomatik temizle
+if ("caches" in window) {
+  caches.keys().then((names) => {
+    names.forEach((name) => caches.delete(name));
+  });
+}
+
+if ("serviceWorker" in navigator) {
+  navigator.serviceWorker.getRegistrations().then((regs) => {
+    regs.forEach((reg) => reg.unregister());
+  });
+}
 
 // 🚀 TEK ROOT
 ReactDOM.createRoot(document.getElementById("root")).render(
