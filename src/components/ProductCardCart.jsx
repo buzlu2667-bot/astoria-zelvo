@@ -26,16 +26,18 @@ export default function ProductCardCart({ item, inc, dec, remove }) {
       "
     >
       {/* 📌 GÖRSEL — ÜRÜN KARTIYLA AYNI */}
-      <div className="relative w-full h-[210px] rounded-lg overflow-hidden bg-gray-100">
-        
-      
-
-        {/* FOTO */}
-        <img
-          src={imageSrc}
-          className="w-full h-full object-cover"
-          draggable="false"
-        />
+   <div className="relative w-full aspect-[3/4] bg-gray-100 rounded-xl overflow-hidden">
+  <img
+    src={imageSrc}
+    alt=""
+    draggable="false"
+    className="
+      w-full h-full
+      object-contain   /* 🔥 kesme yok, zoom yok */
+      transition-transform duration-300
+      hover:scale-[1.02]
+    "
+  />
 
         {/* SİL BUTONU */}
         <button

@@ -217,7 +217,8 @@ useEffect(() => {
 >
 
       {/* FOTO */}
-    <div className="relative w-full h-[130px] sm:h-[210px] lg:h-[230px] rounded-lg overflow-hidden bg-white">
+   <div className="relative w-full aspect-[4/3] sm:aspect-[1/1] rounded-xl overflow-hidden bg-white">
+
 
         {/* 🔰 BADGE STACK (SOL ÜST) */}
   <div className="absolute top-2 left-2 z-10 flex flex-col gap-1">
@@ -353,49 +354,74 @@ useEffect(() => {
       </div>
 
       {/* BAŞLIK */}
-  <div className="mt-3 overflow-hidden h-[64px] sm:h-[44px]">
-  <p className="font-semibold text-gray-800 text-[14px] leading-[1.25] break-words">
-    {p.title}
-  </p>
+<div className="mt-2 space-y-[4px] pb-1">
+
+  <p className="
+  h-[38px]
+  text-gray-800 font-semibold text-[15px]
+  leading-tight
+  overflow-hidden
+  line-clamp-2
+">
+  {p.title}
+</p>
+
+
+<div className="
+  h-[16px]
+  flex items-center gap-1
+  text-[12px]
+  text-gray-600
+  leading-none
+  overflow-hidden
+  whitespace-nowrap
+">
+
+    {Number(p.rating_count) > 0 && (
+      <>
+        <span className="text-orange-500">
+          {"★".repeat(Math.round(p.rating_avg))}
+          {"☆".repeat(5 - Math.round(p.rating_avg))}
+        </span>
+        <span className="text-gray-400">
+          ({p.rating_count})
+        </span>
+      </>
+    )}
+  </div>
+
+  <div className="
+  h-[18px]
+  flex items-center gap-1
+  text-[11px]
+  leading-none
+  overflow-hidden
+  whitespace-nowrap
+  text-ellipsis
+">
+
+    {socialMessages[socialIndex]?.icon}
+    <span className={socialMessages[socialIndex]?.className}>
+      {socialMessages[socialIndex]?.text}
+    </span>
+  </div>
+
+<div className="
+  h-[16px]
+  flex items-center gap-1
+  text-[11px]
+  font-semibold text-emerald-600
+  leading-none
+  overflow-hidden
+  whitespace-nowrap
+">
+
+    <Truck className="w-3.5 h-3.5" />
+    <span>{getCargoInfo()}</span>
+  </div>
+
 </div>
 
-
-
- {/* ⭐ YILDIZ & YORUM SAYISI (SABİT YÜKSEKLİK) */}
-<div className="mt-1 min-h-[16px] flex items-center gap-1 text-[12px] text-gray-600">
-  {Number(p.rating_count) > 0 && (
-    <>
-      <span className="text-orange-500 leading-none">
-        {"★".repeat(Math.round(p.rating_avg))}
-        {"☆".repeat(5 - Math.round(p.rating_avg))}
-      </span>
-
-      <span className="text-gray-400">
-        ({p.rating_count})
-      </span>
-    </>
-  )}
-</div>
-
-{/* 📊 SOSYAL KANIT — TEK SATIR (SABİT BOY) */}
-<div className="mt-1 min-h-[18px] flex items-center gap-1 text-[11px] animate-social">
-  {socialMessages[socialIndex]?.icon}
-  <span className={socialMessages[socialIndex]?.className}>
-    {socialMessages[socialIndex]?.text}
-  </span>
-</div>
-
-{/* 🚚 Kargo */}
-<div
-  className={`
-    flex items-center gap-1
-    text-[11px] font-semibold text-emerald-600
-    ${p.stock > 0 ? "opacity-100" : "opacity-0"}
-  `}
->
-  <Truck className="w-3.5 h-3.5" />
-  <span>{getCargoInfo()}</span>
-</div>
 
 
 
@@ -493,7 +519,7 @@ useEffect(() => {
  
 
    {/* SEPET */}
-<div className="mt-4 min-h-[44px]">
+<div className="mt-3">
   {!hideCartButton && (
     <button
       onClick={async (e) => {

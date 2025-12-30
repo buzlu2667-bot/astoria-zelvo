@@ -441,8 +441,8 @@ useEffect(() => {
     key={item.id}
     className="
       shrink-0
-      w-[160px]        /* 📱 mobil = ince uzun */
-      sm:w-[220px]     /* 🖥️ desktop */
+      w-[240px]        /* 📱 mobil = ince uzun */
+      sm:w-[240px]     /* 🖥️ desktop */
     "
   >
     <ProductCardVertical

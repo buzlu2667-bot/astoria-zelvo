@@ -1204,7 +1204,7 @@ if (ratings && ratings.length > 0) {
 >
 
    {related.map((item) => (
-  <div key={item.id} className="flex-shrink-0 w-[160px] sm:w-[200px]">
+  <div key={item.id} className="flex-shrink-0  w-[240px]  sm:w-[240px]">
     <ProductCardVertical
       p={item}
       hideCartButton={true}   // 🔥 DETAYDAYIZ, SEPET BUTONU OLMASIN

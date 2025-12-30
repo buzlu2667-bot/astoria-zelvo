@@ -186,11 +186,14 @@ setMainCat(main);
 
       {/* ÜRÜNLER */}
       {products.length > 0 ? (
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-5">
-          {products.map((p) => (
-            <ProductCardVertical key={p.id} p={p} />
-          ))}
-        </div>
+       <div className="grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-4 gap-5">
+  {products.map((p) => (
+    <div key={p.id} className="col-span-full sm:col-span-1">
+      <ProductCardVertical p={p} />
+    </div>
+  ))}
+</div>
+
       ) : (
         <div className="text-center mt-16">
           <h2 className="text-2xl font-bold text-yellow-400">Yakında ...</h2>

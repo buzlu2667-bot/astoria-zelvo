@@ -982,7 +982,7 @@ bg-[radial-gradient(800px_circle_at_15%_0%,rgba(34,211,238,0.18),transparent_60%
 
         {/* SOL */}
         <div>
-          <span className="text-orange-400 font-bold">⚡ Haftanın Fırsatı</span>
+          <span className="text-orange-400 font-bold">⚡ Haftanın Fırsatları</span>
 
           <h2 className="text-3xl md:text-4xl font-extrabold mt-3 leading-tight">
             {deals[0].products.title}
@@ -1104,7 +1104,7 @@ bg-[radial-gradient(800px_circle_at_15%_0%,rgba(34,211,238,0.18),transparent_60%
   key={item.id}
   className="
     shrink-0
-    w-[160px]        /* 📱 mobil = ince uzun */
+        w-[260px]       /* 📱 mobil = ince uzun */
     sm:w-[240px]     /* 🖥️ pc */
   "
 >
@@ -1184,7 +1184,7 @@ bg-[radial-gradient(800px_circle_at_15%_0%,rgba(34,211,238,0.18),transparent_60%
   key={item.id}
   className="
     shrink-0
-    w-[160px]        /* 📱 mobil = ince uzun */
+     w-[260px]       /* 📱 mobil = ince uzun */
     sm:w-[240px]     /* 🖥️ pc = kategori kartı */
   "
 >
@@ -1261,7 +1261,7 @@ bg-[radial-gradient(800px_circle_at_15%_0%,rgba(34,211,238,0.18),transparent_60%
   key={item.id}
   className="
     shrink-0
-    w-[160px]        /* 📱 mobil = ince uzun */
+    w-[260px]       /* 📱 mobil = ince uzun */
     sm:w-[240px]     /* 🖥️ pc */
   "
 >
