@@ -23,6 +23,22 @@ if ("serviceWorker" in navigator) {
   });
 }
 
+// 🔄 Sekmeden dönünce 4 sn içinde sadece 1 kere reload (loop YOK)
+let lastReload = 0;
+
+const safeReload = () => {
+  const now = Date.now();
+  if (now - lastReload < 4000) return; // 4sn koruma
+  lastReload = now;
+  window.location.reload();
+};
+
+window.addEventListener("focus", safeReload);
+document.addEventListener("visibilitychange", () => {
+  if (!document.hidden) safeReload();
+});
+
+
 // 🚀 TEK ROOT
 ReactDOM.createRoot(document.getElementById("root")).render(
   <BrowserRouter>
