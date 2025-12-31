@@ -6,6 +6,38 @@ import googleLogo from "../assets/google.png";
 import { sendShopAlert } from "../utils/sendShopAlert";
 import { Gift, Sparkles, Star, Truck } from "lucide-react";
 
+const MailNotice = () => (
+  <div className="
+    mt-4 mb-4
+    flex items-start gap-3
+    rounded-xl
+    border border-yellow-200
+    bg-gradient-to-br from-yellow-50 to-orange-50
+    px-4 py-3
+    text-sm text-yellow-800
+    shadow-sm
+  ">
+    <div className="
+      min-w-[36px] h-9 rounded-full
+      bg-yellow-400 text-white
+      flex items-center justify-center
+      shadow
+    ">
+      <Sparkles size={18} />
+    </div>
+
+    <p className="leading-relaxed">
+      <b>E-posta ile kayıt olan kullanıcılar</b> için gönderilen doğrulama maili, 
+      <b>zaman zaman Spam / Gereksiz</b> klasörüne düşebilmektedir.  
+      <span className="block mt-1">
+        Google ile giriş yapan kullanıcıların hesapları otomatik olarak doğrulanır.
+      </span>
+    </p>
+  </div>
+);
+
+
+
 export default function RegisterPage() {
   function translateError(msg) {
     if (!msg) return "Bir hata oluştu.";
@@ -121,6 +153,8 @@ export default function RegisterPage() {
 
   {/* Icon özellikler */}
   <div className="relative z-10 mt-10 space-y-4 text-sm font-medium">
+  
+
    {/*
 <div className="flex items-center gap-3">
   <Gift size={22} className="text-yellow-200" />
@@ -159,6 +193,11 @@ export default function RegisterPage() {
           <h1 className="text-3xl font-bold text-center text-gray-800 mb-6">
             Kayıt Ol
           </h1>
+
+          <MailNotice />
+
+
+          
 
           {/* GOOGLE BUTTON (DÜZELTİLDİ) */}
           <button
