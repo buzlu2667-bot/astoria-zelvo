@@ -224,21 +224,24 @@ useEffect(() => {
   <div className="absolute top-2 left-2 z-10 flex flex-col gap-1">
   
 
-   {/* ⭐ SEÇİLİ ÜRÜN */}
+  {/* ⭐ SEÇİLİ ÜRÜN */}
 {p.is_selected && (
   <div className="
-    inline-flex items-center gap-1
-    px-2.5 py-1 rounded-full
-    text-[11px] font-bold
-    text-white
-    bg-gradient-to-r from-emerald-500 to-green-600
-    shadow-lg animate-pulse
-    border border-white/40 backdrop-blur
+    inline-flex items-center gap-1.5
+    px-3 py-1
+    rounded-full
+    text-[11px] font-semibold
+    text-gray-800
+    bg-white/80
+    backdrop-blur-md
+    border border-white/40
+    shadow-sm
   ">
-    <Truck className="w-3.5 h-3.5" />
+    <Truck className="w-3 h-3 opacity-70" />
     Ücretsiz Kargo
   </div>
 )}
+
 
    {/*
 {isDealExpired && (

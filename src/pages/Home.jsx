@@ -1097,7 +1097,10 @@ bg-[radial-gradient(800px_circle_at_15%_0%,rgba(34,211,238,0.18),transparent_60%
   "
 >
 
-           {c.items.map((item) => (
+           {[...c.items]
+  .sort((a, b) => (a.sort_order || 0) - (b.sort_order || 0))
+  .map((item) => (
+
 
             
   <div

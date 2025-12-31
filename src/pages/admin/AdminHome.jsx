@@ -170,7 +170,7 @@ async function toggleHaftaActive(id, active, productId) {
        .from("home_campaign_products")
 .select("*, products(*)")
 .eq("campaign_id", c.id)
-.order("id", { ascending: false });
+.order("sort_order", { ascending: true });
 
       map[c.id] = data || [];
     }
@@ -209,18 +209,30 @@ async function toggleHaftaActive(id, active, productId) {
   }
 
   // Kampanyaya ürün ekle
-  async function addProductToCampaign(campaignId, productId) {
-    if (!productId) return;
+async function addProductToCampaign(campaignId, productId) {
+  if (!productId) return;
 
-    await supabase.from("home_campaign_products").insert([
-      {
-        campaign_id: campaignId,
-        product_id: productId,
-      },
-    ]);
+  // En küçük sırayı bul (listenin en üstü)
+  const { data } = await supabase
+    .from("home_campaign_products")
+    .select("sort_order")
+    .eq("campaign_id", campaignId)
+    .order("sort_order", { ascending: true })
+    .limit(1);
 
-    loadCampaigns();
-  }
+  const nextOrder = (data?.[0]?.sort_order ?? 0) - 1;
+
+  await supabase.from("home_campaign_products").insert([
+    {
+      campaign_id: campaignId,
+      product_id: productId,
+      sort_order: nextOrder
+    }
+  ]);
+
+  loadCampaigns();
+}
+
 
   // Kampanyadan ürün sil
   async function deleteProductFromCampaign(id) {
