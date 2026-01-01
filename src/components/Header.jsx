@@ -11,7 +11,7 @@ import { Link, useLocation } from "react-router-dom";
 import { useSession } from "../context/SessionContext";
 import { useCart } from "../context/CartContext";
 import { useFavorites } from "../context/FavoritesContext";
-import { Heart, ShoppingCart, User2, LogOut, PackageSearch, Menu, ShieldCheck, X, MessageSquare } from "lucide-react";
+import { Heart, ShoppingCart, User2, LogOut, PackageSearch,  ShieldCheck, X, MessageSquare } from "lucide-react";
 import { Truck } from "lucide-react";
 import { v4 as uuidv4 } from "uuid";
 import ScrollingText from "../components/ScrollingText";
@@ -675,7 +675,10 @@ async function closeNotification() {
     onClick={() => setMenuOpen(true)}
     className="p-2 rounded-lg hover:bg-gray-100"
   >
-    <Menu className="w-6 h-6 text-gray-800" />
+ <div className="four-dot">
+  <span></span><span></span><span></span><span></span>
+</div>
+
   </button>
 
   {/* Logo */}
@@ -731,7 +734,10 @@ async function closeNotification() {
     "
     aria-label="Menü"
   >
-    <Menu className="w-6 h-6" />
+   <div className="four-dot">
+  <span></span><span></span><span></span><span></span>
+</div>
+
   </button>
 
   {/* Logo + Yazılar */}
@@ -1112,6 +1118,32 @@ className="relative rounded-xl p-1 sm:p-2 hover:bg-white/5 transition hidden lg:
       border-radius: 10px;
     }
   `}
+</style>
+
+
+<style>
+{`
+  .four-dot {
+    width: 22px;
+    height: 22px;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 4px;
+  }
+  .four-dot span {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: radial-gradient(circle, #4fffe2, #00ffd5 60%, #009e87);
+    box-shadow: 0 0 6px rgba(0,255,200,.8);
+  }
+
+  .four-dot span:nth-child(1){background:radial-gradient(circle,#ffd86b,#ffb700);}
+.four-dot span:nth-child(2){background:radial-gradient(circle,#e5e7eb,#9ca3af);}
+.four-dot span:nth-child(3){background:radial-gradient(circle,#4fffe2,#00ffd5);}
+.four-dot span:nth-child(4){background:radial-gradient(circle,#1f2933,#000);}
+
+`}
 </style>
 
 
