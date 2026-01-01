@@ -12,6 +12,9 @@ import { Hourglass } from "lucide-react";
 import { Clock, Flame } from "lucide-react";
 import { ShieldAlert } from "lucide-react";
 import { sendShopAlert } from "../utils/sendShopAlert";
+import Picker from "emoji-picker-react";
+import { Smile } from "lucide-react";
+
 
 function parseLocalDate(dateStr) {
   if (!dateStr) return null;
@@ -149,6 +152,7 @@ const [canRelatedRight, setCanRelatedRight] = useState(false);
   const [activeIndex, setActiveIndex] = useState(0);
 
   const [newReview, setNewReview] = useState({ name: "", text: "", rating: 5 });
+  const [showEmoji, setShowEmoji] = useState(false);
   const [mainImage, setMainImage] = useState("");
   const [zoomOpen, setZoomOpen] = useState(false);
   const [images, setImages] = useState([]);
@@ -1000,7 +1004,8 @@ if (raw) endAt = parseLocalDate(raw)?.getTime();
 
 
                     {/* Yorum Ekle */}
-                   <div className="bg-gray-100 border border-gray-300 p-4 rounded-lg mt-4">
+                 <div className="bg-gray-100 border border-gray-300 p-4 rounded-lg mt-4 overflow-visible">
+
   <h3 className="font-semibold mb-3 text-lg">Yorum Yap</h3>
 
   {/* PUAN SEÇİMİ */}
@@ -1019,13 +1024,57 @@ if (raw) endAt = parseLocalDate(raw)?.getTime();
   </div>
 
   {/* YORUM */}
+<div className="relative mb-3">
   <textarea
     rows="3"
     placeholder="Yorumunuz…"
     value={newReview.text}
     onChange={(e) => setNewReview({ ...newReview, text: e.target.value })}
-    className="w-full border border-gray-300 rounded-lg px-3 py-2 mb-3"
+    className="w-full border border-gray-300 rounded-lg px-3 py-2 pr-12"
   />
+
+  <button
+    type="button"
+    onClick={() => setShowEmoji(!showEmoji)}
+    className="absolute right-3 bottom-3 text-gray-400 hover:text-gray-700"
+  >
+    <Smile size={20} />
+  </button>
+
+  {showEmoji && (
+    <div className="
+      absolute
+      right-0
+      top-full
+      mt-2
+      z-[9999]
+      w-[320px]
+      max-h-[340px]
+      bg-white
+      border border-gray-300
+      rounded-xl
+      shadow-2xl
+      overflow-hidden
+    ">
+      <Picker
+        theme="light"
+        searchDisabled
+        previewConfig={{ showPreview: false }}
+       onEmojiClick={(e) => {
+  setNewReview((prev) => ({
+    ...prev,
+    text: prev.text + e.emoji,
+  }));
+  setShowEmoji(false); // 🔥 seçince otomatik kapansın
+}}
+
+      />
+    </div>
+  )}
+</div>
+
+
+
 
   <button
   onClick={async () => {
@@ -1098,6 +1147,7 @@ ${newReview.text}
   setReviews((prev) => [newItem, ...prev]);
 
   setNewReview({ name: "", text: "", rating: 5 });
+  setShowEmoji(false);
 
   window.dispatchEvent(
     new CustomEvent("toast", {
