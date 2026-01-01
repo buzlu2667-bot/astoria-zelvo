@@ -1,3 +1,4 @@
+
 import { useEffect, useState, useRef } from "react";
 import ReviewsSlider from "../components/ReviewsSlider";
 import { supabase } from "../lib/supabaseClient";
@@ -287,7 +288,10 @@ function SoldHighlightsSlider() {
 export default function Home() {
 
 
- 
+ const [canDealLeft, setCanDealLeft] = useState(false);
+const [canDealRight, setCanDealRight] = useState(false);
+const dealSwiperRef = useRef(null);
+
 
   // ⭐ Campaign akıllı ok state
 const [canCampaignLeft, setCanCampaignLeft] = useState(false);
@@ -972,60 +976,131 @@ bg-[radial-gradient(800px_circle_at_15%_0%,rgba(34,211,238,0.18),transparent_60%
 
       
 
-  {/* ⭐ HAFTANIN FIRSATLARI */}
+ {/* 🔥 MAXIMORA DEAL OF THE WEEK */}
 {deals.length > 0 && (
-  <section className="max-w-7xl mx-auto px-4 mt-16">
+<section className="max-w-7xl mx-auto px-4 mt-20">
 
-    <div className="relative rounded-3xl overflow-hidden bg-gradient-to-br from-[#0f172a] via-[#020617] to-black text-white">
+  <div className="relative rounded-[40px] overflow-hidden bg-black border border-white/10 shadow-[0_40px_120px_-40px_rgba(0,0,0,0.9)]">
 
-      <div className="grid md:grid-cols-2 gap-10 p-10 items-center">
+    {/* LUXURY GLOW */}
+    <div className="pointer-events-none absolute inset-0
+      bg-[radial-gradient(800px_circle_at_15%_0%,rgba(255,200,120,0.25),transparent_60%)]"/>
 
-        {/* SOL */}
-        <div>
-          <span className="text-orange-400 font-bold">⚡ Haftanın Fırsatları</span>
+    <div className="grid lg:grid-cols-2 gap-12 p-12 items-center">
 
-          <h2 className="text-3xl md:text-4xl font-extrabold mt-3 leading-tight">
-            {deals[0].products.title}
-          </h2>
+      {/* SOL */}
+      <div>
+        <span className="inline-flex items-center gap-2 text-[13px] font-bold tracking-widest text-amber-300">
+          <FlameKindling className="w-4 h-4" />
+          HAFTANIN FIRSATLARI 
+        </span>
 
-          <DealCountdown endAt={deals[0].end_at} />
+       {/* 💰 PRICE BLOCK */}
+<div className="mt-5 flex items-center gap-4">
 
-          <button
-            onClick={() => navigate(`/product/${deals[0].products.id}`)}
-            className="mt-6 px-6 py-3 rounded-xl bg-white text-black font-bold hover:scale-105 transition"
-          >
-            Ürünü İncele
-          </button>
-        </div>
+  {/* NEW PRICE */}
+  <span className="text-4xl font-extrabold text-amber-400">
+    {Number(deals[0].products.price).toLocaleString("tr-TR")} ₺
+  </span>
 
-        {/* SAĞ */}
+  {/* OLD PRICE */}
+  {deals[0].products.old_price && (
+    <span className="text-lg text-white/50 line-through">
+      {Number(deals[0].products.old_price).toLocaleString("tr-TR")} ₺
+    </span>
+  )}
+
+</div>
+
+
+        <DealCountdown endAt={deals[0].end_at} />
+
+        <button
+          onClick={() => navigate(`/product/${deals[0].products.id}`)}
+          className="mt-8 px-8 py-4 rounded-2xl bg-gradient-to-br from-amber-400 to-orange-500 text-black font-extrabold text-sm tracking-wide hover:scale-105 transition"
+        >
+          Ürünü İncele
+        </button>
+      </div>
+
+      {/* SAĞ */}
+      <div className="relative">
         <img
           src={deals[0].products.main_img}
-          className="w-full h-[380px] object-contain drop-shadow-2xl"
+          className="w-full h-[420px] object-contain drop-shadow-[0_30px_80px_rgba(255,200,120,0.45)]"
         />
-      </div>
 
-      {/* ALT SLIDER */}
-      <div className="px-6 pb-6">
-        <Swiper
-          spaceBetween={16}
-          slidesPerView={1.3}
-          breakpoints={{
-            640: { slidesPerView: 2.3 },
-            1024: { slidesPerView: 4 },
-          }}
-        >
-          {deals.slice(1).map((d) => (
-            <SwiperSlide key={d.id}>
-              <ProductCard product={d.products} />
-            </SwiperSlide>
-          ))}
-        </Swiper>
-      </div>
-
-    </div>
-  </section>
+        {/* floating label */}
+       {deals[0].discount_percent > 0 && (
+<div className="absolute top-6 right-6 px-4 py-2 rounded-xl bg-gradient-to-br from-amber-400 to-orange-500 text-black text-xs font-extrabold tracking-wide shadow-lg">
+  %{deals[0].discount_percent} İNDİRİM
+</div>
 )}
+
+      </div>
+    </div>
+
+    
+
+  {/* ALT SLIDER */}
+<div className="px-8 pb-8 relative">
+
+  {/* OKLAR */}
+ {canDealLeft && (
+<button
+  onClick={() => dealSwiperRef.current.slidePrev()}
+  className="hidden md:flex absolute -left-4 top-1/2 -translate-y-1/2 z-30
+    w-10 h-10 rounded-full bg-white border border-gray-300
+    items-center justify-center hover:bg-gray-100"
+>
+  <ChevronLeft className="w-5 h-5 text-gray-700" />
+</button>
+)}
+
+{canDealRight && (
+<button
+  onClick={() => dealSwiperRef.current.slideNext()}
+  className="hidden md:flex absolute -right-4 top-1/2 -translate-y-1/2 z-30
+    w-10 h-10 rounded-full bg-white border border-gray-300
+    items-center justify-center hover:bg-gray-100"
+>
+  <ChevronRight className="w-5 h-5 text-gray-700" />
+</button>
+)}
+
+
+  <Swiper
+  onSwiper={(swiper) => {
+    dealSwiperRef.current = swiper;
+    setCanDealLeft(!swiper.isBeginning);
+    setCanDealRight(!swiper.isEnd);
+  }}
+  onSlideChange={(swiper) => {
+    setCanDealLeft(!swiper.isBeginning);
+    setCanDealRight(!swiper.isEnd);
+  }}
+  spaceBetween={18}
+  slidesPerView={1.3}
+  breakpoints={{
+    640: { slidesPerView: 2.2 },
+    1024: { slidesPerView: 4 },
+  }}
+>
+
+    {deals.slice(1).map((d) => (
+      <SwiperSlide key={d.id}>
+        <ProductCard product={d.products} />
+      </SwiperSlide>
+    ))}
+  </Swiper>
+</div>
+
+  </div>
+
+  
+</section>
+)}
+
 
 
 

@@ -1,6 +1,16 @@
 import { useEffect, useState } from "react";
 import { supabase } from "../../lib/supabaseClient";
 
+function localToISO(localStr) {
+  const [date, time] = localStr.split("T");
+  return `${date}T${time}:00`;
+}
+
+function isoToLocal(iso) {
+  return iso ? iso.slice(0, 16) : "";
+}
+
+
 
 export default function AdminHome() {
   const [products, setProducts] = useState([]);
@@ -75,7 +85,8 @@ const [hfList, setHfList] = useState([]);
     discount_percent: Number(hfDiscount) || 0,
     note: hfNote || "",
     active: hfActive,
-    end_at: hfEndAt ? new Date(hfEndAt).toISOString() : null,
+   end_at: hfEndAt ? localToISO(hfEndAt) : null,
+
     updated_at: new Date(),
   };
 
@@ -99,7 +110,7 @@ await supabase
   .from("products")
   .update({
     deal_active: hfActive,
-    deal_end_at: hfEndAt ? new Date(hfEndAt).toISOString() : null,
+ deal_end_at: hfEndAt ? localToISO(hfEndAt) : null,
     deal_discount_percent: Number(hfDiscount) || 0,
   })
   .eq("id", hfProduct);
@@ -379,11 +390,8 @@ async function addProductToCampaign(campaignId, productId) {
     setHfDiscount(x.discount_percent);
     setHfNote(x.note || "");
     setHfActive(x.active);
-    setHfEndAt(
-      x.end_at
-        ? new Date(x.end_at).toISOString().slice(0, 16)
-        : ""
-    );
+   setHfEndAt(isoToLocal(x.end_at));
+
     window.scrollTo({ top: 0, behavior: "smooth" });
   }}
   className="text-xs px-2 py-1 rounded bg-blue-600"
