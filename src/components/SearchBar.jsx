@@ -8,9 +8,9 @@ export default function SearchBar({ small = false }) {
     "Çanta",
     "Cüzdan",
     "Kartlık",
-    "Havlu",
-    "Valiz"
-   
+    "Valiz",
+    "Mama",
+    "Termos"
   ];
 
 
