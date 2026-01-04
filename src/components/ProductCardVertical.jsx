@@ -222,7 +222,7 @@ useEffect(() => {
 
         {/* 🔰 BADGE STACK (SOL ÜST) */}
   <div className="absolute top-2 left-2 z-10 flex flex-col gap-1">
-  
+
 
   {/* ⭐ SEÇİLİ ÜRÜN */}
 {p.is_selected && (
@@ -291,6 +291,30 @@ useEffect(() => {
           onError={(e) => (e.currentTarget.src = "/products/default.png")}
           className="w-full h-full object-cover"
         />
+
+         {/* ⭐ EDITÖRÜN SEÇİMİ */}
+      {Number(p.rating_avg) >= 4.8 && Number(p.rating_count) >= 5 && (
+  <div className="
+    absolute bottom-2 left-2 z-20
+    px-3 py-[3px]
+    rounded-full
+    text-[10.5px] font-semibold
+    text-gray-900
+
+    bg-white/70
+    backdrop-blur-2xl
+    ring-1 ring-white/50
+    shadow-[0_3px_8px_rgba(0,0,0,0.14)]
+
+    flex items-center gap-1
+    tracking-wide
+  ">
+    ⭐ Editörün Seçimi
+  </div>
+)}
+
+
+
 
 
         {/* ❤️ FAVORİ (AYNI SENİN KART) */}

@@ -193,7 +193,12 @@ function checkRelatedScroll() {
 
       if (!alive) return;
 
-      setP(data);
+    setP({
+  ...data,
+  rating_avg: Number(data.rating_avg || 0),
+  rating_count: Number(data.rating_count || 0),
+});
+
 
       // ⭐ Haftanın fırsatı kontrolü (product bazlı)
 const { data: deal, error: dealErr } = await supabase
@@ -648,23 +653,68 @@ className="w-full h-[520px] object-cover rounded-xl bg-white transition-transfor
     </span>
   ))}
 </nav>
-            <div className="flex items-start justify-between">
-              <h1 className="text-2xl md:text-3xl font-bold">{p.title}</h1>
+          <div className="relative">
 
-              {/* FAVORİ BUTONU – Aynı kaldı */}
-              <button
-                onClick={handleFavClick}
-                className="p-3 rounded-full border border-gray-300 hover:bg-gray-100"
-              >
-                <Heart
-                  className={`w-7 h-7 ${
-                    isFav(p.id)
-                      ? "text-red-500 fill-red-500"
-                      : "text-gray-400"
-                  }`}
-                />
-              </button>
-            </div>
+  {/* BAŞLIK */}
+  <h1 className="text-2xl md:text-3xl font-bold pr-14">
+    {p.title}
+  </h1>
+
+  {/* FAVORİ BUTONU – SAĞ ÜSTTE KİLİTLİ */}
+  <button
+    onClick={handleFavClick}
+    className="
+      absolute
+      top-0
+      right-0
+      p-3
+      rounded-full
+      border
+      border-gray-300
+      bg-white
+      shadow
+      hover:bg-gray-100
+      z-20
+    "
+  >
+    <Heart
+      className={`w-7 h-7 ${
+        isFav(p.id)
+          ? "text-red-500 fill-red-500"
+          : "text-gray-400"
+      }`}
+    />
+  </button>
+
+  {/* ⭐ YILDIZ BAR — BAŞLIĞIN ALTINDA */}
+ {p.rating_count > 0 && (
+  <div className="group flex items-center gap-3 mt-2 select-none">
+
+    {/* YILDIZLAR */}
+    <div className="flex items-center gap-1 text-amber-500 text-sm
+                    transition-all duration-300
+                    group-hover:scale-[1.12]
+                    group-hover:drop-shadow-[0_0_6px_rgba(245,158,11,0.6)]">
+
+      {"★".repeat(Math.round(p.rating_avg))}
+      {"☆".repeat(5 - Math.round(p.rating_avg))}
+    </div>
+
+    {/* PUAN */}
+    <div className="text-sm font-semibold text-gray-900">
+      {p.rating_avg.toFixed(1)}
+    </div>
+
+    {/* YORUM SAYISI */}
+    <span className="text-xs text-gray-400 group-hover:text-gray-600">
+      {p.rating_count} yorum
+    </span>
+  </div>
+)}
+
+
+</div>
+
 
             <p className="text-gray-500 mt-1">{p.category}</p>
 
@@ -763,8 +813,8 @@ if (raw) endAt = parseLocalDate(raw)?.getTime();
 
                         {/* ✅ KAZANCIN (sadece indirim varsa) */}
             {savings > 0 && (
-             <div className="mt-2 inline-flex items-center gap-2 bg-green-50 border border-green-200 text-green-700 px-3 py-1 rounded-lg text-sm font-semibold">
-  Avantajın: {TRY(savings)}
+            <div className="inline-flex items-center gap-2 bg-emerald-50 text-emerald-700 px-3 py-1 rounded-full text-xs font-semibold">
+  Avantajın {TRY(savings)}
 </div>
 
             )}
