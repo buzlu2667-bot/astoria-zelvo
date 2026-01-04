@@ -8,6 +8,15 @@ import { Heart } from "lucide-react";
 import { Truck } from "lucide-react";
 import { useEffect, useState } from "react";
 
+function isProductNew(p, days = 14) {
+  if (!p.created_at) return false;
+  const created = new Date(p.created_at).getTime();
+  const now = Date.now();
+  const diffDays = (now - created) / (1000 * 60 * 60 * 24);
+  return diffDays <= days;
+}
+
+
 
 function smartTitle(title, max = 52) {
   if (!title) return "";
@@ -258,25 +267,20 @@ useEffect(() => {
 */}
 
 
-   {p.is_new && !isDealExpired && (
-  <div
-    className="
-      inline-flex w-fit
-      items-center
-      px-2 py-[1px]
-      rounded-full
-      border border-black/60
-      text-black
-      text-[9px]
-      font-semibold
-      tracking-wide
-      bg-white/80
-      backdrop-blur
-    "
-  >
+ {isProductNew(p, 14) && (
+  <div className="
+    inline-flex w-fit items-center
+    px-2 py-[1px]
+    rounded-full
+    border border-black/60
+    text-black text-[9px]
+    font-semibold tracking-wide
+    bg-white/80 backdrop-blur
+  ">
     YENİ
   </div>
 )}
+
 
 
   </div>

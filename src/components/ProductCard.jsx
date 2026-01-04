@@ -7,6 +7,16 @@ import { Ban } from "lucide-react";
 import { Truck } from "lucide-react";
 import { Heart } from "lucide-react";
 
+
+function isProductNew(product, days = 14) {
+  if (!product.created_at) return false;
+  const created = new Date(product.created_at).getTime();
+  const now = Date.now();
+  const diffDays = (now - created) / (1000 * 60 * 60 * 24);
+  return diffDays <= days;
+}
+
+
 function parseLocalDate(dateStr) {
   if (!dateStr) return null;
 
@@ -256,22 +266,20 @@ useEffect(() => {
 
 
         {/* Yeni Ürün Etiketi */}
-      {product.is_new && (
-  <div
-    className="
-      inline-flex w-fit
-      items-center
-      px-2 py-0.5
-      rounded-full
-      border border-black/70
-      text-black
-      text-[10px]
-      font-semibold
-      tracking-wide
-      bg-white/80
-      backdrop-blur
-    "
-  >
+    {isProductNew(product, 14) && (
+  <div className="
+    inline-flex w-fit
+    items-center
+    px-2 py-0.5
+    rounded-full
+    border border-black/70
+    text-black
+    text-[10px]
+    font-semibold
+    tracking-wide
+    bg-white/80
+    backdrop-blur
+  ">
     YENİ
   </div>
 )}
