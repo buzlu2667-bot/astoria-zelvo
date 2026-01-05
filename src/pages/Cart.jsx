@@ -434,7 +434,8 @@ useEffect(() => {
 
       <div
         ref={suggestedRef}
-        className="flex gap-4 pb-4 overflow-x-auto whitespace-nowrap scroll-smooth no-scrollbar"
+       className="flex gap-4 pb-4 overflow-x-auto scroll-smooth no-scrollbar"
+
       >
       {suggested.map((item) => (
   <div
