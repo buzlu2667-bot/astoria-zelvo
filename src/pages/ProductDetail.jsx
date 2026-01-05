@@ -371,32 +371,27 @@ setReviews(comments || []);
     setMainImage(imgs[0] || "");
   }, [p]);
 
-  // ⭐ SON İNCELENENLER — localStorage'a kaydet
+ // ⭐ SON İNCELENENLER — FULL ÜRÜN KAYDI
 useEffect(() => {
-  if (!p) return;
+  if (!p?.id) return;
 
-  let viewed = JSON.parse(localStorage.getItem("recent_views") || "[]");
+  (async () => {
+    const { data: full } = await supabase
+      .from("products")
+      .select("*")
+      .eq("id", p.id)
+      .single();
 
-  viewed = viewed.filter((x) => x.id !== p.id);
+    let viewed = JSON.parse(localStorage.getItem("recent_views") || "[]");
 
-viewed.unshift({
-  id: p.id,
-  title: p.title,
-  main_img: p.main_img,
-  price: Number(p.price) || 0,
-  old_price: Number(p.old_price) || 0,
+    const merged = [
+      full,
+      ...viewed.filter(x => x.id !== full.id)
+    ].slice(0, 10);
 
-  // ⏱️ SAYAÇ BİLGİLERİ (ŞART!)
-  deal_active: p.deal_active || false,
-  deal_end_at: p.deal_end_at || null,
-});
-
-
-  viewed = viewed.slice(0, 10);
-
-  localStorage.setItem("recent_views", JSON.stringify(viewed));
+    localStorage.setItem("recent_views", JSON.stringify(merged));
+  })();
 }, [p]);
-
 
 
   const stockBadge = useMemo(() => {

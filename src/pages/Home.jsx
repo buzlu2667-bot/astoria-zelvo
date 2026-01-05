@@ -1166,10 +1166,7 @@ bg-[radial-gradient(800px_circle_at_15%_0%,rgba(34,211,238,0.18),transparent_60%
          <div
   ref={campaignRef}
   onScroll={checkCampaignScroll}
-  className="
-    flex gap-4 overflow-x-auto whitespace-nowrap scroll-smooth no-scrollbar
-    pb-4
-  "
+ className="flex gap-4 pb-4 overflow-x-auto scroll-smooth no-scrollbar"
 >
 
            {[...c.items]
@@ -1254,7 +1251,7 @@ bg-[radial-gradient(800px_circle_at_15%_0%,rgba(34,211,238,0.18),transparent_60%
     <div
   ref={recentRef}
   onScroll={checkRecentScroll}
-  className="flex gap-4 pb-4 overflow-x-auto whitespace-nowrap scroll-smooth no-scrollbar"
+ className="flex gap-4 pb-4 overflow-x-auto scroll-smooth no-scrollbar"
 >
 
       {recent.map((item) => (
@@ -1331,7 +1328,7 @@ bg-[radial-gradient(800px_circle_at_15%_0%,rgba(34,211,238,0.18),transparent_60%
      <div
   ref={suggestedRef}
   onScroll={checkSuggestedScroll}
-  className="flex gap-4 pb-4 overflow-x-auto whitespace-nowrap scroll-smooth no-scrollbar"
+ className="flex gap-4 pb-4 overflow-x-auto scroll-smooth no-scrollbar"
 >
 
        {suggested.map((item) => (
@@ -1482,7 +1479,7 @@ useEffect(() => {
         <div
   ref={sliderRef}
   onScroll={checkScroll}
-  className="flex gap-4 pb-4 overflow-x-auto whitespace-nowrap scroll-smooth no-scrollbar"
+className="flex gap-4 pb-4 overflow-x-auto scroll-smooth no-scrollbar"
 >
 
             {products.map((p) => (
