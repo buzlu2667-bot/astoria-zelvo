@@ -7,7 +7,7 @@ import { Ban } from "lucide-react";
 import { Heart } from "lucide-react";
 import { Truck } from "lucide-react";
 import { useEffect, useState } from "react";
-import { TrendingUp, Flame } from "lucide-react";
+import { Rocket, Flame } from "lucide-react";
 
 
 function isProductNew(p, days = 14) {
@@ -248,7 +248,7 @@ useEffect(() => {
       backdrop-blur-md
       shadow-sm
     ">
-      <TrendingUp className="w-3 h-3" />
+      <Rocket className="w-3 h-3" />
       Trend
     </div>
   )}

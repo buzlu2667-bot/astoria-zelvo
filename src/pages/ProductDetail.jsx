@@ -14,7 +14,8 @@ import { ShieldAlert } from "lucide-react";
 import { sendShopAlert } from "../utils/sendShopAlert";
 import Picker from "emoji-picker-react";
 import { Smile } from "lucide-react";
-import { TrendingUp, } from "lucide-react";
+import { Rocket } from "lucide-react";
+
 
 
 function parseLocalDate(dateStr) {
@@ -200,14 +201,11 @@ function checkRelatedScroll() {
   rating_count: Number(data.rating_count || 0),
 });
 
- supabase
-  .from("products")
-  .update({
-    view_count: Number(data.view_count || 0) + 1,
-    last_viewed_at: new Date().toISOString()
-  })
-  .eq("id", data.id);
-
+await supabase.rpc("increment_product_view", {
+  pid: data.id,
+  vip: window.location.hostname,
+  vuid: session?.user?.id || null
+});
 
 
       // ⭐ Haftanın fırsatı kontrolü (product bazlı)
@@ -819,7 +817,7 @@ className="w-full h-[520px] object-cover rounded-xl bg-white transition-transfor
     backdrop-blur-md
     shadow-[0_2px_6px_rgba(56,189,248,0.25)]
   ">
-    <TrendingUp className="w-3.5 h-3.5" />
+    <Rocket className="w-3.5 h-3.5" />
     Trend Ürün
   </div>
 )}
