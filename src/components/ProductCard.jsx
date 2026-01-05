@@ -6,6 +6,7 @@ import DealCountdown from "./DealCountdown";
 import { Ban } from "lucide-react";
 import { Truck } from "lucide-react";
 import { Heart } from "lucide-react";
+import { TrendingUp, Flame } from "lucide-react";
 
 
 function isProductNew(product, days = 14) {
@@ -227,25 +228,73 @@ useEffect(() => {
   rounded-lg overflow-hidden bg-white
 ">
 
+  {/* 🔥 POPÜLER ROZETLER (SAĞ ÜST) */}
+<div className="absolute top-2 right-2 z-20 flex flex-col gap-1 items-end">
+
+  {/* MINI TREND */}
+  {Number(product.view_count) >= 40 &&
+    product.last_viewed_at &&
+    Date.now() - new Date(product.last_viewed_at).getTime() < 1000 * 60 * 60 * 48 && (
+    <div className="
+      inline-flex items-center gap-1
+      px-2 py-[2px]
+      rounded-full
+      text-[10px] font-bold
+      text-sky-700
+      bg-sky-50
+      border border-sky-300
+      backdrop-blur-md
+      shadow-sm
+    ">
+      <TrendingUp className="w-3 h-3" />
+      Trend
+    </div>
+  )}
+
+  {/* MINI ÇOK SATAN */}
+  {Number(product.view_count) >= 150 && (
+    <div className="
+      inline-flex items-center gap-1
+      px-2 py-[2px]
+      rounded-full
+      text-[10px] font-bold
+      text-rose-700
+      bg-rose-50
+      border border-rose-300
+      backdrop-blur-md
+      shadow-sm
+    ">
+      <Flame className="w-3 h-3" />
+      Çok Satan
+    </div>
+  )}
+
+</div>
+
+
 {/* 🔰 BADGE ALANI (SOL ÜST) */}
 <div className="absolute top-2 left-2 z-10 flex flex-col gap-1">
+
+
 {/* ⭐ SEÇİLİ ÜRÜN */}
 {product.is_selected && (
   <div className="
-    inline-flex items-center gap-1.5
-    px-3 py-1
+    inline-flex items-center gap-1
+    px-2 py-[2px]
     rounded-full
-    text-[11px] font-semibold
+    text-[10px] font-semibold
     text-gray-800
-    bg-white/80
-    backdrop-blur-md
+
+    bg-white/70
+    backdrop-blur-2xl
     border border-white/40
-    shadow-sm
+    shadow-[0_2px_6px_rgba(0,0,0,0.12)]
   ">
-    <Truck className="w-3 h-3 opacity-70" />
+    <Truck className="w-2.5 h-2.5 opacity-70" />
     Ücretsiz Kargo
   </div>
 )}
+
 
 
 {/*

@@ -14,6 +14,7 @@ import { ShieldAlert } from "lucide-react";
 import { sendShopAlert } from "../utils/sendShopAlert";
 import Picker from "emoji-picker-react";
 import { Smile } from "lucide-react";
+import { TrendingUp, } from "lucide-react";
 
 
 function parseLocalDate(dateStr) {
@@ -198,6 +199,15 @@ function checkRelatedScroll() {
   rating_avg: Number(data.rating_avg || 0),
   rating_count: Number(data.rating_count || 0),
 });
+
+ supabase
+  .from("products")
+  .update({
+    view_count: Number(data.view_count || 0) + 1,
+    last_viewed_at: new Date().toISOString()
+  })
+  .eq("id", data.id);
+
 
 
       // ⭐ Haftanın fırsatı kontrolü (product bazlı)
@@ -754,6 +764,68 @@ className="w-full h-[520px] object-cover rounded-xl bg-white transition-transfor
     </span>
   )}
 </div>
+
+   {/* ⭐ EDITÖRÜN SEÇİMİ (DETAY) */}
+{Number(p.rating_avg) >= 4.8 && Number(p.rating_count) >= 5 && (
+  <div className="
+    inline-flex items-center gap-1
+    mt-2
+    px-3 py-[4px]
+    rounded-full
+    text-[11px] font-semibold
+    text-amber-800
+
+    bg-amber-50
+    border border-amber-300
+    shadow-sm
+  ">
+    ⭐ Editörün Seçimi
+  </div>
+)}
+  
+  {/* 🔥 ÇOK SATAN */}
+{Number(p.view_count) >= 150 && (
+  <div className="
+    inline-flex items-center gap-1.5
+    mt-1
+    px-3 py-[5px]
+    rounded-full
+    text-[11px] font-semibold
+    text-rose-700
+    bg-rose-50
+    border border-rose-300
+    backdrop-blur-md
+    shadow-[0_2px_6px_rgba(251,113,133,0.25)]
+  ">
+    <Flame className="w-3.5 h-3.5" />
+    Çok Satan
+  </div>
+)}
+
+ 
+{/* 🚀 TREND ÜRÜN */}
+{Number(p.view_count) >= 40 &&
+  p.last_viewed_at &&
+  Date.now() - new Date(p.last_viewed_at).getTime() < 1000 * 60 * 60 * 48 && (
+  <div className="
+    inline-flex items-center gap-1.5
+    mt-1
+    px-3 py-[5px]
+    rounded-full
+    text-[11px] font-semibold
+    text-sky-700
+    bg-sky-50
+    border border-sky-300
+    backdrop-blur-md
+    shadow-[0_2px_6px_rgba(56,189,248,0.25)]
+  ">
+    <TrendingUp className="w-3.5 h-3.5" />
+    Trend Ürün
+  </div>
+)}
+
+
+
 
 
             {/* FİYAT */}
