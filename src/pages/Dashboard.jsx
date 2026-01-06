@@ -1,183 +1,195 @@
-import { useEffect, useState, useMemo } from "react";
+import { useEffect, useState } from "react";
 import { supabase } from "../lib/supabaseClient";
 import { useNavigate } from "react-router-dom";
 import { useFavorites } from "../context/FavoritesContext";
+import { ShoppingBag, Heart, ShoppingCart, MessageCircle, Truck } from "lucide-react";
+import { useCart } from "../context/CartContext";
+import { ShieldCheck, Lock } from "lucide-react";
 
-// ₺ Format
-const TRY = new Intl.NumberFormat("tr-TR", {
-  style: "currency",
-  currency: "TRY",
-  maximumFractionDigits: 2,
-});
-
-// Sadakat Bar
-function LoyaltyBar({ points }) {
-  const STEP = 20000;
-  const tier = Math.floor(points / STEP);
-  const currentBase = tier * STEP;
-  const nextBase = (tier + 1) * STEP;
-  const inTier = points - currentBase;
-  const remaining = Math.max(0, nextBase - points);
-  const pct = Math.min(100, Math.max(0, (inTier / STEP) * 100));
-
-  return (
-    <>
-      <div className="flex justify-between text-sm mb-1 text-gray-600">
-        <span>🎁 Hediye Seviyesi</span>
-        <span>{inTier.toLocaleString("tr-TR")} / 20.000</span>
-      </div>
-
-      <div className="w-full h-3 bg-gray-200 rounded-full overflow-hidden">
-        <div
-          className="h-full bg-gradient-to-r from-[#f27a1a] to-yellow-400 transition-all"
-          style={{ width: `${pct}%` }}
-        />
-      </div>
-
-      <p className="mt-2 text-xs text-gray-500">
-        {remaining === 0 ? (
-          <span className="text-green-600 font-semibold">
-            🎉 Yeni ödül kazandın!
-          </span>
-        ) : (
-          <>Sonraki ödül için{" "}
-            <span className="text-[#f27a1a] font-semibold">
-              {remaining.toLocaleString("tr-TR")} puan
-            </span>{" "}
-            kaldı.</>
-        )}
-      </p>
-    </>
-  );
-}
-
-// MAIN COMPONENT
 export default function Dashboard() {
-  const [user, setUser] = useState(null);
+  const nav = useNavigate();
+  const { favorites } = useFavorites();
   const [orders, setOrders] = useState([]);
-  const navigate = useNavigate();
-  const { favorites } = useFavorites?.() || { favorites: [] };
+  const [user, setUser] = useState(null);
+ const { cart } = useCart();
+ 
 
-  // USER + PROFILE LOAD
   useEffect(() => {
-    async function run() {
+    (async () => {
       const { data } = await supabase.auth.getUser();
-      if (!data?.user) return navigate("/", { replace: true });
+      if (!data?.user) return nav("/");
 
       setUser(data.user);
 
-      const { data: profile } = await supabase
-        .from("profiles")
-        .select("username")
-        .eq("id", data.user.id)
-        .single();
+      const { data: ord } = await supabase.from("orders").select("id").eq("user_id", data.user.id);
+      setOrders(ord || []);
 
-      if (profile?.username) {
-        setUser((prev) => ({
-          ...prev,
-          profile_username: profile.username,
-        }));
-      }
-
-      const { data: ordersData } = await supabase
-        .from("orders")
-        .select("*")
-        .eq("user_id", data.user.id);
-
-      setOrders(ordersData || []);
-    }
-    run();
-  }, [navigate]);
-
-  // Toplam harcama
-  const totalSpent = useMemo(() => {
-    return orders.reduce(
-      (sum, o) => sum + (Number(o.final_amount ?? o.total_amount ?? 0) || 0),
-      0
-    );
-  }, [orders]);
-
-  const points = Math.max(0, Math.floor(totalSpent));
-  const favCount = Array.isArray(favorites) ? favorites.length : 0;
-  const STEP = 20000;
-  const tier = Math.floor(points / STEP);
-  const remaining = Math.max(0, (tier + 1) * STEP - points);
+     
+    })();
+  }, []);
 
   return (
- <div className="min-h-screen bg-white px-4 md:px-8 pb-8">
-      {/* HEADER */}
-      <div className="max-w-4xl mx-auto bg-white rounded-2xl p-6 shadow-sm border border-gray-200 flex justify-between items-center">
-        <div>
-          <h1 className="text-2xl font-bold text-gray-800">Müşteri Paneli</h1>
-          <p className="text-gray-500 text-sm mt-1">{user?.email}</p>
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-white py-16 px-6">
+      <div className="max-w-6xl mx-auto">
 
-          {user?.profile_username && (
-            <p className="text-sm mt-1 text-[#f27a1a] font-semibold">
-              @{user.profile_username}
-            </p>
-          )}
+        <div className="mb-16 flex flex-col sm:flex-row items-center justify-between gap-6">
+
+  <div className="flex items-center gap-5">
+    <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-indigo-500 to-purple-600 text-white flex items-center justify-center shadow-xl">
+      <span className="text-2xl font-black">
+        {user?.email?.charAt(0)?.toUpperCase() || "U"}
+      </span>
+    </div>
+
+    <div>
+     <h1 className="
+  text-3xl sm:text-4xl font-black flex items-center gap-3
+  bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500
+  bg-clip-text text-transparent
+">
+  Hesabım
+
+  <span className="
+    text-[11px] px-3 py-1 rounded-full
+    bg-gradient-to-r from-emerald-400 to-teal-400
+    text-white font-bold shadow-md
+  ">
+    AKTİF
+  </span>
+</h1>
+
+      <p className="text-sm text-gray-500">{user?.email}</p>
+
+     <div className="flex flex-wrap gap-3 mt-4">
+
+  <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-white/70 backdrop-blur-md shadow-md border border-gray-200">
+    <ShieldCheck className="w-4 h-4 text-emerald-500" />
+    <span className="text-xs font-semibold text-gray-700">Doğrulanmış Hesap</span>
+  </div>
+
+  <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-white/70 backdrop-blur-md shadow-md border border-gray-200">
+    <Truck className="w-4 h-4 text-blue-500" />
+    <span className="text-xs font-semibold text-gray-700">Hızlı Kargo</span>
+  </div>
+
+  <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-white/70 backdrop-blur-md shadow-md border border-gray-200">
+    <Lock className="w-4 h-4 text-purple-500" />
+    <span className="text-xs font-semibold text-gray-700">Güvenli Ödeme</span>
+  </div>
+
+</div>
+
+
+    </div>
+  </div>
+
+  <button
+  onClick={() => nav("/orders")}
+  className="
+    px-8 py-3 rounded-full text-sm font-bold
+    text-white
+    bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500
+    shadow-xl
+    hover:scale-105 hover:shadow-2xl
+    transition
+    backdrop-blur-md
+  "
+>
+  Siparişlerime Git →
+</button>
+
+
+</div>
+
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+
+          {cart.length > 0 && (
+  <div className="mt-14 bg-gradient-to-r from-yellow-400 to-orange-500 rounded-3xl p-6 flex items-center justify-between shadow-2xl animate-[softPulse_2.5s_infinite]">
+
+    <div>
+      <p className="text-white text-sm opacity-90">Sepetinde ürün var 👀</p>
+      <h3 className="text-2xl font-black text-white">
+        Kaldığın Yerden Devam Et
+      </h3>
+    </div>
+
+    <button
+      onClick={() => nav("/cart")}
+     className="bg-white text-orange-600 font-black px-6 py-3 rounded-full shadow-xl hover:scale-105 transition animate-pulse"
+
+    >
+      Sepete Git →
+    </button>
+  </div>
+)}
+
+
+          <DashCard icon={ShoppingBag} label="Siparişlerim" value={orders.length} to="/orders" color="from-orange-500 to-orange-600" />
+          <DashCard icon={Heart} label="Favorilerim" value={favorites?.length || 0} to="/favorites" color="from-pink-500 to-rose-500" />
+          <DashCard
+  icon={ShoppingCart}
+  label="Sepetim"
+  value={cart.reduce((a, b) => a + (b.quantity || 1), 0)}
+  to="/cart"
+  color="from-blue-500 to-indigo-500"
+/>
+
+       <DashCard
+  icon={Truck}
+  label="Kargo Takip"
+  value={orders.length > 0 ? "Siparişlerini Gör" : "Henüz Yok"}
+  to="/orders"
+  color="from-emerald-500 to-green-600"
+/>
+
+
         </div>
 
-        <div className="text-right">
-          <p className="text-gray-500 text-sm">Harcama</p>
-          <p className="text-xl font-bold text-gray-800">
-            {TRY.format(totalSpent)}
-          </p>
+        <div className="mt-12 flex justify-center">
+         <button
+  onClick={() => window.open("https://wa.me/905384657526", "_blank")}
+  className="
+    flex items-center gap-3
+    px-12 py-4 rounded-full text-lg font-black
+    text-white
+    bg-gradient-to-r from-emerald-400 via-teal-400 to-cyan-400
+    shadow-2xl
+    hover:scale-110 hover:shadow-emerald-300/50
+    transition
+    backdrop-blur-md
+  "
+>
+  <MessageCircle size={22} className="drop-shadow" />
+  Canlı Destek
+</button>
+
+
         </div>
-      </div>
+<p className="mt-3 text-xs text-gray-400 text-center">
+  Ortalama yanıt süresi: <b>2 dakika</b> • Gerçek müşteri temsilcisi
+</p>
 
-      {/* PANEL */}
-      <div className="max-w-4xl mx-auto mt-8 bg-white rounded-2xl border border-gray-200 p-6 shadow-sm">
-        {/* Stats Row */}
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 text-center mb-6">
-          <StatCard label="Sipariş" value={orders.length} />
-          <StatCard label="Favori" value={favCount} />
-          <StatCard label="Puan" value={points.toLocaleString("tr-TR")} />
-          <StatCard label="Hediye" value={tier} />
-        </div>
-
-        {/* Loyalty */}
-        <LoyaltyBar points={points} />
-
-        {/* Ödül Kartı */}
-        <div className="mt-6 bg-gray-50 border border-gray-300 rounded-xl p-4 flex justify-between items-center">
-          <div>
-            <p className="text-sm text-gray-600">Kazanılan Hediye</p>
-            <p className="text-xl font-bold text-gray-800">{tier} adet</p>
-          </div>
-
-          <div className="text-right">
-            {remaining === 0 ? (
-              <p className="text-green-600 font-semibold">
-                🎉 Yeni ödül kazandın!
-              </p>
-            ) : (
-              <>
-                <p className="text-xs text-gray-500">Sonraki ödül:</p>
-                <p className="text-lg font-bold text-[#f27a1a]">
-                  {remaining.toLocaleString("tr-TR")} puan
-                </p>
-              </>
-            )}
-          </div>
-        </div>
       </div>
     </div>
   );
 }
 
-// Stat Box
-function StatCard({ label, value }) {
+function DashCard({ icon: Icon, label, value, to, color }) {
+  const nav = useNavigate();
   return (
-    <div className="bg-white border border-gray-300 rounded-xl py-4 shadow-sm flex flex-col items-center">
-      <span className="text-xs text-gray-500">{label}</span>
+    <button
+      onClick={() => nav(to)}
+      className={`relative p-6 rounded-3xl text-white shadow-xl hover:scale-105 transition bg-gradient-to-br ${color}`}
+    >
+      <div className="absolute right-5 top-5 opacity-20">
+        <Icon size={64} />
+      </div>
 
-      <span
-        className="mt-2 px-3 py-1 bg-gray-100 border border-gray-300 rounded-lg font-bold text-gray-800 text-base"
-        title={String(value)}
-      >
-        {value}
-      </span>
-    </div>
+      <div className="text-left">
+        <p className="text-sm opacity-90">{label}</p>
+        <p className="text-3xl font-black mt-2">{value}</p>
+      </div>
+    </button>
   );
 }

@@ -848,6 +848,11 @@ html {
     max-width: 100% !important;
   }
 }
+@keyframes softPulse {
+  0%   { box-shadow: 0 0 0 0 rgba(255,160,0,0.6); }
+  70%  { box-shadow: 0 0 0 20px rgba(255,160,0,0); }
+  100% { box-shadow: 0 0 0 0 rgba(255,160,0,0); }
+}
 
 
 

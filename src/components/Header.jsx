@@ -123,6 +123,13 @@ const [categories, setCategories] = useState([]);
 
 const [accountModal, setAccountModal] = useState(false);
 
+useEffect(() => {
+  if (!accountModal) {
+    setMenuOpen(false);
+  }
+}, [accountModal]);
+
+
 
 
 
@@ -967,8 +974,10 @@ className="relative rounded-xl p-1 sm:p-2 hover:bg-white/5 transition hidden lg:
       window.location.href = "/login";
       return;
     }
+    setMenuOpen(false);        // ⭐ EKLENDİ
     setAccountModal(true);
   }}
+
   className="
     hidden 2xl:flex items-center gap-2
     px-3 py-2
@@ -1052,10 +1061,13 @@ className="relative rounded-xl p-1 sm:p-2 hover:bg-white/5 transition hidden lg:
           {session ? (profile?.full_name || session.user.email) : "Misafir"}
         </p>
 
-        <button
-          onClick={() =>
-            session ? setAccountModal(true) : (window.location.href = "/login")
-          }
+       <button
+  onClick={() =>
+    session
+      ? (setMenuOpen(false), setTimeout(() => setAccountModal(true), 180))
+      : (window.location.href = "/login")
+  }
+
           className="text-emerald-300 text-xs mt-1"
         >
           {session ? "Hesabım" : "Giriş Yap"}
@@ -1283,8 +1295,12 @@ className="relative rounded-xl p-1 sm:p-2 hover:bg-white/5 transition hidden lg:
 
   {/* 🔥 HESABIM (SADECE login varsa) */}
   {session && (
-    <button
-      onClick={() => setAccountModal(true)}
+   <button
+  onClick={() => {
+    setMenuOpen(false);                 // ⭐
+    setTimeout(() => setAccountModal(true), 150);
+  }}
+
       className="flex flex-col items-center text-white"
     >
     <User2 className="w-6 h-6 text-violet-400 drop-shadow-[0_0_10px_rgba(180,90,255,0.8)]" />
