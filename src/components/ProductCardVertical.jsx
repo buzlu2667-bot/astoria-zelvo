@@ -52,73 +52,7 @@ function pickImage(p) {
   );
 }
 
-// 🟢 Soft fake purchase text (ürüne göre stabil ama canlı hissi verir)
-function getRecentPurchaseText(p) {
-  const str = String(p.id || p.title || "");
-  let hash = 0;
 
-  for (let i = 0; i < str.length; i++) {
-    hash = str.charCodeAt(i) + ((hash << 5) - hash);
-  }
-
-  // %35 ihtimalle hiç gösterme
-  if (hash % 10 < 4) return null;
-
-  const minutes = (Math.abs(hash) % 7) + 1; // 1–7 dk
-
-  // %70 → 1 kişi, %30 → 2–3 kişi
-  const buyers =
-    hash % 10 < 7
-      ? 1
-      : (Math.abs(hash) % 2) + 2;
-
-  return `${minutes} dk önce ${buyers} kişi aldı`;
-}
-
-
-// 👀 Son 24 saat – ürüne göre sabit ama farklı sayı
-function getViewCount(p) {
-  const str = String(p.id || p.title || "");
-  let hash = 0;
-
-  for (let i = 0; i < str.length; i++) {
-    hash = str.charCodeAt(i) + ((hash << 5) - hash);
-  }
-
-  const min = 2;
-  const max = 45;
-
-  return min + (Math.abs(hash) % (max - min + 1));
-}
-
-// 📱 Mobil / Desktop'a göre görüntüleme metni
-function getViewText(p) {
-  const count = getViewCount(p);
-
-  // mobil (Tailwind sm < 640px)
-  if (window.innerWidth < 640) {
-    return `${count} kişi baktı`;
-  }
-
-  // desktop
-  return `Son 24 saatte ${count} kişi inceledi`;
-}
-
- 
-// ❤️ Favori sayısı – ürüne göre sabit ama farklı
-function getFavCount(p) {
-  const str = String(p.id || p.title || "");
-  let hash = 0;
-
-  for (let i = 0; i < str.length; i++) {
-    hash = str.charCodeAt(i) + ((hash << 5) - hash);
-  }
-
-  const min = 3;
-  const max = 45;
-
-  return min + (Math.abs(hash) % (max - min + 1));
-}
 
 // 🚚 Kargo metni (saat bazlı)
 function getCargoInfo() {
@@ -178,42 +112,6 @@ export default function ProductCardVertical({ p, hideCartButton = false }) {
 
   const finalPrice = isDealActive ? price : old || price;
   const showDiscount = isDealActive && hasDiscount;
-const socialMessages = [
-  /*
-  // 🟢 SATIN ALMA (ŞİMDİLİK KAPALI)
-  p.stock > 0 && getRecentPurchaseText(p)
-    ? {
-        icon: <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />,
-        text: getRecentPurchaseText(p),
-        className: "text-emerald-600 font-semibold",
-      }
-    : null,
-  */
-
-  // ❤️ FAVORİ
-  {
-    icon: <Heart className="w-3.5 h-3.5 text-pink-500" />,
-    text: `${getFavCount(p)} kişi favoriledi`,
-    className: "text-gray-500",
-  },
-
-  // 👀 GÖRÜNTÜLEME
-  {
-    icon: null,
-    text: getViewText(p),
-    className: "text-gray-400",
-  },
-].filter(Boolean);
-
-useEffect(() => {
-  if (socialMessages.length <= 1) return;
-
-  const interval = setInterval(() => {
-    setSocialIndex(i => (i + 1) % socialMessages.length);
-  }, 2500);
-
-  return () => clearInterval(interval);
-}, [socialMessages.length]);
 
 
   return (
@@ -228,7 +126,8 @@ useEffect(() => {
 >
 
       {/* FOTO */}
-   <div className="relative w-full aspect-[4/3] sm:aspect-[1/1] rounded-xl overflow-hidden bg-white">
+  <div className="pcv-img relative w-full h-[230px] sm:h-[215px] rounded-xl overflow-hidden bg-white">
+
 
   {/* 🔥 POPÜLER ROZETLER (SAĞ ÜST) */}
 <div className="absolute top-2 right-2 z-20 flex flex-col gap-1 items-end">
@@ -470,21 +369,8 @@ useEffect(() => {
     )}
   </div>
 
-  <div className="
-  h-[18px]
-  flex items-center gap-1
-  text-[11px]
-  leading-none
-  overflow-hidden
-  whitespace-nowrap
-  text-ellipsis
-">
+ 
 
-    {socialMessages[socialIndex]?.icon}
-    <span className={socialMessages[socialIndex]?.className}>
-      {socialMessages[socialIndex]?.text}
-    </span>
-  </div>
 
 <div className="
   h-[16px]

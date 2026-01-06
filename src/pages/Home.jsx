@@ -1179,11 +1179,14 @@ bg-[radial-gradient(800px_circle_at_15%_0%,rgba(34,211,238,0.18),transparent_60%
   key={item.id}
   className="
     shrink-0
-        w-[260px]       /* 📱 mobil = ince uzun */
-    sm:w-[240px]     /* 🖥️ pc */
+    w-[260px]
+    sm:w-[240px]
+    [&_.pcv-img]:h-[230px]
+    sm:[&_.pcv-img]:h-[215px]
   "
 >
-  <ProductCardVertical p={item.products} />
+
+ <ProductCardVertical p={item.products} />
 </div>
 
   ))}
@@ -1259,8 +1262,10 @@ bg-[radial-gradient(800px_circle_at_15%_0%,rgba(34,211,238,0.18),transparent_60%
   key={item.id}
   className="
     shrink-0
-     w-[260px]       /* 📱 mobil = ince uzun */
-    sm:w-[240px]     /* 🖥️ pc = kategori kartı */
+    w-[260px]
+    sm:w-[240px]
+    [&>div>div:first-child]:h-[230px]
+    sm:[&>div>div:first-child]:h-[215px]
   "
 >
   <ProductCardVertical p={item} />
@@ -1332,16 +1337,19 @@ bg-[radial-gradient(800px_circle_at_15%_0%,rgba(34,211,238,0.18),transparent_60%
 >
 
        {suggested.map((item) => (
-  <div
+ <div
   key={item.id}
   className="
     shrink-0
-    w-[260px]       /* 📱 mobil = ince uzun */
-    sm:w-[240px]     /* 🖥️ pc */
+    w-[260px]
+    sm:w-[240px]
+    [&>div>div:first-child]:h-[230px]
+    sm:[&>div>div:first-child]:h-[215px]
   "
 >
   <ProductCardVertical p={item} />
 </div>
+
 
 ))}
 

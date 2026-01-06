@@ -188,7 +188,16 @@ setMainCat(main);
       {products.length > 0 ? (
        <div className="grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-4 gap-5">
   {products.map((p) => (
-    <div key={p.id} className="col-span-full sm:col-span-1">
+   <div
+  key={p.id}
+  className="
+    col-span-full sm:col-span-1
+    [&_.pcv-img]:h-[300px]
+    sm:[&_.pcv-img]:h-[230px]
+    lg:[&_.pcv-img]:h-[230px]
+  "
+>
+
       <ProductCardVertical p={p} />
     </div>
   ))}

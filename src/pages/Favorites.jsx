@@ -154,7 +154,8 @@ export default function Favorites() {
               "
             >
               {/* FOTO */}
-              <div className="w-full h-[180px] rounded-lg overflow-hidden bg-gray-100">
+           <div className="w-full h-[180px] sm:h-[220px] lg:h-[260px] rounded-lg overflow-hidden bg-gray-100">
+
                 <img
                   src={img}
                   className="w-full h-full object-cover"
@@ -162,9 +163,17 @@ export default function Favorites() {
               </div>
 
               {/* BAŞLIK */}
-              <p className="mt-2 font-semibold text-gray-800 text-sm line-clamp-2">
-                {p.title || p.name}
-              </p>
+             <p className="
+  mt-2
+  h-[38px]
+  font-semibold text-gray-800 text-sm
+  leading-tight
+  overflow-hidden
+  line-clamp-2
+">
+  {p.title || p.name}
+</p>
+
 
             {/* STOK */}
 <div className="mt-1">
@@ -208,24 +217,32 @@ export default function Favorites() {
   )}
 </div>
 
-              {/* FİYAT */}
-              <div className="mt-3">
-                {p.old_price > p.price && (
-                  <div className="flex items-center gap-2">
-                    <span className="text-xs bg-red-100 text-red-600 px-2 py-[2px] rounded-lg font-bold">
-                      %{Math.round(((p.old_price - p.price) / p.old_price) * 100)}
-                    </span>
+            {/* FİYAT (VERTICAL STYLE) */}
+<div className="mt-3 flex flex-col gap-1">
 
-                    <span className="text-gray-400 line-through text-sm">
-                      ₺{Number(p.old_price).toLocaleString("tr-TR")}
-                    </span>
-                  </div>
-                )}
+  <div className="flex items-center gap-2 min-h-[24px]">
+    {p.old_price > p.price ? (
+      <>
+        <span className="text-xs bg-red-100 text-red-600 px-2 py-[2px] rounded-lg font-bold">
+          %{Math.round(((p.old_price - p.price) / p.old_price) * 100)}
+        </span>
 
-                <p className="text-lg font-bold text-gray-900">
-                  ₺{Number(p.price).toLocaleString("tr-TR")}
-                </p>
-              </div>
+        <span className="text-gray-500 line-through text-[15px] font-semibold">
+          ₺{Number(p.old_price).toLocaleString("tr-TR")}
+        </span>
+      </>
+    ) : (
+      <span className="opacity-0">placeholder</span>
+    )}
+  </div>
+
+  <span className={`font-extrabold text-xl leading-tight ${
+    p.old_price > p.price ? "text-red-600 drop-shadow-[0_1px_0_rgba(239,68,68,0.25)]" : "text-gray-900"
+  }`}>
+    ₺{Number(p.price).toLocaleString("tr-TR")}
+  </span>
+</div>
+
 
               {/* BUTONLAR */}
               <div className="flex gap-2 mt-4">

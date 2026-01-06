@@ -118,7 +118,8 @@ export default function ProductCardCart({ item, inc, dec, remove }) {
           %{discount}
         </span>
 
-        <span className="text-gray-400 line-through text-sm">
+        {/* FAVORİLERLE BİREBİR FONT */}
+        <span className="text-gray-500 line-through text-[15px] font-semibold">
           ₺{old.toLocaleString("tr-TR")}
         </span>
       </>
@@ -127,12 +128,19 @@ export default function ProductCardCart({ item, inc, dec, remove }) {
     )}
   </div>
 
-  {/* ALT SATIR: YENİ FİYAT */}
-  <span className="text-gray-900 font-extrabold text-xl leading-tight">
+  {/* ALT SATIR: YENİ FİYAT — FAVORİLERLE BİREBİR */}
+  <span
+    className={`font-extrabold text-xl leading-tight ${
+      hasDiscount
+        ? "text-red-600 drop-shadow-[0_1px_0_rgba(239,68,68,0.25)]"
+        : "text-gray-900"
+    }`}
+  >
     ₺{price.toLocaleString("tr-TR")}
   </span>
 
 </div>
+
 
       {/* 📌 ADET ALANI — ALTTA MODERN */}
       <div className="flex items-center justify-between mt-4">

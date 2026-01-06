@@ -28,60 +28,6 @@ function parseLocalDate(dateStr) {
   return new Date(y, m - 1, d, hh, mm);
 }
 
-// 🟢 Soft fake purchase text (ürüne göre stabil ama canlı hissi verir)
-function getRecentPurchaseText(product) {
-  const str = String(product.id || product.title || "");
-  let hash = 0;
-
-  for (let i = 0; i < str.length; i++) {
-    hash = str.charCodeAt(i) + ((hash << 5) - hash);
-  }
-
-  // %35 ihtimalle hiç gösterme
-  if (hash % 10 < 4) return null;
-
-  const minutes = (Math.abs(hash) % 7) + 1; // 1–7 dk
-
-  // %70 → 1 kişi, %30 → 2–3 kişi
-  const buyers =
-    hash % 10 < 7
-      ? 1
-      : (Math.abs(hash) % 2) + 2; // 2 veya 3
-
-  return `${minutes} dk önce ${buyers} kişi aldı`;
-}
-
-
-// 👀 Son 24 saat fake ama stabil view sayısı
-function getViewCount(product) {
-  const str = String(product.id || product.title || "");
-  let hash = 0;
-
-  for (let i = 0; i < str.length; i++) {
-    hash = str.charCodeAt(i) + ((hash << 5) - hash);
-  }
-
-  const min = 2;
-  const max = 40;
-
-  return min + (Math.abs(hash) % (max - min + 1));
-}
-
-
-// ❤️ Favori sayısı (ürüne özel, sabit ama farklı)
-function getFavCount(product) {
-  const str = String(product.id || product.title || "");
-  let hash = 0;
-
-  for (let i = 0; i < str.length; i++) {
-    hash = str.charCodeAt(i) + ((hash << 5) - hash);
-  }
-
-  const min = 3;
-  const max = 45;
-
-  return min + (Math.abs(hash) % (max - min + 1));
-}
 
 // 🚚 Kargo metni (saat bazlı)
 function getCargoInfo() {
@@ -110,8 +56,6 @@ function getCargoInfo() {
 
 
 export default function ProductCard({ product, hideDealCountdown = false }) {
-
-  const [socialIndex, setSocialIndex] = useState(0);
 
 
   const navigate = useNavigate();
@@ -162,43 +106,7 @@ const isDealExpired =
     }
   }, [product.id, isFav]);
 
- const socialMessages = [
-  /*
-  // 🟢 SATIN ALMA (ŞİMDİLİK KAPALI)
-  Number(product.stock ?? 0) > 0 && getRecentPurchaseText(product)
-    ? {
-        icon: <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />,
-        text: getRecentPurchaseText(product),
-        className: "text-emerald-600 font-semibold",
-      }
-    : null,
-  */
-
-  // ❤️ FAVORİ
-  {
-    icon: <Heart className="w-3.5 h-3.5 text-pink-500" />,
-    text: `${getFavCount(product)} kişi favoriledi`,
-    className: "text-gray-500",
-  },
-
-  // 👀 GÖRÜNTÜLEME
-  {
-    icon: null,
-    text: `Son 24 saatte ${getViewCount(product)} kişi inceledi`,
-    className: "text-gray-400",
-  },
-].filter(Boolean);
-
-
-useEffect(() => {
-  if (socialMessages.length <= 1) return;
-
-  const interval = setInterval(() => {
-    setSocialIndex(i => (i + 1) % socialMessages.length);
-  }, 2500); // 2.5 sn
-
-  return () => clearInterval(interval);
-}, [socialMessages.length]);
+ 
 
 
   return (
@@ -454,14 +362,6 @@ className="w-full h-full object-cover"
       </span>
     </>
   )}
-</div>
-
-{/* 📊 SOSYAL KANIT — TEK SATIR DÖNÜŞÜMLÜ */}
-<div className="mt-1 min-h-[18px] flex items-center gap-1 text-[11px] animate-social">
-  {socialMessages[socialIndex]?.icon}
-  <span className={socialMessages[socialIndex]?.className}>
-    {socialMessages[socialIndex]?.text}
-  </span>
 </div>
 
 

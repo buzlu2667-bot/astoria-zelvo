@@ -295,7 +295,7 @@ useEffect(() => {
        <div className="flex-1 grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-3">
           {cart.map((it) => (
             <ProductCardCart
-              key={it.id}
+           key={it.product_id}
               item={it}
               inc={() => inc(it.product_id)}
               dec={() => dec(it.product_id)}
