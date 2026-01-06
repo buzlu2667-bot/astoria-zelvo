@@ -432,7 +432,7 @@ className="w-full h-full object-cover"
     {showDiscount ? (
       <>
         <span className="text-xs bg-red-100 text-red-600 px-2 py-[2px] rounded-lg font-bold">
-          %{discount}
+          -%{discount}
         </span>
        <span className="text-gray-500 line-through text-[15px] font-semibold">
   ₺{old.toLocaleString("tr-TR")}

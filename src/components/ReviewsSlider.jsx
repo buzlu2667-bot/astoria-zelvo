@@ -34,14 +34,27 @@ export default function ReviewsSlider() {
   return (
     <section className="max-w-7xl mx-auto px-4 mt-24">
       {/* HEADER */}
-      <div className="text-center mb-10">
-        <h2 className="text-3xl font-extrabold text-gray-900">
-          Müşterilerimiz Ne Diyor?
-        </h2>
-        <p className="text-gray-500 mt-2">
-          Gerçek kullanıcı deneyimleri
-        </p>
-      </div>
+      <div className="text-center mb-14">
+  <h2 className="
+    text-4xl md:text-5xl font-black
+    bg-gradient-to-r from-indigo-500 via-fuchsia-500 to-cyan-400
+    bg-clip-text text-transparent
+    drop-shadow-[0_0_22px_rgba(99,102,241,0.45)]
+  ">
+    Müşterilerimiz Ne Diyor?
+  </h2>
+
+  <p className="
+    mt-4 inline-flex items-center gap-2
+    px-6 py-2 rounded-full
+    bg-gradient-to-r from-emerald-100 to-cyan-100
+    text-emerald-900 text-sm font-bold
+    shadow-lg
+  ">
+    ⭐ Son 8 Gerçek Müşteri Yorumu
+  </p>
+</div>
+
 
       {/* ⬇️ WRAPPER ŞART */}
       <div className="relative">
@@ -83,6 +96,8 @@ export default function ReviewsSlider() {
   "
 >
 
+  
+
                 {/* QUOTE */}
                 <Quote className="absolute top-4 right-4 w-8 h-8 text-gray-200/60 pointer-events-none" />
 
@@ -122,12 +137,32 @@ export default function ReviewsSlider() {
                     {r.name}
                   </span>
 
-                  <button
-                    onClick={() => navigate(`/product/${r.product_id}`)}
-                    className="text-sm font-semibold text-black hover:underline"
-                  >
-                    Ürünü Gör →
-                  </button>
+                 <button
+  onClick={() => navigate(`/product/${r.product_id}`)}
+  className="
+    group
+    relative overflow-hidden
+    px-4 py-2
+    rounded-xl
+    text-[12px] font-extrabold tracking-wide
+    text-white
+    bg-gradient-to-br from-indigo-500 via-fuchsia-500 to-cyan-400
+    shadow-[0_10px_30px_-10px_rgba(99,102,241,0.8)]
+    hover:scale-105 transition
+  "
+>
+  <span className="relative z-10 flex items-center gap-1">
+    Ürünü Gör
+    <span className="group-hover:translate-x-1 transition">→</span>
+  </span>
+
+  {/* cam parıltı */}
+  <span className="
+    pointer-events-none absolute inset-0
+    bg-white/10 opacity-0 group-hover:opacity-100 transition
+  "/>
+</button>
+
                 </div>
               </div>
             </SwiperSlide>

@@ -115,7 +115,7 @@ export default function ProductCardCart({ item, inc, dec, remove }) {
     {hasDiscount ? (
       <>
         <span className="text-xs bg-red-100 text-red-600 px-2 py-[2px] rounded-lg font-bold">
-          %{discount}
+          -%{discount}
         </span>
 
         {/* FAVORİLERLE BİREBİR FONT */}

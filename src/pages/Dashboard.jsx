@@ -5,13 +5,17 @@ import { useFavorites } from "../context/FavoritesContext";
 import { ShoppingBag, Heart, ShoppingCart, MessageCircle, Truck } from "lucide-react";
 import { useCart } from "../context/CartContext";
 import { ShieldCheck, Lock } from "lucide-react";
+import { PackageCheck, Clock4, Sparkles } from "lucide-react";
+
 
 export default function Dashboard() {
   const nav = useNavigate();
   const { favorites } = useFavorites();
   const [orders, setOrders] = useState([]);
+  const [lastOrder, setLastOrder] = useState(null);
+ 
   const [user, setUser] = useState(null);
- const { cart } = useCart();
+const { cart } = useCart();
  
 
   useEffect(() => {
@@ -21,13 +25,29 @@ export default function Dashboard() {
 
       setUser(data.user);
 
-      const { data: ord } = await supabase.from("orders").select("id").eq("user_id", data.user.id);
-      setOrders(ord || []);
+     // TÜM siparişler
+const { data: ord } = await supabase
+  .from("orders")
+  .select("id")
+  .eq("user_id", data.user.id);
 
-     
-    })();
+setOrders(ord || []);
+
+// 🔥 EN SON sipariş
+const { data: last } = await supabase
+  .from("orders")
+  .select("id, created_at")
+  .eq("user_id", data.user.id)
+  .order("created_at", { ascending: false })
+  .limit(1)
+  .maybeSingle();
+
+setLastOrder(last);
+
+   })();
   }, []);
 
+ 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-white py-16 px-6">
       <div className="max-w-6xl mx-auto">
@@ -124,6 +144,52 @@ export default function Dashboard() {
   </div>
 )}
 
+ {lastOrder && (
+  <div className="
+    mt-8 relative overflow-hidden rounded-[28px] p-6
+    bg-gradient-to-br from-indigo-500 via-fuchsia-500 to-rose-500
+    text-white shadow-[0_25px_60px_rgba(236,72,153,0.55)]
+    hover:scale-[1.03] transition
+  ">
+
+    {/* Glow */}
+    <div className="absolute -top-20 -right-20 w-64 h-64 bg-white/20 rounded-full blur-3xl"></div>
+    <div className="absolute -bottom-20 -left-20 w-64 h-64 bg-white/20 rounded-full blur-3xl"></div>
+
+    <div className="relative z-10 flex justify-between items-center">
+      <div>
+        <div className="flex items-center gap-2 mb-2 text-white/80 text-xs">
+          <Sparkles className="w-4 h-4" />
+          Son Siparişin
+        </div>
+
+        <h3 className="text-2xl font-black tracking-wider">
+          #{lastOrder.id}
+        </h3>
+
+        <div className="flex items-center gap-2 mt-1 text-white/80 text-xs">
+          <Clock4 className="w-4 h-4" />
+          {new Date(lastOrder.created_at).toLocaleDateString()}
+        </div>
+      </div>
+
+      <button
+        onClick={() => nav("/orders")}
+        className="
+          bg-white text-rose-600 px-6 py-3 rounded-full font-black
+          shadow-xl hover:scale-110 transition flex items-center gap-2
+        "
+      >
+        <PackageCheck className="w-5 h-5" />
+        Gör
+      </button>
+
+    </div>
+    
+  </div>
+)}
+
+
 
           <DashCard icon={ShoppingBag} label="Siparişlerim" value={orders.length} to="/orders" color="from-orange-500 to-orange-600" />
           <DashCard icon={Heart} label="Favorilerim" value={favorites?.length || 0} to="/favorites" color="from-pink-500 to-rose-500" />
@@ -167,7 +233,7 @@ export default function Dashboard() {
 
         </div>
 <p className="mt-3 text-xs text-gray-400 text-center">
-  Ortalama yanıt süresi: <b>2 dakika</b> • Gerçek müşteri temsilcisi
+  Ortalama yanıt süresi: <b>2 - 5 dakika</b> • Gerçek müşteri temsilcisi
 </p>
 
       </div>

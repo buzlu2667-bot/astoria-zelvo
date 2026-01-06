@@ -224,7 +224,7 @@ export default function Favorites() {
     {p.old_price > p.price ? (
       <>
         <span className="text-xs bg-red-100 text-red-600 px-2 py-[2px] rounded-lg font-bold">
-          %{Math.round(((p.old_price - p.price) / p.old_price) * 100)}
+          -%{Math.round(((p.old_price - p.price) / p.old_price) * 100)}
         </span>
 
         <span className="text-gray-500 line-through text-[15px] font-semibold">

@@ -145,75 +145,55 @@ const SLIDER_HEIGHT = "70vh";
 
 function MiniTrustBar() {
   const items = [
-    {
-      icon: <ShieldCheck className="w-5 h-5" />,
-      title: "Güvenli Ödeme",
-    },
-
-    {
-  icon: <CreditCard className="w-5 h-5" />,
-  title: "Kredi & Banka Kartı ile Ödeme",
-},
-
-    {
-      icon: <Truck className="w-5 h-5" />,
-      title: "Hızlı Kargo",
-    },
-    {
-      icon: <RefreshCcw className="w-5 h-5" />,
-      title: "Kolay İade",
-    },
-    {
-      icon: <MessageCircle className="w-5 h-5" />,
-      title: "WhatsApp Destek",
-      link: "https://wa.me/905384657526", // numarayı yaz
-    },
-    {
-      icon: <Send className="w-5 h-5" />,
-      title: "Telegram Ürünler",
-      link: "https://t.me/maximoraofficial", // kanal/user
-    },
+    { icon: <ShieldCheck className="w-5 h-5" />, title: "Güvenli Ödeme", color: "from-emerald-400 to-teal-500" },
+    { icon: <CreditCard className="w-5 h-5" />, title: "Kredi Kartı", color: "from-indigo-400 to-blue-500" },
+    { icon: <Truck className="w-5 h-5" />, title: "Hızlı Kargo", color: "from-sky-400 to-cyan-500" },
+    { icon: <RefreshCcw className="w-5 h-5" />, title: "Kolay İade", color: "from-orange-400 to-amber-500" },
+    { icon: <MessageCircle className="w-5 h-5" />, title: "WhatsApp Destek", link: "https://wa.me/905384657526", color: "from-emerald-500 to-green-600" },
+    { icon: <Send className="w-5 h-5" />, title: "Telegram Ürünler", link: "https://t.me/maximoraofficial", color: "from-cyan-400 to-blue-500" },
   ];
 
   return (
     <section className="max-w-7xl mx-auto px-4 mt-10">
-      <div
-        className="
-          grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3
-          bg-gray-50
-          border border-gray-200
-          rounded-2xl
-          p-4
-        "
-      >
-        {items.map((i, idx) => {
-          const Box = i.link ? "a" : "div";
-          return (
-            <Box
-              key={idx}
-              href={i.link}
-              target={i.link ? "_blank" : undefined}
-              className="
-                flex items-center gap-3
-                px-4 py-3
-                rounded-xl
-                bg-white
-                border border-gray-200
-                hover:border-black
-                hover:shadow-sm
-                transition
-                text-sm font-semibold text-gray-800
-              "
-            >
-              <span className="text-black">{i.icon}</span>
-              <span>{i.title}</span>
-            </Box>
-          );
-        })}
+      <div className="rounded-[32px] bg-gradient-to-br from-indigo-500/10 via-fuchsia-500/10 to-pink-500/10 p-4 backdrop-blur-xl border border-white/20 shadow-[0_30px_80px_rgba(99,102,241,0.22)]">
+
+        <div className="grid grid-cols-3 gap-3 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6">
+
+          {items.map((i, idx) => {
+            const Box = i.link ? "a" : "div";
+            return (
+              <Box
+                key={idx}
+                href={i.link}
+                target={i.link ? "_blank" : undefined}
+                className="block"
+              >
+                <div className={`
+                  h-[88px]
+                  rounded-2xl
+                  bg-gradient-to-br ${i.color}
+                  text-white
+                  shadow-lg
+                  flex flex-col items-center justify-center
+                  gap-2
+                  text-[11px] font-bold
+                  hover:scale-[1.07] transition
+                `}>
+                  {i.icon}
+                  <span className="text-center leading-tight px-1">{i.title}</span>
+                </div>
+              </Box>
+            );
+          })}
+
+        </div>
       </div>
     </section>
   );
 }
+
+
+
 
 // ⭐ SATIŞ ALGISI BLOĞU
 function SoldHighlightsSlider() {
@@ -246,9 +226,34 @@ function SoldHighlightsSlider() {
 
   return (
     <section className="max-w-7xl mx-auto px-4 mt-12">
-      <h3 className="text-xl font-extrabold text-gray-900 mb-6 text-center">
-        En Çok Tercih Edilenler
-      </h3>
+     <div className="flex justify-center mb-8">
+  <div className="
+    inline-flex items-center gap-3
+    px-8 py-3 rounded-2xl
+    bg-white/60 backdrop-blur-xl
+    border border-gray-200
+    shadow-[0_20px_60px_-25px_rgba(0,0,0,0.35)]
+  ">
+    <span className="
+      text-lg font-black
+      bg-gradient-to-r from-indigo-500 via-fuchsia-500 to-cyan-400
+      bg-clip-text text-transparent
+      drop-shadow-[0_0_18px_rgba(99,102,241,0.45)]
+    ">
+      En Çok Tercih Edilenler
+    </span>
+
+    <span className="
+      px-3 py-1 text-[11px] font-bold
+      rounded-full
+      bg-gradient-to-r from-emerald-400 to-cyan-400
+      text-black shadow
+    ">
+      POPÜLER
+    </span>
+  </div>
+</div>
+
 
       <Swiper
         modules={[Autoplay]}
@@ -1110,57 +1115,63 @@ bg-[radial-gradient(800px_circle_at_15%_0%,rgba(34,211,238,0.18),transparent_60%
 
     {campaignsFull.filter(c => c.active).map((c) => (
       <div key={c.id}>
-    <h2
-  className="text-2xl font-bold mb-2 flex items-center gap-2"
-  style={{ color: c.color || "#000" }}
->
-  {/* Modern icon */}
-  {ICONS[c.icon] && ICONS[c.icon]}
+   <div className="flex items-center justify-between mb-2">
 
-  {/* ICON bulunamazsa emoji yazma — sadece modern ikon */}
-  {c.title}
-</h2>
+  <h2
+    className="text-2xl font-bold flex items-center gap-2"
+    style={{ color: c.color || "#000" }}
+  >
+    {ICONS[c.icon] && ICONS[c.icon]}
+    {c.title}
+  </h2>
 
+  <div className="flex gap-2">
 
-        <p className="text-gray-500 mb-4">{c.sub_title}</p>
+    <button
+      disabled={!canCampaignLeft}
+      onClick={() => {
+        if (!canCampaignLeft) return;
+        campaignLeft();
+        setTimeout(checkCampaignScroll, 200);
+      }}
+      className={`
+        w-9 h-9 rounded-full border
+        flex items-center justify-center transition
+        ${canCampaignLeft
+          ? "bg-black text-white hover:bg-gray-800"
+          : "bg-gray-200 text-gray-400 cursor-not-allowed"}
+      `}
+    >
+      <ChevronLeft className="w-4 h-4" />
+    </button>
+
+    <button
+      disabled={!canCampaignRight}
+      onClick={() => {
+        if (!canCampaignRight) return;
+        campaignRight();
+        setTimeout(checkCampaignScroll, 200);
+      }}
+      className={`
+        w-9 h-9 rounded-full border
+        flex items-center justify-center transition
+        ${canCampaignRight
+          ? "bg-black text-white hover:bg-gray-800"
+          : "bg-gray-200 text-gray-400 cursor-not-allowed"}
+      `}
+    >
+      <ChevronRight className="w-4 h-4" />
+    </button>
+
+  </div>
+</div>
+
+<p className="text-gray-500 mb-4">{c.sub_title}</p>
 
         {/* ⭐ OKLU SCROLL BÖLÜMÜ */}
         <div className="relative">
 
-          {/* Sol Ok - Masaüstü */}
-       {canCampaignLeft && (
-  <button
-    onClick={() => {
-      campaignLeft();
-      setTimeout(checkCampaignScroll, 200);
-    }}
-    className="
-      hidden md:flex absolute left-0 top-1/2 -translate-y-1/2
-      w-10 h-10 rounded-full bg-white border border-gray-300
-      items-center justify-center hover:bg-gray-100 transition z-20
-    "
-  >
-    <ChevronLeft className="w-5 h-5 text-gray-700" />
-  </button>
-)}
-
-          {/* Sağ Ok - Masaüstü */}
-          {canCampaignRight && (
-  <button
-    onClick={() => {
-      campaignRight();
-      setTimeout(checkCampaignScroll, 200);
-    }}
-    className="
-      hidden md:flex absolute right-0 top-1/2 -translate-y-1/2
-      w-10 h-10 rounded-full bg-white border border-gray-300
-      items-center justify-center hover:bg-gray-100 transition z-20
-    "
-  >
-    <ChevronRight className="w-5 h-5 text-gray-700" />
-  </button>
-)}
-
+         
 
           {/* Kaydırılabilir Alan */}
          <div
@@ -1189,7 +1200,7 @@ bg-[radial-gradient(800px_circle_at_15%_0%,rgba(34,211,238,0.18),transparent_60%
  <ProductCardVertical p={item.products} />
 </div>
 
-  ))}
+ ))}
 
           </div>
           <p className="text-center text-gray-400 text-sm mt-2 md:hidden animate-pulse">
@@ -1208,47 +1219,100 @@ bg-[radial-gradient(800px_circle_at_15%_0%,rgba(34,211,238,0.18),transparent_60%
    {/* ⭐ SON İNCELENENLER — OKLU FINAL */}
 {recent.length > 0 && (
   <div className="max-w-7xl mx-auto px-4 mt-12">
-    <h2 className="text-2xl font-bold text-gray-900 mb-4">
+  <div className="mb-6">
+
+  {/* DESKTOP — başlık + oklar yan yana */}
+  <div className="hidden md:flex items-center justify-between">
+    <div className="flex items-center gap-3">
+      <Clock className="w-5 h-5 text-orange-500" />
+
+      <span className="text-lg font-black bg-gradient-to-r from-orange-500 to-amber-400 bg-clip-text text-transparent">
+        Son İnceledikleriniz
+      </span>
+
+      <span className="px-3 py-1 text-[11px] font-bold rounded-full bg-gradient-to-r from-orange-400 to-amber-400 text-black shadow">
+        SİZE ÖZEL
+      </span>
+    </div>
+
+    <div className="flex gap-2">
+      {/* SOL OK */}
+      <button
+        disabled={!canRecentLeft}
+        onClick={() => {
+          if (!canRecentLeft) return;
+          recentLeft();
+          setTimeout(checkRecentScroll, 200);
+        }}
+        className={`w-9 h-9 rounded-full border flex items-center justify-center transition
+          ${canRecentLeft ? "bg-black text-white hover:bg-gray-800" : "bg-gray-200 text-gray-400 cursor-not-allowed"}
+        `}
+      >
+        <ChevronLeft className="w-4 h-4" />
+      </button>
+
+      {/* SAĞ OK */}
+      <button
+        disabled={!canRecentRight}
+        onClick={() => {
+          if (!canRecentRight) return;
+          recentRight();
+          setTimeout(checkRecentScroll, 200);
+        }}
+        className={`w-9 h-9 rounded-full border flex items-center justify-center transition
+          ${canRecentRight ? "bg-black text-white hover:bg-gray-800" : "bg-gray-200 text-gray-400 cursor-not-allowed"}
+        `}
+      >
+        <ChevronRight className="w-4 h-4" />
+      </button>
+    </div>
+  </div>
+
+  {/* MOBİL — başlık */}
+  <div className="md:hidden flex items-center gap-3 mb-2">
+    <Clock className="w-5 h-5 text-orange-500" />
+    <span className="text-lg font-black bg-gradient-to-r from-orange-500 to-amber-400 bg-clip-text text-transparent">
       Son İnceledikleriniz
-    </h2>
+    </span>
+    <span className="px-3 py-1 text-[11px] font-bold rounded-full bg-gradient-to-r from-orange-400 to-amber-400 text-black shadow">
+      SİZE ÖZEL
+    </span>
+  </div>
+
+  {/* MOBİL — oklar sağ köşede altta */}
+  <div className="md:hidden flex justify-end gap-2">
+    <button
+      disabled={!canRecentLeft}
+      onClick={() => {
+        if (!canRecentLeft) return;
+        recentLeft();
+        setTimeout(checkRecentScroll, 200);
+      }}
+      className={`w-9 h-9 rounded-full border flex items-center justify-center transition
+        ${canRecentLeft ? "bg-black text-white hover:bg-gray-800" : "bg-gray-200 text-gray-400 cursor-not-allowed"}
+      `}
+    >
+      <ChevronLeft className="w-4 h-4" />
+    </button>
+
+    <button
+      disabled={!canRecentRight}
+      onClick={() => {
+        if (!canRecentRight) return;
+        recentRight();
+        setTimeout(checkRecentScroll, 200);
+      }}
+      className={`w-9 h-9 rounded-full border flex items-center justify-center transition
+        ${canRecentRight ? "bg-black text-white hover:bg-gray-800" : "bg-gray-200 text-gray-400 cursor-not-allowed"}
+      `}
+    >
+      <ChevronRight className="w-4 h-4" />
+    </button>
+  </div>
+
+</div>
 
     <div className="relative">
-
-      {/* Sol ok */}
-     {canRecentLeft && (
-  <button
-    onClick={() => {
-      recentLeft();
-      setTimeout(checkRecentScroll, 200);
-    }}
-    className="
-      hidden md:flex absolute left-0 top-1/2 -translate-y-1/2
-      w-10 h-10 rounded-full bg-white border border-gray-300
-      items-center justify-center hover:bg-gray-100 transition z-20
-    "
-  >
-    <ChevronLeft className="w-5 h-5 text-gray-700" />
-  </button>
-)}
-
-
-      {/* Sağ ok */}
-     {canRecentRight && (
-  <button
-    onClick={() => {
-      recentRight();
-      setTimeout(checkRecentScroll, 200);
-    }}
-    className="
-      hidden md:flex absolute right-0 top-1/2 -translate-y-1/2
-      w-10 h-10 rounded-full bg-white border border-gray-300
-      items-center justify-center hover:bg-gray-100 transition z-20
-    "
-  >
-    <ChevronRight className="w-5 h-5 text-gray-700" />
-  </button>
-)}
-
 
       {/* Kaydırılabilir alan */}
     <div
@@ -1284,50 +1348,106 @@ bg-[radial-gradient(800px_circle_at_15%_0%,rgba(34,211,238,0.18),transparent_60%
 
 
 
+
 {/* ⭐ İLGİNİZİ ÇEKEBİLİR — OKLU FINAL */}
 {suggested.length > 0 && (
   <div className="max-w-7xl mx-auto px-4 mt-12">
-    <h2 className="text-2xl font-bold text-gray-900 mb-4">
+  <div className="mb-6">
+
+  {/* DESKTOP — başlık + oklar */}
+  <div className="hidden md:flex items-center justify-between">
+    <div className="flex items-center gap-3">
+      <Sparkles className="w-5 h-5 text-sky-500" />
+
+      <span className="text-lg font-black bg-gradient-to-r from-sky-500 to-blue-500 bg-clip-text text-transparent">
+        İlginizi Çekebilir
+      </span>
+
+      <span className="px-3 py-1 text-[11px] font-bold rounded-full bg-gradient-to-r from-sky-400 to-blue-400 text-black shadow">
+        TREND
+      </span>
+    </div>
+
+    <div className="flex gap-2">
+      <button
+        disabled={!canSuggestedLeft}
+        onClick={() => {
+          if (!canSuggestedLeft) return;
+          suggestedLeft();
+          setTimeout(checkSuggestedScroll, 200);
+        }}
+        className={`w-9 h-9 rounded-full border flex items-center justify-center transition
+          ${canSuggestedLeft ? "bg-black text-white hover:bg-gray-800" : "bg-gray-200 text-gray-400 cursor-not-allowed"}
+        `}
+      >
+        <ChevronLeft className="w-4 h-4" />
+      </button>
+
+      <button
+        disabled={!canSuggestedRight}
+        onClick={() => {
+          if (!canSuggestedRight) return;
+          suggestedRight();
+          setTimeout(checkSuggestedScroll, 200);
+        }}
+        className={`w-9 h-9 rounded-full border flex items-center justify-center transition
+          ${canSuggestedRight ? "bg-black text-white hover:bg-gray-800" : "bg-gray-200 text-gray-400 cursor-not-allowed"}
+        `}
+      >
+        <ChevronRight className="w-4 h-4" />
+      </button>
+    </div>
+  </div>
+
+  {/* MOBİL — başlık */}
+  <div className="md:hidden flex items-center gap-3 mb-2">
+    <Sparkles className="w-5 h-5 text-sky-500" />
+    <span className="text-lg font-black bg-gradient-to-r from-sky-500 to-blue-500 bg-clip-text text-transparent">
       İlginizi Çekebilir
-    </h2>
+    </span>
+    <span className="px-3 py-1 text-[11px] font-bold rounded-full bg-gradient-to-r from-sky-400 to-blue-400 text-black shadow">
+      TREND
+    </span>
+  </div>
+
+  {/* MOBİL — oklar sağda altta */}
+  <div className="md:hidden flex justify-end gap-2">
+    <button
+      disabled={!canSuggestedLeft}
+      onClick={() => {
+        if (!canSuggestedLeft) return;
+        suggestedLeft();
+        setTimeout(checkSuggestedScroll, 200);
+      }}
+      className={`w-9 h-9 rounded-full border flex items-center justify-center transition
+        ${canSuggestedLeft ? "bg-black text-white hover:bg-gray-800" : "bg-gray-200 text-gray-400 cursor-not-allowed"}
+      `}
+    >
+      <ChevronLeft className="w-4 h-4" />
+    </button>
+
+    <button
+      disabled={!canSuggestedRight}
+      onClick={() => {
+        if (!canSuggestedRight) return;
+        suggestedRight();
+        setTimeout(checkSuggestedScroll, 200);
+      }}
+      className={`w-9 h-9 rounded-full border flex items-center justify-center transition
+        ${canSuggestedRight ? "bg-black text-white hover:bg-gray-800" : "bg-gray-200 text-gray-400 cursor-not-allowed"}
+      `}
+    >
+      <ChevronRight className="w-4 h-4" />
+    </button>
+  </div>
+
+</div>
+
+
 
     <div className="relative">
 
-      {/* Sol ok */}
-      {canSuggestedLeft && (
-  <button
-    onClick={() => {
-      suggestedLeft();
-      setTimeout(checkSuggestedScroll, 200);
-    }}
-    className="
-      hidden md:flex absolute left-0 top-1/2 -translate-y-1/2
-      w-10 h-10 rounded-full bg-white border border-gray-300
-      items-center justify-center hover:bg-gray-100 transition z-20
-    "
-  >
-    <ChevronLeft className="w-5 h-5 text-gray-700" />
-  </button>
-)}
-
-
-      {/* Sağ ok */}
-     {canSuggestedRight && (
-  <button
-    onClick={() => {
-      suggestedRight();
-      setTimeout(checkSuggestedScroll, 200);
-    }}
-    className="
-      hidden md:flex absolute right-0 top-1/2 -translate-y-1/2
-      w-10 h-10 rounded-full bg-white border border-gray-300
-      items-center justify-center hover:bg-gray-100 transition z-20
-    "
-  >
-    <ChevronRight className="w-5 h-5 text-gray-700" />
-  </button>
-)}
-
+     
 
       {/* Kaydırılabilir alan */}
      <div
@@ -1362,6 +1482,70 @@ bg-[radial-gradient(800px_circle_at_15%_0%,rgba(34,211,238,0.18),transparent_60%
   </div>
 )}
 
+<section className="max-w-7xl mx-auto px-4 mt-16">
+ <div className="flex items-center gap-3 mb-6">
+  <div className="
+    w-11 h-11 rounded-2xl
+    bg-gradient-to-br from-cyan-400 to-sky-500
+    text-white
+    flex items-center justify-center
+    shadow-lg
+  ">
+    <Sparkles className="w-5 h-5" />
+  </div>
+
+  <div className="flex flex-col leading-tight">
+    <span className="text-xs text-sky-500 font-bold tracking-widest">
+      ÖZEL SEÇİM
+    </span>
+    <span className="
+      text-2xl font-black tracking-tight
+      bg-gradient-to-r from-cyan-500 to-blue-500
+      bg-clip-text text-transparent
+    ">
+      İlginize Göre Kategoriler
+    </span>
+  </div>
+
+  <span className="
+    ml-2 px-3 py-1 text-[11px] font-bold rounded-full
+    bg-gradient-to-r from-fuchsia-400 to-pink-400
+    text-black shadow
+  ">
+    FOR YOU
+  </span>
+</div>
+
+
+  <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+    {[
+      { title: "Kadın Çantaları", img: "/categories/bag.jpg", url: "/category/kadin/canta" },
+      { title: "Cüzdan & Kartlık", img: "/categories/wallet.jpg", url: "/category/kadin/kartlık" },
+      { title: "Petshop", img: "/categories/pet.jpg", url: "/category/petshop" },
+      { title: "Termos & Kupalar", img: "/categories/thermos.jpg", url: "/category/outdoor/termos" },
+      { title: "Outdoor", img: "/categories/outdoor.jpg", url: "/category/outdoor" },
+      { title: "Hediye Et", img: "/categories/gift.jpg", url: "/category/kadin/canta" },
+    ].map((c, i) => (
+     <div
+  key={i}
+  onClick={() => navigate(c.url)}
+  className="cursor-pointer rounded-2xl overflow-hidden border bg-white shadow"
+>
+  <div className="h-[140px] overflow-hidden">
+    <img
+      src={c.img}
+      className="w-full h-full object-cover"
+    />
+  </div>
+  <div className="p-3 text-center font-bold text-sm">
+    {c.title}
+  </div>
+</div>
+
+    ))}
+  </div>
+</section>
+
   </div>
   );
 }
@@ -1371,44 +1555,27 @@ bg-[radial-gradient(800px_circle_at_15%_0%,rgba(34,211,238,0.18),transparent_60%
 /* ----------------------------- SECTION SWITCH ----------------------------- */
 
 function SectionSwitch({ featured, popular, newest, loading }) {
-
-  const [canLeft, setCanLeft] = useState(false);
-const [canRight, setCanRight] = useState(false);
-
   const [tab, setTab] = useState("featured");
   const products = tab === "featured" ? featured : tab === "popular" ? popular : newest;
+
   const sliderRef = useRef(null);
+  const [canLeft, setCanLeft] = useState(false);
+  const [canRight, setCanRight] = useState(false);
 
- useEffect(() => {
-  sliderRef.current?.scrollTo({ left: 0, behavior: "smooth" });
-  setTimeout(checkScroll, 50);
-}, [tab]);
+  function checkScroll() {
+    const el = sliderRef.current;
+    if (!el) return;
+    setCanLeft(el.scrollLeft > 0);
+    setCanRight(el.scrollLeft + el.clientWidth < el.scrollWidth - 5);
+  }
 
-useEffect(() => {
-  if (!sliderRef.current) return;
-
-  // DOM otursun diye minicik gecikme
-  const t = setTimeout(() => {
-    checkScroll();
-  }, 100);
-
-  return () => clearTimeout(t);
-}, [products]);
-
+  useEffect(() => {
+    sliderRef.current?.scrollTo({ left: 0 });
+    setTimeout(checkScroll, 100);
+  }, [tab, products]);
 
   const scrollLeft = () => sliderRef.current?.scrollBy({ left: -350, behavior: "smooth" });
   const scrollRight = () => sliderRef.current?.scrollBy({ left: 350, behavior: "smooth" });
-
-  function checkScroll() {
-  const el = sliderRef.current;
-  if (!el) return;
-
-  setCanLeft(el.scrollLeft > 0);
-  setCanRight(
-    el.scrollLeft + el.clientWidth < el.scrollWidth - 5
-  );
-}
-
 
   const tabs = [
     { key: "featured", label: "Öne Çıkan", icon: <Star className="w-4 h-4" /> },
@@ -1417,97 +1584,96 @@ useEffect(() => {
   ];
 
   return (
-    <section className="max-w-7xl mx-auto px-4">
+    <section className="max-w-7xl mx-auto px-4 mt-10">
 
-      {/* ⭐ Sekmeler — sade */}
-      <div className="flex gap-3 mb-8 justify-center">
-        {tabs.map((t) => (
-          <button
-            key={t.key}
-            onClick={() => setTab(t.key)}
-            className={`
-              flex items-center gap-2 px-4 py-2 rounded-lg font-semibold border transition
-              ${
-                tab === t.key
-                  ? "bg-black text-white border-black"
-                  : "bg-white text-gray-700 border-gray-300 hover:bg-gray-100"
-              }
-            `}
-          >
-            {t.icon}
-            {t.label}
-          </button>
-        ))}
-      </div>
+      {/* -------- BAŞLIKLAR -------- */}
+      <div className="flex flex-col md:flex-row md:items-center mb-6">
 
-      {/* ⭐ Ürünler */}
+  {/* ORTA – Sekmeler */}
+  <div className="flex-1 flex justify-center md:justify-center gap-3">
+    {tabs.map((t) => {
+      const active = tab === t.key;
+      const colors = {
+        featured: "from-orange-400 to-amber-500",
+        popular: "from-red-500 to-rose-500",
+        newest: "from-sky-400 to-blue-500",
+      };
+
+      return (
+        <button
+          key={t.key}
+          onClick={() => setTab(t.key)}
+          className={`px-5 py-2.5 rounded-xl text-sm font-bold border transition-all flex items-center gap-2
+            ${active
+              ? `bg-gradient-to-r ${colors[t.key]} text-white border-transparent shadow-lg`
+              : "bg-white text-gray-700 border-gray-300 hover:border-gray-400"}
+          `}
+        >
+          {t.icon}
+          {t.label}
+        </button>
+      );
+    })}
+  </div>
+
+  {/* SAĞ – OKLAR */}
+  <div className="flex justify-end gap-2 md:ml-auto mt-2 md:mt-0">
+    <button
+      disabled={!canLeft}
+      onClick={() => {
+        scrollLeft();
+        setTimeout(checkScroll, 150);
+      }}
+      className={`w-9 h-9 rounded-full border flex items-center justify-center transition
+        ${canLeft ? "bg-black text-white hover:bg-gray-800" : "bg-gray-200 text-gray-400 cursor-not-allowed"}
+      `}
+    >
+      <ChevronLeft className="w-4 h-4" />
+    </button>
+
+    <button
+      disabled={!canRight}
+      onClick={() => {
+        scrollRight();
+        setTimeout(checkScroll, 150);
+      }}
+      className={`w-9 h-9 rounded-full border flex items-center justify-center transition
+        ${canRight ? "bg-black text-white hover:bg-gray-800" : "bg-gray-200 text-gray-400 cursor-not-allowed"}
+      `}
+    >
+      <ChevronRight className="w-4 h-4" />
+    </button>
+  </div>
+
+</div>
+
+
+
+      {/* -------- ÜRÜNLER -------- */}
       {loading ? (
-        <p className="text-gray-500 text-center">Yükleniyor...</p>
+        <p className="text-center text-gray-500">Yükleniyor...</p>
       ) : products.length === 0 ? (
-        <p className="text-gray-500 text-center">Henüz ürün yok.</p>
+        <p className="text-center text-gray-500">Henüz ürün yok.</p>
       ) : (
-        <div className="relative">
-
-          {/* Oklar */}
-        {canLeft && (
-  <button
-    onClick={() => {
-      scrollLeft();
-      setTimeout(checkScroll, 200);
-    }}
-    className="
-      hidden md:flex absolute left-0 top-1/2 -translate-y-1/2
-      w-10 h-10 rounded-full bg-white border border-gray-300
-      items-center justify-center hover:bg-gray-100 transition z-20
-    "
-  >
-    <ChevronLeft className="w-5 h-5 text-gray-700" />
-  </button>
-)}
-
-
-          {canRight && (
-  <button
-    onClick={() => {
-      scrollRight();
-      setTimeout(checkScroll, 200);
-    }}
-    className="
-      hidden md:flex absolute right-0 top-1/2 -translate-y-1/2
-      w-10 h-10 rounded-full bg-white border border-gray-300
-      items-center justify-center hover:bg-gray-100 transition z-20
-    "
-  >
-    <ChevronRight className="w-5 h-5 text-gray-700" />
-  </button>
-)}
-
-
-          {/* ⭐ Kartlar */}
-        <div
-  ref={sliderRef}
-  onScroll={checkScroll}
-className="flex gap-4 pb-4 overflow-x-auto scroll-smooth no-scrollbar"
->
-
+        <>
+          <div
+            ref={sliderRef}
+            onScroll={checkScroll}
+            className="flex gap-4 pb-4 overflow-x-auto scroll-smooth no-scrollbar"
+          >
             {products.map((p) => (
-              <div
-                key={p.id}
-              className="shrink-0 w-[260px] min-w-[260px] max-w-[260px]"
-
-              >
+              <div key={p.id} className="shrink-0 w-[260px]">
                 <ProductCard product={p} />
               </div>
             ))}
           </div>
 
-          {/* ⭐ Mobil kaydırma bilgisi */}
-<p className="text-center text-gray-400 text-sm mt-2 md:hidden animate-pulse">
-  Kaydır →
-</p>
-
-        </div>
+          <p className="md:hidden text-center text-gray-400 text-sm mt-2 animate-pulse">
+            Kaydır →
+          </p>
+        </>
       )}
     </section>
   );
 }
+
