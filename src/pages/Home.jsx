@@ -292,10 +292,41 @@ function SoldHighlightsSlider() {
 
 export default function Home() {
 
+  
 
  const [canDealLeft, setCanDealLeft] = useState(false);
 const [canDealRight, setCanDealRight] = useState(false);
 const dealSwiperRef = useRef(null);
+const [discounted, setDiscounted] = useState([]);
+
+const discountedRef = useRef(null);
+const [canDiscountLeft, setCanDiscountLeft] = useState(false);
+const [canDiscountRight, setCanDiscountRight] = useState(false);
+
+function checkDiscountScroll() {
+  const el = discountedRef.current;
+  if (!el) return;
+
+  setCanDiscountLeft(el.scrollLeft > 0);
+  setCanDiscountRight(
+    el.scrollLeft + el.clientWidth < el.scrollWidth - 5
+  );
+}
+
+
+async function loadDiscounted() {
+  const { data } = await supabase
+    .from("products")
+    .select("*")
+    .eq("deal_active", true)
+    .gt("deal_end_at", new Date().toISOString())
+    .order("deal_end_at", { ascending: true })
+    .limit(20);
+
+  setDiscounted(data || []);
+   setTimeout(checkDiscountScroll, 200);
+}
+
 
 
   // ⭐ Campaign akıllı ok state
@@ -348,6 +379,7 @@ useEffect(() => {
     loadDeals(),
     loadCampaignsFull(),
     loadData(),
+     loadDiscounted() 
   ]).finally(() => setPageLoading(false));
 }, []);
 
@@ -432,7 +464,7 @@ const campaignRight = () =>
         .from("products")
         .select("*")
         .order("created_at", { ascending: false });
-
+         
       if (error) throw error;
 
       setNew(all.filter((x) => x.is_new));
@@ -979,7 +1011,131 @@ bg-[radial-gradient(800px_circle_at_15%_0%,rgba(34,211,238,0.18),transparent_60%
         />
       </div>
 
-      
+      {discounted.length > 0 && (
+<section className="max-w-7xl mx-auto px-4 mt-14 pt-6 md:pt-0">
+
+
+ {/* DESKTOP — başlık + oklar yan yana */}
+<div className="hidden md:flex items-center justify-between mb-4">
+
+  <div className="flex items-center gap-3">
+    <div className="w-11 h-11 rounded-2xl bg-gradient-to-br from-red-500 to-orange-400 text-white flex items-center justify-center shadow-lg">
+      <Flame className="w-5 h-5 animate-pulse" />
+    </div>
+
+    <span className="text-2xl font-black bg-gradient-to-r from-red-500 to-orange-400 bg-clip-text text-transparent">
+      İndirimdekiler
+    </span>
+
+    <span className="px-3 py-1 text-[11px] font-bold rounded-full bg-gradient-to-r from-red-400 to-orange-400 text-black shadow">
+      CANLI
+    </span>
+  </div>
+
+  <div className="flex gap-2">
+    {/* SOL OK */}
+    <button
+      disabled={!canDiscountLeft}
+      onClick={() => {
+        if (!canDiscountLeft) return;
+        discountedRef.current.scrollBy({ left: -350, behavior: "smooth" });
+        setTimeout(checkDiscountScroll, 200);
+      }}
+      className={`w-9 h-9 rounded-full border flex items-center justify-center transition
+        ${canDiscountLeft ? "bg-black text-white hover:bg-gray-800" : "bg-gray-200 text-gray-400 cursor-not-allowed"}
+      `}
+    >
+      <ChevronLeft className="w-4 h-4" />
+    </button>
+
+    {/* SAĞ OK */}
+    <button
+      disabled={!canDiscountRight}
+      onClick={() => {
+        if (!canDiscountRight) return;
+        discountedRef.current.scrollBy({ left: 350, behavior: "smooth" });
+        setTimeout(checkDiscountScroll, 200);
+      }}
+      className={`w-9 h-9 rounded-full border flex items-center justify-center transition
+        ${canDiscountRight ? "bg-black text-white hover:bg-gray-800" : "bg-gray-200 text-gray-400 cursor-not-allowed"}
+      `}
+    >
+      <ChevronRight className="w-4 h-4" />
+    </button>
+  </div>
+</div>
+
+{/* MOBİL — başlık */}
+<div className="md:hidden flex items-center gap-3 mb-2">
+
+  <div className="w-11 h-11 rounded-2xl bg-gradient-to-br from-red-500 to-orange-400 text-white flex items-center justify-center shadow-lg">
+    <Flame className="w-5 h-5 animate-pulse" />
+  </div>
+
+  <span className="text-xl font-black bg-gradient-to-r from-red-500 to-orange-400 bg-clip-text text-transparent">
+    İndirimdekiler
+  </span>
+
+  <span className="px-3 py-1 text-[11px] font-bold rounded-full bg-gradient-to-r from-red-400 to-orange-400 text-black shadow">
+    CANLI
+  </span>
+</div>
+
+{/* MOBİL — oklar sağ altta */}
+<div className="md:hidden flex justify-end gap-2 mb-2">
+
+  <button
+    disabled={!canDiscountLeft}
+    onClick={() => {
+      if (!canDiscountLeft) return;
+      discountedRef.current.scrollBy({ left: -350, behavior: "smooth" });
+      setTimeout(checkDiscountScroll, 200);
+    }}
+    className={`w-9 h-9 rounded-full border flex items-center justify-center transition
+      ${canDiscountLeft ? "bg-black text-white hover:bg-gray-800" : "bg-gray-200 text-gray-400 cursor-not-allowed"}
+    `}
+  >
+    <ChevronLeft className="w-4 h-4" />
+  </button>
+
+  <button
+    disabled={!canDiscountRight}
+    onClick={() => {
+      if (!canDiscountRight) return;
+      discountedRef.current.scrollBy({ left: 350, behavior: "smooth" });
+      setTimeout(checkDiscountScroll, 200);
+    }}
+    className={`w-9 h-9 rounded-full border flex items-center justify-center transition
+      ${canDiscountRight ? "bg-black text-white hover:bg-gray-800" : "bg-gray-200 text-gray-400 cursor-not-allowed"}
+    `}
+  >
+    <ChevronRight className="w-4 h-4" />
+  </button>
+</div>
+
+
+
+
+{/* KAYDIRILABİLİR ALAN */}
+<div
+  ref={discountedRef}
+  onScroll={checkDiscountScroll}
+  className="flex gap-4 pb-4 overflow-x-auto scroll-smooth no-scrollbar"
+>
+  {discounted.map(p => (
+    <div key={p.id} className="shrink-0 w-[260px]">
+      <ProductCard product={p} />
+    </div>
+  ))}
+</div>
+
+<p className="md:hidden text-center text-gray-400 text-sm mt-2 animate-pulse">
+  Kaydır →
+</p>
+</section>
+)}
+
+
 
  {/* 🔥 MAXIMORA DEAL OF THE WEEK */}
 {deals.length > 0 && (
