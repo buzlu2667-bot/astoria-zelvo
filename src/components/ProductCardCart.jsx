@@ -1,5 +1,5 @@
-import { Minus, Plus, Trash2 } from "lucide-react";
-import { Hourglass } from "lucide-react";
+import { Minus, Plus, Trash2, Hourglass } from "lucide-react";
+
 export default function ProductCardCart({ item, inc, dec, remove }) {
   const price = Number(item.price ?? 0);
   const old = Number(item.old_price ?? 0);
@@ -13,173 +13,81 @@ export default function ProductCardCart({ item, inc, dec, remove }) {
     "/products/default.png";
 
   return (
-    <div
-      className="
-        cursor-pointer
-        bg-white 
-        rounded-xl 
-        border border-gray-200 
-        hover:shadow-md 
-        transition-all 
-        p-3 
-        flex flex-col
-      "
-    >
-      {/* 📌 GÖRSEL — ÜRÜN KARTIYLA AYNI */}
-   <div className="relative w-full aspect-[3/4] bg-gray-100 rounded-xl overflow-hidden">
-  <img
-    src={imageSrc}
-    alt=""
-    draggable="false"
-    className="
-      w-full h-full
-      object-contain   /* 🔥 kesme yok, zoom yok */
-      transition-transform duration-300
-      hover:scale-[1.02]
-    "
-  />
+    <div className="
+      bg-white border-b last:border-b-0
+      px-4 py-4
+      flex gap-4
+      items-start sm:items-center
+    ">
 
-        {/* SİL BUTONU */}
-        <button
-          onClick={(e) => {
-            e.stopPropagation();
-            remove(item.product_id);
-          }}
-          className="
-            absolute bottom-2 right-2 bg-white 
-            w-9 h-9 rounded-full 
-            flex items-center justify-center 
-            border border-gray-300 
-            hover:bg-gray-100
-            transition
-          "
-        >
-          <Trash2 className="w-5 h-5 text-red-500" />
-        </button>
+      {/* FOTO */}
+      <div className="w-20 h-24 shrink-0 rounded-2xl bg-white/70 backdrop-blur border shadow-sm flex items-center justify-center">
+        <img
+          src={imageSrc}
+          draggable="false"
+          className="w-16 h-20 object-contain"
+        />
       </div>
 
-      {/* BAŞLIK */}
-      <p className="text-gray-800 font-semibold text-[15px] truncate mt-3">
-        {item.title || item.name}
-      </p>
+      {/* ORTA */}
+      <div className="flex-1 min-w-0">
 
-   {/* STOK */}
-<div className="mt-1">
-  {item.stock <= 0 ? (
-    <span className="
-      inline-flex items-center gap-1
-      text-[12px] font-bold
-      text-red-600
-      bg-red-50
-      px-2 py-[2px]
-      rounded-md
-      border border-red-200
-    ">
-      Tükendi
-    </span>
-  ) : item.stock < 10 ? (
-    <span className="
-      inline-flex items-center gap-1
-      text-[12px] font-semibold
-      text-orange-700
-      bg-orange-50
-      px-2 py-[2px]
-      rounded-md
-      border border-orange-200
-    ">
-      <Hourglass className="w-3.5 h-3.5 animate-hourglass" />
-      Son Adetler
-    </span>
-  ) : (
-    <span className="
-      inline-flex items-center gap-1
-      text-[12px] font-medium
-      text-emerald-700
-      bg-emerald-50
-      px-2 py-[2px]
-      rounded-md
-      border border-emerald-200
-    ">
-      Stokta
-    </span>
-  )}
-</div>
-
-
-
-    {/* FİYAT — HOME KARTIYLA AYNI */}
-<div className="mt-3 flex flex-col gap-1">
-
-  {/* ÜST SATIR: İNDİRİM + ESKİ FİYAT */}
-  <div className="flex items-center gap-2 min-h-[24px]">
-    {hasDiscount ? (
-      <>
-        <span className="text-xs bg-red-100 text-red-600 px-2 py-[2px] rounded-lg font-bold">
-          -%{discount}
-        </span>
-
-        {/* FAVORİLERLE BİREBİR FONT */}
-        <span className="text-gray-500 line-through text-[15px] font-semibold">
-          ₺{old.toLocaleString("tr-TR")}
-        </span>
-      </>
-    ) : (
-      <span className="opacity-0">placeholder</span>
-    )}
-  </div>
-
-  {/* ALT SATIR: YENİ FİYAT — FAVORİLERLE BİREBİR */}
-  <span
-    className={`font-extrabold text-xl leading-tight ${
-      hasDiscount
-        ? "text-red-600 drop-shadow-[0_1px_0_rgba(239,68,68,0.25)]"
-        : "text-gray-900"
-    }`}
-  >
-    ₺{price.toLocaleString("tr-TR")}
-  </span>
-
-</div>
-
-
-      {/* 📌 ADET ALANI — ALTTA MODERN */}
-      <div className="flex items-center justify-between mt-4">
-        
-        {/* + / - */}
-        <div className="flex items-center gap-3">
-          <button
-            onClick={(e) => {
-              e.stopPropagation();
-              dec(item.product_id);
-            }}
-            className="
-              w-9 h-9 flex items-center justify-center 
-              border border-gray-300 rounded-lg
-              text-gray-600 hover:bg-gray-100
-            "
-          >
-            <Minus size={16} />
-          </button>
-
-          <span className="w-8 text-center font-bold text-gray-800 text-base">
-            {item.quantity}
-          </span>
-
-          <button
-            onClick={(e) => {
-              e.stopPropagation();
-              inc(item.product_id);
-            }}
-            className="
-              w-9 h-9 flex items-center justify-center 
-              border border-gray-300 rounded-lg
-              text-gray-600 hover:bg-gray-100
-            "
-          >
-            <Plus size={16} />
-          </button>
+        <div className="font-semibold text-gray-900 truncate">
+          {item.title || item.name}
         </div>
 
+        {/* STOK */}
+        <div className="mt-1">
+          {item.stock <= 0 ? (
+            <span className="inline-flex items-center gap-1 text-[11px] font-bold text-red-600 bg-red-50 px-2 py-[2px] rounded-md border border-red-200">
+              Tükendi
+            </span>
+          ) : item.stock < 10 ? (
+            <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-orange-700 bg-orange-50 px-2 py-[2px] rounded-md border border-orange-200">
+              <Hourglass className="w-3.5 h-3.5 animate-hourglass" />
+              Son Adetler
+            </span>
+          ) : (
+            <span className="inline-flex items-center gap-1 text-[11px] font-medium text-emerald-700 bg-emerald-50 px-2 py-[2px] rounded-md border border-emerald-200">
+              Stokta
+            </span>
+          )}
+        </div>
+
+        {/* FİYAT */}
+        <div className="mt-2 flex flex-wrap items-center gap-2">
+          {hasDiscount && (
+            <>
+              <span className="text-[11px] bg-red-100 text-red-600 px-2 py-[2px] rounded-lg font-bold">
+                -%{discount}
+              </span>
+              <span className="text-gray-400 line-through text-xs font-semibold">
+                ₺{old.toLocaleString("tr-TR")}
+              </span>
+            </>
+          )}
+
+          <span className={`text-lg font-extrabold ${hasDiscount ? "text-red-600" : "text-gray-900"}`}>
+            ₺{price.toLocaleString("tr-TR")}
+          </span>
+        </div>
+      </div>
+
+      {/* SAĞ */}
+      <div className="flex flex-col items-end gap-2 sm:flex-row sm:items-center sm:gap-4">
+
+        <div className="flex items-center bg-white border rounded-xl overflow-hidden shadow-sm">
+          <button onClick={() => dec(item.product_id)} className="px-3 py-1 text-gray-700">−</button>
+          <div className="px-4 font-bold text-gray-900">{item.quantity}</div>
+          <button onClick={() => inc(item.product_id)} className="px-3 py-1 text-gray-700">+</button>
+        </div>
+
+        <button
+          onClick={() => remove(item.product_id)}
+          className="text-gray-400 hover:text-red-500"
+        >
+          <Trash2 size={18}/>
+        </button>
       </div>
     </div>
   );

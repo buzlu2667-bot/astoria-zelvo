@@ -292,7 +292,8 @@ useEffect(() => {
       {/* 2 SÜTUN: Sol ürünler / Sağ özet */}
       <div className="flex flex-col lg:flex-row gap-6">
         {/* SOL TARAF */}
-       <div className="flex-1 grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-3">
+       <div className="flex-1 bg-white border border-gray-200 rounded-2xl divide-y">
+
           {cart.map((it) => (
             <ProductCardCart
            key={it.product_id}
